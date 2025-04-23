@@ -1,0 +1,7 @@
+package world.respect
+
+interface Platform {
+    val name: String
+}
+
+expect fun getPlatform(): Platform
