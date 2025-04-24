@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "title": "Introduction to Programming",
+    "@type": "http://schema.org/Course",
+    "identifier": "urn:uuid:12345-67890",
+    "language": "en",
+    "description": "A comprehensive introduction to programming concepts."
+  },
+  "links": [
+    {
+      "href": "http://example.org/publication.json",
+      "rel": "self",
+      "type": "application/opds-publication+json"
+    },
+    {
+      "href": "http://example.org/content/intro-programming",
+      "rel": "http://opds-spec.org/acquisition/open-access",
+      "type": "text/html"
+    }
+  ],
+  "images": [
+    {
+      "href": "http://example.org/cover.jpg",
+      "type": "image/jpeg",
+      "height": 1400,
+      "width": 800
+    }
+  ]
+}
