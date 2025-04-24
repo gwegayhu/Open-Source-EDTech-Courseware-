@@ -1,5 +1,4 @@
-package world.respect.serialization
-
+package world.respect.model
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
@@ -7,12 +6,16 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.*
-import world.respect.model.RelType
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Custom serializer for RelType to handle both string and array formats.
  * This allows the rel field to be deserialized from either a string or an array of strings.
+ *
+ * For reference, see the schema: https://readium.org/webpub-manifest/schema/link.schema.json
  */
 object RelTypeSerializer : KSerializer<RelType> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("RelType")

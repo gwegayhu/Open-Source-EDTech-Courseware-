@@ -22,6 +22,12 @@ kotlin {
             // put your Multiplatform dependencies here
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
 
@@ -32,17 +38,19 @@ tasks.register<JavaExec>("runOpdsValidator") {
             configurations.getByName("jvmRuntimeClasspath")
     mainClass.set("world.respect.OpdsCliApp")
 
-    // CLI arguments pass करना - इसे आप command line से override कर सकते हैं
-    // E.g., ./gradlew :shared:runOpdsValidator --args="--catalog /path/to/file.json"
-    args = listOf("--help")
+    // Cast the argument to String and wrap it in a list
+    args = project.findProperty("args")?.let {
+        listOf(it.toString())
+    } ?: listOf("--help")
 }
+
 
 android {
     namespace = "world.respect.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()

@@ -1,16 +1,15 @@
-// shared/src/jvmMain/kotlin/world/respect/OpdsCliApp.kt
 package world.respect
 
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
+import world.respect.model.OpdsSerialization
 import java.io.File
 import java.nio.file.Paths
-import world.respect.serialization.OpdsSerialization
-import world.respect.validation.OpdsValidator
+import world.respect.validator.OpdsValidator
 
 /**
- * Command line application for validating OPDS catalogs and publications.
- * This application can validate OPDS files without a user interface, as specified by Mike.
+ * Command line application for validating OPDS files.
+ * This application automatically detects whether a file is an OPDS catalog or publication
+ * and validates it according to the OPDS 2.0 specification.
  */
 object OpdsCliApp {
 
@@ -19,87 +18,10 @@ object OpdsCliApp {
      */
     private fun printHelp() {
         println("OPDS Validator - Command Line Application")
-        println("Usage: java -jar opds-validator.jar [options] <file>")
-        println("Options:")
-        println("  --catalog       Validate file as an OPDS catalog (default)")
-        println("  --publication   Validate file as an OPDS publication")
-        println("  --help          Display this help message")
+        println("Usage: java -jar opds-validator.jar <file>")
         println("\nExample:")
-        println("  java -jar opds-validator.jar --catalog catalog.json")
-    }
-
-    /**
-     * Validates an OPDS catalog file.
-     *
-     * @param filePath The path to the OPDS catalog file
-     */
-    private fun validateCatalog(filePath: String) {
-        try {
-            val file = File(filePath)
-            if (!file.exists()) {
-                println("Error: File not found: $filePath")
-                return
-            }
-
-            val jsonContent = file.readText()
-
-            try {
-                val catalog = OpdsSerialization.parseOpdsCatalog(jsonContent)
-
-                val validator = OpdsValidator()
-                val result = validator.validateCatalog(catalog)
-
-                if (result.isSuccess) {
-                    println("Validation successful: The OPDS catalog is valid.")
-                } else {
-                    val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
-                    println("Validation failed with errors:")
-                    exception?.errors?.forEach { println("- $it") }
-                }
-            } catch (e: SerializationException) {
-                println("Error parsing JSON as OPDS catalog: ${e.message}")
-                println("Tip: If this is a publication file, try using --publication instead of --catalog")
-            }
-        } catch (e: Exception) {
-            println("Error validating catalog: ${e.message}")
-        }
-    }
-
-    /**
-     * Validates an OPDS publication file.
-     *
-     * @param filePath The path to the OPDS publication file
-     */
-    private fun validatePublication(filePath: String) {
-        try {
-            val file = File(filePath)
-            if (!file.exists()) {
-                println("Error: File not found: $filePath")
-                return
-            }
-
-            val jsonContent = file.readText()
-
-            try {
-                val publication = OpdsSerialization.parsePublication(jsonContent)
-
-                val validator = OpdsValidator()
-                val result = validator.validatePublication(publication)
-
-                if (result.isSuccess) {
-                    println("Validation successful: The OPDS publication is valid.")
-                } else {
-                    val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
-                    println("Validation failed with errors:")
-                    exception?.errors?.forEach { println("- $it") }
-                }
-            } catch (e: SerializationException) {
-                println("Error parsing JSON as OPDS publication: ${e.message}")
-                println("Tip: If this is a catalog file, try using --catalog instead of --publication")
-            }
-        } catch (e: Exception) {
-            println("Error validating publication: ${e.message}")
-        }
+        println("  java -jar opds-validator.jar catalog.json")
+        println("\n Validates OPDS 2.0 files used for listing learning units in RESPECT.")
     }
 
     /**
@@ -107,33 +29,80 @@ object OpdsCliApp {
      */
     @JvmStatic
     fun main(args: Array<String>) {
-        if (args.isEmpty() || args.contains("--help")) {
+        if (args.isEmpty() || args[0] == "--help" || args[0] == "-h") {
             printHelp()
             return
         }
 
-        var filePath = args.last()
-        val isPublication = args.contains("--publication")
+        val filePath = args[0]
 
-        // Basic validation to ensure the file path is the last argument
-        if (filePath.startsWith("--")) {
-            println("Error: Missing file path")
-            printHelp()
-            return
-        }
-
-        // Get absolute path
         try {
-            filePath = Paths.get(filePath).toAbsolutePath().toString()
+            val absolutePath = Paths.get(filePath).toAbsolutePath().toString()
+            validateOpdsFile(absolutePath)
         } catch (e: Exception) {
             println("Error with file path: ${e.message}")
-            return
         }
+    }
 
-        if (isPublication) {
-            validatePublication(filePath)
-        } else {
-            validateCatalog(filePath)
+    /**
+     * Validates an OPDS file, determining if it's a valid catalog or publication.
+     *
+     * @param filePath The path to the OPDS file
+     */
+    private fun validateOpdsFile(filePath: String) {
+        try {
+            val file = File(filePath)
+            if (!file.exists()) {
+                println("Error: File not found: $filePath")
+                return
+            }
+
+            val jsonContent = file.readText()
+            var isValid = false
+
+            // Try as catalog first
+            try {
+                val catalog = OpdsSerialization.parseOpdsCatalog(jsonContent)
+                val validator = OpdsValidator()
+                val result = validator.validateCatalog(catalog)
+
+                if (result.isSuccess) {
+                    println("Validation successful: The file is a valid OPDS catalog.")
+                    isValid = true
+                } else {
+                    val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
+                    println("OPDS catalog validation failed with errors:")
+                    exception?.errors?.forEach { println("- $it") }
+                }
+            } catch (e: SerializationException) {
+                // If it fails as a catalog, don't show the error yet
+            }
+
+            // If not valid as a catalog, try as a publication
+            if (!isValid) {
+                try {
+                    val publication = OpdsSerialization.parsePublication(jsonContent)
+                    val validator = OpdsValidator()
+                    val result = validator.validatePublication(publication)
+
+                    if (result.isSuccess) {
+                        println("Validation successful: The file is a valid OPDS publication.")
+                        isValid = true
+                    } else {
+                        val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
+                        println("OPDS publication validation failed with errors:")
+                        exception?.errors?.forEach { println("- $it") }
+                    }
+                } catch (e: SerializationException) {
+                    // If both fail, show a general error
+                    if (!isValid) {
+                        println("Error: The file is not a valid OPDS catalog or publication.")
+                        println("Details: ${e.message}")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            println("Error validating file: ${e.message}")
         }
     }
 }
