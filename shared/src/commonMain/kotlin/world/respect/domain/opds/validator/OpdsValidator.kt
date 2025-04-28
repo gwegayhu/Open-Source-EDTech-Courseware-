@@ -1,6 +1,7 @@
 package world.respect.domain.opds.validator
 
 import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.OpdsFeedMetadata
 import world.respect.domain.opds.model.OpdsPublication
 
 /**
@@ -45,61 +46,46 @@ class OpdsValidator {
             errors.add("Feed must contain at least one of: navigation, publications, or groups")
         }
 
-        // Ensure that navigation links have titles
-        feed.navigation?.forEachIndexed { i, link ->
-            if (link.title.isNullOrBlank()) {
-                errors.add("Navigation link at index $i is missing a title")
-            }
-        }
-
-        // Validate collections (facets, groups, publications, navigation)
-        feed.groups?.forEachIndexed { gIndex, group ->
-            if (group.metadata.title.isBlank()) {
-                errors.add("Group[$gIndex] metadata must contain a title")
-            }
-
-            group.navigation?.forEachIndexed { i, link ->
-                if (link.title.isNullOrBlank()) {
-                    errors.add("Group[$gIndex] navigation[$i] link missing a title")
-                }
-            }
-
-            group.publications?.forEachIndexed { i, pub ->
-                val result = validatePublication(pub)
-                if (result.isFailure) {
-                    val exception = result.exceptionOrNull() as? ValidationException
-                    exception?.errors?.forEach {
-                        errors.add("Group[$gIndex] publication[$i]: $it")
-                    }
-                }
-            }
-        }
-
-        // Validate facets
-        feed.facets?.forEachIndexed { i, facet ->
-            if (facet.metadata.title.isBlank()) {
-                errors.add("Facet[$i] metadata must contain a title")
-            }
-            if (facet.links.size < 2) {
-                errors.add("Facet[$i] must contain at least two links")
-            }
-        }
-
-        // Validate publications if present
-        feed.publications?.forEachIndexed { i, pub ->
-            val result = validatePublication(pub)
-            if (result.isFailure) {
-                val exception = result.exceptionOrNull() as? ValidationException
-                exception?.errors?.forEach {
-                    errors.add("Publication[$i]: $it")
-                }
-            }
-        }
+        // Validate contributors (author, translator, editor, etc.)
+        validateContributors(feed.metadata, errors)
 
         return if (errors.isEmpty()) {
             Result.success(Unit)
         } else {
             Result.failure(ValidationException(errors))
+        }
+    }
+
+    /**
+     * Validates contributors (author, translator, publisher) in the metadata.
+     * @param metadata The metadata to validate
+     * @param errors The list of errors to collect validation issues
+     */
+    private fun validateContributors(metadata: OpdsFeedMetadata, errors: MutableList<String>) {
+        // Publisher should be a string (non-blank)
+        metadata.publisher?.let {
+            if (it.isBlank()) {
+                errors.add("Publisher cannot be blank")
+            }
+        }
+
+        // Check for valid contributors (author, translator, etc.)
+        metadata.author?.let {
+            if (it.name.isBlank()) {
+                errors.add("Author name cannot be blank")
+            }
+        }
+
+        metadata.translator?.let {
+            if (it.name.isBlank()) {
+                errors.add("Translator name cannot be blank")
+            }
+        }
+
+        metadata.editor?.let {
+            if (it.name.isBlank()) {
+                errors.add("Editor name cannot be blank")
+            }
         }
     }
 
