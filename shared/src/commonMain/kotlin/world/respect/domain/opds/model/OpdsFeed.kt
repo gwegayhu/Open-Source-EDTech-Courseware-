@@ -1,4 +1,4 @@
-package world.respect.model
+package world.respect.domain.opds.model
 
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
  * For reference, see the schema: https://drafts.opds.io/schema/feed.schema.json
  */
 @Serializable
-data class OpdsCatalog(
+data class OpdsFeed(
     val metadata: OpdsFeedMetadata,               // Required metadata field
     val links: List<OpdsLink>,             // Required
     val publications: List<OpdsPublication>? = null,  // Optional, but must exist if provided

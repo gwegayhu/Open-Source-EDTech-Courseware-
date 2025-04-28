@@ -1,11 +1,11 @@
-package world.respect.model
+package world.respect.domain.opds.model
 
 import kotlinx.serialization.Serializable
 
 /**
  * Represents an Acquisition Object, indicating how a publication can be acquired.
  *
- * For reference, see the schema: https://drafts.opds.io/schema/feed.schema.json
+ * For reference, see the schema: http://opds-spec.org/acquisition
  */
 @Serializable
 data class OpdsAcquisition(

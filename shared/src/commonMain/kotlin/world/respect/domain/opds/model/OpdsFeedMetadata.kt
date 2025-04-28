@@ -1,4 +1,4 @@
-package world.respect.model
+package world.respect.domain.opds.model
 
 import kotlinx.serialization.Serializable
 

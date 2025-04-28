@@ -1,17 +1,28 @@
 package world.respect
 
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.SerializationException
-import world.respect.model.OpdsSerialization
+import kotlinx.serialization.json.JsonObject
+import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.OpdsPublication
+import world.respect.domain.opds.validator.OpdsValidator
 import java.io.File
 import java.nio.file.Paths
-import world.respect.validator.OpdsValidator
+import kotlin.jvm.JvmStatic
 
 /**
  * Command line application for validating OPDS files.
- * This application automatically detects whether a file is an OPDS catalog or publication
+ * This application automatically detects whether a file is an OPDS feed or publication
  * and validates it according to the OPDS 2.0 specification.
  */
 object OpdsCliApp {
+
+    // Json instance for serialization and deserialization
+    private val json = Json {
+        ignoreUnknownKeys = true  // Ignores unknown keys in JSON for compatibility
+        isLenient = true          // Allows lenient parsing of the data
+        prettyPrint = true        // Makes the output JSON human-readable
+    }
 
     /**
      * Prints help information for the application.
@@ -21,7 +32,7 @@ object OpdsCliApp {
         println("Usage: java -jar opds-validator.jar <file>")
         println("\nExample:")
         println("  java -jar opds-validator.jar catalog.json")
-        println("\n Validates OPDS 2.0 files used for listing learning units in RESPECT.")
+        println("\nThis tool validates OPDS 2.0 files used for listing learning units in RESPECT.")
     }
 
     /**
@@ -45,7 +56,7 @@ object OpdsCliApp {
     }
 
     /**
-     * Validates an OPDS file, determining if it's a valid catalog or publication.
+     * Validates an OPDS file, determining if it's a valid feed or publication.
      *
      * @param filePath The path to the OPDS file
      */
@@ -58,51 +69,147 @@ object OpdsCliApp {
             }
 
             val jsonContent = file.readText()
-            var isValid = false
 
-            // Try as catalog first
+            // First, check if it's valid JSON and analyze to determine type
             try {
-                val catalog = OpdsSerialization.parseOpdsCatalog(jsonContent)
+                val jsonElement = json.parseToJsonElement(jsonContent)
+                if (jsonElement !is JsonObject) {
+                    println("Error: Not a valid JSON object")
+                    return
+                }
+
+                // Determine if this is more likely a feed or publication
+                val isProbablyFeed = isProbablyFeed(jsonElement)
                 val validator = OpdsValidator()
-                val result = validator.validateCatalog(catalog)
 
-                if (result.isSuccess) {
-                    println("Validation successful: The file is a valid OPDS catalog.")
-                    isValid = true
+                // First try the most likely format based on structure analysis
+                if (isProbablyFeed) {
+                    try {
+                        val feed = json.decodeFromString<OpdsFeed>(jsonContent)
+                        val result = validator.validateFeed(feed)
+
+                        if (result.isSuccess) {
+                            println("Validation successful: The file is a valid OPDS feed.")
+                            return
+                        } else {
+                            // Only try as publication if feed validation failed
+                            val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
+                            // Don't show feed errors yet, try publication first
+
+                            try {
+                                val publication = json.decodeFromString<OpdsPublication>(jsonContent)
+                                val pubResult = validator.validatePublication(publication)
+
+                                if (pubResult.isSuccess) {
+                                    println("Validation successful: The file is a valid OPDS publication.")
+                                    return
+                                } else {
+                                    // Both failed, show feed errors since that was more likely
+                                    println("Validation failed: The file is not a valid OPDS feed.")
+                                    println("Errors:")
+                                    exception?.errors?.forEach { println("- $it") }
+                                }
+                            } catch (e: SerializationException) {
+                                // Only feed validation was possible, show those errors
+                                println("Validation failed: The file is not a valid OPDS feed.")
+                                println("Errors:")
+                                exception?.errors?.forEach { println("- $it") }
+                            }
+                        }
+                    } catch (e: SerializationException) {
+                        // Try as publication instead
+                        try {
+                            val publication = json.decodeFromString<OpdsPublication>(jsonContent)
+                            val result = validator.validatePublication(publication)
+
+                            if (result.isSuccess) {
+                                println("Validation successful: The file is a valid OPDS publication.")
+                            } else {
+                                val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
+                                println("Validation failed: The file is not a valid OPDS publication.")
+                                println("Errors:")
+                                exception?.errors?.forEach { println("- $it") }
+                            }
+                        } catch (e2: SerializationException) {
+                            println("Error: The file is not a valid OPDS feed or publication.")
+                            println("Details: ${e2.message}")
+                        }
+                    }
                 } else {
-                    val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
-                    println("OPDS catalog validation failed with errors:")
-                    exception?.errors?.forEach { println("- $it") }
-                }
-            } catch (e: SerializationException) {
-                // If it fails as a catalog, don't show the error yet
-            }
+                    // Try as publication first
+                    try {
+                        val publication = json.decodeFromString<OpdsPublication>(jsonContent)
+                        val result = validator.validatePublication(publication)
 
-            // If not valid as a catalog, try as a publication
-            if (!isValid) {
-                try {
-                    val publication = OpdsSerialization.parsePublication(jsonContent)
-                    val validator = OpdsValidator()
-                    val result = validator.validatePublication(publication)
+                        if (result.isSuccess) {
+                            println("Validation successful: The file is a valid OPDS publication.")
+                            return
+                        } else {
+                            // Only try as feed if publication validation failed
+                            val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
 
-                    if (result.isSuccess) {
-                        println("Validation successful: The file is a valid OPDS publication.")
-                        isValid = true
-                    } else {
-                        val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
-                        println("OPDS publication validation failed with errors:")
-                        exception?.errors?.forEach { println("- $it") }
-                    }
-                } catch (e: SerializationException) {
-                    // If both fail, show a general error
-                    if (!isValid) {
-                        println("Error: The file is not a valid OPDS catalog or publication.")
-                        println("Details: ${e.message}")
+                            try {
+                                val feed = json.decodeFromString<OpdsFeed>(jsonContent)
+                                val feedResult = validator.validateFeed(feed)
+
+                                if (feedResult.isSuccess) {
+                                    println("Validation successful: The file is a valid OPDS feed.")
+                                    return
+                                } else {
+                                    // Both failed, show publication errors since that was more likely
+                                    println("Validation failed: The file is not a valid OPDS publication.")
+                                    println("Errors:")
+                                    exception?.errors?.forEach { println("- $it") }
+                                }
+                            } catch (e: SerializationException) {
+                                // Only publication validation was possible, show those errors
+                                println("Validation failed: The file is not a valid OPDS publication.")
+                                println("Errors:")
+                                exception?.errors?.forEach { println("- $it") }
+                            }
+                        }
+                    } catch (e: SerializationException) {
+                        // Try as feed instead
+                        try {
+                            val feed = json.decodeFromString<OpdsFeed>(jsonContent)
+                            val result = validator.validateFeed(feed)
+
+                            if (result.isSuccess) {
+                                println("Validation successful: The file is a valid OPDS feed.")
+                            } else {
+                                val exception = result.exceptionOrNull() as? OpdsValidator.ValidationException
+                                println("Validation failed: The file is not a valid OPDS feed.")
+                                println("Errors:")
+                                exception?.errors?.forEach { println("- $it") }
+                            }
+                        } catch (e2: SerializationException) {
+                            println("Error: The file is not a valid OPDS feed or publication.")
+                            println("Details: ${e2.message}")
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                println("Error: Invalid JSON structure in file")
+                println("Details: ${e.message}")
             }
         } catch (e: Exception) {
             println("Error validating file: ${e.message}")
         }
+    }
+
+    /**
+     * Determines if a JSON object is more likely to be a feed based on its structure.
+     * @param jsonObject The JSON object to analyze
+     * @return true if the object is more likely to be a feed, false otherwise
+     */
+    private fun isProbablyFeed(jsonObject: JsonObject): Boolean {
+        // Check for feed-specific collections
+        val hasNavigation = jsonObject.containsKey("navigation")
+        val hasPublications = jsonObject.containsKey("publications")
+        val hasGroups = jsonObject.containsKey("groups")
+        val hasFacets = jsonObject.containsKey("facets")
+
+        // If it has any feed-specific collections, it's likely a feed
+        return hasNavigation || hasPublications || hasGroups || hasFacets
     }
 }

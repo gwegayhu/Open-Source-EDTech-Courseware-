@@ -1,4 +1,4 @@
-package world.respect.model
+package world.respect.domain.opds.model
 
 import kotlinx.serialization.Serializable
 
@@ -14,9 +14,7 @@ data class OpdsPublication(
     val links: List<OpdsLink>,              // Required field
     val images: List<OpdsLink>? = null      // Optional field
 ) {
-    init {
-        // Ensure metadata and links are not null and have content
-        require(metadata.title.isNotBlank()) { "Publication metadata must contain a non-blank title" }
-        require(links.isNotEmpty()) { "Publication must contain at least one link" }
+    companion object {
+        const val MEDIA_TYPE = "application/opds-publication+json"
     }
 }

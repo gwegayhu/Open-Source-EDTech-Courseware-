@@ -1,11 +1,11 @@
-package world.respect.model
+package world.respect.domain.opds.model
 
 import kotlinx.serialization.Serializable
 
 /**
  * Represents a series that a publication belongs to.
  *
- * For reference, see the schema: https://drafts.opds.io/schema/publication.schema.json
+ * For reference, see the schema: https://drafts.opds.io/opds-2.0#52-metadata
  */
 @Serializable
 data class OpdsSeries(

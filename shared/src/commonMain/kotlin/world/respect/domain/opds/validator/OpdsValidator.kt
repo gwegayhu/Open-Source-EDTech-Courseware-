@@ -1,11 +1,11 @@
-package world.respect.validator
+package world.respect.domain.opds.validator
 
-import world.respect.model.OpdsCatalog
-import world.respect.model.OpdsPublication
+import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.OpdsPublication
 
 /**
- * Validates OPDS catalogs and publications according to the OPDS 2.0 specification.
- * In RESPECT context, OPDS catalogs are used to list learning units, where each
+ * Validates OPDS feeds and publications according to the OPDS 2.0 specification.
+ * In RESPECT context, OPDS feeds are used to list learning units, where each
  * publication represents a distinct learning unit.
  * For reference, see the schemas:
  * - https://drafts.opds.io/schema/feed.schema.json
@@ -13,65 +13,85 @@ import world.respect.model.OpdsPublication
  */
 class OpdsValidator {
 
+    // List to store warnings that don't cause validation failure
+    private val warnings = mutableListOf<String>()
+
     /**
-     * Validates an OPDS catalog against the specification requirements.
-     * According to OPDS 2.0, a valid catalog must:
+     * Validates an OPDS feed against the specification requirements.
+     * According to OPDS 2.0, a valid feed must:
      * - Contain at least one collection identified by navigation, publications, or groups
      * - Contain a title in its metadata
      * - Contain a reference to itself using a self link
-     * @param catalog The catalog to validate
+     * @param feed The feed to validate
      * @return A Result object containing either Unit (success) or a ValidationException (failure)
      */
-    fun validateCatalog(catalog: OpdsCatalog): Result<Unit> {
+    fun validateFeed(feed: OpdsFeed): Result<Unit> {
+        warnings.clear()
         val errors = mutableListOf<String>()
 
         // Ensure metadata and links are not null and valid
-        if (catalog.metadata.title.isBlank()) {
-            errors.add("Catalog metadata must contain a non-blank title")
+        if (feed.metadata.title.isBlank()) {
+            errors.add("Feed metadata must contain a non-blank title")
         }
 
-        if (catalog.links.isEmpty()) {
-            errors.add("Catalog must contain at least one link")
-        }
-
-        // Check for self link
-        val hasSelfLink = catalog.links.any { link ->
-            link.rel?.contains("self") == true
-        }
-
+        // Links contains rel = self
+        val hasSelfLink = feed.links.any { it.hasRel("self") }
         if (!hasSelfLink) {
-            errors.add("Catalog must contain a self link")
+            errors.add("Feed must contain at least one 'self' link")
         }
 
-        // Ensure that at least one collection is present (publications, navigation, or groups)
-        val hasRequiredCollection = catalog.publications != null || catalog.navigation != null || catalog.groups != null
-        if (!hasRequiredCollection) {
-            errors.add("Catalog must contain at least one collection (publications, navigation, or groups)")
+        // At least one required collection
+        if (feed.navigation == null && feed.publications == null && feed.groups == null) {
+            errors.add("Feed must contain at least one of: navigation, publications, or groups")
+        }
+
+        // Ensure that navigation links have titles
+        feed.navigation?.forEachIndexed { i, link ->
+            if (link.title.isNullOrBlank()) {
+                errors.add("Navigation link at index $i is missing a title")
+            }
         }
 
         // Validate collections (facets, groups, publications, navigation)
-        catalog.facets?.forEach { facet ->
-            if (facet.metadata.title.isBlank()) {
-                errors.add("Each facet must contain a title in its metadata")
+        feed.groups?.forEachIndexed { gIndex, group ->
+            if (group.metadata.title.isBlank()) {
+                errors.add("Group[$gIndex] metadata must contain a title")
             }
-            if (facet.links.size < 2) {
-                errors.add("Each facet group should contain at least two or more Link Objects in links")
+
+            group.navigation?.forEachIndexed { i, link ->
+                if (link.title.isNullOrBlank()) {
+                    errors.add("Group[$gIndex] navigation[$i] link missing a title")
+                }
+            }
+
+            group.publications?.forEachIndexed { i, pub ->
+                val result = validatePublication(pub)
+                if (result.isFailure) {
+                    val exception = result.exceptionOrNull() as? ValidationException
+                    exception?.errors?.forEach {
+                        errors.add("Group[$gIndex] publication[$i]: $it")
+                    }
+                }
             }
         }
 
-        catalog.groups?.forEach { group ->
-            if (group.metadata.title.isBlank()) {
-                errors.add("Each group must contain a title in its metadata")
+        // Validate facets
+        feed.facets?.forEachIndexed { i, facet ->
+            if (facet.metadata.title.isBlank()) {
+                errors.add("Facet[$i] metadata must contain a title")
+            }
+            if (facet.links.size < 2) {
+                errors.add("Facet[$i] must contain at least two links")
             }
         }
 
         // Validate publications if present
-        catalog.publications?.forEach { publication ->
-            val publicationResult = validatePublication(publication)
-            if (publicationResult.isFailure) {
-                val exception = publicationResult.exceptionOrNull() as? ValidationException
-                exception?.errors?.forEach { error ->
-                    errors.add("Publication error: $error")
+        feed.publications?.forEachIndexed { i, pub ->
+            val result = validatePublication(pub)
+            if (result.isFailure) {
+                val exception = result.exceptionOrNull() as? ValidationException
+                exception?.errors?.forEach {
+                    errors.add("Publication[$i]: $it")
                 }
             }
         }
@@ -94,6 +114,7 @@ class OpdsValidator {
      * @return A Result object containing either Unit (success) or a ValidationException (failure)
      */
     fun validatePublication(publication: OpdsPublication): Result<Unit> {
+        warnings.clear()
         val errors = mutableListOf<String>()
 
         // Check that metadata and links are not null or empty
@@ -126,6 +147,12 @@ class OpdsValidator {
 
         if (!hasAcquisitionLink) {
             errors.add("Publication must contain at least one acquisition link")
+        }
+
+        // Check for self link (warning only, doesn't add to errors)
+        val hasSelfLink = publication.links.any { link -> link.rel?.contains("self") == true }
+        if (!hasSelfLink) {
+            warnings.add("Publication should contain a self link")
         }
 
         // Check image formats when images are present

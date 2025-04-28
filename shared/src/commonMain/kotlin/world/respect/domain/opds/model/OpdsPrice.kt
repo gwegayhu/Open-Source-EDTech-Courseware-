@@ -1,11 +1,11 @@
-package world.respect.model
+package world.respect.domain.opds.model
 
 import kotlinx.serialization.Serializable
 
 /**
  * Represents price information for acquisition links.
  *
- * For reference, see the schema: https://drafts.opds.io/schema/feed.schema.json
+ * For reference, see the schema: https://drafts.opds.io/opds-2.0#53-acquisition-links
  */
 @Serializable
 data class OpdsPrice(
