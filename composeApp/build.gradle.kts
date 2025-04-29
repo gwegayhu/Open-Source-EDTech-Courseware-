@@ -16,26 +16,37 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
+
     jvm("desktop")
-    
+
     sourceSets {
         val desktopMain by getting
-        
+        val commonMain by getting
+        val androidMain by getting
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.appcompat)
+
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
             implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
+            implementation(compose.foundation)
+
+            implementation(libs.androidx.navigation.compose)
+            implementation(libs.precompose)
+            implementation(libs.runtime)
+            implementation(libs.multiplatformsettings)
+            implementation(libs.moko.resources)
+            implementation(libs.moko.resources.compose)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -84,5 +95,13 @@ compose.desktop {
             packageName = "world.respect.app"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+allprojects{
+    repositories {
+        mavenCentral()
+        google()
+        gradlePluginPortal()
     }
 }

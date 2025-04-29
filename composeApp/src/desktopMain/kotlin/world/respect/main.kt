@@ -2,6 +2,7 @@ package world.respect
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import world.respect.view.app.App
 
 fun main() = application {
     Window(
