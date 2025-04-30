@@ -1,4 +1,4 @@
-package world.respect.impl.appstate
+package world.respect.app.appstate
 
 /**
  * Represents the Floating Action Button.

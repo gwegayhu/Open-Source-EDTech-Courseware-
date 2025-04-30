@@ -1,13 +1,13 @@
-package world.respect.view.app
+package world.respect.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
 import moe.tlaster.precompose.navigation.Navigator
-import world.respect.AppLauncherScreenViewModel
-import world.respect.impl.appstate.AppUiState
-import world.respect.impl.appstate.SnackBarDispatcher
-import world.respect.impl.appstate.nav.NavCommand
+import world.respect.app.appstate.AppUiState
+import world.respect.app.appstate.SnackBarDispatcher
+import world.respect.app.appstate.nav.NavCommand
+import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
 fun AppNavHost(

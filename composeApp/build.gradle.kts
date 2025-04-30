@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.konan.file.isWindowsStaticLib
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -39,14 +40,13 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(projects.shared)
             implementation(compose.foundation)
-
             implementation(libs.androidx.navigation.compose)
             implementation(libs.precompose)
             implementation(libs.runtime)
             implementation(libs.multiplatformsettings)
             implementation(libs.moko.resources)
             implementation(libs.moko.resources.compose)
-
+            implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

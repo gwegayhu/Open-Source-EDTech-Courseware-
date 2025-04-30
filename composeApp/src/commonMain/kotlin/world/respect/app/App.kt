@@ -1,4 +1,4 @@
-package world.respect.view.app
+package world.respect.app
 
 
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,17 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import kotlinx.coroutines.flow.Flow
 import moe.tlaster.precompose.navigation.NavOptions
-import world.respect.impl.appstate.AppUiState
-import world.respect.impl.appstate.FabUiState
 import kotlin.Boolean
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
 import moe.tlaster.precompose.navigation.rememberNavigator
-import world.respect.AppLauncherScreenViewModel
-import world.respect.impl.appstate.nav.NavCommand
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import world.respect.impl.appstate.SnackBarDispatcher
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
@@ -43,6 +38,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExtendedFloatingActionButton
+import world.respect.app.appstate.AppUiState
+import world.respect.app.appstate.FabUiState
+import world.respect.app.appstate.SnackBarDispatcher
+import world.respect.app.appstate.nav.NavCommand
+import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 
 data class TopNavigationItem(

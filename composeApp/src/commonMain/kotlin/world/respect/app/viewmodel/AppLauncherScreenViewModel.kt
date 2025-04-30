@@ -1,4 +1,4 @@
-package world.respect
+package world.respect.app.viewmodel
 
 class AppLauncherScreenViewModel {
     companion object
@@ -6,4 +6,3 @@ class AppLauncherScreenViewModel {
         const val DEST_NAME="AppLauncher"
     }
 }
-

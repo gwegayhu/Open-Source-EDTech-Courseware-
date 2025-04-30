@@ -1,4 +1,4 @@
-package world.respect.view.app
+package world.respect.app
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -20,9 +20,8 @@ import com.ustadmobile.libuicompose.theme.appBarSelectionModeBackgroundColor
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeContentColor
 import moe.tlaster.precompose.navigation.BackStackEntry
 import moe.tlaster.precompose.navigation.Navigator
-import org.jetbrains.compose.resources.stringResource
-import world.respect.impl.appstate.AppBarColors
-import world.respect.impl.appstate.AppUiState
+import world.respect.app.appstate.AppBarColors
+import world.respect.app.appstate.AppUiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
