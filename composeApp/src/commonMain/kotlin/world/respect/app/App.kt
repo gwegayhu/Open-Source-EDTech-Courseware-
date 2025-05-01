@@ -84,12 +84,12 @@ fun App(
     onAppStateChanged: (AppUiState) -> Unit = { },
     navCommandFlow: Flow<NavCommand>? = null,
     initialRoute: String = "/${AppLauncherScreenViewModel.DEST_NAME}",
-    ) {
+) {
     val appUiState = remember {
         mutableStateOf(
             AppUiState(
-                navigationVisible = false,
-                hideAppBar = true,
+                navigationVisible = true,
+                hideAppBar = false,
             )
         )
     }
@@ -101,7 +101,7 @@ fun App(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val onShowSnackBar: SnackBarDispatcher = remember {
-        SnackBarDispatcher {  snack ->
+        SnackBarDispatcher { snack ->
             scope.launch {
                 snackbarHostState.showSnackbar(snack.message, snack.action)
             }
@@ -110,7 +110,7 @@ fun App(
     CompositionLocalProvider(LocalWidthClass provides widthClass) {
         Scaffold(
             topBar = {
-                if(!appUiStateVal.hideAppBar) {
+                if (!appUiStateVal.hideAppBar) {
                     RespectAppBar(
                         compactHeader = (widthClass != SizeClass.EXPANDED),
                         appUiState = appUiStateVal,
@@ -120,35 +120,30 @@ fun App(
                 }
             },
             bottomBar = {
-                //As per https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#navigationbar
                 var selectedTopLevelItemIndex by remember { mutableIntStateOf(0) }
-                if(useBottomBar) {
-                    /**
-                     * Set the selected item. Relying on onClick misses when the user switches accounts
-                     * and goes back to the start screen (courses).
-                     */
+                if (useBottomBar) {
                     LaunchedEffect(currentLocation?.path) {
                         val pathVal = currentLocation?.path ?: return@LaunchedEffect
                         val topLevelIndex = APP_TOP_LEVEL_NAV_ITEMS.indexOfFirst {
                             "/${it.destRoute}" == pathVal
                         }
 
-                        if(topLevelIndex >= 0)
+                        if (topLevelIndex >= 0)
                             selectedTopLevelItemIndex = topLevelIndex
                     }
 
-                    if(appUiStateVal.navigationVisible && !appUiStateVal.hideBottomNavigation) {
+                    if (appUiStateVal.navigationVisible && !appUiStateVal.hideBottomNavigation) {
                         NavigationBar {
                             APP_TOP_LEVEL_NAV_ITEMS.forEachIndexed { index, item ->
                                 NavigationBarItem(
                                     icon = {
                                         Icon(item.icon, contentDescription = null)
                                     },
-                                  //  label = { Text(stringResource(item.label)) },
+                                    //  label = { Text(stringResource(item.label)) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
                                         navigator.navigate(
-                                            route  = "/${item.destRoute}",
+                                            route = "/${item.destRoute}",
                                             options = NavOptions(popUpTo = PopUpTo.First(inclusive = true))
                                         )
                                     }
@@ -159,7 +154,7 @@ fun App(
                 }
             },
             floatingActionButton = {
-                if(appUiStateVal.fabState.visible) {
+                if (appUiStateVal.fabState.visible) {
                     ExtendedFloatingActionButton(
                         modifier = Modifier.testTag("floating_action_button"),
                         onClick = appUiStateVal.fabState.onClick,
@@ -170,12 +165,12 @@ fun App(
                             )
                         },
                         icon = {
-                            val imageVector = when(appUiStateVal.fabState.icon)  {
+                            val imageVector = when (appUiStateVal.fabState.icon) {
                                 FabUiState.FabIcon.ADD -> Icons.Default.Menu
                                 FabUiState.FabIcon.EDIT -> Icons.Default.Menu
                                 else -> null
                             }
-                            if(imageVector != null) {
+                            if (imageVector != null) {
                                 Icon(
                                     imageVector = imageVector,
                                     contentDescription = null,
@@ -196,12 +191,6 @@ fun App(
                 },
                 modifier = Modifier
                     .padding(innerPadding)
-                    /*
-                     * consumeWindowInsets is required so that subsequent use of imePadding doesn't result
-                     * in extra space when the soft keyboard is open e.g. count the padding from the
-                     * spacing against the padding required for the keyboard (otherwise both get added
-                     * together).
-                     */
                     .consumeWindowInsets(innerPadding)
                     .imePadding(),
                 persistNavState = persistNavState,
