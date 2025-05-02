@@ -40,13 +40,16 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(projects.shared)
             implementation(compose.foundation)
-            implementation(libs.androidx.navigation.compose)
-            implementation(libs.precompose)
             implementation(libs.runtime)
             implementation(libs.multiplatformsettings)
             implementation(libs.moko.resources)
             implementation(libs.moko.resources.compose)
+            implementation(libs.androidx.material.icons.extended)
+            implementation(libs.precompose)
             implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+            implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -98,7 +101,7 @@ compose.desktop {
     }
 }
 
-allprojects{
+allprojects {
     repositories {
         mavenCentral()
         google()

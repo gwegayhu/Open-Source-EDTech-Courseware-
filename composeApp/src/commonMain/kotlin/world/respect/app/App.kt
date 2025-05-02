@@ -4,9 +4,6 @@ package world.respect.app
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -58,14 +55,14 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
         label = "Apps"
     ),
     TopNavigationItem(
-        destRoute = "AssignmentsScreen",
+        destRoute = "AssignmentScreen",
         icon = Icons.Filled.Menu,
         label = "Assignments"
     ),
     TopNavigationItem(
-        destRoute = "ClassesScreen",
+        destRoute = "ClazzScreen",
         icon = Icons.Filled.MailOutline,
-        label = "Classes"
+        label = "Clazz"
     ),
     TopNavigationItem(
         destRoute = "ReportScreen",
@@ -185,18 +182,6 @@ fun App(
             },
         ) { innerPadding ->
             AppNavHost(
-                navigator = navigator,
-                onSetAppUiState = {
-                    appUiStateVal = it
-                },
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .consumeWindowInsets(innerPadding)
-                    .imePadding(),
-                persistNavState = persistNavState,
-                onShowSnackBar = onShowSnackBar,
-                navCommandFlow = navCommandFlow,
-                initialRoute = initialRoute,
             )
         }
     }

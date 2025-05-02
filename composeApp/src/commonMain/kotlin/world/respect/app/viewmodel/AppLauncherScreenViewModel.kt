@@ -1,8 +1,12 @@
 package world.respect.app.viewmodel
 
-class AppLauncherScreenViewModel {
-    companion object
-    {
-        const val DEST_NAME="AppLauncher"
+import androidx.lifecycle.ViewModel
+
+
+class AppLauncherScreenViewModel : ViewModel() {
+    companion object {
+        const val DEST_NAME = "AppLauncherScreen"
     }
+
+    val title: String = "Welcome to App Launcher"
 }
