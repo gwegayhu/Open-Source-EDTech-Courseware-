@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 kotlin {
@@ -30,7 +31,6 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
-
         }
         commonMain.dependencies {
             implementation(compose.material)
@@ -46,9 +46,12 @@ kotlin {
             implementation(libs.moko.resources.compose)
             implementation(libs.androidx.material.icons.extended)
             implementation(libs.precompose)
+            implementation("moe.tlaster:precompose-viewmodel:1.5.7")
             implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2") // Use the latest version
             implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
 
         }
         desktopMain.dependencies {

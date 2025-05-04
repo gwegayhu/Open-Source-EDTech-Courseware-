@@ -1,7 +1,6 @@
 package world.respect.app.viewmodel
 
-import androidx.lifecycle.ViewModel
-
+import moe.tlaster.precompose.viewmodel.ViewModel
 
 class AppLauncherScreenViewModel : ViewModel() {
     companion object {

@@ -50,7 +50,7 @@ data class TopNavigationItem(
 
 val APP_TOP_LEVEL_NAV_ITEMS = listOf(
     TopNavigationItem(
-        destRoute = "AppLauncherScreen",
+        destRoute = AppLauncherScreenViewModel.DEST_NAME,
         icon = Icons.Filled.Home,
         label = "Apps"
     ),
@@ -75,11 +75,9 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
 @Composable
 fun App(
     widthClass: SizeClass = SizeClass.MEDIUM,
-    persistNavState: Boolean = false,
     useBottomBar: Boolean = true,
     navigator: Navigator = rememberNavigator(),
     onAppStateChanged: (AppUiState) -> Unit = { },
-    navCommandFlow: Flow<NavCommand>? = null,
     initialRoute: String = "/${AppLauncherScreenViewModel.DEST_NAME}",
 ) {
     val appUiState = remember {
@@ -181,8 +179,7 @@ fun App(
                 SnackbarHost(snackbarHostState)
             },
         ) { innerPadding ->
-            AppNavHost(
-            )
+            AppNavHost()
         }
     }
 
