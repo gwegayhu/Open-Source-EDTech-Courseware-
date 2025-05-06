@@ -53,6 +53,8 @@ kotlin {
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
             implementation(platform("androidx.compose:compose-bom:2024.05.00"))
             implementation("androidx.compose.material:material-icons-extended")
+            implementation("org.kodein.di:kodein-di-framework-compose:7.25.0")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

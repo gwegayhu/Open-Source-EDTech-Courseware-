@@ -73,7 +73,7 @@ fun App(
         mutableStateOf(
             AppUiState(
                 navigationVisible = true,
-                hideAppBar = false,
+                hideAppBar = true,
             )
         )
     }

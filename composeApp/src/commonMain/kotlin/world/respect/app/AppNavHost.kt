@@ -19,7 +19,9 @@ fun AppNavHost(navController: NavHostController) {
             AssignmentScreen()
         }
         composable<Clazz> { ClazzScreen() }
-        composable<Report> { ReportScreen() }
+        composable<Report> {
+            ReportScreen()
+        }
     }
 }
 
