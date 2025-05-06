@@ -3,10 +3,7 @@ package world.respect.app
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -161,8 +158,7 @@ fun App(
             },
         ) { innerPadding ->
             AppNavHost(navController = navController,
-                modifier = Modifier.padding(innerPadding)
-                )
+                modifier = Modifier.padding(innerPadding))
         }
     }
 

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun AssignmentScreen (){
-    Column(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(text = "Assignment Screen")
     }
 }
