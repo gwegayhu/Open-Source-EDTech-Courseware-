@@ -1,4 +1,6 @@
 package world.respect.app.viewmodel
 
-class ClazzScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class ClazzScreenViewModel: ViewModel() {
 }

@@ -1,4 +1,6 @@
 package world.respect.app.viewmodel
 
-class AssignmentScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class AssignmentScreenViewModel: ViewModel() {
 }

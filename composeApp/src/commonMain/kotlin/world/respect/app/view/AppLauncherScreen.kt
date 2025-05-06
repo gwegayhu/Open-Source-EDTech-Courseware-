@@ -7,4 +7,5 @@ import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
 fun AppLauncherScreen(navController: NavHostController) {
+    Text("AppLauncher")
 }

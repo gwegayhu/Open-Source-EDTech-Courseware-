@@ -1,4 +1,6 @@
 package world.respect.app.viewmodel
 
-class ReportScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class ReportScreenViewModel: ViewModel() {
 }
