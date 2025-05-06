@@ -14,7 +14,7 @@ import world.respect.app.viewmodel.AppLauncherScreenViewModel
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = AppLauncher) {
         composable<AppLauncher> {
-            AppLauncherScreen(viewModel = AppLauncherScreenViewModel(), navController = navController)
+            AppLauncherScreen(navController = navController)
         }
         composable<Assignment> {
             AssignmentScreen()

@@ -6,6 +6,5 @@ import androidx.navigation.NavHostController
 import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
-fun AppLauncherScreen(viewModel: AppLauncherScreenViewModel, navController: NavHostController) {
-    Text(text = viewModel.title)
+fun AppLauncherScreen(navController: NavHostController) {
 }
