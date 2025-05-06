@@ -11,3 +11,5 @@ object Assignment
 object Clazz
 @Serializable
 object Report
+@Serializable
+object AppList

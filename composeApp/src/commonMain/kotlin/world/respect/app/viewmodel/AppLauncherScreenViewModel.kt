@@ -21,7 +21,6 @@ class AppLauncherScreenViewModel(
     val uiState = _uiState.asStateFlow()
 
      val _appUiState = MutableStateFlow(AppUiState())
-    val appUiState = _appUiState.asStateFlow()
 
     init {
         _appUiState.update {

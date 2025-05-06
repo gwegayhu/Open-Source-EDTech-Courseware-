@@ -1,13 +1,13 @@
 package world.respect.app.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -16,16 +16,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import org.kodein.di.compose.localDI
 import world.respect.app.AppLauncherModel
+import world.respect.app.AppList
 import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
-fun AppLauncherScreen() {
+fun AppLauncherScreen(navController:NavHostController) {
     val di = localDI()
     val viewModel = AppLauncherScreenViewModel(di)
     val uiState by viewModel.uiState.collectAsState()
-    val appUiState by viewModel._appUiState.collectAsState()
 
     if (uiState.appLauncherDataList.isEmpty()) {
 
@@ -37,7 +38,9 @@ fun AppLauncherScreen() {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(uiState.appLauncherDataList) { app ->
-                AppGridItem(app)
+                AppGridItem(app) {
+                    navController.navigate(AppList)
+                }
             }
         }
     } else {
@@ -50,26 +53,27 @@ fun AppLauncherScreen() {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(uiState.appLauncherDataList) { app ->
-                AppGridItem(app)
+                AppGridItem(app) {
+                    navController.navigate(AppList)
+                }
             }
         }
     }
 }
 
 @Composable
-fun AppGridItem(app: AppLauncherModel) {
+fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f)
-            .padding(4.dp),
+            .padding(4.dp)
+            .clickable { function() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Square image placeholder
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .aspectRatio(1f)
                 .background(Color.LightGray),
             contentAlignment = Alignment.Center
         ) {
@@ -78,7 +82,6 @@ fun AppGridItem(app: AppLauncherModel) {
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Title
         Text(
             text = app.title,
             fontWeight = FontWeight.Bold,
@@ -86,7 +89,6 @@ fun AppGridItem(app: AppLauncherModel) {
             modifier = Modifier.align(Alignment.Start)
         )
 
-        // Category and Age Range
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
