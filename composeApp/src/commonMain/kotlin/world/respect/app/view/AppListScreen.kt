@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.kodein.di.compose.localDI
-import world.respect.app.AppListModel
-import world.respect.app.viewmodel.AppLauncherScreenViewModel
 import world.respect.app.viewmodel.AppListScreenViewModel
 
 
@@ -23,7 +21,8 @@ fun AppListScreen() {
     val viewModel = AppListScreenViewModel(di)
     val uiState by viewModel.uiState.collectAsState()
 
-    var selectedItem by remember { mutableStateOf<AppListModel?>(null) }
+   // var selectedItem by remember { mutableStateOf<AppListModel?>(null) }
+    var selectedItems by remember { mutableStateOf(setOf<String>()) }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("App Link", style = MaterialTheme.typography.titleLarge)
@@ -44,13 +43,24 @@ fun AppListScreen() {
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             items(uiState.appListData) { app ->
+                val isSelected = selectedItems.contains(app.id)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    RadioButton(
+                    /*RadioButton(
                         selected = selectedItem?.id == app.id,
                         onClick = { selectedItem = app }
+                    )*/
+                    RadioButton(
+                        selected = isSelected,
+                        onClick = {
+                            selectedItems = if (isSelected) {
+                                selectedItems - app.id
+                            } else {
+                                selectedItems + app.id
+                            }
+                        }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
