@@ -44,7 +44,6 @@ kotlin {
             implementation(libs.multiplatformsettings)
             implementation(libs.moko.resources)
             implementation(libs.moko.resources.compose)
-            implementation(libs.androidx.material.icons.extended)
             implementation(libs.precompose)
             implementation("moe.tlaster:precompose-viewmodel:1.5.7")
             implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
@@ -52,6 +51,9 @@ kotlin {
             implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+            implementation(platform("androidx.compose:compose-bom:2024.05.00"))
+            implementation("androidx.compose.material:material-icons-extended")
+
 
         }
         desktopMain.dependencies {

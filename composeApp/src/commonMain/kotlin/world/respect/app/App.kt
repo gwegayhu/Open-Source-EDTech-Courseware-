@@ -1,6 +1,5 @@
 package world.respect.app
 
-
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,7 +11,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,25 +18,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import moe.tlaster.precompose.navigation.NavOptions
 import kotlin.Boolean
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
-import moe.tlaster.precompose.navigation.rememberNavigator
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.ImportContacts
+import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
 import world.respect.app.appstate.AppUiState
 import world.respect.app.appstate.FabUiState
 import world.respect.app.appstate.SnackBarDispatcher
-
 
 data class TopNavigationItem(
     val destRoute: Any,
@@ -49,22 +43,22 @@ data class TopNavigationItem(
 val APP_TOP_LEVEL_NAV_ITEMS = listOf(
     TopNavigationItem(
         destRoute = AppLauncher,
-        icon = Icons.Filled.Home,
+        icon = Icons.Filled.GridView,
         label = "Apps"
     ),
     TopNavigationItem(
         destRoute = Assignment,
-        icon = Icons.Filled.Menu,
+        icon = Icons.Filled.ImportContacts,
         label = "Assignments"
     ),
     TopNavigationItem(
         destRoute = Clazz,
-        icon = Icons.Filled.MailOutline,
+        icon = Icons.Filled.LibraryBooks,
         label = "Clazz"
     ),
     TopNavigationItem(
         destRoute = Report,
-        icon = Icons.Filled.Person,
+        icon = Icons.Filled.BarChart,
         label = "Report"
     )
 )
@@ -74,8 +68,7 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
 fun App(
     widthClass: SizeClass = SizeClass.MEDIUM,
     useBottomBar: Boolean = true,
-    onAppStateChanged: (AppUiState) -> Unit = { },
-    initialRoute: Any = AppLauncher) {
+    onAppStateChanged: (AppUiState) -> Unit = { }) {
     val appUiState = remember {
         mutableStateOf(
             AppUiState(
@@ -120,7 +113,7 @@ fun App(
                                     icon = {
                                         Icon(item.icon, contentDescription = null)
                                     },
-                                   // label = { Text(stringResource(item.label)) },
+                                   label = { Text(item.label) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
                                         navController.navigate(item.destRoute)

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import world.respect.app.screens.AppLauncherScreen
 import world.respect.app.view.AssignmentScreen
 import world.respect.app.view.ClazzScreen
