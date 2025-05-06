@@ -51,7 +51,7 @@ kotlin {
             implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2") // Use the latest version
             implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
 
         }
         desktopMain.dependencies {

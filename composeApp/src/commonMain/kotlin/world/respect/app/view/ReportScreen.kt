@@ -1,4 +1,9 @@
 package world.respect.app.view
 
-class ReportScreen {
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
+@Composable
+fun ReportScreen() {
+    Text("REPORT")
 }

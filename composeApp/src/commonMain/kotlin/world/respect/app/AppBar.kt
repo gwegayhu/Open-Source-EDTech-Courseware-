@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavController
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeBackgroundColor
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeContentColor
 import moe.tlaster.precompose.navigation.BackStackEntry
@@ -29,14 +30,13 @@ import world.respect.app.appstate.AppUiState
 fun RespectAppBar(
     compactHeader: Boolean,
     appUiState: AppUiState,
-    navigator: Navigator,
-    currentLocation: BackStackEntry?,
+    navController: NavController,
     screenName: String? = null, // <-- Pass screen name if available
     onProfileClick: () -> Unit = {}, // <-- Handle profile icon click
 ) {
 
     val title = screenName ?: "Respect"
-    val canGoBack by navigator.canGoBack.collectAsState(false)
+    val canGoBack = navController.previousBackStackEntry != null
 
 
     TopAppBar(
@@ -50,7 +50,7 @@ fun RespectAppBar(
         },
         navigationIcon = {
             if (canGoBack) {
-                IconButton(onClick = { navigator.popBackStack() }) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
                 }
             }

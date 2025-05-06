@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import kotlinx.coroutines.flow.Flow
 import moe.tlaster.precompose.navigation.NavOptions
 import kotlin.Boolean
 import moe.tlaster.precompose.navigation.Navigator
@@ -35,37 +34,36 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.navigation.compose.rememberNavController
 import world.respect.app.appstate.AppUiState
 import world.respect.app.appstate.FabUiState
 import world.respect.app.appstate.SnackBarDispatcher
-import world.respect.app.appstate.nav.NavCommand
-import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 
 data class TopNavigationItem(
-    val destRoute: String,
+    val destRoute: Any,
     val icon: ImageVector,
     val label: String
 )
 
 val APP_TOP_LEVEL_NAV_ITEMS = listOf(
     TopNavigationItem(
-        destRoute = AppLauncherScreenViewModel.DEST_NAME,
+        destRoute = AppLauncher,
         icon = Icons.Filled.Home,
         label = "Apps"
     ),
     TopNavigationItem(
-        destRoute = "AssignmentScreen",
+        destRoute = Assignment,
         icon = Icons.Filled.Menu,
         label = "Assignments"
     ),
     TopNavigationItem(
-        destRoute = "ClazzScreen",
+        destRoute = Clazz,
         icon = Icons.Filled.MailOutline,
         label = "Clazz"
     ),
     TopNavigationItem(
-        destRoute = "ReportScreen",
+        destRoute = Report,
         icon = Icons.Filled.Person,
         label = "Report"
     )
@@ -76,10 +74,8 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
 fun App(
     widthClass: SizeClass = SizeClass.MEDIUM,
     useBottomBar: Boolean = true,
-    navigator: Navigator = rememberNavigator(),
     onAppStateChanged: (AppUiState) -> Unit = { },
-    initialRoute: String = "/${AppLauncherScreenViewModel.DEST_NAME}",
-) {
+    initialRoute: Any = AppLauncher) {
     val appUiState = remember {
         mutableStateOf(
             AppUiState(
@@ -88,7 +84,8 @@ fun App(
             )
         )
     }
-    val currentLocation by navigator.currentEntry.collectAsState(null)
+
+    val navController = rememberNavController()
     var appUiStateVal by appUiState
     LaunchedEffect(appUiStateVal) {
         onAppStateChanged(appUiStateVal)
@@ -109,24 +106,13 @@ fun App(
                     RespectAppBar(
                         compactHeader = (widthClass != SizeClass.EXPANDED),
                         appUiState = appUiStateVal,
-                        navigator = navigator,
-                        currentLocation = currentLocation,
+                        navController = navController,
                     )
                 }
             },
             bottomBar = {
                 var selectedTopLevelItemIndex by remember { mutableIntStateOf(0) }
                 if (useBottomBar) {
-                    LaunchedEffect(currentLocation?.path) {
-                        val pathVal = currentLocation?.path ?: return@LaunchedEffect
-                        val topLevelIndex = APP_TOP_LEVEL_NAV_ITEMS.indexOfFirst {
-                            "/${it.destRoute}" == pathVal
-                        }
-
-                        if (topLevelIndex >= 0)
-                            selectedTopLevelItemIndex = topLevelIndex
-                    }
-
                     if (appUiStateVal.navigationVisible && !appUiStateVal.hideBottomNavigation) {
                         NavigationBar {
                             APP_TOP_LEVEL_NAV_ITEMS.forEachIndexed { index, item ->
@@ -134,13 +120,11 @@ fun App(
                                     icon = {
                                         Icon(item.icon, contentDescription = null)
                                     },
-                                    //  label = { Text(stringResource(item.label)) },
+                                   // label = { Text(stringResource(item.label)) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
-                                        navigator.navigate(
-                                            route = "/${item.destRoute}",
-                                            options = NavOptions(popUpTo = PopUpTo.First(inclusive = true))
-                                        )
+                                        navController.navigate(item.destRoute)
+                                        selectedTopLevelItemIndex = index
                                     }
                                 )
                             }
@@ -179,7 +163,7 @@ fun App(
                 SnackbarHost(snackbarHostState)
             },
         ) { innerPadding ->
-            AppNavHost()
+            AppNavHost(navController = navController)
         }
     }
 
