@@ -1,12 +1,9 @@
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import org.kodein.di.DI
-import world.respect.app.appstate.AppUiState
 
 data class ReportUiState(
     val reportTitle: String = "Report Overview",

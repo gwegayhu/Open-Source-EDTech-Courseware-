@@ -3,6 +3,10 @@ package world.respect.app
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -73,7 +77,7 @@ fun App(
         mutableStateOf(
             AppUiState(
                 navigationVisible = true,
-                hideAppBar = true,
+                hideAppBar = false,
             )
         )
     }
@@ -156,7 +160,9 @@ fun App(
                 SnackbarHost(snackbarHostState)
             },
         ) { innerPadding ->
-            AppNavHost(navController = navController)
+            AppNavHost(navController = navController,
+                modifier = Modifier.padding(innerPadding)
+                )
         }
     }
 

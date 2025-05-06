@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Text
-import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.localDI
-import world.respect.app.appstate.AppUiState
 import world.respect.app.viewmodel.ReportScreenViewModel
 
 @Composable
