@@ -33,6 +33,7 @@ fun AppLauncherScreen(navController:NavHostController) {
         LazyVerticalGrid(columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxSize()
+
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
