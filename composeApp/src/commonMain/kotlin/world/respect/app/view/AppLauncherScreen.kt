@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -78,7 +79,10 @@ fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
                 .background(Color.LightGray),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = app.imageText.take(1), fontSize = 24.sp)
+            Text(text = app.imageText, fontSize = 18.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
         }
 
         Spacer(modifier = Modifier.height(4.dp))

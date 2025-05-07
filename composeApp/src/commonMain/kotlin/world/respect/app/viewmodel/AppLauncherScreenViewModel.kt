@@ -35,31 +35,31 @@ class AppLauncherScreenViewModel(
     private fun loadAppLauncherData() {
         val appLauncherData: List<AppLauncherModel> = listOf(
             AppLauncherModel(
-                imageText = "A1",
+                imageText = "Chimple",
                 title = "App 1",
                 category = "Education",
                 ageRange = "3-5"
             ),
             AppLauncherModel(
-                imageText = "B2",
+                imageText = "Ustad  Mobile",
                 title = "App 2",
                 category = "Games",
                 ageRange = "5-7"
             ),
             AppLauncherModel(
-                imageText = "C3",
+                imageText = "Khan Academy",
                 title = "App 3",
                 category = "Entertainment",
                 ageRange = "7-10"
             ),
             AppLauncherModel(
-                imageText = "D4",
+                imageText = "Curious Learning",
                 title = "App 4",
                 category = "Productivity",
                 ageRange = "10-12"
             ),
             AppLauncherModel(
-                imageText = "E5",
+                imageText = "Dals  Learning",
                 title = "App 5",
                 category = "Learning",
                 ageRange = "12+"
