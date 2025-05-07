@@ -23,6 +23,7 @@ import kotlin.Boolean
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ImportContacts
@@ -139,8 +140,7 @@ fun App(
                         },
                         icon = {
                             val imageVector = when (appUiStateVal.fabState.icon) {
-                                FabUiState.FabIcon.ADD -> Icons.Default.Menu
-                                FabUiState.FabIcon.EDIT -> Icons.Default.Menu
+                                FabUiState.FabIcon.ADD -> Icons.Default.Add
                                 else -> null
                             }
                             if (imageVector != null) {

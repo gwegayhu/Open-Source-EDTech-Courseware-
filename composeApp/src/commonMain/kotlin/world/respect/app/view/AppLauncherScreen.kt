@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.CrueltyFree
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,7 +28,7 @@ import world.respect.app.AppList
 import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
-fun AppLauncherScreen(navController:NavHostController) {
+fun AppLauncherScreen(navController: NavHostController) {
     val di = localDI()
     val viewModel = AppLauncherScreenViewModel(di)
     val uiState by viewModel.uiState.collectAsState()

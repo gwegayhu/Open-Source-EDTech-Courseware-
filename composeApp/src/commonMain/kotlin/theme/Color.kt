@@ -108,3 +108,6 @@ val onSuccessDarkHighContrast = Color(0xFF000000)
 val successContainerDarkHighContrast = Color(0xFF9FD9A4)
 val onSuccessContainerDarkHighContrast = Color(0xFF000000)
 
+val black = Color(0xFF000000)
+val white = Color(0xFFFFFFFF)
+
