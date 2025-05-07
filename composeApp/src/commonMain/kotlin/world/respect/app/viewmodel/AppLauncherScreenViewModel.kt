@@ -33,7 +33,8 @@ class AppLauncherScreenViewModel(
 
     //mock data for testing purpose
     private fun loadAppLauncherData() {
-        val appLauncherData: List<AppLauncherModel> = listOf(
+        val appLauncherData: List<AppLauncherModel> =
+             listOf(
             AppLauncherModel(
                 imageText = "Chimple",
                 title = "App 1",

@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CrueltyFree
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,20 +34,30 @@ fun AppLauncherScreen(navController:NavHostController) {
 
     if (uiState.appLauncherDataList.isEmpty()) {
 
-        LazyVerticalGrid(columns = GridCells.Fixed(3),
+        // Centered empty state
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(bottom = 64.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(uiState.appLauncherDataList) { app ->
-                AppGridItem(app) {
-                    navController.navigate(AppList)
-                }
-            }
+            Icon(
+                imageVector = Icons.Filled.CrueltyFree,
+                contentDescription = "Empty List",
+                modifier = Modifier.size(100.dp),
+                tint = Color.Black
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Empty List", fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Add an app from the app list and it will show up here",
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center
+            )
         }
+
     } else {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
