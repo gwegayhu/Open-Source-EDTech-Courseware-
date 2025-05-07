@@ -2,6 +2,7 @@ package world.respect.app.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,15 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.ustadmobile.libuicompose.theme.black
 import com.ustadmobile.libuicompose.theme.white
 import org.kodein.di.compose.localDI
+import world.respect.app.EnterLink
 import world.respect.app.viewmodel.AppListScreenViewModel
-import java.awt.Color
 
 
 @Composable
-fun AppListScreen() {
+fun AppListScreen(navController: NavHostController) {
     val di = localDI()
     val viewModel = AppListScreenViewModel(di)
     val uiState by viewModel.uiState.collectAsState()
@@ -41,7 +43,10 @@ fun AppListScreen() {
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Add from link", fontSize = 16.sp)
+            Text("Add from link", fontSize = 16.sp,
+                modifier = Modifier.clickable {
+                    navController.navigate(EnterLink)
+                })
         }
 
         Spacer(modifier = Modifier.height(24.dp))

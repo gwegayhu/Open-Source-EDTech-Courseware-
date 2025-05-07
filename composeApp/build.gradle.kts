@@ -54,6 +54,7 @@ kotlin {
             implementation(platform("androidx.compose:compose-bom:2024.05.00"))
             implementation("androidx.compose.material:material-icons-extended")
             implementation("org.kodein.di:kodein-di-framework-compose:7.25.0")
+            implementation("androidx.core:core-ktx:1.12.0")
 
         }
         desktopMain.dependencies {

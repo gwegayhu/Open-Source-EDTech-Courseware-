@@ -4,9 +4,9 @@ package world.respect.app.appstate
  * Represents the Floating Action Button.
  */
 data class FabUiState(
-    val visible: Boolean = true,
-    val text: String? = "Add",
-    val icon: FabIcon = FabIcon.ADD,
+    val visible: Boolean = false,
+    val text: String? = null,
+    val icon: FabIcon = FabIcon.NONE,
     val onClick: () -> Unit = { },
 ) {
 

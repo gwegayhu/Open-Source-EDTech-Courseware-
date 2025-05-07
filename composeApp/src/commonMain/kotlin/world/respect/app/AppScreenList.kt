@@ -13,3 +13,6 @@ object Clazz
 object Report
 @Serializable
 object AppList
+@Serializable
+object EnterLink
+
