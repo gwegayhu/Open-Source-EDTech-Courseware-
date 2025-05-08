@@ -18,18 +18,13 @@ import java.net.URL
  * - https://drafts.opds.io/schema/feed.schema.json
  * - https://drafts.opds.io/schema/publication.schema.json
  */
-class OpdsValidator {
-
-    // List to store warnings that don't cause validation failure
-    private val warnings = mutableListOf<String>()
-
-    // Json instance for serialization and deserialization
-    private val json = Json {
-        ignoreUnknownKeys = true  // Ignores unknown keys in JSON for compatibility
-        isLenient = true          // Allows lenient parsing of the data
-        prettyPrint = true        // Makes the output JSON human-readable
+class OpdsValidator(
+    private val json: Json = Json {
+        ignoreUnknownKeys = false
+        isLenient = false
+        prettyPrint = true
     }
-
+) {
     /**
      * Validates OPDS content from URI, supporting both local file paths and HTTP(S) URLs.
      * If followLinks is true, it will also validate all linked feeds.
@@ -38,6 +33,7 @@ class OpdsValidator {
      * @return A ValidationResult indicating success or failure
      */
     fun validateOpdsUri(uri: URI, followLinks: Boolean = true): ValidationResult {
+        val warnings = mutableListOf<String>()
         try {
             // Add this new check right here, before fetching content
             if (uri.toString().contains("/schema/") && uri.toString().endsWith(".schema.json")) {
@@ -47,7 +43,7 @@ class OpdsValidator {
                 )
             }
 
-            // Fetch content from URI (existing code)
+            // Fetch content from URI
             val content = when (uri.scheme) {
                 "file" -> {
                     File(uri.path).readText()
@@ -64,10 +60,10 @@ class OpdsValidator {
             }
 
             // Validate the content
-            return validateOpdsContent(content, uri.toString(), followLinks)
+            return validateOpdsContent(content, uri.toString(), followLinks, warnings)
 
         } catch (e: Exception) {
-            return ValidationResult.Exception("Error accessing or reading URI: ${uri}", e)
+            return ValidationResult.Exception("Error accessing or reading URI: $uri", e)
         }
     }
 
@@ -77,15 +73,15 @@ class OpdsValidator {
      * @param content The OPDS content as a string
      * @param baseUrl The base URL used for resolving relative links (optional)
      * @param followLinks Whether to follow links in the feed
+     * @param warnings List to collect warning messages
      * @return A ValidationResult indicating success or failure
      */
-    fun validateOpdsContent(
+    private fun validateOpdsContent(
         content: String,
         baseUrl: String = "",
-        followLinks: Boolean = true
+        followLinks: Boolean = true,
+        warnings: MutableList<String> = mutableListOf()
     ): ValidationResult {
-        warnings.clear()
-
         try {
             // First, check if it's valid JSON and analyze to determine type
             val jsonElement = json.parseToJsonElement(content)
@@ -117,7 +113,7 @@ class OpdsValidator {
             if (isProbablyFeed) {
                 try {
                     val feed = json.decodeFromString<OpdsFeed>(content)
-                    val result = validateFeed(feed)
+                    val result = validateFeed(feed, warnings)
 
                     if (result.isSuccess) {
                         // If followLinks is true and we have a baseUrl, follow links in the feed
@@ -130,7 +126,7 @@ class OpdsValidator {
                             val linkedErrors = mutableListOf<String>()
 
                             // Follow links in the feed
-                            followLinks(feed, baseUrl, visitedUrls, linkedErrors, 1)
+                            followLinks(feed, baseUrl, visitedUrls, linkedErrors, warnings, 1)
 
                             // If we found errors in linked feeds, include them in the result
                             if (linkedErrors.isNotEmpty()) {
@@ -148,7 +144,7 @@ class OpdsValidator {
 
                         try {
                             val publication = json.decodeFromString<OpdsPublication>(content)
-                            val pubResult = validatePublication(publication)
+                            val pubResult = validatePublication(publication, warnings)
 
                             return if (pubResult.isSuccess) {
                                 ValidationResult.Success(FeedType.PUBLICATION, warnings.toList())
@@ -165,7 +161,7 @@ class OpdsValidator {
                     // Try as publication instead
                     try {
                         val publication = json.decodeFromString<OpdsPublication>(content)
-                        val result = validatePublication(publication)
+                        val result = validatePublication(publication, warnings)
 
                         return if (result.isSuccess) {
                             ValidationResult.Success(FeedType.PUBLICATION, warnings.toList())
@@ -187,7 +183,7 @@ class OpdsValidator {
                 // Try as publication first
                 try {
                     val publication = json.decodeFromString<OpdsPublication>(content)
-                    val result = validatePublication(publication)
+                    val result = validatePublication(publication, warnings)
 
                     if (result.isSuccess) {
                         return ValidationResult.Success(FeedType.PUBLICATION, warnings.toList())
@@ -200,7 +196,7 @@ class OpdsValidator {
 
                         try {
                             val feed = json.decodeFromString<OpdsFeed>(content)
-                            val feedResult = validateFeed(feed)
+                            val feedResult = validateFeed(feed, warnings)
 
                             return if (feedResult.isSuccess) {
                                 ValidationResult.Success(FeedType.FEED, warnings.toList())
@@ -217,7 +213,7 @@ class OpdsValidator {
                     // Try as feed instead
                     try {
                         val feed = json.decodeFromString<OpdsFeed>(content)
-                        val result = validateFeed(feed)
+                        val result = validateFeed(feed, warnings)
 
                         return if (result.isSuccess) {
                             ValidationResult.Success(FeedType.FEED, warnings.toList())
@@ -248,6 +244,7 @@ class OpdsValidator {
      * @param baseUrl The base URL of the feed
      * @param visitedUrls Set of already visited URLs to prevent loops
      * @param errors List to collect validation errors
+     * @param warnings List to collect warning messages
      * @param depth Current recursion depth
      */
     private fun followLinks(
@@ -255,6 +252,7 @@ class OpdsValidator {
         baseUrl: String,
         visitedUrls: MutableSet<String>,
         errors: MutableList<String>,
+        warnings: MutableList<String>,
         depth: Int
     ) {
         // Stop if we've reached the maximum depth
@@ -321,9 +319,7 @@ class OpdsValidator {
                 val content = fetchContent(resolvedUrl)
 
                 // Validate the content
-                val result = validateOpdsContent(content)
-
-                when (result) {
+                when (val result = validateOpdsContent(content, resolvedUrl, true, warnings)) {
                     is ValidationResult.Error -> {
                         errors.add("Errors in linked feed at $resolvedUrl:")
                         errors.addAll(result.errors.map { "  - $it" })
@@ -335,7 +331,7 @@ class OpdsValidator {
                         // If it's a feed, follow its links recursively
                         if (result.feedType == FeedType.FEED) {
                             val linkedFeed = json.decodeFromString<OpdsFeed>(content)
-                            followLinks(linkedFeed, resolvedUrl, visitedUrls, errors, depth + 1)
+                            followLinks(linkedFeed, resolvedUrl, visitedUrls, errors, warnings, depth + 1)
                         }
                     }
                 }
@@ -363,10 +359,10 @@ class OpdsValidator {
             return baseUri.resolve(href).toString()
         } catch (e: Exception) {
             // If resolution fails, just concatenate
-            if (baseUrl.endsWith("/")) {
-                return baseUrl + href
+            return if (baseUrl.endsWith("/")) {
+                baseUrl + href
             } else {
-                return "$baseUrl/$href"
+                "$baseUrl/$href"
             }
         }
     }
@@ -401,9 +397,20 @@ class OpdsValidator {
      * @param feed The feed to validate
      * @return A Result object containing either Unit (success) or a ValidationException (failure)
      */
-    fun validateFeed(feed: OpdsFeed): Result<Unit> {
-        warnings.clear()
+    fun validateFeed(feed: OpdsFeed, warnings: MutableList<String> = mutableListOf()): Result<Unit> {
         val errors = mutableListOf<String>()
+
+        // Check if identifier exists but is not a valid URI
+        feed.metadata.identifier?.let {
+            if (!it.startsWith("http://") && !it.startsWith("https://") && !it.startsWith("urn:")) {
+                warnings.add("Feed identifier should be a valid URI: $it")
+            }
+        }
+
+        // Check for recommended but not required fields
+        if (feed.metadata.description == null) {
+            warnings.add("Feed should include a description")
+        }
 
         // Ensure metadata and links are not null and valid
         if (feed.metadata.title.isBlank()) {
@@ -472,10 +479,13 @@ class OpdsValidator {
      * - Should contain a self link
      * - When images are present, at least one must be in a required format
      * @param publication The publication to validate
+     * @param warnings List to collect warning messages
      * @return A Result object containing either Unit (success) or a ValidationException (failure)
      */
-    fun validatePublication(publication: OpdsPublication): Result<Unit> {
-        warnings.clear()
+    fun validatePublication(
+        publication: OpdsPublication,
+        warnings: MutableList<String> = mutableListOf()
+    ): Result<Unit> {
         val errors = mutableListOf<String>()
 
         // Check that metadata and links are not null or empty

@@ -1,5 +1,6 @@
 package world.respect.domain.opds.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -11,6 +12,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OpdsFeedMetadata(
     val title: String,                     // Required field (title of the catalog or collection)
+    val identifier: String? = null,        // Optional (identifier in URI format)
+    @SerialName("@type")
+    val type: String? = null,              // Optional (type in URI format)
+    val subtitle: String? = null,          // Optional (subtitle of the catalog or collection)
     val numberOfItems: Int? = null,        // Optional (total number of items in the collection)
     val itemsPerPage: Int? = null,         // Optional (items per page in the collection)
     val currentPage: Int? = null,          // Optional (current page number)
