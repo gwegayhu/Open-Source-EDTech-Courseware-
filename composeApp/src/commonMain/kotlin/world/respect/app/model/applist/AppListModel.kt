@@ -1,4 +1,4 @@
-package world.respect.app
+package world.respect.app.model.applist
 
 data class AppListModel
   (

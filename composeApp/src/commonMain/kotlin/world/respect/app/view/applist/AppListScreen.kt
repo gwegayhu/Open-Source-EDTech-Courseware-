@@ -1,4 +1,4 @@
-package world.respect.app.view
+package world.respect.app.view.applist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,8 +27,8 @@ import respect.composeapp.generated.resources.add_link
 import respect.composeapp.generated.resources.add_from_link
 
 
-import world.respect.app.EnterLink
-import world.respect.app.viewmodel.AppListScreenViewModel
+import world.respect.app.app.EnterLink
+import world.respect.app.viewmodel.applist.AppListScreenViewModel
 
 
 @Composable

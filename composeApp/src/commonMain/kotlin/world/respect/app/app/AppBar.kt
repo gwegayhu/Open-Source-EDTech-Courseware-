@@ -1,4 +1,4 @@
-package world.respect.app
+package world.respect.app.app
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack

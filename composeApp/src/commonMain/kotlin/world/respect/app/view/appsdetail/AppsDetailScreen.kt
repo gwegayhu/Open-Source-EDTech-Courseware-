@@ -1,4 +1,4 @@
-package world.respect.app.view
+package world.respect.app.view.appsdetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -31,7 +31,7 @@ import respect.composeapp.generated.resources.lessons
 
 
 
-import world.respect.app.viewmodel.AppsDetailScreenViewModel
+import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 
 @Composable
 fun AppsDetailScreen(

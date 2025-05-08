@@ -13,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.ustadmobile.libuicompose.theme.RespectAppTheme
-import world.respect.app.SizeClass
+import world.respect.app.app.SizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import world.respect.app.app.App
 
 
 abstract class AbstractAppActivity : AppCompatActivity() {
@@ -47,7 +48,7 @@ abstract class AbstractAppActivity : AppCompatActivity() {
                         },
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    world.respect.app.App(
+                    App(
                         widthClass = windowSizeClass.widthSizeClass.multiplatformSizeClass,
                     )
 

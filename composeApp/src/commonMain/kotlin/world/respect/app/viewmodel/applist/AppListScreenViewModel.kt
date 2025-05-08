@@ -1,11 +1,11 @@
-package world.respect.app.viewmodel
+package world.respect.app.viewmodel.applist
 
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import world.respect.app.AppListModel
+import world.respect.app.model.applist.AppListModel
 import world.respect.app.appstate.AppUiState
 
 data class AppListUiState(

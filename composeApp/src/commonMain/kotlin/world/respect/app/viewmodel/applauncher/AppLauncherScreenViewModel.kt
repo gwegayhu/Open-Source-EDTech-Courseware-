@@ -1,11 +1,11 @@
-package world.respect.app.viewmodel
+package world.respect.app.viewmodel.applauncher
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import world.respect.app.AppLauncherModel
-import world.respect.app.AppList
+import world.respect.app.model.applauncher.AppLauncherModel
+import world.respect.app.app.AppList
 import world.respect.app.appstate.AppUiState
 import world.respect.app.appstate.FabUiState
 

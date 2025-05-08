@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel
+package world.respect.app.viewmodel.report
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

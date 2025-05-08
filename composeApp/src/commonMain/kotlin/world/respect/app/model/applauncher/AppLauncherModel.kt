@@ -1,5 +1,4 @@
-package world.respect.app
-
+package world.respect.app.model.applauncher
 
 data class AppLauncherModel(
     val imageText: String,

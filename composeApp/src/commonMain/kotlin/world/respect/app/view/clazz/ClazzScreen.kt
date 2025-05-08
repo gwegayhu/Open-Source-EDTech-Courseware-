@@ -1,4 +1,4 @@
-package world.respect.app.view
+package world.respect.app.view.clazz
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

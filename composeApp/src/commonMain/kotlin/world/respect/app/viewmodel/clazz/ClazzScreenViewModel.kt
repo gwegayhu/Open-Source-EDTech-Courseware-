@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel
+package world.respect.app.viewmodel.clazz
 
 import androidx.lifecycle.ViewModel
 

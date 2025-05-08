@@ -1,4 +1,4 @@
-package world.respect.app
+package world.respect.app.app
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable

@@ -1,8 +1,7 @@
-package world.respect.app.model
+package world.respect.app.model.appsdetail
 
 data class LessonItem(
     val title: String,
-
     )
 
 data class AppsDetailModel(

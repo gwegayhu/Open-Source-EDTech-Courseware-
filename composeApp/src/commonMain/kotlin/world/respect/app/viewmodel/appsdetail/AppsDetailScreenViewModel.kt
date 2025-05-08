@@ -1,10 +1,10 @@
-package world.respect.app.viewmodel
+package world.respect.app.viewmodel.appsdetail
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import world.respect.app.model.AppsDetailModel
-import world.respect.app.model.LessonItem
+import world.respect.app.model.appsdetail.AppsDetailModel
+import world.respect.app.model.appsdetail.LessonItem
 
 data class AppsDetailUiState(
     val appsDetailData: AppsDetailModel? = null

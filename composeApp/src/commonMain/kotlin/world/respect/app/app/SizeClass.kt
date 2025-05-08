@@ -1,4 +1,4 @@
-package world.respect.app
+package world.respect.app.app
 
 import androidx.compose.runtime.compositionLocalOf
 

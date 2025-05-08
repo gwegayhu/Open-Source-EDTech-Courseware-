@@ -1,4 +1,4 @@
-package world.respect.app.view
+package world.respect.app.view.enterlink
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,7 +18,7 @@ import respect.composeapp.generated.resources.error_link_message
 import respect.composeapp.generated.resources.link_label
 import respect.composeapp.generated.resources.example_url_placeholder
 import respect.composeapp.generated.resources.next
-import world.respect.app.viewmodel.EnterLnkScreenViewModel
+import world.respect.app.viewmodel.enterlink.EnterLnkScreenViewModel
 
 
 @Composable

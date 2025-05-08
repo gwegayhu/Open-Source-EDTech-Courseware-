@@ -1,4 +1,4 @@
-package world.respect.app.view
+package world.respect.app.view.assignments
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
