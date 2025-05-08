@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ImportContacts
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
 import world.respect.app.appstate.AppUiState
@@ -158,7 +157,9 @@ fun App(
             },
         ) { innerPadding ->
             AppNavHost(navController = navController,
-                modifier = Modifier.padding(innerPadding))
+                modifier = Modifier.padding(innerPadding),
+                onAppStateChanged = { appUiState.value = it }
+            )
         }
     }
 

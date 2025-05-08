@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.awt.SystemColor.window
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -44,11 +45,8 @@ kotlin {
             implementation(compose.foundation)
             implementation(libs.runtime)
             implementation(libs.multiplatformsettings)
-            implementation(libs.moko.resources)
-            implementation(libs.moko.resources.compose)
-            implementation(libs.precompose)
-            implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+            implementation(libs.androidx.compose.material3.window.size)
+            implementation(libs.lifecycle.viewmodel.compose)
             implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
@@ -56,7 +54,6 @@ kotlin {
             implementation("androidx.compose.material:material-icons-extended")
             implementation("org.kodein.di:kodein-di-framework-compose:7.25.0")
             implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
-            implementation(compose.components.resources)
 
         }
         desktopMain.dependencies {

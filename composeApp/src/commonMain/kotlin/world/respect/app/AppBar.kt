@@ -38,7 +38,7 @@ fun RespectAppBar(
     TopAppBar(
         title = {
             Text(
-                text = title,
+                text = appUiState.title ?:title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("app_title"),

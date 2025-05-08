@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.ustadmobile.libuicompose.theme.RespectAppTheme
-import moe.tlaster.precompose.PreComposeApp
 import world.respect.app.SizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -21,15 +20,16 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 
 abstract class AbstractAppActivity : AppCompatActivity() {
 
-    val WindowWidthSizeClass.multiplatformSizeClass : SizeClass
-        get() = when(this) {
+    val WindowWidthSizeClass.multiplatformSizeClass: SizeClass
+        get() = when (this) {
             WindowWidthSizeClass.Compact -> SizeClass.COMPACT
             WindowWidthSizeClass.Medium -> SizeClass.MEDIUM
             WindowWidthSizeClass.Expanded -> SizeClass.EXPANDED
             else -> SizeClass.MEDIUM
         }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    @OptIn(
+        ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
         ExperimentalMaterial3WindowSizeClassApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,12 +47,11 @@ abstract class AbstractAppActivity : AppCompatActivity() {
                         },
                     color = MaterialTheme.colorScheme.background
                 ) {
-                        PreComposeApp {
-                            world.respect.app.App(
-                                widthClass = windowSizeClass.widthSizeClass.multiplatformSizeClass,
-                            )
-                        }
-                    }
+                    world.respect.app.App(
+                        widthClass = windowSizeClass.widthSizeClass.multiplatformSizeClass,
+                    )
+
+                }
 
             }
         }

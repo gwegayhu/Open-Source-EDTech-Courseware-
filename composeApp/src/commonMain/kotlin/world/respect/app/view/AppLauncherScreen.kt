@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.CrueltyFree
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,20 +27,26 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
-
 import world.respect.app.AppLauncherModel
 import world.respect.app.AppList
+import world.respect.app.appstate.AppUiState
 import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
 fun AppLauncherScreen(
     navController: NavHostController,
-    viewModel: AppLauncherScreenViewModel = viewModel { AppLauncherScreenViewModel() },
+    viewModel: AppLauncherScreenViewModel = viewModel { AppLauncherScreenViewModel(navController) },
+    onAppStateChanged: (AppUiState) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val appUiState by viewModel.appUiState.collectAsState()
+
+    LaunchedEffect(appUiState) {
+        onAppStateChanged(appUiState)
+    }
+
     if (uiState.appLauncherDataList.isEmpty()) {
 
-        // Centered empty state
         Column(
             modifier = Modifier
                 .fillMaxSize()
