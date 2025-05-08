@@ -28,7 +28,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
 import world.respect.app.AppLauncherModel
-import world.respect.app.AppList
+import world.respect.app.AppsDetail
 import world.respect.app.appstate.AppUiState
 import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
@@ -81,7 +81,7 @@ fun AppLauncherScreen(
         ) {
             items(uiState.appLauncherDataList) { app ->
                 AppGridItem(app) {
-                    navController.navigate(AppList)
+                    navController.navigate(AppsDetail)
                 }
             }
         }

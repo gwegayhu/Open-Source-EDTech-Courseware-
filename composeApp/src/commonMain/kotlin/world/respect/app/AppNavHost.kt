@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import world.respect.app.appstate.AppUiState
 import world.respect.app.view.AppLauncherScreen
 import world.respect.app.view.AppListScreen
+import world.respect.app.view.AppsDetailScreen
 import world.respect.app.view.AssignmentScreen
 import world.respect.app.view.ClazzScreen
 import world.respect.app.view.EnterLinkScreen
@@ -31,6 +32,8 @@ fun AppNavHost(
         composable<Report> { ReportScreen() }
         composable<AppList> { AppListScreen(navController = navController) }
         composable<EnterLink> { EnterLinkScreen() }
+        composable<AppsDetail> { AppsDetailScreen() }
+
     }
 }
 

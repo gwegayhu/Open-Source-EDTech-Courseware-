@@ -15,4 +15,6 @@ object Report
 object AppList
 @Serializable
 object EnterLink
+@Serializable
+object AppsDetail
 
