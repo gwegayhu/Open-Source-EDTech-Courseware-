@@ -20,7 +20,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.argparse4j)
         }
 
         val commonTest by getting {
