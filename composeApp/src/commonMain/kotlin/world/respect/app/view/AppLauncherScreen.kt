@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.CrueltyFree
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,18 +20,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.kodein.di.compose.localDI
+import org.jetbrains.compose.resources.stringResource
+import respect.composeapp.generated.resources.Res
+import respect.composeapp.generated.resources.empty_list
+import respect.composeapp.generated.resources.empty_list_description
+
 import world.respect.app.AppLauncherModel
 import world.respect.app.AppList
 import world.respect.app.viewmodel.AppLauncherScreenViewModel
 
 @Composable
-fun AppLauncherScreen(navController: NavHostController) {
-    val di = localDI()
-    val viewModel = AppLauncherScreenViewModel(di)
+fun AppLauncherScreen(
+    navController: NavHostController,
+    viewModel: AppLauncherScreenViewModel = viewModel { AppLauncherScreenViewModel() },
+) {
     val uiState by viewModel.uiState.collectAsState()
-
     if (uiState.appLauncherDataList.isEmpty()) {
 
         // Centered empty state
@@ -45,15 +49,15 @@ fun AppLauncherScreen(navController: NavHostController) {
         ) {
             Icon(
                 imageVector = Icons.Filled.CrueltyFree,
-                contentDescription = "Empty List",
+                contentDescription = null,
                 modifier = Modifier.size(100.dp),
                 tint = Color.Black
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Empty List", fontWeight = FontWeight.Bold)
+            Text(text = stringResource(resource = Res.string.empty_list), fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Add an app from the app list and it will show up here",
+                text = stringResource(resource = Res.string.empty_list_description),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center
             )
@@ -93,7 +97,8 @@ fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
                 .background(Color.LightGray),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = app.imageText, fontSize = 18.sp,
+            Text(
+                text = app.imageText, fontSize = 18.sp,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )

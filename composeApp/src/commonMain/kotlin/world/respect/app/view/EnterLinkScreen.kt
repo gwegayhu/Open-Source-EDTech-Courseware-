@@ -1,24 +1,34 @@
 package world.respect.app.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.util.PatternsCompat
-import com.ustadmobile.libuicompose.theme.md_theme_light_primary
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ustadmobile.libuicompose.theme.md_theme_light_primaryContainer
+import org.jetbrains.compose.resources.stringResource
+import respect.composeapp.generated.resources.Res
+import respect.composeapp.generated.resources.app_link_provided_message
+import respect.composeapp.generated.resources.error_link_message
+import respect.composeapp.generated.resources.link_label
+import respect.composeapp.generated.resources.example_url_placeholder
+import respect.composeapp.generated.resources.next
+import world.respect.app.viewmodel.EnterLnkScreenViewModel
+
 
 @Composable
-fun EnterLinkScreen() {
+fun EnterLinkScreen(
+    viewModel: EnterLnkScreenViewModel = viewModel { EnterLnkScreenViewModel() },
+
+    ) {
     var link by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
+
     var showError by remember { mutableStateOf(false) }
 
     Column(
@@ -27,9 +37,7 @@ fun EnterLinkScreen() {
             .padding(16.dp)
     ) {
 
-
-
-        Text("Copy/paste the RESPECT app link provided by the app developer")
+        Text(stringResource(Res.string.app_link_provided_message), fontSize = 16.sp)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -39,8 +47,8 @@ fun EnterLinkScreen() {
                 link = it
                 if (showError) showError = false // reset error on new input
             },
-            label = { Text("Link*") },
-            placeholder = { Text("e.g. https://") },
+            label = { Text(stringResource(Res.string.link_label)) },
+            placeholder = { Text(stringResource(Res.string.example_url_placeholder)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth(),
@@ -59,7 +67,7 @@ fun EnterLinkScreen() {
 
         Button(
             onClick = {
-                showError = !PatternsCompat.WEB_URL.matcher(link).matches()
+                showError = !viewModel.isValidUrl(link)
                 if (!showError) {
                     // Proceed to next step
                 }
@@ -69,13 +77,13 @@ fun EnterLinkScreen() {
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Next")
+            Text(stringResource(Res.string.next))
         }
 
         if (showError) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "ERROR: Invalid link. Please check the URL and try again.",
+                text = stringResource(Res.string.error_link_message),
                 color = Color.Red,
                 fontSize = 14.sp
             )

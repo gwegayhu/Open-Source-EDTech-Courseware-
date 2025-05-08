@@ -1,11 +1,10 @@
 package world.respect.app.viewmodel
 
 
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import moe.tlaster.precompose.viewmodel.ViewModel
-import org.kodein.di.DI
 import world.respect.app.AppListModel
 import world.respect.app.appstate.AppUiState
 
@@ -14,7 +13,6 @@ data class AppListUiState(
 )
 
 class AppListScreenViewModel(
-    private val di: DI
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AppListUiState())

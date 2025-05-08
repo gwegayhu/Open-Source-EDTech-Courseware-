@@ -12,6 +12,5 @@ import world.respect.app.viewmodel.ReportScreenViewModel
 class RespectApp : Application(), DIAware {
     override val di = DI.lazy {
         // Initialize your DI container and bind the dependencies
-        bind<ReportScreenViewModel>() with singleton { ReportScreenViewModel(instance()) }
     }
 }

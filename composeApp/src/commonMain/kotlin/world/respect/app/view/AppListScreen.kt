@@ -17,33 +17,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ustadmobile.libuicompose.theme.black
 import com.ustadmobile.libuicompose.theme.white
-import org.kodein.di.compose.localDI
+import org.jetbrains.compose.resources.stringResource
+import respect.composeapp.generated.resources.Res
+import respect.composeapp.generated.resources.add_link
+import respect.composeapp.generated.resources.add_from_link
+
+
 import world.respect.app.EnterLink
 import world.respect.app.viewmodel.AppListScreenViewModel
 
 
 @Composable
-fun AppListScreen(navController: NavHostController) {
-    val di = localDI()
-    val viewModel = AppListScreenViewModel(di)
+fun AppListScreen(
+    navController: NavHostController,
+    viewModel: AppListScreenViewModel = viewModel { AppListScreenViewModel() },
+) {
+
     val uiState by viewModel.uiState.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("App Link", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(Res.string.add_link), style = MaterialTheme.typography.titleLarge)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Default.Link,
-                contentDescription = "Link Icon",
+                contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Add from link", fontSize = 16.sp,
+            Text(
+                stringResource(Res.string.add_from_link), fontSize = 16.sp,
                 modifier = Modifier.clickable {
                     navController.navigate(EnterLink)
                 })
@@ -69,7 +78,7 @@ fun AppListScreen(navController: NavHostController) {
                         Icon(
                             imageVector = Icons.Default.Android,
                             modifier = Modifier.padding(6.dp),
-                            contentDescription = "Default App Icon",
+                            contentDescription = null
                         )
                     }
 

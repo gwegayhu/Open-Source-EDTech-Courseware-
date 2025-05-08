@@ -11,16 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeBackgroundColor
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeContentColor
-import moe.tlaster.precompose.navigation.BackStackEntry
-import moe.tlaster.precompose.navigation.Navigator
 import world.respect.app.appstate.AppBarColors
 import world.respect.app.appstate.AppUiState
 
@@ -51,7 +47,7 @@ fun RespectAppBar(
         navigationIcon = {
             if (canGoBack) {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
                 }
             }
         },
@@ -60,7 +56,8 @@ fun RespectAppBar(
                 onClick = onProfileClick,
                 modifier = Modifier.testTag("profile_icon")
             ) {
-                Icon(Icons.Default.Person, contentDescription = "Profile")
+                Icon(Icons.Default.Person,
+                    contentDescription =null)
             }
         },
         colors = if(appUiState.appBarColors == AppBarColors.STANDARD) {

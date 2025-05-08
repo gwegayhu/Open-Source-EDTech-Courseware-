@@ -1,7 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.konan.file.isWindowsStaticLib
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -24,13 +23,16 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
-        val commonMain by getting
+        val commonMain by getting{
+            resources.srcDir("src/commonMain/resources")
+        }
         val androidMain by getting
 
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
+
         }
         commonMain.dependencies {
             implementation(compose.material)
@@ -45,16 +47,16 @@ kotlin {
             implementation(libs.moko.resources)
             implementation(libs.moko.resources.compose)
             implementation(libs.precompose)
-            implementation("moe.tlaster:precompose-viewmodel:1.5.7")
             implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
             implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
             implementation(platform("androidx.compose:compose-bom:2024.05.00"))
             implementation("androidx.compose.material:material-icons-extended")
             implementation("org.kodein.di:kodein-di-framework-compose:7.25.0")
-            implementation("androidx.core:core-ktx:1.12.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
+            implementation(compose.components.resources)
 
         }
         desktopMain.dependencies {
