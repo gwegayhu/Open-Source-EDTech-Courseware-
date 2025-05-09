@@ -10,4 +10,6 @@ data class AppUiState(
     val hideAppBar: Boolean = false,
     val appBarColors: AppBarColors = AppBarColors.STANDARD,
     val leadingActionButton: AppActionButton? = null,
+    val loadingState: LoadingUiState = LoadingUiState(),
+
     )
