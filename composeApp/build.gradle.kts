@@ -50,11 +50,10 @@ kotlin {
             implementation(libs.lifecycle.runtime.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.material.icons.extended)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
-            implementation(platform("androidx.compose:compose-bom:2024.05.00"))
-            implementation("org.kodein.di:kodein-di-framework-compose:7.25.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
-
+            implementation(libs.navigation.compose)
+            implementation(libs.androidx.compose.bom)
+            implementation(libs.kodein.compose)
+            implementation(libs.kotlinx.io.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
