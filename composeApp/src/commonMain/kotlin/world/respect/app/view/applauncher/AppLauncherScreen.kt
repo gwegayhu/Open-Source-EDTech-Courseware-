@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
@@ -28,12 +27,20 @@ import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
 import world.respect.app.model.applauncher.AppLauncherModel
 import world.respect.app.app.AppsDetail
+import world.respect.app.appstate.AppUiState
 import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
+import world.respect.app.viewmodel.respectViewModel
 
 @Composable
 fun AppLauncherScreen(
     navController: NavHostController,
-    viewModel: AppLauncherScreenViewModel = viewModel { AppLauncherScreenViewModel(navController) },
+    onSetAppUiState: (AppUiState) -> Unit,
+    viewModel: AppLauncherScreenViewModel = respectViewModel(
+        modelClass = AppLauncherScreenViewModel::class,
+        onSetAppUiState = onSetAppUiState,
+        appUiStateMap = { it
+        }
+    ),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

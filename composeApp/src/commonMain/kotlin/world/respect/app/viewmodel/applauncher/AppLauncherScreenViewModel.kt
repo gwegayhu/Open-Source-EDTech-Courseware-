@@ -1,22 +1,27 @@
 package world.respect.app.viewmodel.applauncher
 
-import androidx.lifecycle.ViewModel
-import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import world.respect.app.model.applauncher.AppLauncherModel
+import world.respect.app.viewmodel.RespectViewModel
 
 
 data class AppLauncherUiState(
     val appLauncherDataList: List<AppLauncherModel> = emptyList(),
 )
 
-class AppLauncherScreenViewModel(navController: NavHostController) : ViewModel() {
+class AppLauncherScreenViewModel() : RespectViewModel() {
     
     private val _uiState = MutableStateFlow(AppLauncherUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
+        _appUiState.update {
+            it.copy(
+                title="App Launcher"
+            )
+        }
         loadAppLauncherData()
     }
 

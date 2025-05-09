@@ -21,10 +21,12 @@ fun AppNavHost(
     modifier: Modifier,
 ) {
 
+
     NavHost(navController = navController, startDestination = AppLauncher, modifier = modifier) {
         composable<AppLauncher> {
             AppLauncherScreen(
                 navController = navController,
+                onSetAppUiState = onSetAppUiState
             )
         }
         composable<Assignment> { AssignmentScreen() }

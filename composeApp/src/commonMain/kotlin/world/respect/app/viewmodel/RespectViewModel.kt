@@ -9,6 +9,7 @@ import world.respect.app.appstate.AppUiState
 import world.respect.app.appstate.LoadingUiState
 
 abstract class RespectViewModel() : ViewModel() {
+
     protected val _appUiState = MutableStateFlow(AppUiState())
     val appUiState: Flow<AppUiState> = _appUiState.asStateFlow()
 

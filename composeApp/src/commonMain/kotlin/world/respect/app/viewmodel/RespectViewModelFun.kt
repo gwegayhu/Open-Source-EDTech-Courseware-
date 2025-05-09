@@ -14,7 +14,9 @@ fun <T : RespectViewModel> respectViewModel(
     appUiStateMap: ((AppUiState) -> AppUiState)? = null,
     onSetAppUiState: (AppUiState) -> Unit,
     ): T {
+
     val viewModel= viewModel(modelClass)
+
     val uiStateFlow = remember(viewModel.appUiState, appUiStateMap) {
         if(appUiStateMap != null) {
             viewModel.appUiState.map(appUiStateMap)
