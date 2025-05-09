@@ -5,9 +5,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import world.respect.app.model.applauncher.AppLauncherModel
-import world.respect.app.app.AppList
-import world.respect.app.appstate.AppUiState
-import world.respect.app.appstate.FabUiState
+
 
 data class AppLauncherUiState(
     val appLauncherDataList: List<AppLauncherModel> = emptyList(),
@@ -18,21 +16,7 @@ class AppLauncherScreenViewModel(navController: NavHostController) : ViewModel()
     private val _uiState = MutableStateFlow(AppLauncherUiState())
     val uiState = _uiState.asStateFlow()
 
-     val _appUiState = MutableStateFlow(AppUiState())
-    val appUiState = _appUiState.asStateFlow()
-
     init {
-        _appUiState.value = AppUiState(
-            title = "App Launcher",
-            fabState = FabUiState(
-                visible = true,
-                text = "Add",
-                icon = FabUiState.FabIcon.ADD,
-                onClick = {
-                    navController.navigate(AppList)
-                }
-            )
-        )
         loadAppLauncherData()
     }
 

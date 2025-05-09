@@ -156,10 +156,15 @@ fun App(
                 SnackbarHost(snackbarHostState)
             },
         ) { innerPadding ->
-            AppNavHost(navController = navController,
+            AppNavHost(
+                navController = navController,
+                onSetAppUiState = {
+                    appUiStateVal = it
+                },
                 modifier = Modifier.padding(innerPadding),
-                onAppStateChanged = { appUiState.value = it }
-            )
+
+
+                )
         }
     }
 
