@@ -1,6 +1,16 @@
 package world.respect.app.viewmodel.clazz
 
-import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.update
+import world.respect.app.viewmodel.RespectViewModel
 
-class ClazzScreenViewModel: ViewModel() {
+class ClazzScreenViewModel: RespectViewModel() {
+    init {
+        _appUiState.update {
+            it.copy(
+                title="Class",
+                showBackButton = false,
+            )
+        }
+    }
+
 }

@@ -14,7 +14,12 @@ import world.respect.app.view.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.app.appstate.AppUiState
 import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
+import world.respect.app.viewmodel.applist.AppListScreenViewModel
 import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
+import world.respect.app.viewmodel.assignments.AssignmentScreenViewModel
+import world.respect.app.viewmodel.clazz.ClazzScreenViewModel
+import world.respect.app.viewmodel.enterlink.EnterLnkScreenViewModel
+import world.respect.app.viewmodel.report.ReportScreenViewModel
 import world.respect.app.viewmodel.respectViewModel
 
 @Composable
@@ -36,13 +41,49 @@ fun AppNavHost(
             AppLauncherScreen(
                 navController = navController,
                 viewModel = viewModel,
-                )
+            )
         }
-        composable<Assignment> { AssignmentScreen() }
-        composable<Clazz> { ClazzScreen() }
-        composable<Report> { ReportScreen() }
-        composable<AppList> { AppListScreen(navController = navController) }
-        composable<EnterLink> { EnterLinkScreen() }
+        composable<Assignment> {
+            val viewModel = respectViewModel(
+                modelClass = AssignmentScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            AssignmentScreen(
+                navController = navController,
+                viewModel = viewModel
+            )
+        }
+        composable<Clazz> {
+            val viewModel = respectViewModel(
+                modelClass = ClazzScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            ClazzScreen(navController=navController,viewModel=viewModel) }
+        composable<Report> {
+            val viewModel = respectViewModel(
+                modelClass = ReportScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            ReportScreen(navController=navController,viewModel=viewModel) }
+        composable<AppList> {
+            val viewModel = respectViewModel(
+                modelClass = AppListScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            AppListScreen(navController = navController, viewModel = viewModel)
+        }
+        composable<EnterLink> {
+            val viewModel = respectViewModel(
+                modelClass = EnterLnkScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            EnterLinkScreen(navController = navController, viewModel = viewModel)
+        }
         composable<AppsDetail> {
             val viewModel = respectViewModel(
                 modelClass = AppsDetailScreenViewModel::class,

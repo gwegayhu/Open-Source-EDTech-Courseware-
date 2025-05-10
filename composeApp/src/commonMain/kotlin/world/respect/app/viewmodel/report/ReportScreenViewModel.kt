@@ -3,20 +3,29 @@ package world.respect.app.viewmodel.report
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import world.respect.app.viewmodel.RespectViewModel
 
 data class ReportUiState(
     val reportData: List<String> = emptyList(),
 )
 
 class ReportScreenViewModel(
-) : ViewModel() {
+) : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(ReportUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
+        _appUiState.update {
+            it.copy(
+                title="Report",
+                showBackButton = false,
+            )
+        }
         loadReport()
     }
+
 
     private fun loadReport() {
         val reports: List<String> = emptyList()

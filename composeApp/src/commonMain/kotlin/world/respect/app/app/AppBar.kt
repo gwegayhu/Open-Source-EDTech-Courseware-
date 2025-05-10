@@ -32,7 +32,8 @@ fun RespectAppBar(
 ) {
 
     val title = appUiState.title ?: screenName ?: "Respect"
-    val canGoBack = navController.previousBackStackEntry != null
+    val defaultCanGoBack = navController.previousBackStackEntry != null
+    val canGoBack = appUiState.showBackButton ?: defaultCanGoBack
 
 
     TopAppBar(

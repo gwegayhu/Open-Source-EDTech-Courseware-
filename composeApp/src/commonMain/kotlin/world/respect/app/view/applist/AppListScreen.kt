@@ -34,7 +34,7 @@ import world.respect.app.viewmodel.applist.AppListScreenViewModel
 @Composable
 fun AppListScreen(
     navController: NavHostController,
-    viewModel: AppListScreenViewModel = viewModel { AppListScreenViewModel() },
+    viewModel: AppListScreenViewModel
 ) {
 
     val uiState by viewModel.uiState.collectAsState()

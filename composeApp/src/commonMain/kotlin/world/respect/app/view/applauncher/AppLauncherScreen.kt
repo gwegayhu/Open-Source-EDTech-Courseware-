@@ -31,7 +31,7 @@ import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
 
 @Composable
 fun AppLauncherScreen(
-    navController: NavHostController,
+    navController:NavHostController,
     viewModel: AppLauncherScreenViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()

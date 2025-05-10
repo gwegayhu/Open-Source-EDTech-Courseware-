@@ -1,6 +1,15 @@
 package world.respect.app.viewmodel.assignments
 
-import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.update
+import world.respect.app.viewmodel.RespectViewModel
 
-class AssignmentScreenViewModel: ViewModel() {
+class AssignmentScreenViewModel() : RespectViewModel() {
+    init {
+        _appUiState.update {
+            it.copy(
+                title="Assignments",
+                showBackButton = false,
+                )
+        }
+    }
 }

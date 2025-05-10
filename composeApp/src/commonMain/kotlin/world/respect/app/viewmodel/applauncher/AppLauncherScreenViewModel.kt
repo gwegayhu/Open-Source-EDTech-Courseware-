@@ -8,7 +8,6 @@ import world.respect.app.appstate.FabUiState
 import world.respect.app.model.applauncher.AppLauncherModel
 import world.respect.app.viewmodel.RespectViewModel
 
-
 data class AppLauncherUiState(
     val appLauncherDataList: List<AppLauncherModel> = emptyList(),
 )
@@ -21,7 +20,8 @@ class AppLauncherScreenViewModel() : RespectViewModel() {
     init {
         _appUiState.update {
             it.copy(
-                title="App Launcher",
+                title="Apps",
+                showBackButton = false,
                 fabState = FabUiState(visible = true,
                     icon = FabUiState.FabIcon.ADD,
                     text="Add",

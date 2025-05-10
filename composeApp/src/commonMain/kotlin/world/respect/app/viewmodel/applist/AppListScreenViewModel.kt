@@ -1,29 +1,26 @@
 package world.respect.app.viewmodel.applist
 
 
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import world.respect.app.model.applist.AppListModel
-import world.respect.app.appstate.AppUiState
+import world.respect.app.viewmodel.RespectViewModel
 
 data class AppListUiState(
     val appListData: List<AppListModel> = emptyList(),
 )
 
 class AppListScreenViewModel(
-) : ViewModel() {
+) : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(AppListUiState())
     val uiState = _uiState.asStateFlow()
 
-    val _appUiState = MutableStateFlow(AppUiState())
-
     init {
         _appUiState.update {
             it.copy(
-                title = "AppLauncher"
+                title="Select app",
             )
         }
         loadAppListData()
