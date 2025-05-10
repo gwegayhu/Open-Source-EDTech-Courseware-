@@ -3,6 +3,8 @@ package world.respect.app.viewmodel.applauncher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import world.respect.app.app.AppList
+import world.respect.app.appstate.FabUiState
 import world.respect.app.model.applauncher.AppLauncherModel
 import world.respect.app.viewmodel.RespectViewModel
 
@@ -19,7 +21,13 @@ class AppLauncherScreenViewModel() : RespectViewModel() {
     init {
         _appUiState.update {
             it.copy(
-                title="App Launcher"
+                title="App Launcher",
+                fabState = FabUiState(visible = true,
+                    icon = FabUiState.FabIcon.ADD,
+                    text="Add",
+                    onClick = {
+                        navController.navigate(AppList)
+                    })
             )
         }
         loadAppLauncherData()

@@ -13,6 +13,9 @@ import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.app.appstate.AppUiState
+import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
+import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
+import world.respect.app.viewmodel.respectViewModel
 
 @Composable
 fun AppNavHost(
@@ -24,17 +27,30 @@ fun AppNavHost(
 
     NavHost(navController = navController, startDestination = AppLauncher, modifier = modifier) {
         composable<AppLauncher> {
+
+            val viewModel = respectViewModel(
+                modelClass = AppLauncherScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
             AppLauncherScreen(
                 navController = navController,
-                onSetAppUiState = onSetAppUiState
-            )
+                viewModel = viewModel,
+                )
         }
         composable<Assignment> { AssignmentScreen() }
         composable<Clazz> { ClazzScreen() }
         composable<Report> { ReportScreen() }
         composable<AppList> { AppListScreen(navController = navController) }
         composable<EnterLink> { EnterLinkScreen() }
-        composable<AppsDetail> { AppsDetailScreen() }
+        composable<AppsDetail> {
+            val viewModel = respectViewModel(
+                modelClass = AppsDetailScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            AppsDetailScreen(viewModel = viewModel)
+        }
 
     }
 }

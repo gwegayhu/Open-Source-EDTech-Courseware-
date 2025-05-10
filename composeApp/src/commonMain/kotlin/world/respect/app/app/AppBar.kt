@@ -31,7 +31,7 @@ fun RespectAppBar(
     onProfileClick: () -> Unit = {}, // <-- Handle profile icon click
 ) {
 
-    val title = screenName ?: "Respect"
+    val title = appUiState.title ?: screenName ?: "Respect"
     val canGoBack = navController.previousBackStackEntry != null
 
 

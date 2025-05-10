@@ -1,6 +1,7 @@
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,7 @@ import world.respect.app.appstate.LoadingUiState
 
 abstract class RespectViewModel() : ViewModel() {
 
+    lateinit var navController: NavHostController
     protected val _appUiState = MutableStateFlow(AppUiState())
     val appUiState: Flow<AppUiState> = _appUiState.asStateFlow()
 
