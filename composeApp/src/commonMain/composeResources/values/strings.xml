@@ -8,9 +8,6 @@
     <string name="link_label">Link*</string>
     <string name="example_url_placeholder">e.g. https://</string>
     <string name="next">Next</string>
-    <string name="assignment">Assignment</string>
-    <string name="clazz">Clazz</string>
-    <string name="report">Report</string>
     <string name="try_it">Try it</string>
     <string name="add_app">Add App</string>
     <string name="lessons">Lessons</string>

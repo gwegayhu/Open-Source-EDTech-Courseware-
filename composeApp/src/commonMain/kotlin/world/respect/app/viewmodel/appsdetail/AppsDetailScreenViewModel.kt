@@ -1,10 +1,8 @@
 package world.respect.app.viewmodel.appsdetail
 
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import world.respect.app.appstate.FabUiState
 import world.respect.app.model.appsdetail.AppsDetailModel
 import world.respect.app.model.appsdetail.LessonItem
 import world.respect.app.viewmodel.RespectViewModel
