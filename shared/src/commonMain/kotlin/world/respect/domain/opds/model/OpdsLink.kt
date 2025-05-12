@@ -1,6 +1,8 @@
 package world.respect.domain.opds.model
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import java.net.URI
 
 /**
  * Represents a Link Object in OPDS 2.0.
@@ -10,7 +12,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsLink(
-    val href: String,                      // Required field (URL to the resource)
+    @Contextual val href: URI,                      // Required field (URL to the resource)
     val rel: OpdsRel? = null,              // Optional field (defines the relationship)
     val type: String? = null,              // Optional field (type of the linked resource)
     val title: String? = null,             // Optional field (title of the linked resource)

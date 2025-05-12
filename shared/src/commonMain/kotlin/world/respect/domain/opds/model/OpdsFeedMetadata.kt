@@ -1,7 +1,9 @@
 package world.respect.domain.opds.model
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 /**
  * Represents metadata for an OPDS catalog or collection.
@@ -28,5 +30,6 @@ data class OpdsFeedMetadata(
 
     val language: String? = null,          // Optional language
     val description: String? = null,       // Optional description
-    val modified: String? = null           // Optional modified date
+    @Contextual
+    val modified: LocalDateTime? = null        // Optional modified date
 )
