@@ -23,7 +23,8 @@ data class OpdsLink(
     val duration: Double? = null,          // Optional field (duration in seconds)
     val language: List<String>? = null,    // Optional field (expected language(s))
     val alternate: List<OpdsLink>? = null, // Optional field (alternate resources)
-    val children: List<OpdsLink>? = null   // Optional field (child resources)
+    val children: List<OpdsLink>? = null,   // Optional field (child resources)
+    val subcollections: List<OpdsLink>? = null // Added to handle nested collections (subcollections)
 ) {
     /**
      * Checks if this link contains the specified relation.
