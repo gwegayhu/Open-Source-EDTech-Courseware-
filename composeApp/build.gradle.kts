@@ -10,7 +10,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version "1.9.0"
 }
-
+compose.resources {
+    publicResClass = true
+}
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)

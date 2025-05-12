@@ -31,6 +31,13 @@ import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import respect.composeapp.generated.resources.Res
+import respect.composeapp.generated.resources.apps
+import respect.composeapp.generated.resources.assignments
+import respect.composeapp.generated.resources.clazz
+import respect.composeapp.generated.resources.report
 import world.respect.app.appstate.AppUiState
 import world.respect.app.appstate.FabUiState
 import world.respect.app.appstate.SnackBarDispatcher
@@ -38,29 +45,29 @@ import world.respect.app.appstate.SnackBarDispatcher
 data class TopNavigationItem(
     val destRoute: Any,
     val icon: ImageVector,
-    val label: String
+    val label: StringResource
 )
 
 val APP_TOP_LEVEL_NAV_ITEMS = listOf(
     TopNavigationItem(
         destRoute = AppLauncher,
         icon = Icons.Filled.GridView,
-        label = "Apps"
+        label = Res.string.apps
     ),
     TopNavigationItem(
         destRoute = Assignment,
         icon = Icons.Filled.ImportContacts,
-        label = "Assignments"
+        label = Res.string.assignments
     ),
     TopNavigationItem(
         destRoute = Clazz,
         icon = Icons.Filled.LibraryBooks,
-        label = "Clazz"
+        label = Res.string.clazz
     ),
     TopNavigationItem(
         destRoute = Report,
         icon = Icons.Filled.BarChart,
-        label = "Report"
+        label = Res.string.report
     )
 )
 
@@ -110,11 +117,12 @@ fun App(
                     if (appUiStateVal.navigationVisible && !appUiStateVal.hideBottomNavigation) {
                         NavigationBar {
                             APP_TOP_LEVEL_NAV_ITEMS.forEachIndexed { index, item ->
+                                val label = stringResource(item.label)
                                 NavigationBarItem(
                                     icon = {
                                         Icon(item.icon, contentDescription = null)
                                     },
-                                   label = { Text(item.label) },
+                                   label = { Text(label) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
                                         navController.navigate(item.destRoute)

@@ -24,9 +24,8 @@ import world.respect.app.viewmodel.enterlink.EnterLnkScreenViewModel
 
 @Composable
 fun EnterLinkScreen(
-    viewModel: EnterLnkScreenViewModel = viewModel { EnterLnkScreenViewModel() },
+    viewModel: EnterLnkScreenViewModel,
     navController: NavHostController,
-
     ) {
     var link by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()

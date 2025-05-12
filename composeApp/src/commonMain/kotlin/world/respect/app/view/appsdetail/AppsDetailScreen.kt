@@ -29,7 +29,6 @@ import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
 
 
-
 import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 
 @Composable
@@ -61,9 +60,13 @@ fun AppsDetailScreen(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column {
-                Text(uiState.appsDetailData?.appName ?: "", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(uiState.appsDetailData?.appDescription?:""
-                   , fontSize = 12.sp
+                Text(
+                    uiState.appsDetailData?.appName ?: "",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    uiState.appsDetailData?.appDescription ?: "", fontSize = 12.sp
                 )
             }
 

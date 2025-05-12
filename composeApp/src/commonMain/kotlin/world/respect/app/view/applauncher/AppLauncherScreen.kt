@@ -31,13 +31,12 @@ import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
 
 @Composable
 fun AppLauncherScreen(
-    navController:NavHostController,
+    navController: NavHostController,
     viewModel: AppLauncherScreenViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.appLauncherDataList.isEmpty()) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -52,7 +51,10 @@ fun AppLauncherScreen(
                 tint = Color.Black
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = stringResource(resource = Res.string.empty_list), fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(resource = Res.string.empty_list),
+                fontWeight = FontWeight.Bold
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(resource = Res.string.empty_list_description),

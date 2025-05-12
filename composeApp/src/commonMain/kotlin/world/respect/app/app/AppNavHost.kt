@@ -22,6 +22,7 @@ import world.respect.app.viewmodel.enterlink.EnterLnkScreenViewModel
 import world.respect.app.viewmodel.report.ReportScreenViewModel
 import world.respect.app.viewmodel.respectViewModel
 
+
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -29,14 +30,13 @@ fun AppNavHost(
     modifier: Modifier,
 ) {
 
-
     NavHost(navController = navController, startDestination = AppLauncher, modifier = modifier) {
         composable<AppLauncher> {
 
             val viewModel = respectViewModel(
                 modelClass = AppLauncherScreenViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = navController,
             )
             AppLauncherScreen(
                 navController = navController,
@@ -94,6 +94,7 @@ fun AppNavHost(
         }
 
     }
+
 }
 
 
