@@ -17,10 +17,6 @@ import kotlin.system.exitProcess
  * - https://drafts.opds.io/schema/publication.schema.json
  */
 object OpdsCliApp {
-
-    /**
-     * Main entry point for the command line application.
-     */
     @JvmStatic
     fun main(args: Array<String>) {
         // Create the argument parser
@@ -50,8 +46,7 @@ object OpdsCliApp {
             }
 
             // Get optional flags
-            val noExitCode = namespace.getBoolean("no-exit-code")
-
+            val noExitCode: Boolean = namespace.getBoolean("no-exit-code") ?: false
             try {
                 val uri = URI(uriArg)
                 println("Attempting to access URI: $uri")
