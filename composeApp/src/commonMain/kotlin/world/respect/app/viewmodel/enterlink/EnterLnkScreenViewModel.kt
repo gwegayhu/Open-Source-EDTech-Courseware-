@@ -33,9 +33,9 @@ class EnterLnkScreenViewModel(
     }
     //added mock regex just for test purpose
     fun isValidUrl(url: String): Boolean {
-        val regex = buildString {
-            append("^https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w\\-._~:?#[\\]@!$&'()*+,;=.]*$")
-        }.toRegex()
+        val regex = Regex(
+            "^https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w\\-._~:?#[\\\\]@!$&'()*+,;=.%]*$"
+        )
         return url.matches(regex)
     }
 
