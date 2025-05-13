@@ -34,6 +34,7 @@ import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 @Composable
 fun AppsDetailScreen(
     viewModel: AppsDetailScreenViewModel,
+    param: String,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

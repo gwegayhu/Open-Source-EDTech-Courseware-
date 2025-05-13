@@ -16,5 +16,5 @@ object AppList
 @Serializable
 object EnterLink
 @Serializable
-object AppsDetail
+data class AppsDetail(val param:String)
 

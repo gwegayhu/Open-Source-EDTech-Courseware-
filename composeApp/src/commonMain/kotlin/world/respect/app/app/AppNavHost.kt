@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import world.respect.app.view.applauncher.AppLauncherScreen
 import world.respect.app.view.applist.AppListScreen
 import world.respect.app.view.appsdetail.AppsDetailScreen
@@ -41,8 +42,22 @@ fun AppNavHost(
             AppLauncherScreen(
                 navController = navController,
                 viewModel = viewModel,
+                onClickAction={
+                    navController.navigate(AppsDetail(param="App id 1"))
+                }
             )
         }
+        composable<AppsDetail> {
+            val viewModel = respectViewModel(
+                modelClass = AppsDetailScreenViewModel::class,
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
+            )
+            val args =it.toRoute<AppsDetail>()
+            AppsDetailScreen(viewModel = viewModel,
+                param = args.param)
+        }
+
         composable<Assignment> {
             val viewModel = respectViewModel(
                 modelClass = AssignmentScreenViewModel::class,
@@ -90,7 +105,9 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = navController
             )
-            AppsDetailScreen(viewModel = viewModel)
+            val args =it.toRoute<AppsDetail>()
+            AppsDetailScreen(viewModel = viewModel,
+                param = args.param)
         }
 
     }

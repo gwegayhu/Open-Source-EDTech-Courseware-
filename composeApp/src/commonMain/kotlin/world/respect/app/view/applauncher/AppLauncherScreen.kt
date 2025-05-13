@@ -26,13 +26,13 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
 import world.respect.app.model.applauncher.AppLauncherModel
-import world.respect.app.app.AppsDetail
 import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
 
 @Composable
 fun AppLauncherScreen(
     navController: NavHostController,
-    viewModel: AppLauncherScreenViewModel
+    viewModel: AppLauncherScreenViewModel,
+    onClickAction: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -74,7 +74,7 @@ fun AppLauncherScreen(
         ) {
             items(uiState.appLauncherDataList) { app ->
                 AppGridItem(app) {
-                    navController.navigate(AppsDetail)
+                    onClickAction()
                 }
             }
         }
