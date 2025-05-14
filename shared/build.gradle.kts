@@ -24,6 +24,10 @@ kotlin {
             implementation(libs.argparse4j)
         }
 
+        jvmTest.dependencies {
+            implementation(libs.json.schema.validator)
+        }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

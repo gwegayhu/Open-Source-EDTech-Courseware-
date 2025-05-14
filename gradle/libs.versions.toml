@@ -19,6 +19,7 @@ kotlinx-coroutines = "1.10.1"
 kotlinxSerializationJson = "1.8.0"
 ktor = "3.1.1"
 logback = "1.5.17"
+json-schema-validator = "1.5.6"
 
 [libraries]
 argparse4j = { module = "net.sourceforge.argparse4j:argparse4j", version.ref = "argparse4j" }
@@ -39,6 +40,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+json-schema-validator = { module = "com.networknt:json-schema-validator", version.ref = "json-schema-validator" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
