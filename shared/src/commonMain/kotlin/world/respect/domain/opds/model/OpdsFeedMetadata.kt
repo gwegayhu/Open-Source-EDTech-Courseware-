@@ -24,9 +24,10 @@ data class OpdsFeedMetadata(
 
     val publisher: String? = null,         // Publisher is a simple String (e.g., "SciFi Publishing Inc.")
 
-    val author: OpdsContributor? = null,   // Optional contributor field (can be multiple, but for now it's just one)
-    val translator: OpdsContributor? = null,  // Optional contributor field
-    val editor: OpdsContributor? = null,   // Optional contributor field
+    //TODO: These need to be polymorphic. As per the spec; it can be a string, or an object of its own
+//    val author: OpdsContributor? = null,   // Optional contributor field (can be multiple, but for now it's just one)
+//    val translator: OpdsContributor? = null,  // Optional contributor field
+//    val editor: OpdsContributor? = null,   // Optional contributor field
 
     val language: String? = null,          // Optional language
     val description: String? = null,       // Optional description

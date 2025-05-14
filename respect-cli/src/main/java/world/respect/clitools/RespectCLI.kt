@@ -4,6 +4,7 @@ import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.helper.HelpScreenException
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
+import world.respect.domain.opds.validator.OpdsValidatorUseCase
 
 @Suppress("unused")
 class RespectCLI {
@@ -26,6 +27,10 @@ class RespectCLI {
                 it.addArgument("-u", "--url")
                     .required(true)
                     .help("OPDS feed URL")
+                it.addArgument("-r", "--recursive")
+                    .required(false)
+                    .setDefault("true")
+                    .help("Validate all linked feeds")
             }.help("Validate an OPDS feed")
 
             val ns: Namespace
@@ -35,7 +40,23 @@ class RespectCLI {
                 when(subCommand) {
                     CMD_VALIDATE_OPDS -> {
                         val url = ns.getString("url")
-                        println("url to validate is $url")
+                        val recursive = ns.getString("recursive")
+                        println("Validating $url ...")
+                        val messages= OpdsValidatorUseCase().invoke(
+                            url = url,
+                            recursive = recursive.toBoolean(),
+                            visitedFeeds = mutableListOf()
+                        )
+
+                        val numErrors = messages.count { it.isError }
+                        println("Errors: $numErrors")
+                        messages.forEach {
+                            println(it.message)
+                        }
+
+                        if(numErrors > 0) {
+                            System.exit(1)
+                        }
                     }
                 }
             }catch(e : ArgumentParserException) {

@@ -24,7 +24,7 @@ kotlin {
             implementation(libs.argparse4j)
         }
 
-        jvmTest.dependencies {
+        jvmMain.dependencies {
             implementation(libs.json.schema.validator)
         }
 

@@ -15,6 +15,7 @@ java {
 
 dependencies {
     implementation(libs.argparse4j)
+    implementation(libs.kotlinx.serialization.json)
     implementation(project(":shared"))
 }
 

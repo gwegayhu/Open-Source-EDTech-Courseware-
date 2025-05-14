@@ -265,42 +265,42 @@ class OpdsValidator(
         val links = mutableListOf<String>()
 
         // Add navigation links
-        feed.navigation?.forEach { link ->
-            if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
-                links.add(link.href)
-            }
-        }
-
-        // Add other links with OPDS media types
-        feed.links.forEach { link ->
-            if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
-                links.add(link.href)
-            }
-        }
-
-        // Add links from groups
-        feed.groups?.forEach { group ->
-            group.navigation?.forEach { link ->
-                if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
-                    links.add(link.href)
-                }
-            }
-
-            group.links?.forEach { link ->
-                if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
-                    links.add(link.href)
-                }
-            }
-        }
-
-        // Add links from facets
-        feed.facets?.forEach { facet ->
-            facet.links.forEach { link ->
-                if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
-                    links.add(link.href)
-                }
-            }
-        }
+//        feed.navigation?.forEach { link ->
+//            if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
+//                links.add(link.href)
+//            }
+//        }
+//
+//        // Add other links with OPDS media types
+//        feed.links.forEach { link ->
+//            if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
+//                links.add(link.href)
+//            }
+//        }
+//
+//        // Add links from groups
+//        feed.groups?.forEach { group ->
+//            group.navigation?.forEach { link ->
+//                if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
+//                    links.add(link.href)
+//                }
+//            }
+//
+//            group.links?.forEach { link ->
+//                if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
+//                    links.add(link.href)
+//                }
+//            }
+//        }
+//
+//        // Add links from facets
+//        feed.facets?.forEach { facet ->
+//            facet.links.forEach { link ->
+//                if (link.type == OpdsFeed.MEDIA_TYPE || link.type == OpdsPublication.MEDIA_TYPE) {
+//                    links.add(link.href)
+//                }
+//            }
+//        }
 
         // Process each link
         for (href in links) {
@@ -451,24 +451,6 @@ class OpdsValidator(
             }
         }
 
-        // Check for valid contributors (author, translator, etc.)
-        metadata.author?.let {
-            if (it.name.isBlank()) {
-                errors.add("Author name cannot be blank")
-            }
-        }
-
-        metadata.translator?.let {
-            if (it.name.isBlank()) {
-                errors.add("Translator name cannot be blank")
-            }
-        }
-
-        metadata.editor?.let {
-            if (it.name.isBlank()) {
-                errors.add("Editor name cannot be blank")
-            }
-        }
     }
 
     /**
