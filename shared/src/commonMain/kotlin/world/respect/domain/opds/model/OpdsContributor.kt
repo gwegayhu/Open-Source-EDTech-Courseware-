@@ -14,3 +14,12 @@ data class OpdsContributor(
     val sortAs: String? = null,            // Optional field (sorting name for the contributor)
     val links: List<OpdsLink>? = null      // Optional field (links to further information)
 )
+
+@Serializable
+sealed class OpdsContributorField {
+    @Serializable
+    data class ContributorName(val name: String) : OpdsContributorField()
+
+    @Serializable
+    data class ContributorObject(val contributor: OpdsContributor) : OpdsContributorField()
+}
