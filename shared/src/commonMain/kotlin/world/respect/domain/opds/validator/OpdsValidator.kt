@@ -400,13 +400,6 @@ class OpdsValidator(
     fun validateFeed(feed: OpdsFeed, warnings: MutableList<String> = mutableListOf()): Result<Unit> {
         val errors = mutableListOf<String>()
 
-        // Check if identifier exists but is not a valid URI
-        feed.metadata.identifier?.let {
-            if (!it.startsWith("http://") && !it.startsWith("https://") && !it.startsWith("urn:")) {
-                warnings.add("Feed identifier should be a valid URI: $it")
-            }
-        }
-
         // Check for recommended but not required fields
         if (feed.metadata.description == null) {
             warnings.add("Feed should include a description")

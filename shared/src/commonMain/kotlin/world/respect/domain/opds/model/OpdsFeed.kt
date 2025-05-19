@@ -13,12 +13,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsFeed(
-    val metadata: OpdsFeedMetadata,               // Required metadata field
-    val links: List<OpdsLink>,             // Required
-    val publications: List<OpdsPublication>? = null,  // Optional, but must exist if provided
-    val navigation: List<OpdsLink>? = null,  // Optional
-    val facets: List<OpdsFacet>? = null,   // Optional
-    val groups: List<OpdsGroup>? = null   // Optional groups collection
+    val metadata: OpdsFeedMetadata,
+    val links: List<OpdsLink>,
+    val publications: List<OpdsPublication>? = null,
+    val navigation: List<OpdsLink>? = null,
+    val facets: List<OpdsFacet>? = null,
+    val groups: List<OpdsGroup>? = null,
 ) {
     companion object {
         const val MEDIA_TYPE = "application/opds+json"

@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsPublication(
-    val metadata: OpdsPublicationMetadata,  // Required field
-    val links: List<OpdsLink>,              // Required field
-    val images: List<OpdsLink>? = null      // Optional field
+    val metadata: OpdsPublicationMetadata,
+    val links: List<OpdsLink>,
+    val images: List<OpdsLink>? = null
 ) {
     companion object {
         const val MEDIA_TYPE = "application/opds-publication+json"

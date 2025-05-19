@@ -1,5 +1,6 @@
 package world.respect.domain.opds.model
 
+import com.eygraber.uri.Uri
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,24 +14,26 @@ import java.time.LocalDateTime
  */
 @Serializable
 data class OpdsFeedMetadata(
-    val title: String,                     // Required field (title of the catalog or collection)
-    val identifier: String? = null,        // Optional (identifier in URI format)
+    val title: String,
+    val identifier: Uri? = null,
     @SerialName("@type")
-    val type: String? = null,              // Optional (type in URI format)
-    val subtitle: String? = null,          // Optional (subtitle of the catalog or collection)
-    val numberOfItems: Int? = null,        // Optional (total number of items in the collection)
-    val itemsPerPage: Int? = null,         // Optional (items per page in the collection)
-    val currentPage: Int? = null,          // Optional (current page number)
+    val type: String? = null,
+    val subtitle: String? = null,
+    val numberOfItems: Int? = null,
+    val itemsPerPage: Int? = null,
+    val currentPage: Int? = null,
 
-    val publisher: String? = null,         // Publisher is a simple String (e.g., "SciFi Publishing Inc.")
+    val publisher: String? = null,
 
-    //TODO: These need to be polymorphic. As per the spec; it can be a string, or an object of its own
-//    val author: OpdsContributor? = null,   // Optional contributor field (can be multiple, but for now it's just one)
-//    val translator: OpdsContributor? = null,  // Optional contributor field
-//    val editor: OpdsContributor? = null,   // Optional contributor field
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val author: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val translator: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val editor: List<OpdsContributor>? = null,
 
-    val language: String? = null,          // Optional language
-    val description: String? = null,       // Optional description
+    val language: String? = null,
+    val description: String? = null,
     @Contextual
-    val modified: LocalDateTime? = null        // Optional modified date
+    val modified: LocalDateTime? = null
 )

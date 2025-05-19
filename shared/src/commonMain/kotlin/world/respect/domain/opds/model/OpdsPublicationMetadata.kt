@@ -6,27 +6,41 @@ import kotlinx.serialization.SerialName
 /**
  * Represents metadata for a Publication.
  * For reference, see the schema: https://drafts.opds.io/opds-2.0#52-metadata
+ * Schema: https://readium.org/webpub-manifest/schema/metadata.schema.json
  */
 @Serializable
 data class OpdsPublicationMetadata(
     val title: String,                      // Required field (title of the publication)
     @SerialName("@type")
-    val type: String? = null,               // Optional field (type of publication)
+    val type: String? = null,
     val identifier: String,                 // Required field (unique identifier for the publication)
-    //TODO: OpdsContributor is polymorphic ; can be just a string
-//    val author: OpdsContributor? = null,    // Optional field (author of the publication)
-//    val translator: OpdsContributor? = null, // Optional field
-//    val editor: OpdsContributor? = null,     // Optional field
-//    val artist: OpdsContributor? = null,     // Optional field
-//    val illustrator: OpdsContributor? = null, // Optional field
-//    val letterer: OpdsContributor? = null,   // Optional field
-//    val penciler: OpdsContributor? = null,   // Optional field
-//    val colorist: OpdsContributor? = null,   // Optional field
-//    val inker: OpdsContributor? = null,      // Optional field
-//    val narrator: OpdsContributor? = null,   // Optional field
-    val publisher: String? = null,          // Optional field (publisher of the publication)
-    val language: String? = null,           // Optional field (language of the publication)
-    val modified: String? = null,           // Optional field (last modification date)
-    val description: String? = null,        // Optional field (description of the publication)
-    val belongsTo: OpdsBelongsTo? = null    // Optional field (indicates series or collection)
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val author: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val translator: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val editor: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val artist: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val illustrator: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val letterer: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val penciler: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val colorist: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val inker: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val narrator: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val publisher: List<OpdsContributor>? = null,
+    val language: String? = null,
+    val modified: String? = null,
+    val published: String? = null,
+    val description: String? = null,
+    val belongsTo: OpdsBelongsTo? = null,
+    val numberOfPages: Int? = null,
+    val duration: Double? = null,
 )
