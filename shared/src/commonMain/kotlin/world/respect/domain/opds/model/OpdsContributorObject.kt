@@ -1,17 +1,10 @@
 package world.respect.domain.opds.model
 
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonContentPolymorphicSerializer
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
 import world.respect.domain.opds.serialization.SingleItemToListTransformer
+import world.respect.domain.opds.serialization.StringOrObjectSerializer
+import world.respect.domain.opds.serialization.StringValue
+import world.respect.domain.opds.serialization.StringValueSerializer
 
 /**
  * Represents a contributor (author, translator, etc.). As per the schema, this can be an object,
@@ -34,25 +27,17 @@ data class OpdsContributorObject(
 ): OpdsContributor()
 
 @Serializable(with = OpdsContributorStringValueSerializer::class)
-data class OpdsContributorStringValue(val value: String): OpdsContributor()
+data class OpdsContributorStringValue(override val value: String): OpdsContributor(), StringValue
 
-object OpdsContributorStringValueSerializer : KSerializer<OpdsContributorStringValue> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
-        "world.respect.OpdsContributorStringValue", PrimitiveKind.STRING
-    )
+object OpdsContributorStringValueSerializer : StringValueSerializer<OpdsContributorStringValue>(
+    serialName = "respect.world.OpdsContributorStringValue",
+    stringToValue = { OpdsContributorStringValue(it) }
+)
 
-    override fun deserialize(decoder: Decoder) = OpdsContributorStringValue(decoder.decodeString())
-
-    override fun serialize(encoder: Encoder, value: OpdsContributorStringValue) = encoder.encodeString(value.value)
-}
-
-object OpdsContributorSerializer: JsonContentPolymorphicSerializer<OpdsContributor>(OpdsContributor::class) {
-    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<OpdsContributor> {
-        return when(element) {
-            is JsonPrimitive -> OpdsContributorStringValue.serializer()
-            else -> OpdsContributorObject.serializer()
-        }
-    }
-}
+object OpdsContributorSerializer: StringOrObjectSerializer<OpdsContributor>(
+    OpdsContributor::class,
+    primitiveSerializer = OpdsContributorStringValue.serializer(),
+    objectSerializer = OpdsContributorObject.serializer()
+)
 
 object OpdsSingleItemToListTransformer: SingleItemToListTransformer<OpdsContributor>(OpdsContributor.serializer())

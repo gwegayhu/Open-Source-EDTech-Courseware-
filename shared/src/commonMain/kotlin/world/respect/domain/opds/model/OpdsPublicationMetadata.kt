@@ -35,7 +35,13 @@ data class OpdsPublicationMetadata(
     @Serializable(with = OpdsSingleItemToListTransformer::class)
     val narrator: List<OpdsContributor>? = null,
     @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val contributor: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
     val publisher: List<OpdsContributor>? = null,
+    @Serializable(with = OpdsSingleItemToListTransformer::class)
+    val imprint: List<OpdsContributor>? = null,
+    @Serializable(with = ReadiumSubjectToListTransformer::class)
+    val subject: List<ReadiumSubject>? = null,
     val language: String? = null,
     val modified: String? = null,
     val published: String? = null,
