@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.lesson_list
+import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.model.lessonlist.LessonListModel
 import world.respect.app.viewmodel.RespectViewModel
 
@@ -22,7 +23,10 @@ class LessonListScreenViewModel: RespectViewModel() {
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(resource = Res.string.lesson_list),)
+                    title = getString(resource = Res.string.lesson_list),
+                    searchState = AppBarSearchUiState(
+                        visible = true
+                    ))
             }
         }
         loadLessonListData()

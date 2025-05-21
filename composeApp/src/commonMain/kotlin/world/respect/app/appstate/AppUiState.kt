@@ -11,5 +11,7 @@ data class AppUiState(
     val appBarColors: AppBarColors = AppBarColors.STANDARD,
     val leadingActionButton: AppActionButton? = null,
     val loadingState: LoadingUiState = LoadingUiState(),
-    val showBackButton: Boolean? = true
+    val showBackButton: Boolean? = true,
+    val searchState: AppBarSearchUiState = AppBarSearchUiState(),
+
     )
