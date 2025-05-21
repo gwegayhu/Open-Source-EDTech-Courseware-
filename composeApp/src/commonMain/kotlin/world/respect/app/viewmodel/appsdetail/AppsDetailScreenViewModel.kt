@@ -7,10 +7,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.app.model.appsdetail.AppsDetailModel
-import world.respect.app.model.appsdetail.LessonItem
 import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
+import world.respect.app.model.appsdetail.Images
+import world.respect.app.model.lessonlist.LessonListModel
 
 
 data class AppsDetailUiState(
@@ -37,10 +38,16 @@ class AppsDetailScreenViewModel : RespectViewModel() {
             appName = "Chimple: Kids",
             appDescription = "Chimple kids is an educational app to learn basic reading, writing & math skills",
             lessons = listOf(
-                LessonItem("Alphabet a-b"),
-                LessonItem("Alphabet a-b"),
-                LessonItem("Alphabet a-b"),
-                LessonItem("Alphabet a-b")
+                LessonListModel("Lesson 1", "01", "English", "02:00"),
+                LessonListModel("Lesson 2", "02", "English", "02:00"),
+                LessonListModel("Lesson 3", "03", "English", "02:00"),
+                LessonListModel("Lesson 4", "04", "English", "02:00"),
+                LessonListModel("Lesson 5", "05", "English", "02:00"),
+            ),
+            images = listOf(
+                Images(""),
+                Images(""),
+                Images(""),
             )
         )
         _uiState.value = AppsDetailUiState(appsDetailData = appsDetailData)

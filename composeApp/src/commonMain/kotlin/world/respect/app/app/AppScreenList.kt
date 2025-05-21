@@ -17,4 +17,6 @@ object AppList
 object EnterLink
 @Serializable
 data class AppsDetail(val param:String)
+@Serializable
+object LessonList
 

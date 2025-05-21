@@ -22,11 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.try_it
 import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
+import world.respect.app.app.LessonList
 
 
 import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
@@ -35,7 +37,9 @@ import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 fun AppsDetailScreen(
     viewModel: AppsDetailScreenViewModel,
     param: String,
-) {
+    navController: NavHostController,
+
+    ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
@@ -117,7 +121,7 @@ fun AppsDetailScreen(
         ) {
             Text(stringResource(Res.string.lessons), fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /* Go to all lessons */ }) {
+            IconButton(onClick = {navController.navigate(LessonList) }) {
                 Icon(Icons.Filled.ArrowForward, contentDescription = null)
             }
         }
@@ -136,7 +140,7 @@ fun AppsDetailScreen(
                                 .background(Color.Gray)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(lesson.title, fontSize = 12.sp)
+                        Text(lesson.name, fontSize = 12.sp)
                     }
                 }
             }

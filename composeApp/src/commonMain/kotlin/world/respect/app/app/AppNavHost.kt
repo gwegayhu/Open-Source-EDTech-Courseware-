@@ -14,12 +14,14 @@ import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.app.appstate.AppUiState
+import world.respect.app.view.lessonlist.LessonListScreen
 import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
 import world.respect.app.viewmodel.applist.AppListScreenViewModel
 import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 import world.respect.app.viewmodel.assignments.AssignmentScreenViewModel
 import world.respect.app.viewmodel.clazz.ClazzScreenViewModel
 import world.respect.app.viewmodel.enterlink.EnterLnkScreenViewModel
+import world.respect.app.viewmodel.lessonlist.LessonListScreenViewModel
 import world.respect.app.viewmodel.report.ReportScreenViewModel
 import world.respect.app.viewmodel.respectViewModel
 
@@ -55,7 +57,8 @@ fun AppNavHost(
             )
             val args =it.toRoute<AppsDetail>()
             AppsDetailScreen(viewModel = viewModel,
-                param = args.param)
+                param = args.param,
+                navController = navController)
         }
 
         composable<Assignment> {
@@ -99,15 +102,13 @@ fun AppNavHost(
             )
             EnterLinkScreen(navController = navController, viewModel = viewModel)
         }
-        composable<AppsDetail> {
+        composable<LessonList> {
             val viewModel = respectViewModel(
-                modelClass = AppsDetailScreenViewModel::class,
+                modelClass = LessonListScreenViewModel::class,
                 onSetAppUiState = onSetAppUiState,
                 navController = navController
             )
-            val args =it.toRoute<AppsDetail>()
-            AppsDetailScreen(viewModel = viewModel,
-                param = args.param)
+            LessonListScreen(navController = navController, viewModel = viewModel)
         }
 
     }
