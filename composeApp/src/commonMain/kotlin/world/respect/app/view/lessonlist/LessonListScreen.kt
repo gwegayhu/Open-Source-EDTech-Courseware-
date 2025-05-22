@@ -2,6 +2,7 @@ package world.respect.app.view.lessonlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ustadmobile.libuicompose.theme.black
 import com.ustadmobile.libuicompose.theme.white
+import world.respect.app.app.LessonDetail
 import world.respect.app.viewmodel.lessonlist.LessonListScreenViewModel
 
 @Composable
@@ -46,6 +48,9 @@ fun LessonListScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            navController.navigate(LessonDetail)
+                        }
                 ) {
                     Box(
                         modifier = Modifier

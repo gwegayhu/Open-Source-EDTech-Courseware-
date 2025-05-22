@@ -14,6 +14,7 @@ import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.app.appstate.AppUiState
+import world.respect.app.view.lessondetail.LessonDetailScreen
 import world.respect.app.view.lessonlist.LessonListScreen
 import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
 import world.respect.app.viewmodel.applist.AppListScreenViewModel
@@ -21,6 +22,7 @@ import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 import world.respect.app.viewmodel.assignments.AssignmentScreenViewModel
 import world.respect.app.viewmodel.clazz.ClazzScreenViewModel
 import world.respect.app.viewmodel.enterlink.EnterLnkScreenViewModel
+import world.respect.app.viewmodel.lessondetail.LessonDetailScreenViewModel
 import world.respect.app.viewmodel.lessonlist.LessonListScreenViewModel
 import world.respect.app.viewmodel.report.ReportScreenViewModel
 import world.respect.app.viewmodel.respectViewModel
@@ -42,7 +44,6 @@ fun AppNavHost(
                 navController = navController,
             )
             AppLauncherScreen(
-                navController = navController,
                 viewModel = viewModel,
                 onClickAction={
                     navController.navigate(AppsDetail(param="App id 1"))
@@ -109,6 +110,15 @@ fun AppNavHost(
                 navController = navController
             )
             LessonListScreen(navController = navController, viewModel = viewModel)
+        }
+        composable<LessonDetail> {
+            val viewModel=respectViewModel(
+                modelClass = LessonDetailScreenViewModel::class,
+                onSetAppUiState=onSetAppUiState,
+                navController = navController
+            )
+            LessonDetailScreen(navController = navController, viewModel = viewModel)
+
         }
 
     }

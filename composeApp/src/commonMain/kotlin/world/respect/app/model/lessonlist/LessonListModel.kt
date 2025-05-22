@@ -5,4 +5,5 @@ data class LessonListModel(
     val clazz: String,
     val language: String,
     val duration: String,
+    val desc:String
     )

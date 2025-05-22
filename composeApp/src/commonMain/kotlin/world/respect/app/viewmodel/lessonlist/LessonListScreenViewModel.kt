@@ -34,11 +34,11 @@ class LessonListScreenViewModel: RespectViewModel() {
     }
     private fun loadLessonListData() {
         val lessonListData: List<LessonListModel> = listOf(
-            LessonListModel("Lesson 1", "01", "English", "02:00"),
-            LessonListModel("Lesson 2", "02", "English", "02:00"),
-            LessonListModel("Lesson 3", "03", "English", "02:00"),
-            LessonListModel("Lesson 4", "04", "English", "02:00"),
-            LessonListModel("Lesson 5", "05", "English", "02:00"),
+            LessonListModel("Lesson 1", "01", "English", "02:00","Lesson Outcome/Lesson Objective"),
+            LessonListModel("Lesson 2", "02", "English", "02:00","Lesson Outcome/Lesson Objective"),
+            LessonListModel("Lesson 3", "03", "English", "02:00","Lesson Outcome/Lesson Objective"),
+            LessonListModel("Lesson 4", "04", "English", "02:00","Lesson Outcome/Lesson Objective"),
+            LessonListModel("Lesson 5", "05", "English", "02:00","Lesson Outcome/Lesson Objective"),
 
             )
 

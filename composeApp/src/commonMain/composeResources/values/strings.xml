@@ -21,6 +21,14 @@
     <string name="apps_detail">Apps Detail</string>
     <string name="lesson_list">Lesson List</string>
     <string name="search">Search</string>
+    <string name="app_name">App name</string>
+    <string name="score_or_progress">Score or Progress</string>
+    <string name="play">Play</string>
+    <string name="install">Install</string>
+    <string name="download">Download</string>
+    <string name="share">Share</string>
+    <string name="assign">Assign</string>
+    <string name="related_lessons">Related Lessons</string>
 
 
 
