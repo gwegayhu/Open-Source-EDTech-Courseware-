@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsPublication(
-    val metadata: OpdsPublicationMetadata,
+    val metadata: ReadiumMetadata,
     val links: List<OpdsLink>,
     val images: List<OpdsLink>? = null
 ) {

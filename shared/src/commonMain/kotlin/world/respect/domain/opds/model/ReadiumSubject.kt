@@ -1,15 +1,11 @@
 package world.respect.domain.opds.model
 
 import com.eygraber.uri.Uri
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import world.respect.domain.opds.serialization.SingleItemToListTransformer
 import world.respect.domain.opds.serialization.StringOrObjectSerializer
+import world.respect.domain.opds.serialization.StringValue
+import world.respect.domain.opds.serialization.StringValueSerializer
 
 /**
  * Schema: https://readium.org/webpub-manifest/schema/subject.schema.json
@@ -18,25 +14,18 @@ import world.respect.domain.opds.serialization.StringOrObjectSerializer
 sealed class ReadiumSubject
 
 @Serializable(with = ReadiumSubjectStringValueSerializer::class)
-data class ReadiumSubjectStringValue(val value: String): ReadiumSubject()
+data class ReadiumSubjectStringValue(override val value: String): ReadiumSubject(), StringValue
 
-object ReadiumSubjectStringValueSerializer: KSerializer<ReadiumSubjectStringValue> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
-        "world.respet.ReadiumSubjectStringValue", PrimitiveKind.STRING
-    )
-
-    override fun deserialize(decoder: Decoder) = ReadiumSubjectStringValue(decoder.decodeString())
-
-    override fun serialize(encoder: Encoder, value: ReadiumSubjectStringValue) = encoder.encodeString(value.value)
-}
+object ReadiumSubjectStringValueSerializer: StringValueSerializer<ReadiumSubjectStringValue>(
+    serialName = "ReadiumSubjectStringValue", stringToValue = { ReadiumSubjectStringValue(it) }
+)
 
 /**
  * Schema: https://readium.org/webpub-manifest/schema/subject-object.schema.json
  */
 @Serializable
 data class ReadiumSubjectObject(
-    //TODO: Name should be string or langmap
-    val name: String,
+    val name: LangMap,
     val sortAs: String? = null,
     val code: String? = null,
     val scheme: Uri? = null,
