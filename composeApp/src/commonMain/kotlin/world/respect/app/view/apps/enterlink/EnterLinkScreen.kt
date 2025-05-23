@@ -1,4 +1,4 @@
-package world.respect.app.view.enterlink
+package world.respect.app.view.apps.enterlink
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions

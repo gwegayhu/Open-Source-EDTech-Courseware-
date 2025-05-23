@@ -1,4 +1,4 @@
-package world.respect.app.view.applist
+package world.respect.app.view.apps.applist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

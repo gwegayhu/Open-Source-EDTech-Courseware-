@@ -1,4 +1,4 @@
-package world.respect.app.view.lessondetail
+package world.respect.app.view.lessons.lessondetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -68,7 +68,6 @@ fun LessonDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        // Header
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -125,7 +124,6 @@ fun LessonDetailScreen(
             }
         }
 
-        // Play Button
         item {
             OutlinedButton(
                 onClick = { /* Play */ },
@@ -138,7 +136,6 @@ fun LessonDetailScreen(
             }
         }
 
-        // Icons Row
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -151,7 +148,6 @@ fun LessonDetailScreen(
             }
         }
 
-        // Related Lessons Header
         item {
             Text(
                 text = stringResource(Res.string.related_lessons),
@@ -163,7 +159,6 @@ fun LessonDetailScreen(
         }
 
 
-        // Related Lessons List
         items(uiState.lessonListData) { lesson ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,

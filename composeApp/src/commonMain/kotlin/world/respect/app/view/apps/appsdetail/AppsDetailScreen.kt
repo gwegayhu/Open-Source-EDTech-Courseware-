@@ -1,4 +1,4 @@
-package world.respect.app.view.appsdetail
+package world.respect.app.view.apps.appsdetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

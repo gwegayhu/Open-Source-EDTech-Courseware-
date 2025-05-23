@@ -1,4 +1,4 @@
-package world.respect.app.view.applauncher
+package world.respect.app.view.apps.applauncher
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

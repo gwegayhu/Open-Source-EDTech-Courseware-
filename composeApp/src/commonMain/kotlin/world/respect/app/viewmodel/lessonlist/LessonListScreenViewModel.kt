@@ -11,10 +11,15 @@ import respect.composeapp.generated.resources.lesson_list
 import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.model.lessonlist.LessonListModel
 import world.respect.app.viewmodel.RespectViewModel
+import world.respect.domain.opds.model.OpdsFacet
+import world.respect.domain.opds.model.OpdsFeedMetadata
+import world.respect.domain.opds.model.OpdsLink
 
 data class LessonListUiState(
     val lessonListData: List<LessonListModel> = emptyList(),
-)
+    val lessonFilter: List<OpdsFacet> = emptyList(),
+    val selectedFilterTitle: String? = null
+    )
 
 class LessonListScreenViewModel: RespectViewModel() {
     private val _uiState = MutableStateFlow(LessonListUiState())
@@ -40,9 +45,31 @@ class LessonListScreenViewModel: RespectViewModel() {
             LessonListModel("Lesson 5", "05", "English", "02:00","Lesson Outcome/Lesson Objective"),
             )
 
+        val lessonFilter: List<OpdsFacet> = listOf(
+            OpdsFacet(
+                metadata = OpdsFeedMetadata(title = "Language"),
+                links = listOf(
+                    OpdsLink(
+                        href = "/fr",
+                        type = "application/opds+json",
+                        title = "French",
+                    ),
+                    OpdsLink(
+                        href = "/en",
+                        type = "application/opds+json",
+                        title = "English",
+                    )
+                )
+            )
+        )
+
         _uiState.value = _uiState.value.copy(
-            lessonListData = lessonListData
+            lessonListData = lessonListData,
+            lessonFilter = lessonFilter,
+            selectedFilterTitle = null
         )
     }
-
+    fun onFilterSelected(title: String) {
+        _uiState.update { it.copy(selectedFilterTitle = title) }
+    }
 }
