@@ -30,7 +30,6 @@ class LessonListScreenViewModel: RespectViewModel() {
             }
         }
         loadLessonListData()
-
     }
     private fun loadLessonListData() {
         val lessonListData: List<LessonListModel> = listOf(
@@ -39,7 +38,6 @@ class LessonListScreenViewModel: RespectViewModel() {
             LessonListModel("Lesson 3", "03", "English", "02:00","Lesson Outcome/Lesson Objective"),
             LessonListModel("Lesson 4", "04", "English", "02:00","Lesson Outcome/Lesson Objective"),
             LessonListModel("Lesson 5", "05", "English", "02:00","Lesson Outcome/Lesson Objective"),
-
             )
 
         _uiState.value = _uiState.value.copy(
