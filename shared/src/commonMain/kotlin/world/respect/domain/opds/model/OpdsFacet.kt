@@ -9,6 +9,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsFacet(
-    val metadata: OpdsFeedMetadata,        // Required field (metadata about the facet group)
-    val links: List<OpdsLink>              // Required field (links related to the facet)
+    val metadata: OpdsFeedMetadata,
+    val links: List<OpdsLink>,
 )

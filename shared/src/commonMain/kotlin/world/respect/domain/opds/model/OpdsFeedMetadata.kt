@@ -3,6 +3,7 @@ package world.respect.domain.opds.model
 import com.eygraber.uri.Uri
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import world.respect.domain.opds.serialization.UriStringSerializer
 
 /**
  * OPDS Feed Metadata.
@@ -13,6 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsFeedMetadata(
+    @Serializable(with = UriStringSerializer::class)
     val identifier: Uri? = null,
 
     @SerialName("@type")

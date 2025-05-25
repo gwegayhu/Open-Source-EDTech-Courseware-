@@ -34,6 +34,8 @@ class OpdsValidatorUseCase(
         val validationMessages = mutableListOf<ValidatorMessage>()
 
         try {
+            println("Loading $url ...")
+
             val urlUri = URI(url)
             val text = urlUri.toURL().readText()
             visitedFeeds.add(url)

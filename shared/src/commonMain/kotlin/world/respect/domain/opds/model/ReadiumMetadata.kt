@@ -4,6 +4,7 @@ import com.eygraber.uri.Uri
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 import world.respect.domain.opds.serialization.StringListSerializer
+import world.respect.domain.opds.serialization.UriStringSerializer
 
 /**
  * Represents metadata for a Publication.
@@ -14,10 +15,12 @@ import world.respect.domain.opds.serialization.StringListSerializer
 @Serializable
 data class ReadiumMetadata(
     @SerialName("@type")
+    @Serializable(with = UriStringSerializer::class)
     val type: Uri? = null,
     val title: LangMap,
     val sortAs: LangMap? = null,
     val subtitle: LangMap? = null,
+    @Serializable(with = UriStringSerializer::class)
     val identifier: Uri? = null,
     val modified: String? = null,
     val published: String? = null,

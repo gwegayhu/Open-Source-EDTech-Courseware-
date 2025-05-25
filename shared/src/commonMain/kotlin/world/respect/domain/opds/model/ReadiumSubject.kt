@@ -6,6 +6,7 @@ import world.respect.domain.opds.serialization.SingleItemToListTransformer
 import world.respect.domain.opds.serialization.StringOrObjectSerializer
 import world.respect.domain.opds.serialization.StringValue
 import world.respect.domain.opds.serialization.StringValueSerializer
+import world.respect.domain.opds.serialization.UriStringSerializer
 
 /**
  * Schema: https://readium.org/webpub-manifest/schema/subject.schema.json
@@ -28,6 +29,7 @@ data class ReadiumSubjectObject(
     val name: LangMap,
     val sortAs: String? = null,
     val code: String? = null,
+    @Serializable(with = UriStringSerializer::class)
     val scheme: Uri? = null,
     val links: List<OpdsLink>? = null,
 ): ReadiumSubject()
