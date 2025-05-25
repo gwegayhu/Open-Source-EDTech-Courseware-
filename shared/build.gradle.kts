@@ -24,6 +24,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.argparse4j)
             api(libs.uri.kmp)
+            implementation(libs.kotlinx.date.time)
         }
 
         jvmMain.dependencies {

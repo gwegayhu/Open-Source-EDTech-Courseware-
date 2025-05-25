@@ -21,6 +21,7 @@ ktor = "3.1.1"
 logback = "1.5.17"
 json-schema-validator = "1.5.6"
 uri-kmp = "0.0.19"
+kotlinx-date-time = "0.6.2"
 
 [libraries]
 argparse4j = { module = "net.sourceforge.argparse4j:argparse4j", version.ref = "argparse4j" }
@@ -44,6 +45,7 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "k
 json-schema-validator = { module = "com.networknt:json-schema-validator", version.ref = "json-schema-validator" }
 ktor-client-core = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
 uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uri-kmp" }
+kotlinx-date-time = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-date-time"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,6 +1,7 @@
 package world.respect.domain.opds.model
 
 import com.eygraber.uri.Uri
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import world.respect.domain.opds.serialization.UriStringSerializer
@@ -24,8 +25,7 @@ data class OpdsFeedMetadata(
 
     val subtitle: String? = null,
 
-    //TODO: Should be date/datetime
-    val modified: String? = null,
+    val modified: LocalDateTime? = null,
 
     val description: String? = null,
 

@@ -16,6 +16,7 @@ java {
 dependencies {
     implementation(libs.argparse4j)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.date.time)
     implementation(project(":shared"))
 }
 
