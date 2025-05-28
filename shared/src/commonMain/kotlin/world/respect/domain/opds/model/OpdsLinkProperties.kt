@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
  * Represents properties that can be associated with a Link Object.
  * Includes details like number of items, price, and indirect acquisition information.
  *
- * For reference, see the schema: https://drafts.opds.io/opds-2.0#53-acquisition-links
+ * For reference, see the OPDS doc: https://drafts.opds.io/opds-2.0#53-acquisition-links
  */
 @Serializable
 data class OpdsLinkProperties(

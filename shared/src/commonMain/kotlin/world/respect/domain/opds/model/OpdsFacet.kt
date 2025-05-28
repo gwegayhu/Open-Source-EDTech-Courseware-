@@ -10,5 +10,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OpdsFacet(
     val metadata: OpdsFeedMetadata,
-    val links: List<OpdsLink>,
+    val links: List<ReadiumLink>,
 )

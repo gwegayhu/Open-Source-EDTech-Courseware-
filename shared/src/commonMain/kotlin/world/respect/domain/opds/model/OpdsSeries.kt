@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
 data class OpdsSeries(
     val name: String,                      // Required field (name of the series)
     val position: Int? = null,             // Optional field (position in the series)
-    val links: List<OpdsLink>? = null      // Optional field (links about the series)
+    val links: List<ReadiumLink>? = null      // Optional field (links about the series)
 )

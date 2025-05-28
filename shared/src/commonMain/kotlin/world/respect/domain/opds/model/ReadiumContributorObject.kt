@@ -24,7 +24,7 @@ data class ReadiumContributorObject(
     val name: String,
     val identifier: String? = null,
     val sortAs: String? = null,
-    val links: List<OpdsLink>? = null,
+    val links: List<ReadiumLink>? = null,
 ): ReadiumContributor()
 
 @Serializable(with = ReadiumContributorStringValueSerializer::class)

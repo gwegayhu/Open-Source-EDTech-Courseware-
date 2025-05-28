@@ -24,6 +24,6 @@ data class RespectManifest(
  */
 @Serializable
 data class AndroidDetails(
-    val packageId: String,             // Required: package id of the app on Android
-    val stores: List<String> = emptyList() // Optional: List of app store URLs
+    val packageId: String,
+    val stores: List<String> = emptyList(),
 )

@@ -7,12 +7,13 @@ import world.respect.domain.opds.serialization.StringListSerializer
  * Represents a Link Object in OPDS 2.0.
  * The href field is required, all other fields are optional.
  *
- * For reference, see the schema: https://readium.org/webpub-manifest/schema/link.schema.json
+ * Schema: https://readium.org/webpub-manifest/schema/link.schema.json
  */
 @Serializable
-data class OpdsLink(
+data class ReadiumLink(
     val href: String,
-    val rel: OpdsRel? = null,
+    @Serializable(with = StringListSerializer::class)
+    val rel: List<String>? = null,
     val type: String? = null,
     val title: String? = null,
     val templated: Boolean? = null,
@@ -26,12 +27,7 @@ data class OpdsLink(
     //As per the spec: language can be a single string or list.
     @Serializable(with = StringListSerializer::class)
     val language: List<String>? = null,
-    val alternate: List<OpdsLink>? = null,
-    val children: List<OpdsLink>? = null,
-    val subcollections: List<OpdsLink>? = null
-) {
-    /**
-     * Checks if this link contains the specified relation.
-     */
-    fun hasRel(relation: String): Boolean = rel?.contains(relation) == true
-}
+    val alternate: List<ReadiumLink>? = null,
+    val children: List<ReadiumLink>? = null,
+    val subcollections: List<ReadiumLink>? = null
+)

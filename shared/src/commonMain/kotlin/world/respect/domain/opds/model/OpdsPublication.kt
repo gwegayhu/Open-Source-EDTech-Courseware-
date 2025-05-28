@@ -11,8 +11,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OpdsPublication(
     val metadata: ReadiumMetadata,
-    val links: List<OpdsLink>,
-    val images: List<OpdsLink>? = null
+    val links: List<ReadiumLink>,
+    val images: List<ReadiumLink>? = null
 ) {
     companion object {
         const val MEDIA_TYPE = "application/opds-publication+json"

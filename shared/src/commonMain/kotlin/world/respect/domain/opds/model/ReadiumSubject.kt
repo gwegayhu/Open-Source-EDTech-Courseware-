@@ -31,7 +31,7 @@ data class ReadiumSubjectObject(
     val code: String? = null,
     @Serializable(with = UriStringSerializer::class)
     val scheme: Uri? = null,
-    val links: List<OpdsLink>? = null,
+    val links: List<ReadiumLink>? = null,
 ): ReadiumSubject()
 
 object ReadiumSubjectSerializer: StringOrObjectSerializer<ReadiumSubject>(

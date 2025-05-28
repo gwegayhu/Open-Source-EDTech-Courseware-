@@ -6,14 +6,14 @@ import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
-import world.respect.domain.opds.model.OpdsLink
+import world.respect.domain.opds.model.OpdsPublication
 import java.net.URI
 
 class OpdsValidatorUseCase(
     private val json: Json = Json {
         ignoreUnknownKeys = true
         isLenient = true
-    }
+    },
 ) {
 
     private val factory by lazy {
@@ -30,6 +30,7 @@ class OpdsValidatorUseCase(
         url: String,
         recursive: Boolean,
         visitedFeeds: MutableList<String>,
+        expectedType: String = OpdsFeed.MEDIA_TYPE,
     ): List<ValidatorMessage> {
         val validationMessages = mutableListOf<ValidatorMessage>()
 
@@ -51,29 +52,36 @@ class OpdsValidatorUseCase(
                 }
             )
 
-            val opdsFeed = json.decodeFromString<OpdsFeed>(text)
+            when(expectedType) {
+                OpdsFeed.MEDIA_TYPE -> {
+                    val opdsFeed = json.decodeFromString<OpdsFeed>(text)
+                    if(recursive) {
+                        val allLinks = opdsFeed.links + (opdsFeed.navigation ?: emptyList()) +
+                                (opdsFeed.facets?.flatMap { it.links } ?: emptyList() ?: emptyList()) +
+                                (opdsFeed.groups?.flatMap { it.links ?: emptyList() } ?: emptyList()) +
+                                (opdsFeed.publications?.flatMap { it.links } ?: emptyList())
 
-            if(recursive) {
-                val linksToValidate = buildList<OpdsLink> {
-                    fun List<OpdsLink>?.addAllOpdsFeeds() {
-                        this?.filter { it.type == OPDS_JSON_MIME_TYPE }?.also { addAll(it) }
+                        allLinks.forEach { link ->
+                            val linkType = link.type
+                            if(linkType == null || !linkType.startsWith("application/opds"))
+                                return@forEach
+
+                            val linkUrl = urlUri.resolve(link.href).toURL().toString()
+                            if(!visitedFeeds.contains(linkUrl)) {
+                                validationMessages += invoke(
+                                    url = linkUrl,
+                                    recursive = recursive,
+                                    visitedFeeds = visitedFeeds,
+                                    expectedType = linkType,
+                                )
+                            }
+                        }
                     }
-
-                    opdsFeed.navigation?.addAllOpdsFeeds()
-                    opdsFeed.facets?.flatMap { it.links }?.addAllOpdsFeeds()
-                    opdsFeed.groups?.flatMap { it.links ?: emptyList() }?.addAllOpdsFeeds()
-                    opdsFeed.publications?.flatMap { it.links }?.addAllOpdsFeeds()
                 }
 
-                linksToValidate.forEach { link ->
-                    val linkUrl = urlUri.resolve(link.href).toURL().toString()
-                    if(!visitedFeeds.contains(linkUrl)) {
-                        validationMessages += invoke(
-                            url = linkUrl,
-                            recursive = recursive,
-                            visitedFeeds = visitedFeeds,
-                        )
-                    }
+                OpdsPublication.MEDIA_TYPE -> {
+                    //As per the spec (section 5.1) https://drafts.opds.io/opds-2.0.html#51-opds-publication
+                    // See readium doc: https://readium.org/webpub-manifest/
                 }
             }
 
@@ -89,10 +97,5 @@ class OpdsValidatorUseCase(
         return validationMessages
     }
 
-    companion object {
-
-        const val OPDS_JSON_MIME_TYPE = "application/opds+json"
-
-    }
 
 }

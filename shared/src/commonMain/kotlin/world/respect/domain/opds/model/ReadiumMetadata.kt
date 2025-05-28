@@ -9,7 +9,7 @@ import world.respect.domain.opds.serialization.UriStringSerializer
 /**
  * Represents metadata for a Publication.
  *
- * For reference, see the schema: https://drafts.opds.io/opds-2.0#52-metadata
+ * See https://drafts.opds.io/opds-2.0#52-metadata
  * Schema: https://readium.org/webpub-manifest/schema/metadata.schema.json
  */
 @Serializable

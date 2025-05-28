@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class OpdsGroup(
-    val metadata: OpdsFeedMetadata,        // Required field (metadata about the group)
-    val links: List<OpdsLink>? = null,     // Optional field (links related to the group)
-    val navigation: List<OpdsLink>? = null, // Optional field (navigation links for the group)
-    val publications: List<OpdsPublication>? = null   // Optional field (publications in the group)
+    val metadata: OpdsFeedMetadata,
+    val links: List<ReadiumLink>? = null,
+    val navigation: List<ReadiumLink>? = null,
+    val publications: List<OpdsPublication>? = null,
 )
