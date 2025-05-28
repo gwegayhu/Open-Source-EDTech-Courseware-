@@ -8,6 +8,7 @@ import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.opds.validator.OpdsFeedValidatorUseCase
 import world.respect.domain.opds.validator.OpdsLinkValidatorUseCaseImpl
+import world.respect.domain.opds.validator.OpdsPublicationValidatorUseCase
 
 @Suppress("unused")
 class RespectCLI {
@@ -46,7 +47,8 @@ class RespectCLI {
                         val recursive = ns.getString("recursive")
                         println("Validating $url ...")
                         val validator = OpdsLinkValidatorUseCaseImpl(
-                            opdsFeedValidatorUseCase = OpdsFeedValidatorUseCase()
+                            opdsFeedValidatorUseCase = OpdsFeedValidatorUseCase(),
+                            opdsPublicationValidatorUseCase = OpdsPublicationValidatorUseCase(),
                         )
 
                         val messages= validator(

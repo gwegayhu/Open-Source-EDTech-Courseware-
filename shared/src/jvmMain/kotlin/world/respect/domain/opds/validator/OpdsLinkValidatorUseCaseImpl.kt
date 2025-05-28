@@ -1,6 +1,7 @@
 package world.respect.domain.opds.validator
 
 import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.validator.OpdsLinkValidatorUseCase
 import world.respect.domain.validator.ValidatorMessage
@@ -8,7 +9,7 @@ import java.net.URI
 
 class OpdsLinkValidatorUseCaseImpl(
     private val opdsFeedValidatorUseCase: OpdsFeedValidatorUseCase,
-    //..
+    private val opdsPublicationValidatorUseCase: OpdsPublicationValidatorUseCase,
 ) : OpdsLinkValidatorUseCase {
 
     override operator fun invoke(
@@ -27,17 +28,27 @@ class OpdsLinkValidatorUseCaseImpl(
             return emptyList()
         }
 
-        when(linkType) {
+        visitedUrls.add(linkUrl)
+
+        return when(linkType) {
             OpdsFeed.MEDIA_TYPE -> {
-                return opdsFeedValidatorUseCase(
-                    url = link.href,
+                opdsFeedValidatorUseCase(
+                    url = linkUrl,
+                    visitedFeeds = visitedUrls,
+                    linkValidator = if(followLinks) this else null,
+                )
+            }
+
+            OpdsPublication.MEDIA_TYPE -> {
+                opdsPublicationValidatorUseCase(
+                    url = linkUrl,
                     visitedFeeds = visitedUrls,
                     linkValidator = if(followLinks) this else null,
                 )
             }
 
             else -> {
-                return emptyList()
+                emptyList()
             }
         }
     }

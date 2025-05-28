@@ -2,12 +2,9 @@ package world.respect.domain.opds.validator
 
 import com.networknt.schema.InputFormat
 import world.respect.domain.validator.ValidatorMessage
-import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SpecVersion
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.validator.OpdsLinkValidatorUseCase
-import world.respect.domain.validator.OpdsTypeValidatorUseCase
 import java.net.URI
 
 /**
@@ -18,17 +15,9 @@ class OpdsFeedValidatorUseCase(
         ignoreUnknownKeys = true
         isLenient = true
     },
-) : OpdsTypeValidatorUseCase{
-
-    private val factory by lazy {
-        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012)
-    }
-
-    private val feedSchema by lazy {
-        factory.getSchema(URI("https://drafts.opds.io/schema/feed.schema.json")).also {
-            it.initializeValidators()
-        }
-    }
+) : AbstractOpdsTypeValidator(
+    schemaUrl = "https://drafts.opds.io/schema/feed.schema.json"
+) {
 
     override operator fun invoke(
         url: String,
@@ -38,21 +27,11 @@ class OpdsFeedValidatorUseCase(
         val validationMessages = mutableListOf<ValidatorMessage>()
 
         try {
-            println("Loading $url ...")
+            val text = URI(url).toURL().readText()
 
-            val urlUri = URI(url)
-            val text = urlUri.toURL().readText()
-            visitedFeeds.add(url)
-
-            val messages = feedSchema.validate(text, InputFormat.JSON)
+            val messages = schema.validate(text, InputFormat.JSON)
             validationMessages.addAll(
-                messages.map {
-                    ValidatorMessage(
-                        isError = true,
-                        sourceUri = url,
-                        message = it.toString()
-                    )
-                }
+                messages.map { it.toValidatorMessage(sourceUri = url) }
             )
 
             val opdsFeed = json.decodeFromString<OpdsFeed>(text)
@@ -68,11 +47,7 @@ class OpdsFeedValidatorUseCase(
                 }
             }
         }catch(e : Throwable) {
-            validationMessages += ValidatorMessage(
-                isError = true,
-                sourceUri = url,
-                message = "Error processing $url : ${e.message}"
-            )
+            validationMessages += ValidatorMessage.fromException(url, e)
         }
 
         return validationMessages
