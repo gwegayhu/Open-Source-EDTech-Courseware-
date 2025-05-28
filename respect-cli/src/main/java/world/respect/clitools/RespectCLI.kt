@@ -4,7 +4,10 @@ import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.helper.HelpScreenException
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
-import world.respect.domain.opds.validator.OpdsValidatorUseCase
+import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.ReadiumLink
+import world.respect.domain.opds.validator.OpdsFeedValidatorUseCase
+import world.respect.domain.opds.validator.OpdsLinkValidatorUseCaseImpl
 
 @Suppress("unused")
 class RespectCLI {
@@ -42,10 +45,18 @@ class RespectCLI {
                         val url = ns.getString("url")
                         val recursive = ns.getString("recursive")
                         println("Validating $url ...")
-                        val messages= OpdsValidatorUseCase().invoke(
-                            url = url,
-                            recursive = recursive.toBoolean(),
-                            visitedFeeds = mutableListOf()
+                        val validator = OpdsLinkValidatorUseCaseImpl(
+                            opdsFeedValidatorUseCase = OpdsFeedValidatorUseCase()
+                        )
+
+                        val messages= validator(
+                            link = ReadiumLink(
+                                href = url,
+                                type = OpdsFeed.MEDIA_TYPE,
+                            ),
+                            baseUrl = url,
+                            visitedUrls = mutableListOf(),
+                            followLinks = recursive.toBoolean()
                         )
 
                         val numErrors = messages.count { it.isError }
