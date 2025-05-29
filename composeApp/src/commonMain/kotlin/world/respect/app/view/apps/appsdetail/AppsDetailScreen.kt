@@ -48,7 +48,6 @@ fun AppsDetailScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        // App Info
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
@@ -65,11 +64,23 @@ fun AppsDetailScreen(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column {
-                Text(
-                    uiState.appsDetailData?.appName ?: "",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = uiState.appsDetailData?.appName ?: "",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = null
+                    )
+                }
+
                 Text(
                     uiState.appsDetailData?.appDescription ?: "", fontSize = 12.sp
                 )

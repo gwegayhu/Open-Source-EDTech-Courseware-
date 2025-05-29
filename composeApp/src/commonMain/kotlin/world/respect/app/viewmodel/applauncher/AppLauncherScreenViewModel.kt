@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
-import respect.composeapp.generated.resources.add
+import respect.composeapp.generated.resources.app
 import respect.composeapp.generated.resources.apps
 import world.respect.app.app.AppList
 import world.respect.app.appstate.FabUiState
@@ -32,7 +32,7 @@ class AppLauncherScreenViewModel() : RespectViewModel() {
                     fabState = FabUiState(
                         visible = true,
                         icon = FabUiState.FabIcon.ADD,
-                        text = getString(resource = Res.string.add),
+                        text = getString(resource = Res.string.app),
                         onClick = {
                             navController.navigate(AppList)
                         })
