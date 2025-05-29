@@ -12,10 +12,11 @@
     <string name="add_app">Add App</string>
     <string name="lessons">Lessons</string>
     <string name="apps">Apps</string>
+    <string name="app">App</string>
     <string name="assignments">Assignments</string>
-    <string name="clazz">Class</string>
-    <string name="report">Report</string>
-    <string name="select_app">Select App</string>
+    <string name="clazz">Classes</string>
+    <string name="report">Reports</string>
+    <string name="select_app">Select app</string>
     <string name="enter_link">Enter link</string>
     <string name="add">Add</string>
     <string name="apps_detail">Apps Detail</string>
