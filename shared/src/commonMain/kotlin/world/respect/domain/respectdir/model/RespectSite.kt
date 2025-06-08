@@ -20,5 +20,5 @@ data class RespectSite(
     val url: Url,
     val xapiUrl: Url,
     val oneRosterUrl: Url,
-    val appDirectories: List<Url>,
+    val appLists: List<Url>,
 )
