@@ -17,7 +17,7 @@ data class ReadiumLink(
     val type: String? = null,
     val title: String? = null,
     val templated: Boolean? = null,
-    val properties: OpdsLinkProperties? = null,
+    val properties: ReadiumLinkProperties? = null,
     val height: Int? = null,
     val width: Int? = null,
     val size: Int? = null,
