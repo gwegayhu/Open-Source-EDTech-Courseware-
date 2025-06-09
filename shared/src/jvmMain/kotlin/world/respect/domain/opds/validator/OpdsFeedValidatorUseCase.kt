@@ -4,7 +4,7 @@ import com.networknt.schema.InputFormat
 import world.respect.domain.validator.ValidatorMessage
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
-import world.respect.domain.validator.OpdsLinkValidatorUseCase
+import world.respect.domain.validator.ValidatorUseCase
 import java.net.URI
 
 /**
@@ -19,10 +19,10 @@ class OpdsFeedValidatorUseCase(
     schemaUrl = "https://drafts.opds.io/schema/feed.schema.json"
 ) {
 
-    override operator fun invoke(
+    override suspend operator fun invoke(
         url: String,
         visitedFeeds: MutableList<String>,
-        linkValidator: OpdsLinkValidatorUseCase?,
+        linkValidator: ValidatorUseCase?,
     ): List<ValidatorMessage> {
         val validationMessages = mutableListOf<ValidatorMessage>()
 

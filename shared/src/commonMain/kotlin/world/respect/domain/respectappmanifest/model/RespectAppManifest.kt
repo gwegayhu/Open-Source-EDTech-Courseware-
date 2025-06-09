@@ -16,7 +16,7 @@ import world.respect.domain.opds.serialization.UriStringSerializer
  *
  * @property name A [LangMap] containing the name of the application in one or more languages
  * @property license The license under which the application is distributed using its identifier from
- *           https://spdx.org/licenses
+ *           https://spdx.org/licenses or "proprietary" if not using a listed license.
  * @property description A [LangMap] providing a description of the application in one or more languages.
  * @property website The official website URL for the application.
  * @property icon The URL to the application's icon. This may be omitted IF the website contains a
@@ -24,6 +24,7 @@ import world.respect.domain.opds.serialization.UriStringSerializer
  * @property learningUnits A URI pointing to the OPDS feed of learning units provided by the application.
  * @property defaultLaunchUri A URI that the RESPECT launcher will use to start the application.
  * @property android Optional [AndroidDetails] containing Android-specific information if the application is an Android app.
+ * @property web Optional [WebDetails] containing web-specific information if the application is a web app.
  */
 @Serializable
 data class RespectAppManifest(
@@ -37,7 +38,7 @@ data class RespectAppManifest(
     @Serializable(with = UriStringSerializer::class)
     val defaultLaunchUri: Uri,
     val android: AndroidDetails? = null,
-    val webDetails: WebDetails? = null,
+    val web: WebDetails? = null,
 ) {
     /**
      * Contains Android-specific details for the RESPECT manifest.

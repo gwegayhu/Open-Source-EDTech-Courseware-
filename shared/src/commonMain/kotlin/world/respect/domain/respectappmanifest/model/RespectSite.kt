@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
  *        thereof. These apps would generally be shown to the admin such that they can select apps
  *        for teachers and students to use.
  */
+@Suppress("unused") //Reserved for future use
 @Serializable
 data class RespectSite(
     val name: String,

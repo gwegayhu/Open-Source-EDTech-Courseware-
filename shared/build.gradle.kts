@@ -29,6 +29,7 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.json.schema.validator)
+            implementation(libs.jsoup)
         }
 
         val commonTest by getting {
