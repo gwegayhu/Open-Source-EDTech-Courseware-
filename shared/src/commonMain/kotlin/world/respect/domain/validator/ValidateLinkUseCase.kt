@@ -11,20 +11,27 @@ import world.respect.domain.opds.model.ReadiumLink
 interface ValidateLinkUseCase {
 
     /**
+     * Options to run a validation which can be passed through (e.g. from an OpdsValidator to
+     * a media resource validator, etc)
+     */
+    data class ValidatorOptions(
+        val followLinks: Boolean = true,
+    )
+
+    /**
      * @param link ReadiumLink - Uses the href, and type (if available)
      * @param baseUrl absolute base url that will be used to resolve the link (e.g. relative links)
      * @param visitedUrls a list of URLs already visited; used to avoid validating the same url more
      *        than once
-     * @param followLinks if true recursively follow links where the type being checked has
-     *        links e.g. Opds Feeds.
+     * @param options Validation options
      * @return a list of ValidatorMessage containing any errors and warnings (if any).
      */
     suspend operator fun invoke(
         link: ReadiumLink,
         baseUrl: String,
+        options: ValidatorOptions,
         reporter: ValidatorReporter,
         visitedUrls: MutableList<String>,
-        followLinks: Boolean,
     )
 
 }

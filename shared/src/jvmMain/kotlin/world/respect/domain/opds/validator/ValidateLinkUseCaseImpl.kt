@@ -15,9 +15,9 @@ class ValidateLinkUseCaseImpl(
     override suspend operator fun invoke(
         link: ReadiumLink,
         baseUrl: String,
+        options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
         visitedUrls: MutableList<String>,
-        followLinks: Boolean,
     ) {
         val linkType = link.type ?: OpdsFeed.MEDIA_TYPE
 
@@ -35,18 +35,20 @@ class ValidateLinkUseCaseImpl(
             OpdsFeed.MEDIA_TYPE -> {
                 opdsFeedValidatorUseCase(
                     url = linkUrl,
+                    options = options,
                     reporter = reporter,
                     visitedFeeds = visitedUrls,
-                    linkValidator = if(followLinks) this else null,
+                    linkValidator = if(options.followLinks) this else null,
                 )
             }
 
             OpdsPublication.MEDIA_TYPE -> {
                 opdsPublicationValidatorUseCase(
                     url = linkUrl,
+                    options = options,
                     reporter = reporter,
                     visitedFeeds = visitedUrls,
-                    linkValidator = if(followLinks) this else null,
+                    linkValidator = if(options.followLinks) this else null,
                 )
             }
         }

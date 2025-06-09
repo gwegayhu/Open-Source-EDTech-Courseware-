@@ -21,6 +21,7 @@ import kotlinx.serialization.json.Json
 import world.respect.domain.getfavicons.GetFavIconsUseCaseImpl
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
+import world.respect.domain.validator.ValidateLinkUseCase
 
 
 @Suppress("unused")
@@ -112,10 +113,12 @@ class RespectCLI {
                                     href = url,
                                     type = OpdsFeed.MEDIA_TYPE,
                                 ),
+                                options = ValidateLinkUseCase.ValidatorOptions(
+                                    followLinks = recursive.toBoolean()
+                                ),
                                 baseUrl = url,
                                 reporter = reporter,
                                 visitedUrls = mutableListOf(),
-                                followLinks = recursive.toBoolean()
                             )
                         }
 

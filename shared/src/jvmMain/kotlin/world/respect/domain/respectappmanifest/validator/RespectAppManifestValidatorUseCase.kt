@@ -28,9 +28,9 @@ class RespectAppManifestValidatorUseCase(
     override suspend operator fun invoke(
         link: ReadiumLink,
         baseUrl: String,
+        options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
         visitedUrls: MutableList<String>,
-        followLinks: Boolean,
     ) {
         val absoluteUrl = URI(baseUrl).resolve(link.href).toURL()
 

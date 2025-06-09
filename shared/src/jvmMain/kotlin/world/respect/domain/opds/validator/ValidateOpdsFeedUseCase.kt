@@ -22,6 +22,7 @@ class ValidateOpdsFeedUseCase(
 
     override suspend operator fun invoke(
         url: String,
+        options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
         visitedFeeds: MutableList<String>,
         linkValidator: ValidateLinkUseCase?,
@@ -43,7 +44,7 @@ class ValidateOpdsFeedUseCase(
 
 
                 allLinks.forEach { link ->
-                    linkValidator(link, url, reporter, visitedFeeds, true)
+                    linkValidator(link, url, options, reporter, visitedFeeds)
                 }
             }
         }catch(e : Throwable) {
