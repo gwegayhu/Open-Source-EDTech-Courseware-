@@ -11,14 +11,14 @@ import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
 import world.respect.domain.validator.ValidatorReporter
-import world.respect.domain.validator.ValidatorUseCase
+import world.respect.domain.validator.ValidateLinkUseCase
 import java.net.URI
 
 class RespectAppManifestValidatorUseCase(
     private val json: Json,
     private val validateHttpResponseForUrlUseCase: ValidateHttpResponseForUrlUseCase,
     private val getFavIconUseCase: GetFavIconUseCase,
-) : ValidatorUseCase {
+) : ValidateLinkUseCase {
 
     /**
      * Validate the a RespectAppManifest as per the KDoc

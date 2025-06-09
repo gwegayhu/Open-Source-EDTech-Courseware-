@@ -5,13 +5,13 @@ import world.respect.domain.validator.ValidatorMessage
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.validator.ValidatorReporter
-import world.respect.domain.validator.ValidatorUseCase
+import world.respect.domain.validator.ValidateLinkUseCase
 import java.net.URI
 
 /**
  * Validate on OPDS Feed
  */
-class OpdsFeedValidatorUseCase(
+class ValidateOpdsFeedUseCase(
     private val json: Json = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -24,7 +24,7 @@ class OpdsFeedValidatorUseCase(
         url: String,
         reporter: ValidatorReporter,
         visitedFeeds: MutableList<String>,
-        linkValidator: ValidatorUseCase?,
+        linkValidator: ValidateLinkUseCase?,
     ) {
         try {
             val text = URI(url).toURL().readText()

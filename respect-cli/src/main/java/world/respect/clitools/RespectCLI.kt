@@ -10,9 +10,9 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.opds.validator.OpdsFeedValidatorUseCase
-import world.respect.domain.opds.validator.OpdsLinkValidatorUseCaseImpl
-import world.respect.domain.opds.validator.OpdsPublicationValidatorUseCase
+import world.respect.domain.opds.validator.ValidateOpdsFeedUseCase
+import world.respect.domain.opds.validator.ValidateLinkUseCaseImpl
+import world.respect.domain.opds.validator.ValidateOpdsPublicationUseCase
 import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidatorUseCase
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
@@ -100,9 +100,9 @@ class RespectCLI {
                                 getFavIconUseCase = GetFavIconsUseCaseImpl(),
                             )
                         }else {
-                            OpdsLinkValidatorUseCaseImpl(
-                                opdsFeedValidatorUseCase = OpdsFeedValidatorUseCase(),
-                                opdsPublicationValidatorUseCase = OpdsPublicationValidatorUseCase(),
+                            ValidateLinkUseCaseImpl(
+                                opdsFeedValidatorUseCase = ValidateOpdsFeedUseCase(),
+                                opdsPublicationValidatorUseCase = ValidateOpdsPublicationUseCase(),
                             )
                         }
 

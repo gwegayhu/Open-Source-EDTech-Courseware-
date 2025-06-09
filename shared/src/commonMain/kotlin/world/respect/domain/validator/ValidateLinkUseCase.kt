@@ -5,10 +5,10 @@ import world.respect.domain.opds.model.ReadiumLink
 /**
  * Validate an OPDS Link - this can be :
  *
- *   An OPDS feed or publication as per https://drafts.opds.io/opds-2.0#appendix-a-json-schema .
- *   Images or resources
+ * An OPDS feed or publication as per https://drafts.opds.io/opds-2.0#appendix-a-json-schema .
+ * Images or resources
  */
-interface ValidatorUseCase {
+interface ValidateLinkUseCase {
 
     /**
      * @param link ReadiumLink - Uses the href, and type (if available)

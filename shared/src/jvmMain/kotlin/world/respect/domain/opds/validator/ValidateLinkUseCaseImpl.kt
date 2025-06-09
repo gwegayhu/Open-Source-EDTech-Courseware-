@@ -3,14 +3,14 @@ package world.respect.domain.opds.validator
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.validator.ValidatorUseCase
+import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorReporter
 import java.net.URI
 
-class OpdsLinkValidatorUseCaseImpl(
-    private val opdsFeedValidatorUseCase: OpdsFeedValidatorUseCase,
-    private val opdsPublicationValidatorUseCase: OpdsPublicationValidatorUseCase,
-) : ValidatorUseCase {
+class ValidateLinkUseCaseImpl(
+    private val opdsFeedValidatorUseCase: ValidateOpdsFeedUseCase,
+    private val opdsPublicationValidatorUseCase: ValidateOpdsPublicationUseCase,
+) : ValidateLinkUseCase {
 
     override suspend operator fun invoke(
         link: ReadiumLink,
