@@ -19,6 +19,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import world.respect.domain.getfavicons.GetFavIconsUseCaseImpl
+import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 
 
@@ -59,6 +60,7 @@ class RespectCLI {
                 }
             }
 
+            val reporter = ListAndPrintlnValidatorReporter()
 
             val parser = ArgumentParsers.newFor("respect-cli").build()
             val subparsers = parser.addSubparsers()
@@ -104,26 +106,26 @@ class RespectCLI {
                             )
                         }
 
-                        val messages = runBlocking {
+                        runBlocking {
                             validator(
                                 link = ReadiumLink(
                                     href = url,
                                     type = OpdsFeed.MEDIA_TYPE,
                                 ),
                                 baseUrl = url,
+                                reporter = reporter,
                                 visitedUrls = mutableListOf(),
                                 followLinks = recursive.toBoolean()
                             )
                         }
 
-                        val numErrors = messages.count { it.isError }
+                        val numErrors = reporter.messages.count { it.isError }
                         println("Errors: $numErrors")
-                        messages.forEach {
-                            println(it.message)
-                        }
 
                         if(numErrors > 0) {
                             System.exit(1)
+                        }else {
+                            System.exit(0)
                         }
                     }
                 }

@@ -7,7 +7,6 @@ data class ValidatorMessage(
 ) {
 
     companion object {
-
         fun fromException(
             sourceUri: String,
             throwable: Throwable

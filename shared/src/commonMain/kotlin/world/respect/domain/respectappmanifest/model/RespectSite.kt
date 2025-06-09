@@ -1,4 +1,4 @@
-package world.respect.domain.respectdir.model
+package world.respect.domain.respectappmanifest.model
 
 import io.ktor.http.Url
 import kotlinx.serialization.Serializable

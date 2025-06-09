@@ -41,9 +41,10 @@ class ValidateHttpResponseForUrlUseCase(
 
     suspend operator fun invoke(
         url: String,
+        reporter: ValidatorReporter,
         @Suppress("UNUSED_PARAMETER")
         options: ValidationOptions = DEFAULT_VALIDATION_OPTS,
-    ) : List<ValidatorMessage> = buildList {
+    )  {
         val sink = DiscardOutputStream().asSink()
 
         try {
@@ -56,11 +57,9 @@ class ValidateHttpResponseForUrlUseCase(
                     count += chunk.remaining
                     chunk.transferTo(sink)
                 }
-
-                println("Validated response from: $url")
             }
         }catch(e: Throwable) {
-            add(ValidatorMessage.fromException(url, e))
+            reporter.addMessage(ValidatorMessage.fromException(url, e))
         }
     }
 

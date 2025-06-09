@@ -4,6 +4,7 @@ import com.networknt.schema.InputFormat
 import world.respect.domain.validator.ValidatorMessage
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.validator.ValidatorReporter
 import world.respect.domain.validator.ValidatorUseCase
 import java.net.URI
 
@@ -21,18 +22,17 @@ class OpdsFeedValidatorUseCase(
 
     override suspend operator fun invoke(
         url: String,
+        reporter: ValidatorReporter,
         visitedFeeds: MutableList<String>,
         linkValidator: ValidatorUseCase?,
-    ): List<ValidatorMessage> {
-        val validationMessages = mutableListOf<ValidatorMessage>()
-
+    ) {
         try {
             val text = URI(url).toURL().readText()
 
             val messages = schema.validate(text, InputFormat.JSON)
-            validationMessages.addAll(
-                messages.map { it.toValidatorMessage(sourceUri = url) }
-            )
+            messages.forEach {
+                reporter.addMessage(it.toValidatorMessage(sourceUri = url))
+            }
 
             val opdsFeed = json.decodeFromString<OpdsFeed>(text)
             if(linkValidator != null) {
@@ -43,14 +43,12 @@ class OpdsFeedValidatorUseCase(
 
 
                 allLinks.forEach { link ->
-                    validationMessages += linkValidator(link, url, visitedFeeds, true)
+                    linkValidator(link, url, reporter, visitedFeeds, true)
                 }
             }
         }catch(e : Throwable) {
-            validationMessages += ValidatorMessage.fromException(url, e)
+            reporter.addMessage(ValidatorMessage.fromException(url, e))
         }
-
-        return validationMessages
     }
 
 

@@ -3,6 +3,7 @@ package world.respect.domain.opds.validator
 import com.networknt.schema.InputFormat
 import world.respect.domain.validator.ValidatorUseCase
 import world.respect.domain.validator.ValidatorMessage
+import world.respect.domain.validator.ValidatorReporter
 import java.net.URI
 
 class OpdsPublicationValidatorUseCase: AbstractOpdsTypeValidator(
@@ -11,22 +12,19 @@ class OpdsPublicationValidatorUseCase: AbstractOpdsTypeValidator(
 
     override suspend fun invoke(
         url: String,
+        reporter: ValidatorReporter,
         visitedFeeds: MutableList<String>,
         linkValidator: ValidatorUseCase?
-    ): List<ValidatorMessage> {
-        val validationMessages = mutableListOf<ValidatorMessage>()
-
+    ) {
         try {
             val text = URI(url).toURL().readText()
 
             val messages = schema.validate(text, InputFormat.JSON)
-            validationMessages.addAll(
-                messages.map { it.toValidatorMessage(sourceUri = url) }
-            )
+            messages.forEach {
+                reporter.addMessage(it.toValidatorMessage(sourceUri = url))
+            }
         }catch (e: Throwable) {
-            validationMessages += ValidatorMessage.fromException(url, e)
+            reporter.addMessage(ValidatorMessage.fromException(url, e))
         }
-
-        return validationMessages
     }
 }

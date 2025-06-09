@@ -22,8 +22,9 @@ interface ValidatorUseCase {
     suspend operator fun invoke(
         link: ReadiumLink,
         baseUrl: String,
+        reporter: ValidatorReporter,
         visitedUrls: MutableList<String>,
         followLinks: Boolean,
-    ): List<ValidatorMessage>
+    )
 
 }
