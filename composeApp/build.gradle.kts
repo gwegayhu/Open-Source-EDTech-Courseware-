@@ -56,7 +56,7 @@ kotlin {
             implementation(libs.androidx.compose.bom)
             implementation(libs.kodein.compose)
             implementation(libs.kotlinx.io.core)
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            implementation(libs.kotlinx.datetime.v050)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
