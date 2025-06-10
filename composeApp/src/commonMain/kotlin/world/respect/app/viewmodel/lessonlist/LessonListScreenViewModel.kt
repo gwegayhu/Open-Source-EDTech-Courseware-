@@ -1,5 +1,6 @@
 package world.respect.app.viewmodel.lessonlist
 
+import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,12 +12,19 @@ import respect.composeapp.generated.resources.lesson_list
 import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.model.lessonlist.LessonListModel
 import world.respect.app.viewmodel.RespectViewModel
+import world.respect.domain.opds.model.LangMap
+import world.respect.domain.opds.model.LangMapStringValue
 import world.respect.domain.opds.model.OpdsFacet
 import world.respect.domain.opds.model.OpdsFeedMetadata
+import world.respect.domain.opds.model.OpdsPublication
+import world.respect.domain.opds.model.ReadiumContributorStringValue
 import world.respect.domain.opds.model.ReadiumLink
+import world.respect.domain.opds.model.ReadiumMetadata
+import world.respect.domain.opds.model.ReadiumSubject
+import world.respect.domain.opds.model.ReadiumSubjectStringValue
 
 data class LessonListUiState(
-    val lessonListData: List<LessonListModel> = emptyList(),
+    val publications: List<OpdsPublication> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null
 )
@@ -40,43 +48,80 @@ class LessonListScreenViewModel : RespectViewModel() {
     }
 
     private fun loadLessonListData() {
-        val lessonListData: List<LessonListModel> = listOf(
-            LessonListModel(
-                "Lesson 1",
-                "01",
-                "English",
-                "02:00",
-                "Lesson Outcome/Lesson Objective"
+        val publications: List<OpdsPublication> = listOf(
+            OpdsPublication(
+                metadata = ReadiumMetadata(
+                    title = LangMapStringValue("Lesson 001"),
+                    author = listOf(
+                        ReadiumContributorStringValue("Mullah Nasruddin")
+                    ),
+                    language = listOf("en"),
+                    modified = "2015-09-29T17:00:00Z",
+                    subject = listOf(
+                        ReadiumSubjectStringValue("English"),
+                    ),
+                    duration = 2.0
+
+                ),
+                links = listOf(
+                    ReadiumLink(
+                        href = "",
+                        type = "application/opds-publication+json",
+                        rel = listOf("self")
+                    ),
+                    ReadiumLink(
+                        href = "",
+                        type = "text/html",
+                        rel = listOf("http://opds-spec.org/acquisition/open-access")
+                    )
+                ),
+                images = listOf(
+                    ReadiumLink(
+                        href = "",
+                        type = "image/jpeg",
+                        height = 700,
+                        width = 400
+                    )
+                )
             ),
-            LessonListModel(
-                "Lesson 2",
-                "02",
-                "English",
-                "02:00",
-                "Lesson Outcome/Lesson Objective"
-            ),
-            LessonListModel(
-                "Lesson 3",
-                "03",
-                "English",
-                "02:00",
-                "Lesson Outcome/Lesson Objective"
-            ),
-            LessonListModel(
-                "Lesson 4",
-                "04",
-                "English",
-                "02:00",
-                "Lesson Outcome/Lesson Objective"
-            ),
-            LessonListModel(
-                "Lesson 5",
-                "05",
-                "English",
-                "02:00",
-                "Lesson Outcome/Lesson Objective"
-            ),
+            OpdsPublication(
+                metadata = ReadiumMetadata(
+                    title = LangMapStringValue("Lesson 005"),
+                    author = listOf(
+                        ReadiumContributorStringValue("Mullah Nasruddin")
+                    ),
+                    language = listOf("en"),
+                    modified = "2015-09-29T17:00:00Z",
+                    subject = listOf(
+                        ReadiumSubjectStringValue("Mathematics"),
+                    ),
+                    duration = 1.0
+
+
+                ),
+                links = listOf(
+                    ReadiumLink(
+                        href = "",
+                        type = "application/opds-publication+json",
+                        rel = listOf("self")
+                    ),
+                    ReadiumLink(
+                        href = "",
+                        type = "text/html",
+                        rel = listOf("http://opds-spec.org/acquisition/open-access")
+                    )
+                ),
+                images = listOf(
+                    ReadiumLink(
+                        href = "",
+                        type = "image/jpeg",
+                        height = 700,
+                        width = 400
+                    )
+                )
+            )
         )
+
         val lessonFilter: List<OpdsFacet> = listOf(
             OpdsFacet(
                 metadata = OpdsFeedMetadata(
@@ -106,7 +151,7 @@ class LessonListScreenViewModel : RespectViewModel() {
         )
 
         _uiState.value = _uiState.value.copy(
-            lessonListData = lessonListData,
+            publications = publications,
             lessonFilter = lessonFilter,
             selectedFilterTitle = null
         )

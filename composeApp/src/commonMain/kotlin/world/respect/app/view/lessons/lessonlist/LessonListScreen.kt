@@ -46,6 +46,8 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.clazz
 import respect.composeapp.generated.resources.duration
 import world.respect.app.app.LessonDetail
+import world.respect.app.appstate.getTitle
+import world.respect.app.appstate.toDisplayString
 import world.respect.app.viewmodel.lessonlist.LessonListScreenViewModel
 
 @Composable
@@ -110,7 +112,7 @@ fun LessonListScreen(
         }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(uiState.lessonListData) { lesson ->
+            items(uiState.publications) { publications ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -138,15 +140,17 @@ fun LessonListScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Column {
-                            Text(text = lesson.name, fontSize = 16.sp)
+                            Text(text = publications.metadata.title.getTitle(), fontSize = 16.sp)
                             Text(
-                                text = "${stringResource(Res.string.clazz)}- ${lesson.clazz}",
+                                text = stringResource(Res.string.clazz),
                                 fontSize = 12.sp
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(text = lesson.language, fontSize = 12.sp)
+                                Text(text = publications.metadata.subject
+                                    ?.joinToString(", ") { it.toDisplayString() }
+                                    ?: "No subjects", fontSize = 12.sp)
                                 Text(
-                                    text = "${stringResource(Res.string.duration)}- ${lesson.duration}",
+                                    text = "${stringResource(Res.string.duration)}- ${publications.metadata.duration}",
                                     fontSize = 12.sp
                                 )
                             }
