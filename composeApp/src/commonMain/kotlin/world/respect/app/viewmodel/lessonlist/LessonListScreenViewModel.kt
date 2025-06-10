@@ -1,6 +1,5 @@
 package world.respect.app.viewmodel.lessonlist
 
-import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,9 +9,7 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.lesson_list
 import world.respect.app.appstate.AppBarSearchUiState
-import world.respect.app.model.lessonlist.LessonListModel
 import world.respect.app.viewmodel.RespectViewModel
-import world.respect.domain.opds.model.LangMap
 import world.respect.domain.opds.model.LangMapStringValue
 import world.respect.domain.opds.model.OpdsFacet
 import world.respect.domain.opds.model.OpdsFeedMetadata
@@ -20,7 +17,6 @@ import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.opds.model.ReadiumContributorStringValue
 import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.opds.model.ReadiumMetadata
-import world.respect.domain.opds.model.ReadiumSubject
 import world.respect.domain.opds.model.ReadiumSubjectStringValue
 
 data class LessonListUiState(

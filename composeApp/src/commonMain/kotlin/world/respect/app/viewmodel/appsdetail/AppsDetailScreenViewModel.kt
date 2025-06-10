@@ -11,7 +11,6 @@ import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
 import world.respect.app.model.appsdetail.Images
-import world.respect.app.model.lessonlist.LessonListModel
 import world.respect.domain.opds.model.LangMapStringValue
 import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.opds.model.ReadiumContributorStringValue
