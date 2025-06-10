@@ -13,17 +13,18 @@ import world.respect.app.model.lessonlist.LessonListModel
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.domain.opds.model.OpdsFacet
 import world.respect.domain.opds.model.OpdsFeedMetadata
-import world.respect.domain.opds.model.OpdsLink
+import world.respect.domain.opds.model.ReadiumLink
 
 data class LessonListUiState(
     val lessonListData: List<LessonListModel> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null
-    )
+)
 
-class LessonListScreenViewModel: RespectViewModel() {
+class LessonListScreenViewModel : RespectViewModel() {
     private val _uiState = MutableStateFlow(LessonListUiState())
     val uiState = _uiState.asStateFlow()
+
     init {
         viewModelScope.launch {
             _appUiState.update {
@@ -31,33 +32,74 @@ class LessonListScreenViewModel: RespectViewModel() {
                     title = getString(resource = Res.string.lesson_list),
                     searchState = AppBarSearchUiState(
                         visible = true
-                    ))
+                    )
+                )
             }
         }
         loadLessonListData()
     }
+
     private fun loadLessonListData() {
         val lessonListData: List<LessonListModel> = listOf(
-            LessonListModel("Lesson 1", "01", "English", "02:00","Lesson Outcome/Lesson Objective"),
-            LessonListModel("Lesson 2", "02", "English", "02:00","Lesson Outcome/Lesson Objective"),
-            LessonListModel("Lesson 3", "03", "English", "02:00","Lesson Outcome/Lesson Objective"),
-            LessonListModel("Lesson 4", "04", "English", "02:00","Lesson Outcome/Lesson Objective"),
-            LessonListModel("Lesson 5", "05", "English", "02:00","Lesson Outcome/Lesson Objective"),
-            )
-
+            LessonListModel(
+                "Lesson 1",
+                "01",
+                "English",
+                "02:00",
+                "Lesson Outcome/Lesson Objective"
+            ),
+            LessonListModel(
+                "Lesson 2",
+                "02",
+                "English",
+                "02:00",
+                "Lesson Outcome/Lesson Objective"
+            ),
+            LessonListModel(
+                "Lesson 3",
+                "03",
+                "English",
+                "02:00",
+                "Lesson Outcome/Lesson Objective"
+            ),
+            LessonListModel(
+                "Lesson 4",
+                "04",
+                "English",
+                "02:00",
+                "Lesson Outcome/Lesson Objective"
+            ),
+            LessonListModel(
+                "Lesson 5",
+                "05",
+                "English",
+                "02:00",
+                "Lesson Outcome/Lesson Objective"
+            ),
+        )
         val lessonFilter: List<OpdsFacet> = listOf(
             OpdsFacet(
-                metadata = OpdsFeedMetadata(title = "Language"),
+                metadata = OpdsFeedMetadata(
+                    title = "Language",
+                    identifier = null,
+                    type = null,
+                    subtitle = null,
+                    modified = null,
+                    description = null,
+                    itemsPerPage = null,
+                    currentPage = null,
+                    numberOfItems = null,
+                ),
                 links = listOf(
-                    OpdsLink(
+                    ReadiumLink(
                         href = "/fr",
                         type = "application/opds+json",
-                        title = "French",
+                        title = "French"
                     ),
-                    OpdsLink(
+                    ReadiumLink(
                         href = "/en",
                         type = "application/opds+json",
-                        title = "English",
+                        title = "English"
                     )
                 )
             )
@@ -69,6 +111,7 @@ class LessonListScreenViewModel: RespectViewModel() {
             selectedFilterTitle = null
         )
     }
+
     fun onFilterSelected(title: String) {
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }

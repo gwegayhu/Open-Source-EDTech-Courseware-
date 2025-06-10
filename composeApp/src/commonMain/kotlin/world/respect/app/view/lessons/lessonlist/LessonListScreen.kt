@@ -70,7 +70,7 @@ fun LessonListScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
+                        Text(text = uiState.selectedFilterTitle ?: (facet.metadata?.title ?: ""))
                         Icon(
                             imageVector = Icons.Filled.ArrowDropDown,
                             modifier = Modifier.padding(6.dp),
@@ -86,7 +86,7 @@ fun LessonListScreen(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = facet.metadata.title,
+                                text = facet.metadata?.title ?: "",
                                 fontSize = 14.sp
                             )
                         },
