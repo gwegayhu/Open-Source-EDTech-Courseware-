@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.applist
+package world.respect.app.viewmodel.apps.list
 
 
 import androidx.lifecycle.viewModelScope

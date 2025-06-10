@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.enterlink
+package world.respect.app.viewmodel.apps.enterlink
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow

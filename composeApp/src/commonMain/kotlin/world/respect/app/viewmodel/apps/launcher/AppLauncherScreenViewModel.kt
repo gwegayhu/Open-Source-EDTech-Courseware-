@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.applauncher
+package world.respect.app.viewmodel.apps.launcher
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow

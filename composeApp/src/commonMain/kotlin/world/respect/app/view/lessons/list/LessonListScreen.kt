@@ -1,4 +1,4 @@
-package world.respect.app.view.lessons.lessonlist
+package world.respect.app.view.lessons.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,7 +47,7 @@ import respect.composeapp.generated.resources.duration
 import world.respect.app.app.LessonDetail
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
-import world.respect.app.viewmodel.lessonlist.LessonListScreenViewModel
+import world.respect.app.viewmodel.lessons.list.LessonListScreenViewModel
 
 @Composable
 fun LessonListScreen(
