@@ -3,13 +3,16 @@ package world.respect.domain.opds.validator
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.opds.model.ReadiumLink
+import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidator
+import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorReporter
 import java.net.URI
 
 class ValidateLinkUseCaseImpl(
-    private val opdsFeedValidatorUseCase: ValidateOpdsFeedUseCase,
-    private val opdsPublicationValidatorUseCase: ValidateOpdsPublicationUseCase,
+    private val opdsFeedValidatorUseCase: OpdsFeedValidator,
+    private val opdsPublicationValidatorUseCase: OpdsPublicationValidator,
+    private val respectAppManifestValidatorUseCase: RespectAppManifestValidator,
 ) : ValidateLinkUseCase {
 
     override suspend operator fun invoke(
@@ -31,27 +34,26 @@ class ValidateLinkUseCaseImpl(
 
         visitedUrls.add(linkUrl)
 
-        when(linkType) {
+        val validatorToRun = when(linkType) {
             OpdsFeed.MEDIA_TYPE -> {
-                opdsFeedValidatorUseCase(
-                    url = linkUrl,
-                    options = options,
-                    reporter = reporter,
-                    visitedFeeds = visitedUrls,
-                    linkValidator = if(options.followLinks) this else null,
-                )
+                opdsFeedValidatorUseCase
             }
-
             OpdsPublication.MEDIA_TYPE -> {
-                opdsPublicationValidatorUseCase(
-                    url = linkUrl,
-                    options = options,
-                    reporter = reporter,
-                    visitedFeeds = visitedUrls,
-                    linkValidator = if(options.followLinks) this else null,
-                )
+                opdsPublicationValidatorUseCase
             }
+            RespectAppManifest.MIME_TYPE -> {
+                respectAppManifestValidatorUseCase
+            }
+            else -> null
         }
+
+        validatorToRun?.invoke(
+            url = linkUrl,
+            options = options,
+            reporter = reporter,
+            visitedFeeds = visitedUrls,
+            linkValidator = if(options.followLinks) this else null,
+        )
     }
 
 }

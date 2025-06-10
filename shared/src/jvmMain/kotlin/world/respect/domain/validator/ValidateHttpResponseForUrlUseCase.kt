@@ -41,15 +41,31 @@ class ValidateHttpResponseForUrlUseCase(
 
     suspend operator fun invoke(
         url: String,
+        referer: String?,
         reporter: ValidatorReporter,
-        @Suppress("UNUSED_PARAMETER")
         options: ValidationOptions = DEFAULT_VALIDATION_OPTS,
     )  {
         val sink = DiscardOutputStream().asSink()
 
+        val linkFromStr = referer?.let {
+            "(Linked from $referer)"
+        } ?: ""
+
         try {
             //As per https://ktor.io/docs/client-responses.html#streaming
-            httpClient.prepareGet(url).execute { response ->
+            httpClient.prepareGet(url).execute { response ->response.headers["content-type"]
+                val contentType = response.headers["content-type"]?.substringBefore(";")
+                if(response.headers["content-type"] !in options.acceptableMimeTypes) {
+                    reporter.addMessage(
+                        ValidatorMessage(
+                            isError = true,
+                            sourceUri = url,
+                            "Wrong mime type: $contentType not ${options.acceptableMimeTypes.joinToString()}" +
+                                    " $linkFromStr"
+                        )
+                    )
+                }
+
                 val channel: ByteReadChannel = response.body()
                 var count = 0L
                 while(!channel.exhausted()) {

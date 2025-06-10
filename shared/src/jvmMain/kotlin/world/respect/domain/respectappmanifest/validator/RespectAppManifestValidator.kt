@@ -1,5 +1,6 @@
 package world.respect.domain.respectappmanifest.validator
 
+import io.ktor.client.HttpClient
 import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 import world.respect.domain.getfavicons.GetFavIconUseCase
@@ -7,6 +8,8 @@ import world.respect.domain.licenses.model.SpdxLicenseList
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.opds.model.toStringMap
+import world.respect.domain.opds.validator.verifyMimeTypeAndGetBodyAsText
+import world.respect.domain.validator.Validator
 import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
@@ -14,28 +17,33 @@ import world.respect.domain.validator.ValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
 import java.net.URI
 
-class RespectAppManifestValidatorUseCase(
+class RespectAppManifestValidator(
     private val json: Json,
     private val validateHttpResponseForUrlUseCase: ValidateHttpResponseForUrlUseCase,
     private val getFavIconUseCase: GetFavIconUseCase,
-) : ValidateLinkUseCase {
+    private val httpClient: HttpClient,
+) : Validator {
+
 
     /**
      * Validate the a RespectAppManifest as per the KDoc
-     *
-     * @param link Link that points to a JSON for a RespectAppManifest
      */
-    override suspend operator fun invoke(
-        link: ReadiumLink,
-        baseUrl: String,
+    override suspend fun invoke(
+        url: String,
         options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
-        visitedUrls: MutableList<String>,
-    ) {
-        val absoluteUrl = URI(baseUrl).resolve(link.href).toURL()
+        visitedFeeds: MutableList<String>,
+        linkValidator: ValidateLinkUseCase?
+    )  {
+        val absoluteUrl = URI(url).toURL()
 
         try {
-            val text = absoluteUrl.readText()
+            val text = httpClient.verifyMimeTypeAndGetBodyAsText(
+                url = url,
+                acceptableMimeTypes = listOf(RespectAppManifest.MIME_TYPE),
+                reporter = reporter
+            )
+
             val respectAppManifest: RespectAppManifest = json.decodeFromString(text)
 
             respectAppManifest.name.toStringMap().forEach { (_, value) ->
@@ -67,7 +75,9 @@ class RespectAppManifestValidatorUseCase(
 
             val websiteVal = respectAppManifest.website
             if(websiteVal != null) {
-                validateHttpResponseForUrlUseCase(websiteVal.toString(), reporter)
+                validateHttpResponseForUrlUseCase(
+                    url = websiteVal.toString(), referer = url, reporter
+                )
             }else {
                 reporter.addMessage(ValidatorMessage(true, absoluteUrl.toString(),"website is required"))
             }
@@ -87,6 +97,7 @@ class RespectAppManifestValidatorUseCase(
 
             validateHttpResponseForUrlUseCase(
                 url = respectAppManifest.learningUnits.toString(),
+                referer = url,
                 reporter = reporter,
                 options = ValidateHttpResponseForUrlUseCase.ValidationOptions(
                     acceptableMimeTypes = listOf("application/json", OpdsFeed.MEDIA_TYPE)
@@ -101,6 +112,17 @@ class RespectAppManifestValidatorUseCase(
                     )
                 }
             }
+
+            linkValidator?.takeIf { options.followLinks }?.invoke(
+                link = ReadiumLink(
+                    href = respectAppManifest.learningUnits.toString(),
+                    type = OpdsFeed.MEDIA_TYPE,
+                ),
+                baseUrl = absoluteUrl.toString(),
+                options = options,
+                reporter = reporter,
+                visitedUrls = visitedFeeds,
+            )
         }catch(e: Throwable) {
             reporter.addMessage(ValidatorMessage.fromException(absoluteUrl.toString(), e))
         }

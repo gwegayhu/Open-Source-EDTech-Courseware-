@@ -8,17 +8,17 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
-import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.opds.validator.ValidateOpdsFeedUseCase
+import world.respect.domain.opds.validator.OpdsFeedValidator
 import world.respect.domain.opds.validator.ValidateLinkUseCaseImpl
-import world.respect.domain.opds.validator.ValidateOpdsPublicationUseCase
-import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidatorUseCase
+import world.respect.domain.opds.validator.OpdsPublicationValidator
+import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import world.respect.domain.getfavicons.GetFavIconsUseCaseImpl
+import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidateLinkUseCase
@@ -75,10 +75,10 @@ class RespectCLI {
                 it.addArgument("-u", "--url")
                     .required(true)
                     .help("OPDS feed URL")
-                it.addArgument("-r", "--recursive")
+                it.addArgument("-f", "--nofollow")
                     .required(false)
-                    .setDefault("true")
-                    .help("Validate all linked feeds")
+                    .setDefault("false")
+                    .help("Don't follow links")
                 it.addArgument("-t", "--type")
                     .setDefault("manifest")
                     .help("manifest|feed")
@@ -92,29 +92,34 @@ class RespectCLI {
                 when(subCommand) {
                     CMD_VALIDATE -> {
                         val url = ns.getString("url")
-                        val recursive = ns.getString("recursive")
+                        val noFollow = ns.getString("nofollow").ifEmpty { "true" }
 
-                        val validator = if(ns.getString("type") == "manifest") {
-                            RespectAppManifestValidatorUseCase(
+                        val validator = ValidateLinkUseCaseImpl(
+                            opdsFeedValidatorUseCase = OpdsFeedValidator(
                                 json = json,
-                                validateHttpResponseForUrlUseCase = ValidateHttpResponseForUrlUseCase(httpClient),
+                                httpClient = httpClient,
+                            ),
+                            opdsPublicationValidatorUseCase = OpdsPublicationValidator(
+                                httpClient = httpClient
+                            ),
+                            respectAppManifestValidatorUseCase = RespectAppManifestValidator(
+                                json = json,
+                                validateHttpResponseForUrlUseCase = ValidateHttpResponseForUrlUseCase(
+                                    httpClient
+                                ),
                                 getFavIconUseCase = GetFavIconsUseCaseImpl(),
-                            )
-                        }else {
-                            ValidateLinkUseCaseImpl(
-                                opdsFeedValidatorUseCase = ValidateOpdsFeedUseCase(),
-                                opdsPublicationValidatorUseCase = ValidateOpdsPublicationUseCase(),
-                            )
-                        }
+                                httpClient = httpClient,
+                            ),
+                        )
 
                         runBlocking {
                             validator(
                                 link = ReadiumLink(
                                     href = url,
-                                    type = OpdsFeed.MEDIA_TYPE,
+                                    type = RespectAppManifest.MIME_TYPE,
                                 ),
                                 options = ValidateLinkUseCase.ValidatorOptions(
-                                    followLinks = recursive.toBoolean()
+                                    followLinks = !(noFollow?.toBoolean() ?: false)
                                 ),
                                 baseUrl = url,
                                 reporter = reporter,

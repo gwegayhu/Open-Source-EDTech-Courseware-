@@ -1,9 +1,6 @@
-package world.respect.domain.opds.validator
+package world.respect.domain.validator
 
-import world.respect.domain.validator.ValidateLinkUseCase
-import world.respect.domain.validator.ValidatorReporter
-
-interface OpdsTypeValidatorUseCase {
+interface Validator {
 
     suspend operator fun invoke(
         url: String,

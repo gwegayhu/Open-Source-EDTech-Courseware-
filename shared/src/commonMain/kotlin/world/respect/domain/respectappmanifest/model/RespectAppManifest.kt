@@ -65,5 +65,11 @@ data class RespectAppManifest(
         val sourceCode: Url,
     )
 
+    companion object {
+
+        const val MIME_TYPE = "application/json"
+
+    }
+
 }
 

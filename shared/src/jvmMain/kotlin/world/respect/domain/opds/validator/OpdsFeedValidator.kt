@@ -1,22 +1,21 @@
 package world.respect.domain.opds.validator
 
 import com.networknt.schema.InputFormat
+import io.ktor.client.HttpClient
 import world.respect.domain.validator.ValidatorMessage
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.validator.ValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
-import java.net.URI
 
 /**
  * Validate on OPDS Feed
  */
-class ValidateOpdsFeedUseCase(
-    private val json: Json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    },
-) : AbstractOpdsTypeValidator(
+class OpdsFeedValidator(
+    private val json: Json,
+    private val httpClient: HttpClient,
+) : AbstractJsonSchemaValidator(
     schemaUrl = "https://drafts.opds.io/schema/feed.schema.json"
 ) {
 
@@ -28,7 +27,11 @@ class ValidateOpdsFeedUseCase(
         linkValidator: ValidateLinkUseCase?,
     ) {
         try {
-            val text = URI(url).toURL().readText()
+            val text = httpClient.verifyMimeTypeAndGetBodyAsText(
+                url = url,
+                acceptableMimeTypes = listOf(OpdsPublication.MEDIA_TYPE, "application/json"),
+                reporter = reporter
+            )
 
             val messages = schema.validate(text, InputFormat.JSON)
             messages.forEach {
