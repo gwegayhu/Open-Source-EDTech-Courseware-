@@ -47,11 +47,15 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.graphics.vector.ImageVector
 import respect.composeapp.generated.resources.assign
+import respect.composeapp.generated.resources.clazz
 import respect.composeapp.generated.resources.download
+import respect.composeapp.generated.resources.duration
 import respect.composeapp.generated.resources.play
 import respect.composeapp.generated.resources.related_lessons
 import respect.composeapp.generated.resources.share
 import world.respect.app.app.LessonDetail
+import world.respect.app.appstate.getTitle
+import world.respect.app.appstate.toDisplayString
 
 
 @Composable
@@ -83,7 +87,7 @@ fun LessonDetailScreen(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        uiState.lessonDetailData?.name ?: "",
+                        text = uiState.lessonDetailData?.metadata?.title?.getTitle() ?: "",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -112,7 +116,9 @@ fun LessonDetailScreen(
                         )
                     }
 
-                    Text(uiState.lessonDetailData?.desc ?: "", fontSize = 12.sp)
+                    Text(
+                        text = uiState.lessonDetailData?.metadata?.subtitle?.getTitle() ?: "",
+                        fontSize = 12.sp)
                     Text(stringResource(Res.string.score_or_progress), fontSize = 12.sp)
                     LinearProgressIndicator(
                         progress = { 0f },
@@ -159,7 +165,7 @@ fun LessonDetailScreen(
         }
 
 
-        items(uiState.lessonListData) { lesson ->
+        items(uiState.publications) { publication ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -184,11 +190,20 @@ fun LessonDetailScreen(
 
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
-                    Text(text = lesson.name, fontSize = 16.sp)
-                    Text(text = "Class- ${lesson.clazz}", fontSize = 12.sp)
+                    Text(text = publication.metadata.title.getTitle(), fontSize = 16.sp)
+                    Text(
+                        text = stringResource(Res.string.clazz),
+                        fontSize = 12.sp
+                    )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(text = lesson.language, fontSize = 12.sp)
-                        Text(text = "Duration- ${lesson.duration}", fontSize = 12.sp)
+                        Text(
+                            text = publication.metadata.subject
+                            ?.joinToString(", ") { it.toDisplayString() }
+                            ?: "No subjects", fontSize = 12.sp)
+                        Text(
+                            text = "${stringResource(Res.string.duration)}- ${publication.metadata.duration}",
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
