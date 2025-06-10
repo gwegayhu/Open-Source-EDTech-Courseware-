@@ -1,6 +1,6 @@
 package world.respect.app.model.appsdetail
 
-import world.respect.app.model.lessonlist.LessonListModel
+import world.respect.domain.opds.model.OpdsPublication
 
 
 data class Images(
@@ -10,7 +10,7 @@ data class AppsDetailModel(
     val imageName: String,
     val appName: String,
     val appDescription: String,
-    val lessons: List<LessonListModel>,
+    val publications: List<OpdsPublication>,
     val images: List<Images>
 )
 

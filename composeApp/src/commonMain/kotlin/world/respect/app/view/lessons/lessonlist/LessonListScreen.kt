@@ -112,7 +112,7 @@ fun LessonListScreen(
         }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(uiState.publications) { publications ->
+            items(uiState.publications) { publication ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -140,17 +140,17 @@ fun LessonListScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Column {
-                            Text(text = publications.metadata.title.getTitle(), fontSize = 16.sp)
+                            Text(text = publication.metadata.title.getTitle(), fontSize = 16.sp)
                             Text(
                                 text = stringResource(Res.string.clazz),
                                 fontSize = 12.sp
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(text = publications.metadata.subject
+                                Text(text = publication.metadata.subject
                                     ?.joinToString(", ") { it.toDisplayString() }
                                     ?: "No subjects", fontSize = 12.sp)
                                 Text(
-                                    text = "${stringResource(Res.string.duration)}- ${publications.metadata.duration}",
+                                    text = "${stringResource(Res.string.duration)}- ${publication.metadata.duration}",
                                     fontSize = 12.sp
                                 )
                             }

@@ -29,6 +29,7 @@ import respect.composeapp.generated.resources.try_it
 import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
+import world.respect.app.appstate.getTitle
 
 
 import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
@@ -142,7 +143,7 @@ fun AppsDetailScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                items(appData.lessons) { lesson ->
+                items(appData.publications) { publication ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Box(
                             modifier = Modifier
@@ -151,7 +152,7 @@ fun AppsDetailScreen(
                                 .background(Color.Gray)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(lesson.name, fontSize = 12.sp)
+                        Text(text = publication.metadata.title.getTitle(), fontSize = 12.sp)
                     }
                 }
             }

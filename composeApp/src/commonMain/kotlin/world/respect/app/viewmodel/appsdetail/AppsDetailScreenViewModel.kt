@@ -12,6 +12,12 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
 import world.respect.app.model.appsdetail.Images
 import world.respect.app.model.lessonlist.LessonListModel
+import world.respect.domain.opds.model.LangMapStringValue
+import world.respect.domain.opds.model.OpdsPublication
+import world.respect.domain.opds.model.ReadiumContributorStringValue
+import world.respect.domain.opds.model.ReadiumLink
+import world.respect.domain.opds.model.ReadiumMetadata
+import world.respect.domain.opds.model.ReadiumSubjectStringValue
 
 
 data class AppsDetailUiState(
@@ -37,12 +43,78 @@ class AppsDetailScreenViewModel : RespectViewModel() {
             imageName = "Chimple",
             appName = "Chimple: Kids",
             appDescription = "Chimple kids is an educational app to learn basic reading, writing & math skills",
-            lessons = listOf(
-                LessonListModel("Lesson 1", "01", "English", "02:00","Lesson Outcome/Lesson Objective"),
-                LessonListModel("Lesson 2", "02", "English", "02:00","Lesson Outcome/Lesson Objective"),
-                LessonListModel("Lesson 3", "03", "English", "02:00","Lesson Outcome/Lesson Objective"),
-                LessonListModel("Lesson 4", "04", "English", "02:00","Lesson Outcome/Lesson Objective"),
-                LessonListModel("Lesson 5", "05", "English", "02:00","Lesson Outcome/Lesson Objective"),
+            publications = listOf(
+                OpdsPublication(
+                    metadata = ReadiumMetadata(
+                        title = LangMapStringValue("Lesson 001"),
+                        author = listOf(
+                            ReadiumContributorStringValue("Mullah Nasruddin")
+                        ),
+                        language = listOf("en"),
+                        modified = "2015-09-29T17:00:00Z",
+                        subject = listOf(
+                            ReadiumSubjectStringValue("English"),
+                        ),
+                        duration = 2.0
+
+                    ),
+                    links = listOf(
+                        ReadiumLink(
+                            href = "",
+                            type = "application/opds-publication+json",
+                            rel = listOf("self")
+                        ),
+                        ReadiumLink(
+                            href = "",
+                            type = "text/html",
+                            rel = listOf("http://opds-spec.org/acquisition/open-access")
+                        )
+                    ),
+                    images = listOf(
+                        ReadiumLink(
+                            href = "",
+                            type = "image/jpeg",
+                            height = 700,
+                            width = 400
+                        )
+                    )
+                ),
+                OpdsPublication(
+                    metadata = ReadiumMetadata(
+                        title = LangMapStringValue("Lesson 005"),
+                        author = listOf(
+                            ReadiumContributorStringValue("Mullah Nasruddin")
+                        ),
+                        language = listOf("en"),
+                        modified = "2015-09-29T17:00:00Z",
+                        subject = listOf(
+                            ReadiumSubjectStringValue("Mathematics"),
+                        ),
+                        duration = 1.0
+
+
+                    ),
+                    links = listOf(
+                        ReadiumLink(
+                            href = "",
+                            type = "application/opds-publication+json",
+                            rel = listOf("self")
+                        ),
+                        ReadiumLink(
+                            href = "",
+                            type = "text/html",
+                            rel = listOf("http://opds-spec.org/acquisition/open-access")
+                        )
+                    ),
+                    images = listOf(
+                        ReadiumLink(
+                            href = "",
+                            type = "image/jpeg",
+                            height = 700,
+                            width = 400
+                        )
+                    )
+                )
             ),
             images = listOf(
                 Images(""),
