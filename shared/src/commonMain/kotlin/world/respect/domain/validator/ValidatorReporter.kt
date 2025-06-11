@@ -6,6 +6,6 @@ package world.respect.domain.validator
  */
 fun interface ValidatorReporter {
 
-    fun addMessage(message: ValidatorMessage)
+    fun addMessage(message: ValidatorMessage): ValidatorMessage
 
 }

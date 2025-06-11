@@ -7,16 +7,17 @@ class ListAndPrintlnValidatorReporter: ValidatorReporter {
     val messages: List<ValidatorMessage>
         get() = _messages.toList()
 
-    override fun addMessage(message: ValidatorMessage) {
+    override fun addMessage(message: ValidatorMessage) : ValidatorMessage{
         _messages.add(message)
         println(
             buildString {
                 append(if(message.isError) "ERROR: " else "WARNING: ")
-                append(message.message)
-                append("\n")
                 append(message.sourceUri)
+                append(" ")
+                append(message.message)
                 append("\n")
             }
         )
+        return message
     }
 }

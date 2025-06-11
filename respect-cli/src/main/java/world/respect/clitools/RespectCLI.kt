@@ -18,6 +18,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import world.respect.domain.getfavicons.GetFavIconsUseCaseImpl
+import world.respect.domain.opds.validator.ValidateOpdsPublicationUseCase
 import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
@@ -94,19 +95,25 @@ class RespectCLI {
                         val url = ns.getString("url")
                         val noFollow = ns.getString("nofollow").ifEmpty { "true" }
 
+                        val validateHttpResponseForUrlUseCase = ValidateHttpResponseForUrlUseCase(
+                            httpClient
+                        )
+                        val validateOpdsPublicationUseCase = ValidateOpdsPublicationUseCase(
+                            validateHttpResponseForUrlUseCase
+                        )
+
                         val validator = ValidateLinkUseCaseImpl(
                             opdsFeedValidatorUseCase = OpdsFeedValidator(
                                 json = json,
                                 httpClient = httpClient,
+                                validateOpdsPublicationUseCase = validateOpdsPublicationUseCase,
                             ),
                             opdsPublicationValidatorUseCase = OpdsPublicationValidator(
                                 httpClient = httpClient
                             ),
                             respectAppManifestValidatorUseCase = RespectAppManifestValidator(
                                 json = json,
-                                validateHttpResponseForUrlUseCase = ValidateHttpResponseForUrlUseCase(
-                                    httpClient
-                                ),
+                                validateHttpResponseForUrlUseCase = validateHttpResponseForUrlUseCase,
                                 getFavIconUseCase = GetFavIconsUseCaseImpl(),
                                 httpClient = httpClient,
                             ),

@@ -2,7 +2,9 @@ package world.respect.domain.validator
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.prepareGet
+import io.ktor.http.Headers
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.remaining
 import io.ktor.utils.io.exhausted
@@ -20,6 +22,11 @@ import java.io.OutputStream
 class ValidateHttpResponseForUrlUseCase(
     private val httpClient: HttpClient,
 ) {
+
+    data class ValidateHttpResponseForUrlResult(
+        val messages: List<ValidatorMessage>,
+        val responseHeaders: Headers?,
+    )
 
     private class DiscardOutputStream: OutputStream() {
         override fun write(p0: ByteArray) {
@@ -39,29 +46,49 @@ class ValidateHttpResponseForUrlUseCase(
         val acceptableMimeTypes: List<String> = emptyList(),
     )
 
+    /**
+     * Validate the HTTP response for a given URL (e.g. ensure it returns 200 OK, has required
+     * headers, mime type is in acceptable list, etc)
+     *
+     * @param url url to validate
+     * @param referer the referer e.g. the URL from which this was requested - this is shown as the
+     *        error source in the reporter.
+     */
     suspend operator fun invoke(
         url: String,
-        referer: String?,
+        referer: String,
         reporter: ValidatorReporter,
         options: ValidationOptions = DEFAULT_VALIDATION_OPTS,
-    )  {
+    ): ValidateHttpResponseForUrlResult  {
         val sink = DiscardOutputStream().asSink()
+        val validatorMessages = mutableListOf<ValidatorMessage>()
 
-        val linkFromStr = referer?.let {
-            "(Linked from $referer)"
-        } ?: ""
+        val linkToStr = "Link to $url"
+        var responseHeaders: Headers? = null
 
         try {
             //As per https://ktor.io/docs/client-responses.html#streaming
-            httpClient.prepareGet(url).execute { response ->response.headers["content-type"]
+            httpClient.prepareGet(url){
+                expectSuccess = false
+            }.execute { response ->
+                responseHeaders = response.headers
                 val contentType = response.headers["content-type"]?.substringBefore(";")
-                if(response.headers["content-type"] !in options.acceptableMimeTypes) {
-                    reporter.addMessage(
+                if(contentType !in options.acceptableMimeTypes) {
+                    validatorMessages += reporter.addMessage(
                         ValidatorMessage(
                             isError = true,
-                            sourceUri = url,
-                            "Wrong mime type: $contentType not ${options.acceptableMimeTypes.joinToString()}" +
-                                    " $linkFromStr"
+                            sourceUri = referer,
+                            message = "$linkToStr: Response provides unacceptable mime type: $contentType. Should be: ${options.acceptableMimeTypes.joinToString()}"
+                        )
+                    )
+                }
+
+                if(response.status.value != 200) {
+                    validatorMessages += reporter.addMessage(
+                        ValidatorMessage(
+                            isError = true,
+                            sourceUri = referer,
+                            message = "$linkToStr: Response status code not HTTP OK/200. Got: ${response.status.value}"
                         )
                     )
                 }
@@ -75,8 +102,13 @@ class ValidateHttpResponseForUrlUseCase(
                 }
             }
         }catch(e: Throwable) {
-            reporter.addMessage(ValidatorMessage.fromException(url, e))
+            validatorMessages += reporter.addMessage(ValidatorMessage.fromException(url, e))
         }
+
+        return ValidateHttpResponseForUrlResult(
+            messages = validatorMessages,
+            responseHeaders = responseHeaders,
+        )
     }
 
     companion object {

@@ -15,6 +15,7 @@ import world.respect.domain.validator.ValidateLinkUseCase
 class OpdsFeedValidator(
     private val json: Json,
     private val httpClient: HttpClient,
+    private val validateOpdsPublicationUseCase: ValidateOpdsPublicationUseCase,
 ) : AbstractJsonSchemaValidator(
     schemaUrl = "https://drafts.opds.io/schema/feed.schema.json"
 ) {
@@ -39,12 +40,19 @@ class OpdsFeedValidator(
             }
 
             val opdsFeed = json.decodeFromString<OpdsFeed>(text)
+
+            val allPublications = (opdsFeed.publications ?: emptyList()) +
+                    (opdsFeed.groups?.flatMap { it.publications ?: emptyList() } ?: emptyList())
+
+            allPublications.forEach {
+                validateOpdsPublicationUseCase(it, url, reporter)
+            }
+
             if(linkValidator != null) {
                 val allLinks = opdsFeed.links + (opdsFeed.navigation ?: emptyList()) +
                         (opdsFeed.facets?.flatMap { it.links } ?: emptyList() ?: emptyList()) +
                         (opdsFeed.groups?.flatMap { it.links ?: emptyList() } ?: emptyList()) +
                         (opdsFeed.publications?.flatMap { it.links } ?: emptyList())
-
 
                 allLinks.forEach { link ->
                     linkValidator(link, url, options, reporter, visitedFeeds)
