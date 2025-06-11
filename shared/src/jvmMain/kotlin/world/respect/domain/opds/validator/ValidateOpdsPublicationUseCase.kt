@@ -21,7 +21,11 @@ class ValidateOpdsPublicationUseCase(
     private val validateHttpResponseForUrlUseCase: ValidateHttpResponseForUrlUseCase,
 ) {
 
-
+    /**
+     * @param publication OpdsPublication to be validated
+     * @param url the URL of the OPDS JSON loaded (used to resolve links)
+     * @param reporter ValidatorReporter
+     */
     suspend operator fun invoke(
         publication: OpdsPublication,
         url: String,
@@ -32,6 +36,7 @@ class ValidateOpdsPublicationUseCase(
             link.rel?.any { it.startsWith("http://opds-spec.org/acquisition") } == true &&
                     linkType in LEARNING_UNIT_MIME_TYPES
         }
+
         val publicationTitleAndId = buildString {
             append("title \"")
             append(publication.metadata.title.toStringMap().values.firstOrNull() ?: "[Unknown]")

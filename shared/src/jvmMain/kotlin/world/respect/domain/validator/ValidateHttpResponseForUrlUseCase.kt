@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.prepareGet
 import io.ktor.http.Headers
+import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.remaining
 import io.ktor.utils.io.exhausted
@@ -26,6 +27,7 @@ class ValidateHttpResponseForUrlUseCase(
     data class ValidateHttpResponseForUrlResult(
         val messages: List<ValidatorMessage>,
         val responseHeaders: Headers?,
+        val statusCode: HttpStatusCode?,
     )
 
     private class DiscardOutputStream: OutputStream() {
@@ -65,6 +67,7 @@ class ValidateHttpResponseForUrlUseCase(
 
         val linkToStr = "Link to $url"
         var responseHeaders: Headers? = null
+        var httpStatusCode: HttpStatusCode? = null
 
         try {
             //As per https://ktor.io/docs/client-responses.html#streaming
@@ -72,6 +75,8 @@ class ValidateHttpResponseForUrlUseCase(
                 expectSuccess = false
             }.execute { response ->
                 responseHeaders = response.headers
+                httpStatusCode = response.status
+
                 val contentType = response.headers["content-type"]?.substringBefore(";")
                 if(contentType !in options.acceptableMimeTypes) {
                     validatorMessages += reporter.addMessage(
@@ -108,6 +113,7 @@ class ValidateHttpResponseForUrlUseCase(
         return ValidateHttpResponseForUrlResult(
             messages = validatorMessages,
             responseHeaders = responseHeaders,
+            statusCode = httpStatusCode,
         )
     }
 
