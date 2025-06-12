@@ -78,7 +78,9 @@ class ValidateHttpResponseForUrlUseCase(
                 httpStatusCode = response.status
 
                 val contentType = response.headers["content-type"]?.substringBefore(";")
-                if(contentType !in options.acceptableMimeTypes) {
+                if(options.acceptableMimeTypes.isNotEmpty() &&
+                    contentType !in options.acceptableMimeTypes
+                ) {
                     validatorMessages += reporter.addMessage(
                         ValidatorMessage(
                             isError = true,

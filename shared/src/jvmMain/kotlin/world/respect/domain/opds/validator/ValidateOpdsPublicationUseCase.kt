@@ -156,6 +156,13 @@ class ValidateOpdsPublicationUseCase(
                         }
                     )
                 )
+            }else {
+                try {
+                    //Load the discovered manifest (maybe unless this is the URL we're already validating)
+                    //TODO: check URLs
+                }catch(e: Throwable) {
+
+                }
             }
         }
     }

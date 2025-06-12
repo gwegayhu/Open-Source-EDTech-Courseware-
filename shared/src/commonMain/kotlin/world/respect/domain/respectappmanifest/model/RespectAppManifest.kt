@@ -62,7 +62,7 @@ data class RespectAppManifest(
     @Serializable
     data class WebDetails(
         val url: Url? = null,
-        val sourceCode: Url,
+        val sourceCode: Url? = null,
     )
 
     companion object {

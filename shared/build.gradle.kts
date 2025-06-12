@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -9,7 +8,6 @@ plugins {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -25,11 +23,26 @@ kotlin {
             implementation(libs.argparse4j)
             api(libs.uri.kmp)
             implementation(libs.kotlinx.date.time)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            api(libs.kodein.di)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktor.client.content.negotiation)
         }
 
         jvmMain.dependencies {
             implementation(libs.json.schema.validator)
             implementation(libs.jsoup)
+            implementation(libs.okhttp)
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.ktor.server.core)
+            implementation(libs.ktor.server.netty)
+            implementation(libs.ktor.server.content.negotiation)
+            implementation(libs.ktor.client.core)
+
+
         }
 
         val commonTest by getting {
@@ -39,20 +52,6 @@ kotlin {
         }
     }
 }
-
-tasks.register<JavaExec>("runOpdsValidator") {
-    group = "application"
-    description = "Runs the OPDS validator CLI"
-    classpath = kotlin.jvm().compilations["main"].output.allOutputs +
-            configurations.getByName("jvmRuntimeClasspath")
-    mainClass.set("world.respect.OpdsCliApp")
-
-    // Cast the argument to String and wrap it in a list
-    args = project.findProperty("args")?.let {
-        listOf(it.toString())
-    } ?: listOf("--help")
-}
-
 
 android {
     namespace = "world.respect.shared"

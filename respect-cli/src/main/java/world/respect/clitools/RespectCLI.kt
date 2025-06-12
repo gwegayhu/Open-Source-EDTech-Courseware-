@@ -1,27 +1,17 @@
 package world.respect.clitools
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
+import kotlinx.coroutines.runBlocking
 import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.helper.HelpScreenException
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
-import okhttp3.Dispatcher
-import okhttp3.OkHttpClient
+import org.kodein.di.DI
+import org.kodein.di.direct
+import org.kodein.di.instance
+import world.respect.di.JvmCoreDiMOdule
 import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.opds.validator.OpdsFeedValidator
-import world.respect.domain.opds.validator.ValidateLinkUseCaseImpl
-import world.respect.domain.opds.validator.OpdsPublicationValidator
-import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidator
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
-import world.respect.domain.getfavicons.GetFavIconsUseCaseImpl
-import world.respect.domain.opds.validator.ValidateOpdsPublicationUseCase
 import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
-import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidateLinkUseCase
 
 
@@ -40,26 +30,8 @@ class RespectCLI {
          */
         @JvmStatic
         fun main(args: Array<String>) {
-            val json = Json {
-                encodeDefaults = false
-                ignoreUnknownKeys = true
-            }
-
-            val okHttpClient = OkHttpClient.Builder()
-                .dispatcher(
-                    Dispatcher().also {
-                        it.maxRequests = 30
-                        it.maxRequestsPerHost = 10
-                    }
-                ).build()
-
-            val httpClient = HttpClient(OkHttp) {
-                install(ContentNegotiation) {
-                    json(json = json)
-                }
-                engine {
-                    preconfigured = okHttpClient
-                }
+            val di = DI {
+                import(JvmCoreDiMOdule)
             }
 
             val reporter = ListAndPrintlnValidatorReporter()
@@ -95,29 +67,7 @@ class RespectCLI {
                         val url = ns.getString("url")
                         val noFollow = ns.getString("nofollow").ifEmpty { "true" }
 
-                        val validateHttpResponseForUrlUseCase = ValidateHttpResponseForUrlUseCase(
-                            httpClient
-                        )
-                        val validateOpdsPublicationUseCase = ValidateOpdsPublicationUseCase(
-                            validateHttpResponseForUrlUseCase
-                        )
-
-                        val validator = ValidateLinkUseCaseImpl(
-                            opdsFeedValidatorUseCase = OpdsFeedValidator(
-                                json = json,
-                                httpClient = httpClient,
-                                validateOpdsPublicationUseCase = validateOpdsPublicationUseCase,
-                            ),
-                            opdsPublicationValidatorUseCase = OpdsPublicationValidator(
-                                httpClient = httpClient
-                            ),
-                            respectAppManifestValidatorUseCase = RespectAppManifestValidator(
-                                json = json,
-                                validateHttpResponseForUrlUseCase = validateHttpResponseForUrlUseCase,
-                                getFavIconUseCase = GetFavIconsUseCaseImpl(),
-                                httpClient = httpClient,
-                            ),
-                        )
+                        val validator: ValidateLinkUseCase = di.direct.instance()
 
                         runBlocking {
                             validator(
