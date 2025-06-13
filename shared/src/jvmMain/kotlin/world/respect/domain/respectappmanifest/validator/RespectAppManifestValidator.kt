@@ -32,7 +32,7 @@ class RespectAppManifestValidator(
         url: String,
         options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
-        visitedFeeds: MutableList<String>,
+        visitedUrls: MutableList<String>,
         linkValidator: ValidateLinkUseCase?
     ) {
         val absoluteUrl = URI(url).toURL()
@@ -156,7 +156,7 @@ class RespectAppManifestValidator(
                 refererUrl = absoluteUrl.toString(),
                 options = options,
                 reporter = reporter,
-                visitedUrls = visitedFeeds,
+                visitedUrls = visitedUrls,
             )
         } catch (e: Throwable) {
             reporter.addMessage(ValidatorMessage.fromException(absoluteUrl.toString(), e))

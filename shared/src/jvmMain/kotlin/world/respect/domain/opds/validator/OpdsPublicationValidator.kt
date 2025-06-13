@@ -20,7 +20,7 @@ class OpdsPublicationValidator(
         url: String,
         options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
-        visitedFeeds: MutableList<String>,
+        visitedUrls: MutableList<String>,
         linkValidator: ValidateLinkUseCase?
     ) {
         try {
@@ -37,6 +37,17 @@ class OpdsPublicationValidator(
 
             val opdsPublication = json.decodeFromString<OpdsPublication>(text)
             validateOpdsPublicationUseCase(opdsPublication, url, reporter)
+
+            opdsPublication.links.forEach { link ->
+                linkValidator?.invoke(
+                    link = link,
+                    refererUrl = url,
+                    options = options,
+                    reporter = reporter,
+                    visitedUrls = visitedUrls
+                )
+            }
+
         }catch (e: Throwable) {
             reporter.addMessage(ValidatorMessage.fromException(url, e))
         }

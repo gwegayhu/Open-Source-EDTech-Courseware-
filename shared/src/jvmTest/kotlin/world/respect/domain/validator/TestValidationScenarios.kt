@@ -101,7 +101,8 @@ class TestValidationScenarios {
         testValidationScenario(
             caseName = "case_valid",
         ) {
-            assertEquals(0, reporter.messages.count { it.level == ValidatorMessage.Level.ERROR })
+            val errors = reporter.messages.filter { it.level == ValidatorMessage.Level.ERROR }
+            assertEquals(0, errors.size)
         }
     }
 

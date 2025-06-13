@@ -81,7 +81,7 @@ class ValidateLinkUseCaseImpl(
             url = linkUrl,
             options = options,
             reporter = reporter,
-            visitedFeeds = visitedUrls,
+            visitedUrls = visitedUrls,
             linkValidator = if(options.followLinks) this else null,
         )
     }

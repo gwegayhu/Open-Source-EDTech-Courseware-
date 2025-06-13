@@ -24,7 +24,7 @@ class OpdsFeedValidator(
         url: String,
         options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
-        visitedFeeds: MutableList<String>,
+        visitedUrls: MutableList<String>,
         linkValidator: ValidateLinkUseCase?,
     ) {
         try {
@@ -55,7 +55,7 @@ class OpdsFeedValidator(
                         (opdsFeed.publications?.flatMap { it.links } ?: emptyList())
 
                 allLinks.forEach { link ->
-                    linkValidator(link, url, options, reporter, visitedFeeds)
+                    linkValidator(link, url, options, reporter, visitedUrls)
                 }
             }
         }catch(e : Throwable) {

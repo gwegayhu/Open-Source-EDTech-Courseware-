@@ -6,7 +6,7 @@ interface Validator {
         url: String,
         options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
-        visitedFeeds: MutableList<String>,
+        visitedUrls: MutableList<String>,
         linkValidator: ValidateLinkUseCase?,
     )
 

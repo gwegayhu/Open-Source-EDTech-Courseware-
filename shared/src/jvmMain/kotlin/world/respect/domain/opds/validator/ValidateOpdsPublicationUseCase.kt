@@ -142,7 +142,7 @@ class ValidateOpdsPublicationUseCase(
             }
 
             val manifestUrl = manifestHeaderLink?.uriRef?.let {
-                learningResourceIdUrl.resolve(URI(it))
+                learningResourceIdUrl.resolve(URI(it)).toString()
             } ?: jsoupDoc?.select("link")?.filter { node ->
                 node.attr("rel")
                     .ifEmpty { null }
@@ -169,6 +169,7 @@ class ValidateOpdsPublicationUseCase(
                 @Suppress("CatchMayIgnoreException") //Coming soon
                 try {
                     //Load the discovered manifest (maybe unless this is the URL we're already validating)
+                    //if this url is the manifest, then check for resources
                     //TODO: check URLs
                 }catch(e: Throwable) {
 
