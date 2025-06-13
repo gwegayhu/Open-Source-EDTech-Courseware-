@@ -35,8 +35,6 @@ class RespectCLI {
                 import(JvmCoreDiMOdule)
             }
 
-            val reporter = ListAndPrintlnValidatorReporter()
-
             val parser = ArgumentParsers.newFor("respect-cli").build()
             val subparsers = parser.addSubparsers()
                 .title("subcommands")
@@ -56,6 +54,11 @@ class RespectCLI {
                 it.addArgument("-t", "--type")
                     .setDefault("manifest")
                     .help("manifest|feed")
+                it.addArgument("-o", "--output")
+                    .choices("error", "warn", "verbose", "debug")
+                    .setDefault("warn")
+                    .help("Output verbosity")
+
             }.help("Validate a RESPECT App Manifest or OPDS Feed of Learning Units")
 
 
@@ -66,7 +69,16 @@ class RespectCLI {
                 when(subCommand) {
                     CMD_VALIDATE -> {
                         val url = ns.getString("url")
-                        val noFollow = ns.getString("nofollow").ifEmpty { "true" }
+                        val minLevel = ValidatorMessage.Level.valueOf(
+                            (ns.getString("output") ?: "warn").uppercase()
+                        )
+                        val noFollow = ns.getString("nofollow")?.ifEmpty { null }
+
+                        val reporter = ListAndPrintlnValidatorReporter(
+                            filter = {
+                                it.level.ordinal >= minLevel.ordinal
+                            }
+                        )
 
                         val validator: ValidateLinkUseCase = di.direct.instance()
 
@@ -79,7 +91,7 @@ class RespectCLI {
                                 options = ValidateLinkUseCase.ValidatorOptions(
                                     followLinks = !(noFollow?.toBoolean() ?: false)
                                 ),
-                                baseUrl = url,
+                                refererUrl = url,
                                 reporter = reporter,
                                 visitedUrls = mutableListOf(),
                             )

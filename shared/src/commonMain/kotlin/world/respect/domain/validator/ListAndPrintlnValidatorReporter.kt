@@ -1,6 +1,8 @@
 package world.respect.domain.validator
 
-class ListAndPrintlnValidatorReporter: ValidatorReporter {
+class ListAndPrintlnValidatorReporter(
+    val filter: (ValidatorMessage) -> Boolean = { true }
+): ValidatorReporter {
 
     private val _messages = mutableListOf<ValidatorMessage>()
 
@@ -9,16 +11,20 @@ class ListAndPrintlnValidatorReporter: ValidatorReporter {
 
     override fun addMessage(message: ValidatorMessage) : ValidatorMessage{
         _messages.add(message)
-        println(
-            buildString {
-                append(message.level.name)
-                append(": ")
-                append(message.sourceUri)
-                append(" ")
-                append(message.message)
-                append("\n")
-            }
-        )
+
+        if(filter(message)) {
+            println(
+                buildString {
+                    append(message.level.name)
+                    append(": ")
+                    append(message.sourceUri)
+                    append(" ")
+                    append(message.message)
+                    append("\n")
+                }
+            )
+        }
+
         return message
     }
 }

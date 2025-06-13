@@ -57,7 +57,8 @@ class ValidateLinkUseCaseImpl(
                     level = ValidatorMessage.Level.DEBUG,
                     sourceUri = refererUrl,
                     message = "ValidateLinkUseCase: Skipping validator run for link to $linkUrl as " +
-                            "it returns a non-success status code: $linkUrl"
+                            "it did not return a successful status code (${httpResponseResult.statusCode}): " +
+                            linkUrl
                 )
             )
 
