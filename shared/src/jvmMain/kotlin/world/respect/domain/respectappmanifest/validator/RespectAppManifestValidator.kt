@@ -34,7 +34,7 @@ class RespectAppManifestValidator(
         reporter: ValidatorReporter,
         visitedFeeds: MutableList<String>,
         linkValidator: ValidateLinkUseCase?
-    )  {
+    ) {
         val absoluteUrl = URI(url).toURL()
 
         try {
@@ -47,16 +47,33 @@ class RespectAppManifestValidator(
             val respectAppManifest: RespectAppManifest = json.decodeFromString(text)
 
             respectAppManifest.name.toStringMap().forEach { (_, value) ->
-                if(value.isBlank() || value.length > TITLE_MAX_CHARS) {
-                    reporter.addMessage(ValidatorMessage(true, absoluteUrl.toString(),
-                        "title \"$value\" invalid length: not between 1 and $TITLE_MAX_CHARS chars"))
+                if (value.isBlank() || value.length > TITLE_MAX_CHARS) {
+                    reporter.addMessage(
+                        ValidatorMessage(
+                            level = ValidatorMessage.Level.ERROR,
+                            sourceUri = absoluteUrl.toString(),
+                            message = "title \"$value\" invalid length: not between 1 and $TITLE_MAX_CHARS chars"
+                        )
+                    )
                 }
             }
 
             respectAppManifest.description?.toStringMap()?.forEach { (_, value) ->
                 if(value.isBlank() || value.length > DESCRIPTION_MAX_CHARS) {
-                    reporter.addMessage(ValidatorMessage(true, absoluteUrl.toString(),
-                        "description \"$value\" invalid length: not between 1 and $DESCRIPTION_MAX_CHARS chars"))
+                    reporter.addMessage(
+                        ValidatorMessage(
+                            level = ValidatorMessage.Level.ERROR,
+                            sourceUri = absoluteUrl.toString(),
+                            message = "description \"$value\" invalid length: not between 1 and $DESCRIPTION_MAX_CHARS chars"
+                        )
+                    )
+                    reporter.addMessage(
+                        ValidatorMessage(
+                            level = ValidatorMessage.Level.ERROR,
+                            sourceUri = absoluteUrl.toString(),
+                            message = "description \"$value\" invalid length: not between 1 and $DESCRIPTION_MAX_CHARS chars"
+                        )
+                    )
                 }
             }
 
@@ -67,19 +84,29 @@ class RespectAppManifestValidator(
                 )!!.bufferedReader().readText()
             )
 
-            if(license != LICENSE_PROPRIETARY && !allLicenses.licenses.any { it.licenseId == license }) {
-                reporter.addMessage(ValidatorMessage(
-                    true, absoluteUrl.toString(), "Invalid license: $license"
-                ))
+            if (license != LICENSE_PROPRIETARY && !allLicenses.licenses.any { it.licenseId == license }) {
+                reporter.addMessage(
+                    ValidatorMessage(
+                        level = ValidatorMessage.Level.ERROR,
+                        sourceUri = absoluteUrl.toString(),
+                        message = "Invalid license: $license"
+                    )
+                )
             }
 
             val websiteVal = respectAppManifest.website
-            if(websiteVal != null) {
+            if (websiteVal != null) {
                 validateHttpResponseForUrlUseCase(
                     url = websiteVal.toString(), referer = url, reporter
                 )
-            }else {
-                reporter.addMessage(ValidatorMessage(true, absoluteUrl.toString(),"website is required"))
+            } else {
+                reporter.addMessage(
+                    ValidatorMessage(
+                        level = ValidatorMessage.Level.ERROR,
+                        sourceUri = absoluteUrl.toString(),
+                        message = "website is required"
+                    )
+                )
             }
 
             val icon = respectAppManifest.icon ?: getFavIconUseCase(
@@ -89,10 +116,15 @@ class RespectAppManifestValidator(
                         ((it.height ?: 0) >= ICON_REQUIRED_SIZE)
             }
 
-            if(icon == null) {
-                reporter.addMessage(ValidatorMessage(true, absoluteUrl.toString(),
-                    "No acceptable icon (webp or png) with resolution >= 512 pixels found. " +
-                            "If website does not have an acceptable favicon, must be explicitly specified"))
+            if (icon == null) {
+                reporter.addMessage(
+                    ValidatorMessage(
+                        level = ValidatorMessage.Level.ERROR,
+                        sourceUri = absoluteUrl.toString(),
+                        message = "No acceptable icon (webp or png) with resolution >= 512 pixels found. " +
+                                "If website does not have an acceptable favicon, must be explicitly specified"
+                    )
+                )
             }
 
             validateHttpResponseForUrlUseCase(
@@ -105,10 +137,13 @@ class RespectAppManifestValidator(
             )
 
             respectAppManifest.android?.packageId?.also { packageId ->
-                if(packageId.any { it !in PACKAGE_ID_ALLOWED_CHARS }) {
-
+                if (packageId.any { it !in PACKAGE_ID_ALLOWED_CHARS }) {
                     reporter.addMessage(
-                        ValidatorMessage(true, absoluteUrl.toString(), "Invalid packageId: $packageId")
+                        ValidatorMessage(
+                            level = ValidatorMessage.Level.ERROR,
+                            sourceUri = absoluteUrl.toString(),
+                            message = "Invalid packageId: $packageId"
+                        )
                     )
                 }
             }
@@ -123,13 +158,13 @@ class RespectAppManifestValidator(
                 reporter = reporter,
                 visitedUrls = visitedFeeds,
             )
-        }catch(e: Throwable) {
+        } catch (e: Throwable) {
             reporter.addMessage(ValidatorMessage.fromException(absoluteUrl.toString(), e))
         }
     }
 
 
-    companion object  {
+    companion object {
 
         val PACKAGE_ID_ALLOWED_CHARS = ('a' .. 'z').plus('A'..'Z')
             .plus('0'..'9').plus("._$".asIterable())

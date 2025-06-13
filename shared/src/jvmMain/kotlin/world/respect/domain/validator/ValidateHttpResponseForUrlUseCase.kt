@@ -83,7 +83,7 @@ class ValidateHttpResponseForUrlUseCase(
                 ) {
                     validatorMessages += reporter.addMessage(
                         ValidatorMessage(
-                            isError = true,
+                            level = ValidatorMessage.Level.ERROR,
                             sourceUri = referer,
                             message = "$linkToStr: Response provides unacceptable mime type: $contentType. Should be: ${options.acceptableMimeTypes.joinToString()}"
                         )
@@ -93,7 +93,7 @@ class ValidateHttpResponseForUrlUseCase(
                 if(response.status.value != 200) {
                     validatorMessages += reporter.addMessage(
                         ValidatorMessage(
-                            isError = true,
+                            level = ValidatorMessage.Level.ERROR,
                             sourceUri = referer,
                             message = "$linkToStr: Response status code not HTTP OK/200. Got: ${response.status.value}"
                         )

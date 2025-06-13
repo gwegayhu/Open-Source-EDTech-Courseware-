@@ -19,13 +19,20 @@ suspend fun HttpClient.verifyMimeTypeAndGetBodyAsText(
         val contentType = response.headers["content-type"]?.substringBefore(";")
         if(contentType !in acceptableMimeTypes) {
             reporter.addMessage(
-                ValidatorMessage(true, url, "Mime type is not application/json")
+                ValidatorMessage(
+                    level = ValidatorMessage.Level.ERROR,
+                    sourceUri = url,
+                    message = "Mime type is not application/json",
+                )
             )
         }
 
         if(!response.status.isSuccess()) {
             reporter.addMessage(
-                ValidatorMessage(true, url, "HTTP status: failure: ${response.status}")
+                ValidatorMessage(
+                    level = ValidatorMessage.Level.ERROR,
+                    sourceUri = url,
+                    message = "HTTP status: failure: ${response.status}")
             )
         }
 

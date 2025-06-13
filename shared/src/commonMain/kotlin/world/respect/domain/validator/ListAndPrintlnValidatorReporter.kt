@@ -11,7 +11,8 @@ class ListAndPrintlnValidatorReporter: ValidatorReporter {
         _messages.add(message)
         println(
             buildString {
-                append(if(message.isError) "ERROR: " else "WARNING: ")
+                append(message.level.name)
+                append(": ")
                 append(message.sourceUri)
                 append(" ")
                 append(message.message)

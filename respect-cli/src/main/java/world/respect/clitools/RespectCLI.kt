@@ -13,6 +13,7 @@ import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
+import world.respect.domain.validator.ValidatorMessage
 
 
 @Suppress("unused")
@@ -84,7 +85,9 @@ class RespectCLI {
                             )
                         }
 
-                        val numErrors = reporter.messages.count { it.isError }
+                        val numErrors = reporter.messages.count {
+                            it.level == ValidatorMessage.Level.ERROR
+                        }
                         println("Errors: $numErrors")
 
                         if(numErrors > 0) {

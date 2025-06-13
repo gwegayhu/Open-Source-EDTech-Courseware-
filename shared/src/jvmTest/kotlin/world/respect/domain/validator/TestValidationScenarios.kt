@@ -17,6 +17,7 @@ import world.respect.testutil.findFreePort
 import world.respect.testutil.recursiveFindAndReplace
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class TestValidationScenarios {
 
@@ -24,19 +25,31 @@ class TestValidationScenarios {
     @JvmField
     var tempFileRule = TemporaryFolder()
 
-    @Test
-    fun givenValidManifest() {
+    data class ValidationScenarioContext(
+        val reporter: ListAndPrintlnValidatorReporter,
+        val testBaseUrl: String,
+    )
+
+    private fun testValidationScenario(
+        caseName: String,
+        caseResources: List<String> = listOf(
+            "app.html", "appmanifest.json",  "index.json", "grade1/grade1.json",
+            "grade1/lesson001/lesson001.html", "grade1/lesson001/lesson001.json"
+        ),
+        block: ValidationScenarioContext.() -> Unit,
+    ) {
         val tempDir = tempFileRule.copyResourcesToTempDir(
-            "/world/respect/validator/case_valid",
-                listOf("app.html", "appmanifest.json",  "index.json", "grade1/grade1.json", "grade1/lesson001/lesson001.html", "grade1/lesson001/lesson001.json")
-            )
+            "/world/respect/validator/$caseName",
+            resourceNames = caseResources,
+        )
 
         val port = findFreePort()
+        val testBaseUrl = "http://localhost:$port/resources"
         println("Test running on port $port")
         tempDir.recursiveFindAndReplace(
             fileFilter =  { it.extension in listOf("html", "json") },
             textReplacement = {
-                it.replace("\$TESTBASEURL", "http://localhost:$port/resources")
+                it.replace("\$TESTBASEURL", testBaseUrl)
             }
         )
 
@@ -46,34 +59,62 @@ class TestValidationScenarios {
             }
         }
 
-        server.start()
-        val di = DI {
-            import(JvmCoreDiMOdule)
+        try {
+            server.start()
+
+            val di = DI {
+                import(JvmCoreDiMOdule)
+            }
+
+            val validator: ValidateLinkUseCase by di.instance()
+
+            val reporter = ListAndPrintlnValidatorReporter()
+            runBlocking {
+                validator(
+                    link = ReadiumLink(
+                        href = "http://localhost:$port/resources/appmanifest.json",
+                        type = RespectAppManifest.MIME_TYPE,
+                    ),
+                    options = ValidateLinkUseCase.ValidatorOptions(
+                        followLinks = true
+                    ),
+                    baseUrl = "http://localhost:$port/resources/appmanifest.json",
+                    reporter = reporter,
+                    visitedUrls = mutableListOf(),
+                )
+            }
+
+            block(
+                ValidationScenarioContext(
+                    reporter = reporter,
+                    testBaseUrl = testBaseUrl,
+                )
+            )
+        } finally {
+            server.stop()
         }
+    }
 
-        val validator: ValidateLinkUseCase by di.instance()
 
-        val reporter = ListAndPrintlnValidatorReporter()
-        runBlocking {
-            validator(
-                link = ReadiumLink(
-                    href = "http://localhost:$port/resources/appmanifest.json",
-                    type = RespectAppManifest.MIME_TYPE,
-                ),
-                options = ValidateLinkUseCase.ValidatorOptions(
-                    followLinks = true
-                ),
-                baseUrl = "http://localhost:$port/resources/appmanifest.json",
-                reporter = reporter,
-                visitedUrls = mutableListOf(),
+    @Test
+    fun givenValidManifest_whenValidated_thenWillReturnNoErrors() {
+        testValidationScenario(
+            caseName = "case_valid",
+        ) {
+            assertEquals(0, reporter.messages.count { it.level == ValidatorMessage.Level.ERROR })
+        }
+    }
+
+    @Test
+    fun givenManifestNotDiscoverable_whenValidated_thenWillReturnError() {
+        testValidationScenario(
+            caseName = "case_manifest_not_discoverable",
+        ) {
+            assertTrue(
+                message = "Error message for manifest not being discoverable raised",
+                actual = reporter.messages.any { it.message.contains("Manifest not discovered") }
             )
         }
-
-        assertEquals(0, reporter.messages.count { it.isError })
-
-
-        server.stop()
-
-
     }
+
 }

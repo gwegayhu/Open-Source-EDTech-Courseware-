@@ -50,7 +50,7 @@ class ValidateOpdsPublicationUseCase(
         if(acquisitionLinks.isEmpty()) {
             reporter.addMessage(
                 ValidatorMessage(
-                    isError = true,
+                    level = ValidatorMessage.Level.ERROR,
                     sourceUri = url,
                     message = buildString {
                         append("No suitable acquisition links found for publication: ")
@@ -69,7 +69,7 @@ class ValidateOpdsPublicationUseCase(
             if(learningResourceIdUrl.toString().contains("#")) {
                 reporter.addMessage(
                     ValidatorMessage(
-                        isError = true,
+                        level = ValidatorMessage.Level.ERROR,
                         sourceUri = url,
                         message = buildString {
                             append("Learning Resource ID URL ($learningResourceIdUrl) contains a #" )
@@ -86,7 +86,7 @@ class ValidateOpdsPublicationUseCase(
             if(reservedQueryParamNamesUsed.isNotEmpty()) {
                 reporter.addMessage(
                     ValidatorMessage(
-                        isError = true,
+                        level = ValidatorMessage.Level.ERROR,
                         sourceUri = url,
                         message = buildString {
                             append("Learning Resource ID URL ($learningResourceIdUrl) for publication ")
@@ -121,7 +121,7 @@ class ValidateOpdsPublicationUseCase(
             }catch(e: Throwable) {
                 reporter.addMessage(
                     ValidatorMessage(
-                        isError = true,
+                        level = ValidatorMessage.Level.ERROR,
                         sourceUri = url,
                         message = buildString {
                             append("Could not load or parse learning resource ID: $learningResourceIdUrl")
@@ -148,7 +148,7 @@ class ValidateOpdsPublicationUseCase(
             if(manifestUrl == null) {
                 reporter.addMessage(
                     ValidatorMessage(
-                        isError = true,
+                        level = ValidatorMessage.Level.ERROR,
                         sourceUri = url,
                         message = buildString {
                             append("Manifest not discovered for learning resource ID URL: $learningResourceIdUrl .")
