@@ -78,7 +78,7 @@ class TestValidationScenarios {
                     options = ValidateLinkUseCase.ValidatorOptions(
                         followLinks = true
                     ),
-                    baseUrl = "http://localhost:$port/resources/appmanifest.json",
+                    refererUrl = "http://localhost:$port/resources/appmanifest.json",
                     reporter = reporter,
                     visitedUrls = mutableListOf(),
                 )
@@ -111,8 +111,17 @@ class TestValidationScenarios {
             caseName = "case_manifest_not_discoverable",
         ) {
             assertTrue(
+                message = "Reporter visited lesson",
+                actual = reporter.messages.any {
+                    it.sourceUri == "$testBaseUrl/grade1/lesson001/lesson001.json"
+                }
+            )
+            assertTrue(
                 message = "Error message for manifest not being discoverable raised",
-                actual = reporter.messages.any { it.message.contains("Manifest not discovered") }
+                actual = reporter.messages.any {
+                    it.level == ValidatorMessage.Level.ERROR &&
+                        it.message.contains("Manifest not discovered")
+                }
             )
         }
     }

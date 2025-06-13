@@ -153,7 +153,7 @@ class RespectAppManifestValidator(
                     href = respectAppManifest.learningUnits.toString(),
                     type = OpdsFeed.MEDIA_TYPE,
                 ),
-                baseUrl = absoluteUrl.toString(),
+                refererUrl = absoluteUrl.toString(),
                 options = options,
                 reporter = reporter,
                 visitedUrls = visitedFeeds,

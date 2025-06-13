@@ -46,6 +46,15 @@ class ValidateOpdsPublicationUseCase(
             }
         }
 
+        reporter.addMessage(
+            ValidatorMessage(
+                ValidatorMessage.Level.DEBUG,
+                sourceUri = url,
+                message = "Validating Opds Publication: $publicationTitleAndId"
+            )
+        )
+
+
         //Check publication has acceptable acquisition link element
         if(acquisitionLinks.isEmpty()) {
             reporter.addMessage(
@@ -157,6 +166,7 @@ class ValidateOpdsPublicationUseCase(
                     )
                 )
             }else {
+                @Suppress("CatchMayIgnoreException") //Coming soon
                 try {
                     //Load the discovered manifest (maybe unless this is the URL we're already validating)
                     //TODO: check URLs

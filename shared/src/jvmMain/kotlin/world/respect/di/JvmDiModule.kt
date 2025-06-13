@@ -72,7 +72,9 @@ val JvmCoreDiMOdule = DI.Module("RespectJvmCore") {
 
     bind<OpdsPublicationValidator>() with singleton {
         OpdsPublicationValidator(
-            httpClient = instance()
+            httpClient = instance(),
+            json = instance(),
+            validateOpdsPublicationUseCase = instance()
         )
     }
 
@@ -87,9 +89,10 @@ val JvmCoreDiMOdule = DI.Module("RespectJvmCore") {
 
     bind<ValidateLinkUseCase>() with singleton {
         ValidateLinkUseCaseImpl(
-            opdsFeedValidatorUseCase = instance(),
-            opdsPublicationValidatorUseCase = instance(),
-            respectAppManifestValidatorUseCase = instance(),
+            opdsFeedValidator = instance(),
+            opdsPublicationValidator = instance(),
+            respectAppManifestValidator = instance(),
+            validateHttpResponseForUrlUseCase = instance(),
         )
     }
 

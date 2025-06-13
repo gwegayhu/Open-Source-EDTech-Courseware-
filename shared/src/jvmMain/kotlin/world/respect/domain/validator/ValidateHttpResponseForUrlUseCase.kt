@@ -123,6 +123,10 @@ class ValidateHttpResponseForUrlUseCase(
 
         val DEFAULT_VALIDATION_OPTS = ValidationOptions()
 
+        val ONLY_CHECK_RESPONSE_IS_SUCCESS = ValidationOptions(
+            acceptableMimeTypes = emptyList()
+        )
+
     }
 
 }

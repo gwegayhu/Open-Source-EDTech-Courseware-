@@ -2,6 +2,7 @@ package world.respect.domain.opds.validator
 
 import com.networknt.schema.InputFormat
 import io.ktor.client.HttpClient
+import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorMessage
@@ -9,6 +10,8 @@ import world.respect.domain.validator.ValidatorReporter
 
 class OpdsPublicationValidator(
     private val httpClient: HttpClient,
+    private val json: Json,
+    private val validateOpdsPublicationUseCase: ValidateOpdsPublicationUseCase,
 ): AbstractJsonSchemaValidator(
     schemaUrl = "https://drafts.opds.io/schema/publication.schema.json"
 ) {
@@ -31,6 +34,9 @@ class OpdsPublicationValidator(
             messages.forEach {
                 reporter.addMessage(it.toValidatorMessage(sourceUri = url))
             }
+
+            val opdsPublication = json.decodeFromString<OpdsPublication>(text)
+            validateOpdsPublicationUseCase(opdsPublication, url, reporter)
         }catch (e: Throwable) {
             reporter.addMessage(ValidatorMessage.fromException(url, e))
         }
