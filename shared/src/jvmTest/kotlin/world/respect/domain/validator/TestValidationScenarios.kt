@@ -34,7 +34,9 @@ class TestValidationScenarios {
         caseName: String,
         caseResources: List<String> = listOf(
             "app.html", "appmanifest.json",  "index.json", "grade1/grade1.json",
-            "grade1/lesson001/lesson001.html", "grade1/lesson001/lesson001.json"
+            "grade1/lesson001/lesson001.html", "grade1/lesson001/lesson001.json",
+            "grade1/lesson001/audio.ogg", "grade1/lesson001/video.mp4",
+            "grade1/lesson001/script.js"
         ),
         block: ValidationScenarioContext.() -> Unit,
     ) {
@@ -122,6 +124,43 @@ class TestValidationScenarios {
                 actual = reporter.messages.any {
                     it.level == ValidatorMessage.Level.ERROR &&
                         it.message.contains("Manifest not discovered")
+                }
+            )
+        }
+    }
+
+    @Test
+    fun givenManifestDoesNotListResources_whenValidated_thenWillReturnError() {
+        testValidationScenario(
+            caseName = "case_no_resources_in_manifest"
+        ) {
+            assertTrue(
+                message = "Got error for manifest not listing resources",
+                actual = reporter.messages.any {
+                    it.level == ValidatorMessage.Level.ERROR &&
+                        it.message.contains("The manifest which is discovered using the") &&
+                        it.message.contains("MUST contain a list of all resources required")
+                }
+            )
+        }
+    }
+
+    @Test
+    fun givenManifestResourcesDoNotExist_whenValidated_thenWillReturnErrors() {
+        testValidationScenario(
+            caseName = "case_manifest_resources_do_not_exist",
+            caseResources = listOf(
+                "app.html", "appmanifest.json",  "index.json", "grade1/grade1.json",
+                "grade1/lesson001/lesson001.html", "grade1/lesson001/lesson001.json",
+            ),
+        ) {
+            assertTrue(
+                message = "Got error for manifest not listing resources",
+                actual = reporter.messages.any {
+                    it.level == ValidatorMessage.Level.ERROR &&
+                            it.sourceUri == "$testBaseUrl/grade1/lesson001/lesson001.json" &&
+                            it.message.contains("audio.ogg") &&
+                            it.message.contains("Response status code not HTTP OK/200")
                 }
             )
         }

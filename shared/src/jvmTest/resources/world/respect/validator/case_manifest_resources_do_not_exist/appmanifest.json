@@ -1,0 +1,22 @@
+{
+  "name": {
+    "en-US": "My app"
+  },
+  "description": {
+    "en-US": "Short learning app description < 80 chars"
+  },
+  "license": "AGPL-3.0",
+  "website": "$TESTBASEURL/app.html",
+  "icon": "$TESTBASEURL/icon.webp",
+  "learningUnits": "$TESTBASEURL/index.json",
+  "defaultLaunchUri": "$TESTBASEURL/",
+
+  "android": {
+    "packageId": "org.example.app",
+    "stores": ["https://play.google.com/store/apps/details?id=org.example.app"],
+    "sourceCode": "https://www.github.com/Developer/App"
+  },
+  "web" : {
+    "url": "$TESTBASEURL"
+  }
+}

@@ -6,6 +6,7 @@ import world.respect.domain.validator.ValidatorMessage
 import kotlinx.serialization.json.Json
 import world.respect.domain.opds.model.OpdsFeed
 import world.respect.domain.opds.model.OpdsPublication
+import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.validator.ValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
 
@@ -27,6 +28,7 @@ class OpdsFeedValidator(
         visitedUrls: MutableList<String>,
         linkValidator: ValidateLinkUseCase?,
     ) {
+        val discoveredManifests = mutableListOf<ReadiumLink>()
         try {
             val text = httpClient.verifyMimeTypeAndGetBodyAsText(
                 url = url,
@@ -45,7 +47,8 @@ class OpdsFeedValidator(
                     (opdsFeed.groups?.flatMap { it.publications ?: emptyList() } ?: emptyList())
 
             allPublications.forEach {
-                validateOpdsPublicationUseCase(it, url, reporter)
+                val publicationValidation = validateOpdsPublicationUseCase(it, url, reporter)
+                discoveredManifests.addAll(publicationValidation.discoveredManifestLinksToValidate)
             }
 
             if(linkValidator != null) {
@@ -54,7 +57,7 @@ class OpdsFeedValidator(
                         (opdsFeed.groups?.flatMap { it.links ?: emptyList() } ?: emptyList()) +
                         (opdsFeed.publications?.flatMap { it.links } ?: emptyList())
 
-                allLinks.forEach { link ->
+                (allLinks + discoveredManifests).forEach { link ->
                     linkValidator(link, url, options, reporter, visitedUrls)
                 }
             }

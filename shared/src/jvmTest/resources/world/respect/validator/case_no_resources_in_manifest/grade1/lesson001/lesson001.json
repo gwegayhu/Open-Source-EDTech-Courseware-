@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "@type": "http://schema.org/Game",
+    "title": "Lesson 001",
+    "author": "Mullah Nasruddin",
+    "identifier": "https://example.app/id/lesson001",
+    "language": "en",
+    "modified": "2015-09-29T17:00:00Z"
+  },
+  "links": [
+    {"rel": "self", "href": "$TESTBASEURL/grade1/lesson001/lesson001.json", "type": "application/opds-publication+json"},
+    {"rel": "http://opds-spec.org/acquisition/open-access", "href": "lesson001.html", "type": "text/html"}
+  ],
+  "images": [
+    {"href": "cover.jpg", "type": "image/jpeg", "height": 1400, "width": 800},
+    {"href": "cover-small.jpg", "type": "image/jpeg", "height": 700, "width": 400},
+    {"href": "cover.svg", "type": "image/svg+xml"}
+  ]
+}

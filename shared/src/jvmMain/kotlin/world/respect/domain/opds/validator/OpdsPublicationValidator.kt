@@ -36,9 +36,9 @@ class OpdsPublicationValidator(
             }
 
             val opdsPublication = json.decodeFromString<OpdsPublication>(text)
-            validateOpdsPublicationUseCase(opdsPublication, url, reporter)
+            val publicationValidation = validateOpdsPublicationUseCase(opdsPublication, url, reporter)
 
-            opdsPublication.links.forEach { link ->
+            (opdsPublication.links + publicationValidation.discoveredManifestLinksToValidate).forEach { link ->
                 linkValidator?.invoke(
                     link = link,
                     refererUrl = url,
@@ -47,7 +47,6 @@ class OpdsPublicationValidator(
                     visitedUrls = visitedUrls
                 )
             }
-
         }catch (e: Throwable) {
             reporter.addMessage(ValidatorMessage.fromException(url, e))
         }

@@ -4,6 +4,7 @@ import io.ktor.http.Url
 import io.ktor.util.toMap
 import org.jsoup.Jsoup
 import world.respect.domain.opds.model.OpdsPublication
+import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.opds.model.toStringMap
 import world.respect.domain.validator.HttpLinkHeader
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
@@ -22,15 +23,27 @@ class ValidateOpdsPublicationUseCase(
 ) {
 
     /**
+     * @property discoveredManifestLinksToValidate Lists of Manifests that were discovered using the
+     * discovery method as per the Readium spec, unless the URL discovered is the same as the one
+     * already being validated.
+     */
+    data class ValidateOpdsPublicationUseCaseResult(
+        val discoveredManifestLinksToValidate: List<ReadiumLink>
+    )
+
+    /**
      * @param publication OpdsPublication to be validated
      * @param url the URL of the OPDS JSON loaded (used to resolve links)
      * @param reporter ValidatorReporter
+     *
+     * @return ValidateOpdsPublicationUseCaseResult contains a list of discovered manifests to validate
      */
     suspend operator fun invoke(
         publication: OpdsPublication,
         url: String,
         reporter: ValidatorReporter,
-    ) {
+    ): ValidateOpdsPublicationUseCaseResult {
+        val discoveredManifestLinksToValidate = mutableListOf<ReadiumLink>()
         val acquisitionLinks = publication.links.filter { link ->
             val linkType = link.type?.substringBefore(";")
             link.rel?.any { it.startsWith("http://opds-spec.org/acquisition") } == true &&
@@ -161,21 +174,52 @@ class ValidateOpdsPublicationUseCase(
                         sourceUri = url,
                         message = buildString {
                             append("Manifest not discovered for learning resource ID URL: $learningResourceIdUrl .")
-                            append("Readium publication manifest must be discoverable as per https://github.com/readium/webpub-manifest?tab=readme-ov-file#5-discovering-a-manifest")
+                            append("Readium publication manifest must be discoverable using a link")
+                            append("tag in HTML or Link header for the learning resource ID URL as per ")
+                            append("https://github.com/readium/webpub-manifest?tab=readme-ov-file#5-discovering-a-manifest")
                         }
                     )
                 )
             }else {
-                @Suppress("CatchMayIgnoreException") //Coming soon
-                try {
-                    //Load the discovered manifest (maybe unless this is the URL we're already validating)
-                    //if this url is the manifest, then check for resources
-                    //TODO: check URLs
-                }catch(e: Throwable) {
+                /* If this is the manifest URL link discovered, then check for resources.
+                 * Otherwise add to the list of discovered manifest links
+                 */
+                if(manifestUrl == url) {
+                    if(publication.resources.isNullOrEmpty()) {
+                        reporter.addMessage(
+                            ValidatorMessage(
+                                level = ValidatorMessage.Level.ERROR,
+                                message = """The manifest which is discovered using the
+                                    |discovery process as per the Readium spec ( https://github.com/readium/webpub-manifest?tab=readme-ov-file#5-discovering-a-manifest )
+                                    |MUST contain a list of all resources required.
+                                """.trimMargin(),
+                                sourceUri = url
+                            )
+                        )
+                    }
 
+                    publication.resources?.forEach { resource ->
+                        val resourceUrl = learningResourceIdUrl.resolve(URI(resource.href)).toString()
+                        validateHttpResponseForUrlUseCase(
+                            url = resourceUrl,
+                            referer = url,
+                            reporter = reporter,
+                        )
+                    }
+                }else {
+                    discoveredManifestLinksToValidate.add(
+                        ReadiumLink(
+                            href = manifestUrl,
+                            type = "application/webpub+json"
+                        )
+                    )
                 }
             }
         }
+
+        return ValidateOpdsPublicationUseCaseResult(
+            discoveredManifestLinksToValidate = discoveredManifestLinksToValidate,
+        )
     }
 
     companion object {
