@@ -38,7 +38,7 @@ class RespectCLI {
             val parser = ArgumentParsers.newFor("respect-cli").build()
             val subparsers = parser.addSubparsers()
                 .title("subcommands")
-                .description("valid subcommands: ")
+                .description("valid subcommands")
                 .dest("subparser_name")
                 .help("additional help")
                 .metavar("COMMAND")
@@ -58,9 +58,7 @@ class RespectCLI {
                     .choices("error", "warn", "verbose", "debug")
                     .setDefault("warn")
                     .help("Output verbosity")
-
             }.help("Validate a RESPECT App Manifest or OPDS Feed of Learning Units")
-
 
             val ns: Namespace
             try {

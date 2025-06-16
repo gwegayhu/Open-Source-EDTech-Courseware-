@@ -5,6 +5,7 @@ import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.header
 import io.ktor.client.request.prepareGet
 import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 
 /**
@@ -90,6 +91,17 @@ class ValidateHttpResponseForUrlUseCase(
                                 level = ValidatorMessage.Level.ERROR,
                                 sourceUri = referer,
                                 message = "$linkToStr: No last-modified or etag header found"
+                            )
+                        )
+                    }
+
+                    val contentLen = response.headers[HttpHeaders.ContentLength]?.toLongOrNull()
+                    if(contentLen == null || contentLen < 0) {
+                        validatorMessages += reporter.addMessage(
+                            ValidatorMessage(
+                                level = ValidatorMessage.Level.ERROR,
+                                sourceUri = referer,
+                                message = "$linkToStr: content-length header not specified or not an integer >= 0"
                             )
                         )
                     }

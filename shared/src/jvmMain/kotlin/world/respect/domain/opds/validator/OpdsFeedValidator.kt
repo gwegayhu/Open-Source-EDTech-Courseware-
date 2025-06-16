@@ -51,11 +51,39 @@ class OpdsFeedValidator(
                 discoveredManifests.addAll(publicationValidation.discoveredManifestLinksToValidate)
             }
 
+            val allNavigation = (opdsFeed.navigation ?: emptyList()) +
+                    (opdsFeed.groups?.flatMap { it.navigation ?: emptyList() } ?: emptyList())
+
+            /*
+             * How to set links for a navigation feed is not settled as per the OPDS spec. See
+             * https://github.com/opds-community/drafts/issues/64
+             */
+            val navigationIconLinks = allNavigation.mapNotNull { navLink ->
+                val iconLink = navLink.alternate?.firstOrNull {
+                    it.rel?.contains("icon") == true
+                }
+
+                if(iconLink == null) {
+                    reporter.addMessage(
+                        ValidatorMessage(
+                            level = ValidatorMessage.Level.WARN,
+                            sourceUri = url,
+                            message = buildString {
+                                append("Navigation link to ${navLink.href} SHOULD contain an icon")
+                            }
+                        )
+                    )
+                }
+
+                iconLink
+            }
+
             if(linkValidator != null) {
                 val allLinks = opdsFeed.links + (opdsFeed.navigation ?: emptyList()) +
                         (opdsFeed.facets?.flatMap { it.links } ?: emptyList() ?: emptyList()) +
                         (opdsFeed.groups?.flatMap { it.links ?: emptyList() } ?: emptyList()) +
-                        (opdsFeed.publications?.flatMap { it.links } ?: emptyList())
+                        (opdsFeed.publications?.flatMap { it.links } ?: emptyList()) +
+                        navigationIconLinks
 
                 (allLinks + discoveredManifests).forEach { link ->
                     linkValidator(link, url, options, reporter, visitedUrls)
