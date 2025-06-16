@@ -1,8 +1,10 @@
 package world.respect.domain.validator
 
+import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticFiles
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.conditionalheaders.ConditionalHeaders
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -36,8 +38,9 @@ class TestValidationScenarios {
             "app.html", "appmanifest.json",  "index.json", "grade1/grade1.json",
             "grade1/lesson001/lesson001.html", "grade1/lesson001/lesson001.json",
             "grade1/lesson001/audio.ogg", "grade1/lesson001/video.mp4",
-            "grade1/lesson001/script.js"
+            "grade1/lesson001/script.js", "grade1/lesson001/cover.png"
         ),
+        installConditionalHeaders: Boolean = true,
         block: ValidationScenarioContext.() -> Unit,
     ) {
         val tempDir = tempFileRule.copyResourcesToTempDir(
@@ -56,6 +59,10 @@ class TestValidationScenarios {
         )
 
         val server = embeddedServer(Netty, port = port) {
+            if(installConditionalHeaders) {
+                install(ConditionalHeaders)
+            }
+
             routing {
                 staticFiles("/resources", tempDir)
             }
@@ -161,6 +168,22 @@ class TestValidationScenarios {
                             it.sourceUri == "$testBaseUrl/grade1/lesson001/lesson001.json" &&
                             it.message.contains("audio.ogg") &&
                             it.message.contains("Response status code not HTTP OK/200")
+                }
+            )
+        }
+    }
+
+    @Test
+    fun givenCacheValidationHeadersNotProvided_whenValidated_thenWillReturnErrors() {
+        testValidationScenario(
+            caseName = "case_valid",
+            installConditionalHeaders = false,
+        ) {
+            assertTrue(
+                message = "Got error for manifest not listing resources",
+                actual = reporter.messages.any {
+                    it.level == ValidatorMessage.Level.ERROR &&
+                            it.message.contains("No last-modified or etag header found")
                 }
             )
         }

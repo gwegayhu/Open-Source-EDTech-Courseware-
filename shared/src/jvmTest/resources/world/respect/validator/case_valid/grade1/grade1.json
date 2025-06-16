@@ -33,7 +33,7 @@
         }
       ],
       "images": [
-        {"href": "cover-small.jpg", "type": "image/jpeg", "height": 700, "width": 400 }
+        {"href": "lesson001/cover.png", "type": "image/png"  }
       ]
     }
   ]

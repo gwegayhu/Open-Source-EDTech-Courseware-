@@ -84,6 +84,29 @@ class ValidateOpdsPublicationUseCase(
             )
         }
 
+        val imageLinks = publication.images
+        if(imageLinks.isNullOrEmpty()) {
+            reporter.addMessage(
+                ValidatorMessage(
+                    level = ValidatorMessage.Level.ERROR,
+                    sourceUri = url,
+                    message = buildString {
+                        append("No images found for publication: ")
+                        append(publicationTitleAndId)
+                        append(". Publication MUST contain at least one image")
+                    }
+                )
+            )
+        }
+
+        imageLinks?.forEach {
+            validateHttpResponseForUrlUseCase(
+                url = URI(url).resolve(it.href).toString(),
+                referer = url,
+                reporter = reporter,
+            )
+        }
+
         //Check learning resource id (URL) does not contain a # (that would not go to server) or
         //use any reserved query parameters
         acquisitionLinks.forEach { link ->

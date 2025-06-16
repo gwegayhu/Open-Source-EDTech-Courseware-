@@ -1,17 +1,11 @@
 package world.respect.domain.validator
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.plugins.expectSuccess
+import io.ktor.client.request.header
 import io.ktor.client.request.prepareGet
 import io.ktor.http.Headers
 import io.ktor.http.HttpStatusCode
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.core.remaining
-import io.ktor.utils.io.exhausted
-import io.ktor.utils.io.readRemaining
-import kotlinx.io.asSink
-import java.io.OutputStream
 
 /**
  * Validate an HTTP response for a given URL. Can be used to check that the URL:
@@ -29,20 +23,6 @@ class ValidateHttpResponseForUrlUseCase(
         val responseHeaders: Headers?,
         val statusCode: HttpStatusCode?,
     )
-
-    private class DiscardOutputStream: OutputStream() {
-        override fun write(p0: ByteArray) {
-            //do nothing
-        }
-
-        override fun write(p0: ByteArray, p1: Int, p2: Int) {
-            //do nothing
-        }
-
-        override fun write(p0: Int) {
-            //do nothing
-        }
-    }
 
     data class ValidationOptions(
         val acceptableMimeTypes: List<String> = emptyList(),
@@ -62,7 +42,7 @@ class ValidateHttpResponseForUrlUseCase(
         reporter: ValidatorReporter,
         options: ValidationOptions = DEFAULT_VALIDATION_OPTS,
     ): ValidateHttpResponseForUrlResult  {
-        val sink = DiscardOutputStream().asSink()
+
         val validatorMessages = mutableListOf<ValidatorMessage>()
 
         val linkToStr = "Link to $url"
@@ -71,26 +51,19 @@ class ValidateHttpResponseForUrlUseCase(
 
         try {
             //As per https://ktor.io/docs/client-responses.html#streaming
-            httpClient.prepareGet(url){
+            val (lastModified, etag) = httpClient.prepareGet(url){
                 expectSuccess = false
             }.execute { response ->
+
                 responseHeaders = response.headers
                 httpStatusCode = response.status
 
                 val contentType = response.headers["content-type"]?.substringBefore(";")
-                if(options.acceptableMimeTypes.isNotEmpty() &&
-                    contentType !in options.acceptableMimeTypes
-                ) {
-                    validatorMessages += reporter.addMessage(
-                        ValidatorMessage(
-                            level = ValidatorMessage.Level.ERROR,
-                            sourceUri = referer,
-                            message = "$linkToStr: Response provides unacceptable mime type: $contentType. Should be: ${options.acceptableMimeTypes.joinToString()}"
-                        )
-                    )
-                }
+                val lastModHeaderVal = response.headers["last-modified"]
+                val etagHeaderVal = response.headers["etag"]
 
                 if(response.status.value != 200) {
+                    //Emit only the status error, no point in checking others if response is not 200
                     validatorMessages += reporter.addMessage(
                         ValidatorMessage(
                             level = ValidatorMessage.Level.ERROR,
@@ -98,14 +71,59 @@ class ValidateHttpResponseForUrlUseCase(
                             message = "$linkToStr: Response status code not HTTP OK/200. Got: ${response.status.value}"
                         )
                     )
+                }else {
+                    if(options.acceptableMimeTypes.isNotEmpty() &&
+                        contentType !in options.acceptableMimeTypes
+                    ) {
+                        validatorMessages += reporter.addMessage(
+                            ValidatorMessage(
+                                level = ValidatorMessage.Level.ERROR,
+                                sourceUri = referer,
+                                message = "$linkToStr: Response provides unacceptable mime type: $contentType. Should be: ${options.acceptableMimeTypes.joinToString()}"
+                            )
+                        )
+                    }
+
+                    if(lastModHeaderVal == null && etagHeaderVal == null) {
+                        validatorMessages += reporter.addMessage(
+                            ValidatorMessage(
+                                level = ValidatorMessage.Level.ERROR,
+                                sourceUri = referer,
+                                message = "$linkToStr: No last-modified or etag header found"
+                            )
+                        )
+                    }
                 }
 
-                val channel: ByteReadChannel = response.body()
-                var count = 0L
-                while(!channel.exhausted()) {
-                    val chunk = channel.readRemaining()
-                    count += chunk.remaining
-                    chunk.transferTo(sink)
+                response.readAndDiscard()
+
+                if(response.status.value == 200) {
+                    Pair(lastModHeaderVal, etagHeaderVal)
+                }else {
+                    Pair(null, null)
+                }
+            }
+
+            if(etag != null || lastModified != null) {
+                httpClient.prepareGet(url) {
+                    etag?.also { etagVal ->
+                        header("If-None-Match", etagVal)
+                    }
+                    lastModified?.also { lastModVal ->
+                        header("If-Modified-Since", lastModVal)
+                    }
+                }.execute { response ->
+                    if(response.status.value != 304) {
+                        validatorMessages += reporter.addMessage(
+                            ValidatorMessage(
+                                level = ValidatorMessage.Level.ERROR,
+                                sourceUri = referer,
+                                message = "$linkToStr: Did not return 304 not modified when provided with if-none-match/if-modified-since."
+                            )
+                        )
+                    }
+
+                    response.readAndDiscard()
                 }
             }
         }catch(e: Throwable) {
