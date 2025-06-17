@@ -48,7 +48,7 @@ class RespectCLI {
             subparsers.addParser(CMD_VALIDATE).also {
                 it.addArgument("-u", "--url")
                     .required(true)
-                    .help("OPDS feed URL")
+                    .help("URL to validate")
                 it.addArgument("-f", "--nofollow")
                     .required(false)
                     .setDefault("false")
@@ -61,6 +61,14 @@ class RespectCLI {
                     .choices("error", "warn", "verbose", "debug")
                     .setDefault("warn")
                     .help("Output verbosity")
+                it.addArgument("-i", "--include-respect-opds-checks")
+                    .choices("true", "false")
+                    .required(false)
+                    .setDefault("true")
+                    .help("Include RESPECT-specific checks on OPDS feeds and publications e.g. to " +
+                            "check Manifest can be discovered, lists required resources, etc. Can " +
+                            "be set to false to validate only against the OPDS spec, not against " +
+                            "the RESPECT requirements.")
             }.help("Validate a RESPECT App Manifest or OPDS Feed of Learning Units")
 
             val ns: Namespace
@@ -75,6 +83,8 @@ class RespectCLI {
                         )
                         val noFollow = ns.getString("nofollow")?.ifEmpty { null }
                         val validateType = ns.getString("type")
+                        val includeRespectSpecificOpdsChecks = ns.getString("include-respect-opds-checks")
+                            ?.ifEmpty { null }
 
                         val reporter = ListAndPrintlnValidatorReporter(
                             filter = {
@@ -96,7 +106,9 @@ class RespectCLI {
                                     },
                                 ),
                                 options = ValidateLinkUseCase.ValidatorOptions(
-                                    followLinks = !(noFollow?.toBoolean() ?: false)
+                                    followLinks = !(noFollow?.toBoolean() ?: false),
+                                    skipRespectChecks =
+                                        !(includeRespectSpecificOpdsChecks?.toBoolean() ?: false),
                                 ),
                                 refererUrl = url,
                                 reporter = reporter,

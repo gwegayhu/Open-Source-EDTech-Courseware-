@@ -27,6 +27,8 @@ class ValidateHttpResponseForUrlUseCase(
 
     data class ValidationOptions(
         val acceptableMimeTypes: List<String> = emptyList(),
+        val checkContentLen: Boolean = true,
+        val checkCacheValidation: Boolean = true,
     )
 
     /**
@@ -85,7 +87,9 @@ class ValidateHttpResponseForUrlUseCase(
                         )
                     }
 
-                    if(lastModHeaderVal == null && etagHeaderVal == null) {
+                    if(options.checkCacheValidation && lastModHeaderVal == null &&
+                            etagHeaderVal == null
+                    ) {
                         validatorMessages += reporter.addMessage(
                             ValidatorMessage(
                                 level = ValidatorMessage.Level.ERROR,
@@ -96,7 +100,7 @@ class ValidateHttpResponseForUrlUseCase(
                     }
 
                     val contentLen = response.headers[HttpHeaders.ContentLength]?.toLongOrNull()
-                    if(contentLen == null || contentLen < 0) {
+                    if(options.checkContentLen && (contentLen == null || contentLen < 0)) {
                         validatorMessages += reporter.addMessage(
                             ValidatorMessage(
                                 level = ValidatorMessage.Level.ERROR,
@@ -154,7 +158,9 @@ class ValidateHttpResponseForUrlUseCase(
         val DEFAULT_VALIDATION_OPTS = ValidationOptions()
 
         val ONLY_CHECK_RESPONSE_IS_SUCCESS = ValidationOptions(
-            acceptableMimeTypes = emptyList()
+            acceptableMimeTypes = emptyList(),
+            checkCacheValidation = false,
+            checkContentLen = false,
         )
 
     }

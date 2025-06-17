@@ -17,9 +17,14 @@ interface ValidateLinkUseCase {
     /**
      * Options to run a validation which can be passed through (e.g. from an OpdsValidator to
      * a media resource validator, etc)
+     *
+     * @param followLinks follow links to other feeds and resources
+     * @param skipRespectChecks ignore RESPECT-specific requirements on OPDS: runs only the json
+     *        validator and checks links return a successful (OK Http/200) response.
      */
     data class ValidatorOptions(
         val followLinks: Boolean = true,
+        val skipRespectChecks: Boolean = false,
     )
 
     /**

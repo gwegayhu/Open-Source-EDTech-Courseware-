@@ -46,9 +46,11 @@ class OpdsFeedValidator(
             val allPublications = (opdsFeed.publications ?: emptyList()) +
                     (opdsFeed.groups?.flatMap { it.publications ?: emptyList() } ?: emptyList())
 
-            allPublications.forEach {
-                val publicationValidation = validateOpdsPublicationUseCase(it, url, reporter)
-                discoveredManifests.addAll(publicationValidation.discoveredManifestLinksToValidate)
+            if(!options.skipRespectChecks) {
+                allPublications.forEach {
+                    val publicationValidation = validateOpdsPublicationUseCase(it, url, reporter)
+                    discoveredManifests.addAll(publicationValidation.discoveredManifestLinksToValidate)
+                }
             }
 
             val allNavigation = (opdsFeed.navigation ?: emptyList()) +
@@ -63,7 +65,7 @@ class OpdsFeedValidator(
                     it.rel?.contains("icon") == true
                 }
 
-                if(iconLink == null) {
+                if(!options.skipRespectChecks && iconLink == null) {
                     reporter.addMessage(
                         ValidatorMessage(
                             level = ValidatorMessage.Level.WARN,

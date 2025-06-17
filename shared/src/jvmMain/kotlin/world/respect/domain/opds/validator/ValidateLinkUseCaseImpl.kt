@@ -48,7 +48,11 @@ class ValidateLinkUseCaseImpl(
             url = linkUrl,
             referer = refererUrl,
             reporter = reporter,
-            options = ValidateHttpResponseForUrlUseCase.ONLY_CHECK_RESPONSE_IS_SUCCESS,
+            options = if(options.skipRespectChecks) {
+                ValidateHttpResponseForUrlUseCase.ONLY_CHECK_RESPONSE_IS_SUCCESS
+            }else {
+                ValidateHttpResponseForUrlUseCase.DEFAULT_VALIDATION_OPTS
+            },
         )
 
         if(httpResponseResult.statusCode?.isSuccess() == false) {
