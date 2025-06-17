@@ -108,7 +108,7 @@ class RespectCLI {
                                 options = ValidateLinkUseCase.ValidatorOptions(
                                     followLinks = !(noFollow?.toBoolean() ?: false),
                                     skipRespectChecks =
-                                        !(includeRespectSpecificOpdsChecks?.toBoolean() ?: false),
+                                        !(includeRespectSpecificOpdsChecks?.toBoolean() ?: true),
                                 ),
                                 refererUrl = url,
                                 reporter = reporter,
