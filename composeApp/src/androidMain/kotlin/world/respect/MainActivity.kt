@@ -1,7 +1,6 @@
 package world.respect
 
 import android.os.Bundle
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import world.respect.app.app.App
@@ -11,7 +10,6 @@ class MainActivity : AbstractAppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
 }
 
 @Preview

@@ -36,8 +36,8 @@ fun AppNavHost(
 ) {
 
     NavHost(navController = navController, startDestination = AppLauncher, modifier = modifier) {
-        composable<AppLauncher> {
 
+        composable<AppLauncher> {
             val viewModel = respectViewModel(
                 modelClass = AppLauncherScreenViewModel::class,
                 onSetAppUiState = onSetAppUiState,
@@ -50,6 +50,7 @@ fun AppNavHost(
                 }
             )
         }
+
         composable<AppsDetail> {
             val viewModel = respectViewModel(
                 modelClass = AppsDetailScreenViewModel::class,
@@ -73,6 +74,7 @@ fun AppNavHost(
                 viewModel = viewModel
             )
         }
+
         composable<Clazz> {
             val viewModel = respectViewModel(
                 modelClass = ClazzScreenViewModel::class,
@@ -80,6 +82,7 @@ fun AppNavHost(
                 navController = navController
             )
             ClazzScreen(navController=navController,viewModel=viewModel) }
+
         composable<Report> {
             val viewModel = respectViewModel(
                 modelClass = ReportScreenViewModel::class,
@@ -87,6 +90,7 @@ fun AppNavHost(
                 navController = navController
             )
             ReportScreen(navController=navController,viewModel=viewModel) }
+
         composable<AppList> {
             val viewModel = respectViewModel(
                 modelClass = AppListScreenViewModel::class,
@@ -95,6 +99,7 @@ fun AppNavHost(
             )
             AppListScreen(navController = navController, viewModel = viewModel)
         }
+
         composable<EnterLink> {
             val viewModel = respectViewModel(
                 modelClass = EnterLnkScreenViewModel::class,
@@ -103,6 +108,7 @@ fun AppNavHost(
             )
             EnterLinkScreen(navController = navController, viewModel = viewModel)
         }
+
         composable<LessonList> {
             val viewModel = respectViewModel(
                 modelClass = LessonListScreenViewModel::class,
@@ -111,6 +117,7 @@ fun AppNavHost(
             )
             LessonListScreen(navController = navController, viewModel = viewModel)
         }
+
         composable<LessonDetail> {
             val viewModel=respectViewModel(
                 modelClass = LessonDetailScreenViewModel::class,

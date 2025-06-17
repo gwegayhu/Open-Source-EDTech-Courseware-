@@ -141,8 +141,6 @@ fun RespectAppBar(
                 Icon(Icons.Default.Person,
                     contentDescription =null)
             }
-
-
         },
         colors = if(appUiState.appBarColors == AppBarColors.STANDARD) {
             TopAppBarDefaults.topAppBarColors(

@@ -2,7 +2,6 @@ package world.respect.app.app
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 object AppLauncher
 @Serializable
