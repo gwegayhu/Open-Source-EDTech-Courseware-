@@ -9,6 +9,8 @@ import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.instance
 import world.respect.di.JvmCoreDiMOdule
+import world.respect.domain.opds.model.OpdsFeed
+import world.respect.domain.opds.model.OpdsPublication
 import world.respect.domain.opds.model.ReadiumLink
 import world.respect.domain.respectdir.model.RespectAppManifest
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
@@ -53,7 +55,8 @@ class RespectCLI {
                     .help("Don't follow links")
                 it.addArgument("-t", "--type")
                     .setDefault("manifest")
-                    .help("manifest|feed")
+                    .choices("manifest", "opds-feed", "opds-publication")
+                    .help("Type of item to validate. Can be a Respect App Manifest, Opds 2.0 Feed, or Opds 2.0 Publication")
                 it.addArgument("-o", "--output")
                     .choices("error", "warn", "verbose", "debug")
                     .setDefault("warn")
@@ -71,6 +74,7 @@ class RespectCLI {
                             (ns.getString("output") ?: "warn").uppercase()
                         )
                         val noFollow = ns.getString("nofollow")?.ifEmpty { null }
+                        val validateType = ns.getString("type")
 
                         val reporter = ListAndPrintlnValidatorReporter(
                             filter = {
@@ -84,7 +88,12 @@ class RespectCLI {
                             validator(
                                 link = ReadiumLink(
                                     href = url,
-                                    type = RespectAppManifest.MIME_TYPE,
+                                    type = when(validateType) {
+                                        "manifest" -> RespectAppManifest.MIME_TYPE
+                                        "opds-feed" -> OpdsFeed.MEDIA_TYPE
+                                        "opds-publication" -> OpdsPublication.MEDIA_TYPE
+                                        else -> throw IllegalArgumentException("Invalid type: $validateType")
+                                    },
                                 ),
                                 options = ValidateLinkUseCase.ValidatorOptions(
                                     followLinks = !(noFollow?.toBoolean() ?: false)
