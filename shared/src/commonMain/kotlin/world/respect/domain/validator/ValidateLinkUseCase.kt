@@ -1,6 +1,7 @@
 package world.respect.domain.validator
 
-import world.respect.domain.opds.model.ReadiumLink
+import world.respect.datasource.opds.model.ReadiumLink
+
 
 /**
  * Validate a link - this can be :
