@@ -9,10 +9,7 @@ import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.instance
 import world.respect.di.JvmCoreDiMOdule
-import world.respect.domain.opds.model.OpdsFeed
-import world.respect.domain.opds.model.OpdsPublication
-import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.respectdir.model.RespectAppManifest
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorMessage
@@ -96,12 +93,12 @@ class RespectCLI {
 
                         runBlocking {
                             validator(
-                                link = ReadiumLink(
+                                link = world.respect.datasource.opds.model.ReadiumLink(
                                     href = url,
-                                    type = when(validateType) {
+                                    type = when (validateType) {
                                         "manifest" -> RespectAppManifest.MIME_TYPE
-                                        "opds-feed" -> OpdsFeed.MEDIA_TYPE
-                                        "opds-publication" -> OpdsPublication.MEDIA_TYPE
+                                        "opds-feed" -> world.respect.datasource.opds.model.OpdsFeed.MEDIA_TYPE
+                                        "opds-publication" -> world.respect.datasource.opds.model.OpdsPublication.MEDIA_TYPE
                                         else -> throw IllegalArgumentException("Invalid type: $validateType")
                                     },
                                 ),

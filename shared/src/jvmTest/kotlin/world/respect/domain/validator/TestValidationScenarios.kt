@@ -12,8 +12,7 @@ import org.junit.rules.TemporaryFolder
 import org.kodein.di.DI
 import org.kodein.di.instance
 import world.respect.di.JvmCoreDiMOdule
-import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.respectdir.model.RespectAppManifest
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.testutil.copyResourcesToTempDir
 import world.respect.testutil.findFreePort
 import world.respect.testutil.recursiveFindAndReplace
@@ -80,7 +79,7 @@ class TestValidationScenarios {
             val reporter = ListAndPrintlnValidatorReporter()
             runBlocking {
                 validator(
-                    link = ReadiumLink(
+                    link = world.respect.datasource.opds.model.ReadiumLink(
                         href = "http://localhost:$port/resources/appmanifest.json",
                         type = RespectAppManifest.MIME_TYPE,
                     ),

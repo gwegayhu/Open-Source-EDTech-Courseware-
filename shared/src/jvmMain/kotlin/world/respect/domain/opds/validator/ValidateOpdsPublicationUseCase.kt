@@ -3,9 +3,9 @@ package world.respect.domain.opds.validator
 import io.ktor.http.Url
 import io.ktor.util.toMap
 import org.jsoup.Jsoup
-import world.respect.domain.opds.model.OpdsPublication
-import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.opds.model.toStringMap
+import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datasource.opds.model.toStringMap
 import world.respect.domain.validator.HttpLinkHeader
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
@@ -179,7 +179,7 @@ class ValidateOpdsPublicationUseCase(
 
             val manifestUrl = manifestHeaderLink?.uriRef?.let {
                 learningResourceIdUrl.resolve(URI(it)).toString()
-            } ?: jsoupDoc?.select("link")?.filter { node ->
+            } ?: jsoupDoc?.select("link")?.firstOrNull { node ->
                 node.attr("rel")
                     .ifEmpty { null }
                     ?.split(Regex("\\W"))
@@ -188,7 +188,7 @@ class ValidateOpdsPublicationUseCase(
                             .ifEmpty { null }
                             ?.substringBefore(";")
                             ?.trim() == "application/webpub+json"
-            }?.firstOrNull()?.absUrl("href")
+            }?.absUrl("href")
 
             if(manifestUrl == null) {
                 reporter.addMessage(

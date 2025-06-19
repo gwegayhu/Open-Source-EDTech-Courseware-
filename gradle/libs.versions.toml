@@ -40,6 +40,9 @@ kotlinx-date-time = "0.6.2"
 okhttp = "4.12.0"
 jsoup = "1.20.1"
 kodein-di = "7.26.1"
+kotlinStdlib = "2.1.10"
+runner = "1.5.2"
+core = "1.5.0"
 
 
 [libraries]
@@ -91,6 +94,9 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
 kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein-di" }
 kodein-di-framework-ktor-server-jvm = { module = "org.kodein.di:kodein-di-framework-ktor-server-jvm", version.ref = "kodein-di" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 
 [plugins]
@@ -101,3 +107,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
