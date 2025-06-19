@@ -1,15 +1,11 @@
 package world.respect.app.app
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import org.kodein.di.DI
-import world.respect.app.RespectViewModelFactory
 import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
@@ -24,11 +20,11 @@ import world.respect.app.viewmodel.apps.detail.AppsDetailScreenViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLnkScreenViewModel
 import world.respect.app.viewmodel.apps.launcher.AppLauncherScreenViewModel
 import world.respect.app.viewmodel.apps.list.AppListScreenViewModel
-import world.respect.app.viewmodel.assignments.AssignmentScreenViewModel
-import world.respect.app.viewmodel.clazz.ClazzScreenViewModel
+import world.respect.app.viewmodel.assignments.AssignmentViewModel
+import world.respect.app.viewmodel.clazz.ClazzViewModel
 import world.respect.app.viewmodel.lessons.detail.LessonDetailScreenViewModel
 import world.respect.app.viewmodel.lessons.list.LessonListScreenViewModel
-import world.respect.app.viewmodel.report.ReportScreenViewModel
+import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
 
 
@@ -69,7 +65,7 @@ fun AppNavHost(
 
         composable<Assignment> {
             val viewModel = respectViewModel(
-                modelClass = AssignmentScreenViewModel::class,
+                modelClass = AssignmentViewModel::class,
                 onSetAppUiState = onSetAppUiState,
                 navController = navController
             )
@@ -81,7 +77,7 @@ fun AppNavHost(
 
         composable<Clazz> {
             val viewModel = respectViewModel(
-                modelClass = ClazzScreenViewModel::class,
+                modelClass = ClazzViewModel::class,
                 onSetAppUiState = onSetAppUiState,
                 navController = navController
             )
@@ -89,7 +85,7 @@ fun AppNavHost(
 
         composable<Report> {
             val viewModel = respectViewModel(
-                modelClass = ReportScreenViewModel::class,
+                modelClass = ReportViewModel::class,
                 onSetAppUiState = onSetAppUiState,
                 navController = navController
             )
@@ -112,12 +108,11 @@ fun AppNavHost(
             )
             EnterLinkScreen(navController = navController, viewModel = viewModel)
         }
-
         composable<LessonList> {
-            val factory = remember { RespectViewModelFactory(di) }
-            val viewModel = viewModel(
+            val viewModel = respectViewModel(
                 modelClass = LessonListScreenViewModel::class,
-                factory = factory
+                onSetAppUiState = onSetAppUiState,
+                navController = navController
             )
             LessonListScreen(navController = navController, viewModel = viewModel)
         }

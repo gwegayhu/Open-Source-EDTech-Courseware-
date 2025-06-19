@@ -8,7 +8,7 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.clazz
 
-class ClazzScreenViewModel: RespectViewModel() {
+class ClazzViewModel: RespectViewModel() {
     init {
         viewModelScope.launch {
             _appUiState.update {

@@ -8,7 +8,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.assignments
 import world.respect.app.viewmodel.RespectViewModel
 
-class AssignmentScreenViewModel() : RespectViewModel() {
+class AssignmentViewModel() : RespectViewModel() {
     init {
         viewModelScope.launch {
             _appUiState.update {
