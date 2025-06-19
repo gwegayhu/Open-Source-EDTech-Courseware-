@@ -11,12 +11,12 @@ import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
 import world.respect.app.model.appsdetail.Images
-import world.respect.domain.opds.model.LangMapStringValue
-import world.respect.domain.opds.model.OpdsPublication
-import world.respect.domain.opds.model.ReadiumContributorStringValue
-import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.opds.model.ReadiumMetadata
-import world.respect.domain.opds.model.ReadiumSubjectStringValue
+import world.respect.datasource.opds.model.LangMapStringValue
+import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumContributorStringValue
+import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datasource.opds.model.ReadiumMetadata
+import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 
 
 data class AppsDetailUiState(

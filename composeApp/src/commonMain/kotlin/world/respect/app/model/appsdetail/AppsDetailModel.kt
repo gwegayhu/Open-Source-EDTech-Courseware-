@@ -1,6 +1,6 @@
 package world.respect.app.model.appsdetail
 
-import world.respect.domain.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.OpdsPublication
 
 
 data class Images(

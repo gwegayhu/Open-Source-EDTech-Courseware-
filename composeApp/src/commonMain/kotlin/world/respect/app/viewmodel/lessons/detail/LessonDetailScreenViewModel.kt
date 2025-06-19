@@ -6,13 +6,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.app.viewmodel.RespectViewModel
-import world.respect.domain.opds.model.LangMapStringValue
-import world.respect.domain.opds.model.OpdsPublication
-import world.respect.domain.opds.model.ReadiumContributorStringValue
-import world.respect.domain.opds.model.ReadiumLink
-import world.respect.domain.opds.model.ReadiumMetadata
-import world.respect.domain.opds.model.ReadiumSubjectStringValue
-
+import world.respect.datasource.opds.model.LangMapStringValue
+import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumContributorStringValue
+import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datasource.opds.model.ReadiumMetadata
+import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 
 data class LessonDetailUiState(
     val lessonDetailData: OpdsPublication? = null,

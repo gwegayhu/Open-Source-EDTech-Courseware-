@@ -25,7 +25,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.add_link
 import respect.composeapp.generated.resources.add_from_link
 import world.respect.app.app.EnterLink
-import world.respect.app.viewmodel.applist.AppListScreenViewModel
+import world.respect.app.viewmodel.apps.list.AppListScreenViewModel
 
 
 @Composable

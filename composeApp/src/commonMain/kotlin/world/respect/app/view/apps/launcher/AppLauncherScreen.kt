@@ -25,7 +25,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
 import world.respect.app.model.applauncher.AppLauncherModel
-import world.respect.app.viewmodel.applauncher.AppLauncherScreenViewModel
+import world.respect.app.viewmodel.apps.launcher.AppLauncherScreenViewModel
 
 @Composable
 fun AppLauncherScreen(

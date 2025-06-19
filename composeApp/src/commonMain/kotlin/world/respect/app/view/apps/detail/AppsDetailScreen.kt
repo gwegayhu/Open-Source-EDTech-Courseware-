@@ -30,9 +30,9 @@ import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.getTitle
+import world.respect.app.viewmodel.apps.detail.AppsDetailScreenViewModel
 
 
-import world.respect.app.viewmodel.appsdetail.AppsDetailScreenViewModel
 
 @Composable
 fun AppsDetailScreen(

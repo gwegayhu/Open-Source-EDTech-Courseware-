@@ -41,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "world.respect.shared"
+    namespace = "world.respect.datasource"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

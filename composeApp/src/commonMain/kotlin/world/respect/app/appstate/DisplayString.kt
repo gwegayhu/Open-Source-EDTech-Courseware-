@@ -1,11 +1,11 @@
 package world.respect.app.appstate
 
-import world.respect.domain.opds.model.LangMap
-import world.respect.domain.opds.model.LangMapObjectValue
-import world.respect.domain.opds.model.LangMapStringValue
-import world.respect.domain.opds.model.ReadiumSubject
-import world.respect.domain.opds.model.ReadiumSubjectObject
-import world.respect.domain.opds.model.ReadiumSubjectStringValue
+import world.respect.datasource.opds.model.LangMap
+import world.respect.datasource.opds.model.LangMapObjectValue
+import world.respect.datasource.opds.model.LangMapStringValue
+import world.respect.datasource.opds.model.ReadiumSubject
+import world.respect.datasource.opds.model.ReadiumSubjectObject
+import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 
 
 fun ReadiumSubject.toDisplayString(preferredLanguages: List<String> = listOf("en")): String = when (this) {

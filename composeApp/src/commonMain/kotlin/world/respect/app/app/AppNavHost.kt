@@ -1,11 +1,15 @@
 package world.respect.app.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import org.kodein.di.DI
+import world.respect.app.RespectViewModelFactory
 import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
@@ -110,13 +114,14 @@ fun AppNavHost(
         }
 
         composable<LessonList> {
-            val viewModel = respectViewModel(
+            val factory = remember { RespectViewModelFactory(di) }
+            val viewModel = viewModel(
                 modelClass = LessonListScreenViewModel::class,
-                onSetAppUiState = onSetAppUiState,
-                navController = navController
+                factory = factory
             )
             LessonListScreen(navController = navController, viewModel = viewModel)
         }
+
 
         composable<LessonDetail> {
             val viewModel=respectViewModel(
