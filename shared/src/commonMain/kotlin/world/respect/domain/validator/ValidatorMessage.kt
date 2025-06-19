@@ -1,18 +1,22 @@
 package world.respect.domain.validator
 
 data class ValidatorMessage(
-    val isError: Boolean,
+    val level: Level = Level.ERROR,
     val sourceUri: String,
     val message: String,
 ) {
 
-    companion object {
+    @Suppress("unused") //others reserved for future use
+    enum class Level {
+        DEBUG, VERBOSE, INFO, WARN, ERROR
+    }
 
+    companion object {
         fun fromException(
             sourceUri: String,
             throwable: Throwable
         ) = ValidatorMessage(
-            isError = true,
+            level = Level.ERROR,
             sourceUri = sourceUri,
             message = "Error processing $sourceUri : ${throwable.message}"
         )
