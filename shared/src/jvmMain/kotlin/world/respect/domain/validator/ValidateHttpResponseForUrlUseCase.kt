@@ -56,8 +56,8 @@ class ValidateHttpResponseForUrlUseCase(
             //As per https://ktor.io/docs/client-responses.html#streaming
             val (lastModified, etag) = httpClient.prepareGet(url){
                 expectSuccess = false
+                header("accept-encoding", "gzip, deflate, br")
             }.execute { response ->
-
                 responseHeaders = response.headers
                 httpStatusCode = response.status
 
