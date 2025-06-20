@@ -47,12 +47,12 @@ import respect.composeapp.generated.resources.duration
 import world.respect.app.app.LessonDetail
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
-import world.respect.app.viewmodel.lessons.list.LessonListScreenViewModel
+import world.respect.app.viewmodel.lessons.list.LessonListViewModel
 
 @Composable
 fun LessonListScreen(
     navController: NavHostController,
-    viewModel: LessonListScreenViewModel
+    viewModel: LessonListViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

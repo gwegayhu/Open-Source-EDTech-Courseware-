@@ -17,7 +17,7 @@ data class AppListUiState(
     val appListData: List<AppListModel> = emptyList(),
 )
 
-class AppListScreenViewModel(
+class AppListViewModel(
 ) : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(AppListUiState())

@@ -23,7 +23,7 @@ data class AppsDetailUiState(
     val appsDetailData: AppsDetailModel? = null
 )
 
-class AppsDetailScreenViewModel : RespectViewModel() {
+class AppsDetailViewModel : RespectViewModel() {
     private val _uiState = MutableStateFlow(AppsDetailUiState())
     val uiState = _uiState.asStateFlow()
 

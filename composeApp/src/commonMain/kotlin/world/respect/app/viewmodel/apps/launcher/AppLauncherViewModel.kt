@@ -18,7 +18,7 @@ data class AppLauncherUiState(
     val appLauncherDataList: List<AppLauncherModel> = emptyList(),
 )
 
-class AppLauncherScreenViewModel() : RespectViewModel() {
+class AppLauncherViewModel() : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
     val uiState = _uiState.asStateFlow()

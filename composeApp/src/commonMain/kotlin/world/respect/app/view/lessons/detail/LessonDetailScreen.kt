@@ -42,7 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.score_or_progress
 import respect.composeapp.generated.resources.app_name
-import world.respect.app.viewmodel.lessons.detail.LessonDetailScreenViewModel
+import world.respect.app.viewmodel.lessons.detail.LessonDetailViewModel
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -61,7 +61,7 @@ import world.respect.app.appstate.toDisplayString
 @Composable
 fun LessonDetailScreen(
     navController: NavHostController,
-    viewModel: LessonDetailScreenViewModel,
+    viewModel: LessonDetailViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

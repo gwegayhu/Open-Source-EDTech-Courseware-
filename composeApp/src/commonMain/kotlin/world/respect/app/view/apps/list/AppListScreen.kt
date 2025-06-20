@@ -25,13 +25,13 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.add_link
 import respect.composeapp.generated.resources.add_from_link
 import world.respect.app.app.EnterLink
-import world.respect.app.viewmodel.apps.list.AppListScreenViewModel
+import world.respect.app.viewmodel.apps.list.AppListViewModel
 
 
 @Composable
 fun AppListScreen(
     navController: NavHostController,
-    viewModel: AppListScreenViewModel
+    viewModel: AppListViewModel
 ) {
 
     val uiState by viewModel.uiState.collectAsState()

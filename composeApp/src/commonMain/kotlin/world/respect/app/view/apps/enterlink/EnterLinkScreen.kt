@@ -18,12 +18,12 @@ import respect.composeapp.generated.resources.error_link_message
 import respect.composeapp.generated.resources.link_label
 import respect.composeapp.generated.resources.example_url_placeholder
 import respect.composeapp.generated.resources.next
-import world.respect.app.viewmodel.apps.enterlink.EnterLnkScreenViewModel
+import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 
 
 @Composable
 fun EnterLinkScreen(
-    viewModel: EnterLnkScreenViewModel,
+    viewModel: EnterLinkViewModel,
     navController: NavHostController,
     ) {
     var link by remember { mutableStateOf("") }

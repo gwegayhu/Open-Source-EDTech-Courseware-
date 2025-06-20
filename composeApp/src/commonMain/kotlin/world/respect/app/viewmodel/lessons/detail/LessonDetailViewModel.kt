@@ -19,7 +19,7 @@ data class LessonDetailUiState(
 
     )
 
-class LessonDetailScreenViewModel : RespectViewModel() {
+class LessonDetailViewModel : RespectViewModel() {
     private val _uiState = MutableStateFlow(LessonDetailUiState())
     val uiState = _uiState.asStateFlow()
 

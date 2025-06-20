@@ -14,7 +14,7 @@ data class EnterLinkUiState(
     val reportData: List<String> = emptyList(),
 )
 
-class EnterLnkScreenViewModel(
+class EnterLinkViewModel(
 ) : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(EnterLinkUiState())
