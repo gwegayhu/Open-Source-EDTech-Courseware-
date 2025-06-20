@@ -20,7 +20,6 @@ import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 data class AppLauncherUiState(
     val appList: List<RespectAppManifest> = emptyList(),
-    val appLauncherDataList: List<AppLauncherModel> = emptyList(),
 )
 
 class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAppDataSource()) : RespectViewModel() {
@@ -46,7 +45,6 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
 
         }
         loadAppList()
-        loadAppLauncherData()
     }
     private fun loadAppList() {
         viewModelScope.launch {
@@ -69,45 +67,5 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
         }
     }
 
-    //mock data for testing purpose
-    private fun loadAppLauncherData() {
-        val appLauncherData: List<AppLauncherModel> =
-            listOf(
-                AppLauncherModel(
-                    imageText = "Chimple",
-                    title = "App 1",
-                    category = "Education",
-                    ageRange = "3-5"
-                ),
-                AppLauncherModel(
-                    imageText = "Ustad  Mobile",
-                    title = "App 2",
-                    category = "Games",
-                    ageRange = "5-7"
-                ),
-                AppLauncherModel(
-                    imageText = "Khan Academy",
-                    title = "App 3",
-                    category = "Entertainment",
-                    ageRange = "7-10"
-                ),
-                AppLauncherModel(
-                    imageText = "Curious Learning",
-                    title = "App 4",
-                    category = "Productivity",
-                    ageRange = "10-12"
-                ),
-                AppLauncherModel(
-                    imageText = "Dals  Learning",
-                    title = "App 5",
-                    category = "Learning",
-                    ageRange = "12+"
-                )
-            )
-
-        _uiState.value = _uiState.value.copy(
-            appLauncherDataList = appLauncherData
-        )
-    }
 }
 
