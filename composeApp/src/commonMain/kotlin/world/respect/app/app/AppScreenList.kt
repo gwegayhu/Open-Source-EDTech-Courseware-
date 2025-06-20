@@ -1,6 +1,7 @@
 package world.respect.app.app
 
 import kotlinx.serialization.Serializable
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Serializable
 object AppLauncher
@@ -15,7 +16,7 @@ object AppList
 @Serializable
 object EnterLink
 @Serializable
-data class AppsDetail(val param:String)
+data class AppsDetail(val manifestUrl: String)
 @Serializable
 object LessonList
 @Serializable

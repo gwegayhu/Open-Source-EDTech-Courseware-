@@ -31,7 +31,7 @@ import world.respect.datasource.compatibleapps.model.RespectAppManifest
 @Composable
 fun AppLauncherScreen(
     viewModel: AppLauncherViewModel,
-    onClickAction: () -> Unit
+    onClickAction: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -73,7 +73,7 @@ fun AppLauncherScreen(
         ) {
             items(uiState.appList) { app ->
                 AppGridItem(app) {
-                    onClickAction()
+                    onClickAction(app.learningUnits.toString())
                 }
             }
         }

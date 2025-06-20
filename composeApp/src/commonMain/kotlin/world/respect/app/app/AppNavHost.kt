@@ -46,7 +46,9 @@ fun AppNavHost(
             AppLauncherScreen(
                 viewModel = viewModel,
                 onClickAction={
-                    navController.navigate(AppsDetail(param="App id 1"))
+                    navController.navigate(AppsDetail(
+                        manifestUrl = it,
+                    ))
                 }
             )
         }
@@ -59,7 +61,7 @@ fun AppNavHost(
             )
             val args =it.toRoute<AppsDetail>()
             AppsDetailScreen(viewModel = viewModel,
-                param = args.param,
+                manifestUrl = args.manifestUrl,
                 navController = navController)
         }
 
