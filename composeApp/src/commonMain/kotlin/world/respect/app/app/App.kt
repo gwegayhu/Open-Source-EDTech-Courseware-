@@ -33,7 +33,6 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.kodein.di.DI
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps
 import respect.composeapp.generated.resources.assignments

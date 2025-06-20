@@ -25,6 +25,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.add_link
 import respect.composeapp.generated.resources.add_from_link
 import world.respect.app.app.EnterLink
+import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 
 
@@ -58,7 +59,7 @@ fun AppListScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(uiState.appListData) { app ->
+            items(uiState.appList) { app ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
@@ -68,8 +69,8 @@ fun AppListScreen(
                         modifier = Modifier
                             .size(30.dp)
                             .clip(CircleShape)
-                            .background(white) // Optional: background to see the border clearly
-                            .border(1.dp, black, CircleShape), // Add border here
+                            .background(white)
+                            .border(1.dp, black, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -81,10 +82,10 @@ fun AppListScreen(
 
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
-                        Text(text = app.title, fontSize = 16.sp)
+                        Text(text = app.name.getTitle(), fontSize = 16.sp)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(text = app.category, fontSize = 12.sp)
-                            Text(text = app.ageRange, fontSize = 12.sp)
+                            Text(text = "-", fontSize = 12.sp)
+                            Text(text = "-", fontSize = 12.sp)
                         }
                     }
                 }

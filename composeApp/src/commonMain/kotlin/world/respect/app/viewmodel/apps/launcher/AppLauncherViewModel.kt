@@ -12,13 +12,18 @@ import respect.composeapp.generated.resources.apps
 import world.respect.app.app.AppList
 import world.respect.app.appstate.FabUiState
 import world.respect.app.model.applauncher.AppLauncherModel
+import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.viewmodel.RespectViewModel
+import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 data class AppLauncherUiState(
+    val appList: List<RespectAppManifest> = emptyList(),
     val appLauncherDataList: List<AppLauncherModel> = emptyList(),
 )
 
-class AppLauncherViewModel() : RespectViewModel() {
+class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAppDataSource()) : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
     val uiState = _uiState.asStateFlow()
@@ -40,7 +45,28 @@ class AppLauncherViewModel() : RespectViewModel() {
             }
 
         }
+        loadAppList()
         loadAppLauncherData()
+    }
+    private fun loadAppList() {
+        viewModelScope.launch {
+            appDataSource.getLaunchpadApps(
+                loadParams = DataLoadParams()
+            ).collect { result ->
+                when (result) {
+                    is DataLoadResult -> {
+                        val appList = result.data ?: emptyList()
+                        _uiState.update {
+                            it.copy(
+                                appList = appList
+                            )
+                        }
+                    }
+                    else -> {
+                    }
+                }
+            }
+        }
     }
 
     //mock data for testing purpose

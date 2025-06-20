@@ -24,8 +24,9 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
-import world.respect.app.model.applauncher.AppLauncherModel
+import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun AppLauncherScreen(
@@ -34,7 +35,7 @@ fun AppLauncherScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.appLauncherDataList.isEmpty()) {
+    if (uiState.appList.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -70,7 +71,7 @@ fun AppLauncherScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(uiState.appLauncherDataList) { app ->
+            items(uiState.appList) { app ->
                 AppGridItem(app) {
                     onClickAction()
                 }
@@ -80,7 +81,7 @@ fun AppLauncherScreen(
 }
 
 @Composable
-fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
+fun AppGridItem(app: RespectAppManifest, function: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,7 +97,7 @@ fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = app.imageText, fontSize = 18.sp,
+                text = app.name.getTitle(), fontSize = 18.sp,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -105,7 +106,7 @@ fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = app.title,
+            text = app.name.getTitle(),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             modifier = Modifier.align(Alignment.Start)
@@ -115,8 +116,8 @@ fun AppGridItem(app: AppLauncherModel, function: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = app.category, fontSize = 12.sp)
-            Text(text = app.ageRange, fontSize = 12.sp)
+            Text(text = "-", fontSize = 12.sp)
+            Text(text = "-", fontSize = 12.sp)
         }
     }
 }

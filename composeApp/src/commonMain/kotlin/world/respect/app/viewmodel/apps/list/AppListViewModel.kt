@@ -11,13 +11,18 @@ import world.respect.app.model.applist.AppListModel
 import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.select_app
+import world.respect.app.model.applist.FakeAppDataSource
+import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 
 data class AppListUiState(
-    val appListData: List<AppListModel> = emptyList(),
+    val appList: List<RespectAppManifest> = emptyList()
 )
 
 class AppListViewModel(
+    private val appDataSource: FakeAppDataSource = FakeAppDataSource()
 ) : RespectViewModel() {
 
     private val _uiState = MutableStateFlow(AppListUiState())
@@ -31,22 +36,27 @@ class AppListViewModel(
                 )
             }
         }
-        loadAppListData()
+        loadAppList()
     }
 
-    //mock data for testing purpose
-    private fun loadAppListData() {
-        val appListData: List<AppListModel> = listOf(
-            AppListModel("1", "App Name", "Category", "Age Range"),
-            AppListModel("2", "App Name", "Category", "Age Range"),
-            AppListModel("3", "App Name", "Category", "Age Range"),
-            AppListModel("4", "App Name", "Category", "Age Range"),
-            AppListModel("5", "App Name", "Category", "Age Range"),
-
-            )
-
-        _uiState.value = _uiState.value.copy(
-            appListData = appListData
-        )
+    private fun loadAppList() {
+        viewModelScope.launch {
+            appDataSource.getLaunchpadApps(
+                loadParams = DataLoadParams()
+            ).collect { result ->
+                when (result) {
+                    is DataLoadResult -> {
+                        val appList = result.data ?: emptyList()
+                        _uiState.update {
+                            it.copy(
+                                appList = appList
+                            )
+                        }
+                    }
+                    else -> {
+                    }
+                }
+            }
+        }
     }
 }
