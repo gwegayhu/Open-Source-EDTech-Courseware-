@@ -122,6 +122,8 @@ class ValidateHttpResponseForUrlUseCase(
 
             if(etag != null || lastModified != null) {
                 httpClient.prepareGet(url) {
+                    header("accept-encoding", "gzip, deflate, br")
+
                     etag?.also { etagVal ->
                         header("If-None-Match", etagVal)
                     }
