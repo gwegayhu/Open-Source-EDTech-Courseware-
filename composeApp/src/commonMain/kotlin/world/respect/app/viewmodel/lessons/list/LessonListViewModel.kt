@@ -9,10 +9,10 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.lesson_list
 import world.respect.app.appstate.AppBarSearchUiState
+import world.respect.app.model.lesson.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.opds.model.FakeOpdsDataSource
 import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsPublication
 
@@ -43,8 +43,8 @@ class LessonListViewModel(private val opdsDataSource: FakeOpdsDataSource = FakeO
     private fun loadLessonListData() {
         viewModelScope.launch {
             opdsDataSource.loadOpdsFeed(
-                url = "https://your.api.endpoint/opds/lessons",  // Replace with actual endpoint
-                params = DataLoadParams() // Customize if needed
+                url = "https://your.api.endpoint/opds/lessons",
+                params = DataLoadParams()
             ).collect { result ->
                 when (result) {
                     is DataLoadResult -> {

@@ -103,9 +103,6 @@ class FakeOpdsDataSource : OpdsDataSource {
                 status = LoadingStatus.LOADED,
             )
         )
-
-
-
     }
 
     override fun loadOpdsPublication(
@@ -114,6 +111,6 @@ class FakeOpdsDataSource : OpdsDataSource {
         referrerUrl: String?,
         expectedPublicationId: String?
     ): Flow<DataResult<OpdsPublication>> {
-        TODO("Not required for lesson list at the moment")
+        TODO("Not yet implemented")
     }
 }
