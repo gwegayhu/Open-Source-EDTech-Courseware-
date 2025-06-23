@@ -13,11 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowCircleDown
@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ustadmobile.libuicompose.theme.black
-import com.ustadmobile.libuicompose.theme.white
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.clazz
@@ -112,59 +112,68 @@ fun LessonListScreen(
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             items(uiState.publications) { publication ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            navController.navigate(LessonDetail)
-                        }
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        .clickable { navController.navigate(LessonDetail) },
+
+                    leadingContent = {
                         Box(
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(36.dp)
                                 .clip(CircleShape)
-                                .background(white)
-                                .border(1.dp, black, CircleShape),
+                                .background(MaterialTheme.colorScheme.background)
+                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Android,
-                                modifier = Modifier.padding(6.dp),
-                                contentDescription = null
+                                modifier = Modifier.size(18.dp),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
+                    },
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                    headlineContent = {
+                        Text(
+                            text = publication.metadata.title.getTitle(),
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    },
 
-                        Column {
-                            Text(text = publication.metadata.title.getTitle(), fontSize = 16.sp)
+                    supportingContent = {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(
                                 text = stringResource(Res.string.clazz),
-                                fontSize = 12.sp
+                                style = MaterialTheme.typography.bodySmall
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(text = publication.metadata.subject
-                                    ?.joinToString(", ") { it.toDisplayString() }
-                                    ?: "No subjects", fontSize = 12.sp)
                                 Text(
-                                    text = "${stringResource(Res.string.duration)}- ${publication.metadata.duration}",
-                                    fontSize = 12.sp
+                                    text = publication.metadata.subject
+                                        ?.joinToString(", ") { it.toDisplayString() }
+                                        ?: " ",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
+                    },
+
+                    trailingContent = {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowCircleDown,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Icon(
-                        imageVector = Icons.Filled.ArrowCircleDown,
-                        modifier = Modifier.size(24.dp),
-                        contentDescription = null
-                    )
-                }
-
+                )
             }
         }
     }

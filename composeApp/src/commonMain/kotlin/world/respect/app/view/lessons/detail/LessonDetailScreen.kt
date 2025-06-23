@@ -56,6 +56,8 @@ import respect.composeapp.generated.resources.share
 import world.respect.app.app.LessonDetail
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 
 
 @Composable
@@ -73,61 +75,70 @@ fun LessonDetailScreen(
     ) {
 
         item {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Gray),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("", color = Color.White)
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
+            ListItem(
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(Color.Gray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("", color = Color.White)
+                    }
+                },
+                headlineContent = {
                     Text(
-                        text = uiState.lessonDetailData?.metadata?.title?.getTitle() ?: "",
-                        fontSize = 18.sp,
+                        text = uiState.lessonDetailData?.metadata?.title?.getTitle().orEmpty(),
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
+                },
+                supportingContent = {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(white)
+                                    .border(1.dp, black, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Android,
+                                    modifier = Modifier.padding(6.dp),
+                                    contentDescription = null
+                                )
+                            }
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .background(white)
-                                .border(1.dp, black, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Android,
-                                modifier = Modifier.padding(6.dp),
-                                contentDescription = null
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Text(
+                                text = stringResource(Res.string.app_name),
+                                style = MaterialTheme.typography.bodySmall
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = uiState.lessonDetailData?.metadata?.subtitle?.getTitle()
+                                .orEmpty(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
 
                         Text(
-                            stringResource(Res.string.app_name),
-                            fontSize = 12.sp
+                            text = stringResource(Res.string.score_or_progress),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+
+                        LinearProgressIndicator(
+                            progress = { 0f },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(4.dp)
                         )
                     }
-
-                    Text(
-                        text = uiState.lessonDetailData?.metadata?.subtitle?.getTitle() ?: "",
-                        fontSize = 12.sp)
-                    Text(stringResource(Res.string.score_or_progress), fontSize = 12.sp)
-                    LinearProgressIndicator(
-                        progress = { 0f },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(4.dp)
-                    )
                 }
-            }
+            )
         }
 
         item {
@@ -161,52 +172,62 @@ fun LessonDetailScreen(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(8.dp))
-
         }
 
-
         items(uiState.publications) { publication ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-                    .clickable {
-                        navController.navigate(LessonDetail)
-                    }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .background(white)
-                        .border(1.dp, black, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Android,
-                        modifier = Modifier.padding(6.dp),
-                        contentDescription = null
-                    )
-                }
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(LessonDetail) },
 
-                Spacer(modifier = Modifier.width(8.dp))
-                Column {
-                    Text(text = publication.metadata.title.getTitle(), fontSize = 16.sp)
-                    Text(
-                        text = stringResource(Res.string.clazz),
-                        fontSize = 12.sp
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            text = publication.metadata.subject
-                            ?.joinToString(", ") { it.toDisplayString() }
-                            ?: "No subjects", fontSize = 12.sp)
-                        Text(
-                            text = "${stringResource(Res.string.duration)}- ${publication.metadata.duration}",
-                            fontSize = 12.sp
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(CircleShape)
+                            .background(white)
+                            .border(1.dp, black, CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Android,
+                            contentDescription = null,
+                            modifier = Modifier.padding(6.dp),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                },
+
+                headlineContent = {
+                    Text(
+                        text = publication.metadata.title.getTitle(),
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                },
+
+                supportingContent = {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(
+                            text = stringResource(Res.string.clazz),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = publication.metadata.subject
+                                    ?.joinToString(", ") { it.toDisplayString() }
+                                    ?: " ",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
-            }
+            )
         }
     }
 }
@@ -216,10 +237,18 @@ private fun IconLabel(icon: ImageVector, labelRes: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             imageVector = icon,
+            contentDescription = null,
             modifier = Modifier.size(24.dp),
-            contentDescription = null
+            tint = MaterialTheme.colorScheme.primary
         )
+
         Spacer(modifier = Modifier.height(4.dp))
-        Text(labelRes, fontSize = 12.sp)
+
+        Text(
+            text = labelRes,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
     }
 }

@@ -2,33 +2,24 @@ package world.respect.app.view.apps.enterlink
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.ustadmobile.libuicompose.theme.md_theme_light_primaryContainer
 import org.jetbrains.compose.resources.stringResource
-import respect.composeapp.generated.resources.Res
-import respect.composeapp.generated.resources.app_link_provided_message
-import respect.composeapp.generated.resources.error_link_message
-import respect.composeapp.generated.resources.link_label
-import respect.composeapp.generated.resources.example_url_placeholder
-import respect.composeapp.generated.resources.next
+import respect.composeapp.generated.resources.*
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
-
 
 @Composable
 fun EnterLinkScreen(
     viewModel: EnterLinkViewModel,
     navController: NavHostController,
-    ) {
+) {
+
     var link by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()
-
     var showError by remember { mutableStateOf(false) }
 
     Column(
@@ -36,8 +27,11 @@ fun EnterLinkScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
-        Text(stringResource(Res.string.app_link_provided_message), fontSize = 16.sp)
+        Text(
+            text = stringResource(Res.string.app_link_provided_message),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -45,21 +39,32 @@ fun EnterLinkScreen(
             value = link,
             onValueChange = {
                 link = it
-                if (showError) showError = false // reset error on new input
+                if (showError) showError = false
             },
-            label = { Text(stringResource(Res.string.link_label)) },
-            placeholder = { Text(stringResource(Res.string.example_url_placeholder)) },
+            label = {
+                Text(
+                    text = stringResource(Res.string.link_label),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(Res.string.example_url_placeholder),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = Color.Black,
-                unfocusedLabelColor = Color.Black,
-                disabledBorderColor = Color.Black,
-                disabledLabelColor = Color.Black,
-                cursorColor = Color.Black
+            isError = showError,
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                errorIndicatorColor = MaterialTheme.colorScheme.error,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                errorLabelColor = MaterialTheme.colorScheme.error,
+                cursorColor = MaterialTheme.colorScheme.primary
             )
         )
 
@@ -68,26 +73,26 @@ fun EnterLinkScreen(
         Button(
             onClick = {
                 showError = !viewModel.isValidUrl(link)
-                when {
-                    showError -> {
-
-                    }
-                }
+                if (!showError) { }
             },
             colors = ButtonDefaults.buttonColors(
-                md_theme_light_primaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(Res.string.next))
+            Text(
+                text = stringResource(Res.string.next),
+                style = MaterialTheme.typography.labelLarge
+            )
         }
 
         if (showError) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(Res.string.error_link_message),
-                color = Color.Red,
-                fontSize = 14.sp
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
             )
         }
     }

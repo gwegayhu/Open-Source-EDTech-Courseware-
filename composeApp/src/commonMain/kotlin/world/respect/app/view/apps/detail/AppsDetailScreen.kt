@@ -2,10 +2,9 @@ package world.respect.app.view.apps.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
@@ -18,10 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
@@ -31,128 +27,151 @@ import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 
 @Composable
 fun AppsDetailScreen(
     viewModel: AppsDetailViewModel,
     manifestUrl: String,
-    navController: NavHostController,
-
-    ) {
+    navController: NavHostController
+) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .background(Color.Gray)
-            ) {
-                Text(
-                    uiState.appsDetailData?.imageName ?: "",
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.White
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+        item {
+            ListItem(
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = uiState.appsDetailData?.imageName.orEmpty(),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                },
+                headlineContent = {
                     Text(
-                        text = uiState.appsDetailData?.appName ?: "",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f)
+                        text = uiState.appsDetailData?.appName.orEmpty(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert,
-                        contentDescription = null
+                },
+                supportingContent = {
+                    Text(
+                        text = uiState.appsDetailData?.appDescription.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                },
+                trailingContent = {
+                    IconButton(onClick = { /* Options */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+
+        item {
+            // Buttons Row
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(
+                    onClick = { /* Try it */ },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(Res.string.try_it))
                 }
 
-                Text(
-                    uiState.appsDetailData?.appDescription ?: "", fontSize = 12.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            IconButton(onClick = { /* Options */ }) {
-                Icon(Icons.Filled.MoreVert, contentDescription = null)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Buttons
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = { /* Try it */ }, modifier = Modifier.weight(1f)) {
-                Text(stringResource(Res.string.try_it))
-            }
-
-            OutlinedButton(onClick = { /* Add app */ }, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text(stringResource(Res.string.add_app))
+                OutlinedButton(
+                    onClick = { /* Add app */ },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                    Spacer(Modifier.width(4.dp))
+                    Text(text = stringResource(Res.string.add_app))
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Featured Images
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            repeat(3) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.LightGray)
-                )
+        item {
+            // Featured Images
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                repeat(3) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Lessons Row
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(Res.string.lessons), fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { navController.navigate(LessonList) }) {
-                Icon(Icons.Filled.ArrowForward, contentDescription = null)
-            }
-        }
-
-        uiState.appsDetailData?.let { appData ->
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(appData.publications) { publication ->
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Box(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(Color.Gray)
+        // Lessons header
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(Res.string.lessons),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                trailingContent = {
+                    IconButton(onClick = { navController.navigate(LessonList) }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowForward,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = publication.metadata.title.getTitle(), fontSize = 12.sp)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        // Lessons horizontally scrollable list
+        item {
+            uiState.appsDetailData?.let { appData ->
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp)
+                ) {
+                    items(appData.publications) { publication ->
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.width(100.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .aspectRatio(1f)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = publication.metadata.title.getTitle(),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1
+                            )
+                        }
                     }
                 }
             }

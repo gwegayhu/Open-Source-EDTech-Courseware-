@@ -16,10 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.ustadmobile.libuicompose.theme.black
-import com.ustadmobile.libuicompose.theme.white
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.add_link
@@ -28,68 +25,95 @@ import world.respect.app.app.EnterLink
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 
-
 @Composable
 fun AppListScreen(
     navController: NavHostController,
     viewModel: AppListViewModel
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(stringResource(Res.string.add_link), style = MaterialTheme.typography.titleLarge)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.Link,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        item {
             Text(
-                stringResource(Res.string.add_from_link), fontSize = 16.sp,
-                modifier = Modifier.clickable {
-                    navController.navigate(EnterLink)
-                })
+                text = stringResource(Res.string.add_link),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        item {
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(EnterLink) },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.Link,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
+                headlineContent = {
+                    Text(
+                        text = stringResource(Res.string.add_from_link),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            )
+        }
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(uiState.appList) { app ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
+        items(uiState.appList) { app ->
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = app.name.getTitle(),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
+                supportingContent = {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        //"-" is a placeholder for age range/category
+                        Text(
+                            text = "-",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "-",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                },
+                leadingContent = {
                     Box(
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(36.dp)
                             .clip(CircleShape)
-                            .background(white)
-                            .border(1.dp, black, CircleShape),
+                            .background(MaterialTheme.colorScheme.background)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.outline,
+                                CircleShape
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Android,
-                            modifier = Modifier.padding(6.dp),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Text(text = app.name.getTitle(), fontSize = 16.sp)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(text = "-", fontSize = 12.sp)
-                            Text(text = "-", fontSize = 12.sp)
-                        }
-                    }
-                }
-            }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
