@@ -22,7 +22,8 @@ data class LessonListUiState(
     val selectedFilterTitle: String? = null
 )
 
-class LessonListViewModel(private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()) : RespectViewModel() {
+class LessonListViewModel(private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()) :
+    RespectViewModel() {
     private val _uiState = MutableStateFlow(LessonListUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -36,12 +37,6 @@ class LessonListViewModel(private val opdsDataSource: FakeOpdsDataSource = FakeO
                     )
                 )
             }
-        }
-        loadLessonListData()
-    }
-
-    private fun loadLessonListData() {
-        viewModelScope.launch {
             opdsDataSource.loadOpdsFeed(
                 url = "https://your.api.endpoint/opds/lessons",
                 params = DataLoadParams()
@@ -55,6 +50,7 @@ class LessonListViewModel(private val opdsDataSource: FakeOpdsDataSource = FakeO
                             )
                         }
                     }
+
                     else -> {
 
                     }

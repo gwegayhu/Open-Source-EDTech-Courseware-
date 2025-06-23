@@ -133,7 +133,7 @@ fun AppsDetailScreen(
         ) {
             Text(stringResource(Res.string.lessons), fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = {navController.navigate(LessonList) }) {
+            IconButton(onClick = { navController.navigate(LessonList) }) {
                 Icon(Icons.Filled.ArrowForward, contentDescription = null)
             }
         }

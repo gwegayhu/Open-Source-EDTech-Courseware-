@@ -68,8 +68,10 @@ fun EnterLinkScreen(
         Button(
             onClick = {
                 showError = !viewModel.isValidUrl(link)
-                if (!showError) {
-                    // Proceed to next step
+                when {
+                    showError -> {
+
+                    }
                 }
             },
             colors = ButtonDefaults.buttonColors(

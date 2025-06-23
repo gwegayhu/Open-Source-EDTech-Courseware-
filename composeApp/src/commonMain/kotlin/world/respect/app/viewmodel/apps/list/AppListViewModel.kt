@@ -12,6 +12,7 @@ import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.select_app
 import world.respect.app.model.applist.FakeAppDataSource
+import world.respect.datasource.DataErrorResult
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
@@ -35,12 +36,7 @@ class AppListViewModel(
                     title = getString(resource = Res.string.select_app),
                 )
             }
-        }
-        loadAppList()
-    }
 
-    private fun loadAppList() {
-        viewModelScope.launch {
             appDataSource.getLaunchpadApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
@@ -53,8 +49,8 @@ class AppListViewModel(
                             )
                         }
                     }
-                    else -> {
-                    }
+
+                    else -> {}
                 }
             }
         }

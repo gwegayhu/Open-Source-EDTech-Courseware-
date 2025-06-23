@@ -22,7 +22,8 @@ data class AppLauncherUiState(
     val appList: List<RespectAppManifest> = emptyList(),
 )
 
-class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAppDataSource()) : RespectViewModel() {
+class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAppDataSource()) :
+    RespectViewModel() {
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
     val uiState = _uiState.asStateFlow()
@@ -42,12 +43,6 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
                         })
                 )
             }
-
-        }
-        loadAppList()
-    }
-    private fun loadAppList() {
-        viewModelScope.launch {
             appDataSource.getLaunchpadApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
@@ -60,12 +55,11 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
                             )
                         }
                     }
-                    else -> {
-                    }
+                    else -> {}
                 }
             }
+
         }
     }
-
 }
 

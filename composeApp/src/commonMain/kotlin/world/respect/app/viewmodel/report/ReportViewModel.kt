@@ -9,8 +9,7 @@ import respect.composeapp.generated.resources.report
 import world.respect.app.viewmodel.RespectViewModel
 
 
-class ReportViewModel(
-) : RespectViewModel() {
+class ReportViewModel() : RespectViewModel() {
 
     init {
         viewModelScope.launch {

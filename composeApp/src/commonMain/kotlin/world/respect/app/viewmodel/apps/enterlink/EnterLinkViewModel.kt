@@ -31,12 +31,8 @@ class EnterLinkViewModel(
 
         }
     }
-    //added mock regex just for test purpose
     fun isValidUrl(url: String): Boolean {
-        val regex = Regex(
-            "^https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w\\-._~:?#[\\\\]@!$&'()*+,;=.%]*$"
-        )
-        return url.matches(regex)
+        return true
     }
 
 

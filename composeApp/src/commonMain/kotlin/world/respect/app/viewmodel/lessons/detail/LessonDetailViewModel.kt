@@ -16,8 +16,7 @@ import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 data class LessonDetailUiState(
     val lessonDetailData: OpdsPublication? = null,
     val publications: List<OpdsPublication> = emptyList(),
-
-    )
+)
 
 class LessonDetailViewModel : RespectViewModel() {
     private val _uiState = MutableStateFlow(LessonDetailUiState())
@@ -26,14 +25,14 @@ class LessonDetailViewModel : RespectViewModel() {
     init {
         viewModelScope.launch {
             _appUiState.update {
-                it.copy(title ="")
+                it.copy(title = "")
             }
         }
         loaddata()
     }
 
     private fun loaddata() {
-        val lessonDetailData =  OpdsPublication(
+        val lessonDetailData = OpdsPublication(
             metadata = ReadiumMetadata(
                 title = LangMapStringValue("Lesson 001"),
                 author = listOf(
@@ -47,7 +46,7 @@ class LessonDetailViewModel : RespectViewModel() {
                 duration = 2.0,
                 subtitle = LangMapStringValue("Lesson Outcome"),
 
-            ),
+                ),
             links = listOf(
                 ReadiumLink(
                     href = "",
@@ -144,6 +143,7 @@ class LessonDetailViewModel : RespectViewModel() {
         )
         _uiState.value = LessonDetailUiState(
             publications = publications,
-                    lessonDetailData = lessonDetailData)
+            lessonDetailData = lessonDetailData
+        )
     }
 }
