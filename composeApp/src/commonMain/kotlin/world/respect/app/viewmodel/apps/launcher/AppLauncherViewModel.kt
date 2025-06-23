@@ -43,7 +43,7 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
                         })
                 )
             }
-            appDataSource.getLaunchpadApps(
+            appDataSource.getAddableApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {

@@ -37,7 +37,7 @@ class AppListViewModel(
                 )
             }
 
-            appDataSource.getLaunchpadApps(
+            appDataSource.getAddableApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {

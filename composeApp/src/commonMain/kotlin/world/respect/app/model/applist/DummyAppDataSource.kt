@@ -12,7 +12,7 @@ import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.LangMapStringValue
 import com.eygraber.uri.Uri
 
-class FakeAppDataSource: CompatibleAppsDataSource {
+class FakeAppDataSource : CompatibleAppsDataSource {
 
     override fun getApp(
         manifestUrl: String,
@@ -21,7 +21,7 @@ class FakeAppDataSource: CompatibleAppsDataSource {
 
         val dummyAppManifest = RespectAppManifest(
             name = LangMapStringValue("Learning App"),
-            description =LangMapStringValue("A sample RESPECT-compatible learning app."),
+            description = LangMapStringValue("A sample RESPECT-compatible learning app."),
             license = "proprietary",
             website = Url("https://example.com"),
             icon = Url("https://example.com/icon.png"),
@@ -48,18 +48,41 @@ class FakeAppDataSource: CompatibleAppsDataSource {
         )
     }
 
-    override fun getAddableApps(loadParams: DataLoadParams): Flow<DataResult<RespectAppManifest>> {
-        TODO("Not yet implemented")
-    }
+    override fun getAddableApps(loadParams: DataLoadParams): Flow<DataResult<List<RespectAppManifest>>> =
+        flow {
+            emit(
+                DataLoadResult(
+                    data = getDummyAppsList(),
+                    status = LoadingStatus.LOADED
+                )
+            )
+        }
 
     override fun getLaunchpadApps(
         loadParams: DataLoadParams
     ): Flow<DataResult<List<RespectAppManifest>>> = flow {
 
-        val dummyApps = listOf(
+        emit(
+            DataLoadResult(
+                data = getDummyAppsList(),
+                status = LoadingStatus.LOADED
+            )
+        )
+    }
+
+    override suspend fun addAppToLaunchpad(manifestUrl: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeAppFromLaunchpad(manifestUrl: String) {
+        TODO("Not yet implemented")
+    }
+
+    private fun getDummyAppsList(): List<RespectAppManifest> {
+        val dummyAppsList = listOf(
             RespectAppManifest(
                 name = LangMapStringValue("Learning App"),
-                description =LangMapStringValue("A sample RESPECT-compatible learning app."),
+                description = LangMapStringValue("A sample RESPECT-compatible learning app."),
                 license = "proprietary",
                 website = Url("https://example.com"),
                 icon = Url("https://example.com/icon.png"),
@@ -79,7 +102,7 @@ class FakeAppDataSource: CompatibleAppsDataSource {
             ),
             RespectAppManifest(
                 name = LangMapStringValue("Chimple"),
-                description =LangMapStringValue("A sample RESPECT-compatible learning app."),
+                description = LangMapStringValue("A sample RESPECT-compatible learning app."),
                 license = "proprietary",
                 website = Url("https://example.com"),
                 icon = Url("https://example.com/icon.png"),
@@ -99,21 +122,6 @@ class FakeAppDataSource: CompatibleAppsDataSource {
             )
 
         )
-
-        emit(
-            DataLoadResult(
-                data = dummyApps,
-                status = LoadingStatus.LOADED
-            )
-        )
+        return dummyAppsList
     }
-
-    override suspend fun addAppToLaunchpad(manifestUrl: String) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun removeAppFromLaunchpad(manifestUrl: String) {
-        TODO("Not yet implemented")
-    }
-
 }

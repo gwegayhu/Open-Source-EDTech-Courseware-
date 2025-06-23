@@ -20,7 +20,7 @@ interface CompatibleAppsDataSource {
      */
     fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataResult<RespectAppManifest>>
+    ): Flow<DataResult<List<RespectAppManifest>>>
 
     fun getLaunchpadApps(
         loadParams: DataLoadParams
