@@ -4,6 +4,7 @@ import com.eygraber.uri.Uri
 import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import world.respect.datasource.opds.model.LangMap
+import world.respect.datasource.opds.serialization.UriStringSerializer
 
 /**
  * Represents the RESPECT manifest as described in the RESPECT Launcher App Integration Guide.
@@ -32,12 +33,13 @@ data class RespectAppManifest(
     val license: String,
     val website: Url? = null,
     val icon: Url? = null,
-    @Serializable(with = world.respect.datasource.opds.serialization.UriStringSerializer::class)
+    @Serializable(with = UriStringSerializer::class)
     val learningUnits: Uri,
-    @Serializable(with = world.respect.datasource.opds.serialization.UriStringSerializer::class)
+    @Serializable(with = UriStringSerializer::class)
     val defaultLaunchUri: Uri,
     val android: AndroidDetails? = null,
     val web: WebDetails? = null,
+    val selfUrl: Url? = null,
 ) {
     /**
      * Contains Android-specific details for the RESPECT manifest.
@@ -63,6 +65,10 @@ data class RespectAppManifest(
         val url: Url? = null,
         val sourceCode: Url? = null,
     )
+
+    fun requireSelfUrl(): Url {
+        return selfUrl ?: throw IllegalStateException("requireSelfUrl: unset")
+    }
 
     companion object {
 
