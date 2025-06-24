@@ -42,7 +42,6 @@ fun AppListScreen(
             Text(
                 text = stringResource(Res.string.add_link),
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -55,14 +54,11 @@ fun AppListScreen(
                     Icon(
                         imageVector = Icons.Default.Link,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
                     )
                 },
                 headlineContent = {
                     Text(
                         text = stringResource(Res.string.add_from_link),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -73,7 +69,6 @@ fun AppListScreen(
                 headlineContent = {
                     Text(
                         text = app.name.getTitle(),
-                        style = MaterialTheme.typography.titleMedium
                     )
                 },
                 supportingContent = {
@@ -82,12 +77,10 @@ fun AppListScreen(
                         Text(
                             text = "-",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             text = "-",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 },
@@ -108,7 +101,6 @@ fun AppListScreen(
                             imageVector = Icons.Default.Android,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
-                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },

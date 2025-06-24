@@ -29,8 +29,6 @@ fun EnterLinkScreen(
     ) {
         Text(
             text = stringResource(Res.string.app_link_provided_message),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -56,16 +54,7 @@ fun EnterLinkScreen(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth(),
-            isError = showError,
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
-                errorIndicatorColor = MaterialTheme.colorScheme.error,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                errorLabelColor = MaterialTheme.colorScheme.error,
-                cursorColor = MaterialTheme.colorScheme.primary
-            )
+            isError = showError
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -75,10 +64,6 @@ fun EnterLinkScreen(
                 showError = !viewModel.isValidUrl(link)
                 if (!showError) { }
             },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
@@ -92,7 +77,6 @@ fun EnterLinkScreen(
             Text(
                 text = stringResource(Res.string.error_link_message),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
             )
         }
     }

@@ -89,8 +89,8 @@ fun LessonDetailScreen(
                 headlineContent = {
                     Text(
                         text = uiState.lessonDetail?.metadata?.title?.getTitle().orEmpty(),
-                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
+
                     )
                 },
                 supportingContent = {
@@ -193,7 +193,6 @@ fun LessonDetailScreen(
                             imageVector = Icons.Default.Android,
                             contentDescription = null,
                             modifier = Modifier.padding(6.dp),
-                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -201,7 +200,6 @@ fun LessonDetailScreen(
                 headlineContent = {
                     Text(
                         text = publication.metadata.title.getTitle(),
-                        style = MaterialTheme.typography.titleSmall
                     )
                 },
 

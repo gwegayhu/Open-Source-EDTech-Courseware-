@@ -44,20 +44,17 @@ fun AppLauncherScreen(
             Icon(
                 imageVector = Icons.Filled.CrueltyFree,
                 contentDescription = null,
-                modifier = Modifier.size(100.dp),
-                tint = MaterialTheme.colorScheme.onBackground
+                modifier = Modifier.size(100.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(resource = Res.string.empty_list),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(resource = Res.string.empty_list_description),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
         }
@@ -99,7 +96,6 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
             Text(
                 text = app.name.getTitle(),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -122,12 +118,10 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
             Text(
                 text = "-",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = "-",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -53,31 +53,19 @@ fun AppsDetailScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
-                       /* Image(
-                            painter = rememberAsyncImagePainter(uiState.appDetail?.icon?.toString()),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp)
-                        )*/
-                        Text(
-                            text = uiState.appDetail?.name?.getTitle() ?: "",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        /*
+                             painter = rememberAsyncImagePainter(uiState.appDetail?.icon?.toString()),
+                             contentDescription = null,
+                             modifier = Modifier.size(48.dp)
+                         )*/
+                        Text(text = uiState.appDetail?.name?.getTitle() ?: "")
                     }
                 },
                 headlineContent = {
-                    Text(
-                        text = uiState.appDetail?.name?.getTitle() ?: "",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Text(text = uiState.appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(
-                        text = uiState.appDetail?.description?.getTitle() ?: "",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Text(text = uiState.appDetail?.description?.getTitle() ?: "")
                 },
                 trailingContent = {
                     IconButton(onClick = { /* Options */ }) {
@@ -132,18 +120,13 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.lessons),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Text(text = stringResource(Res.string.lessons))
                 },
                 trailingContent = {
                     IconButton(onClick = { navController.navigate(LessonList) }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowForward,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -173,7 +156,6 @@ fun AppsDetailScreen(
                             Text(
                                 text = publication.metadata.title.getTitle(),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1
                             )
                         }
