@@ -26,7 +26,7 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
-        val commonMain by getting{
+        val commonMain by getting {
             resources.srcDir("src/commonMain/resources")
         }
         val androidMain by getting
@@ -57,6 +57,8 @@ kotlin {
             implementation(libs.kodein.compose)
             implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.datetime.v050)
+            implementation(libs.coil)
+            implementation(libs.coil.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
