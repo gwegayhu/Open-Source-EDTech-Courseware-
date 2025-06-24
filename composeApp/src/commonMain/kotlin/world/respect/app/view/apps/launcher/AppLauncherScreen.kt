@@ -29,7 +29,7 @@ import world.respect.datasource.compatibleapps.model.RespectAppManifest
 @Composable
 fun AppLauncherScreen(
     viewModel: AppLauncherViewModel,
-    onClickAction: (String) -> Unit
+    onClick: (RespectAppManifest) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -71,21 +71,22 @@ fun AppLauncherScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(uiState.appList) { app ->
-                AppGridItem(app) {
-                    onClickAction(app.learningUnits.toString())
-                }
+                AppGridItem(
+                    app = app,
+                    onClick = { onClick(app) }
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppGridItem(app: RespectAppManifest, function: () -> Unit) {
+fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .clickable { function() },
+            .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(

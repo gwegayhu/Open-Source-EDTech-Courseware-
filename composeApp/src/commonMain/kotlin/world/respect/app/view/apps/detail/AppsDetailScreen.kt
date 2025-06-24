@@ -28,8 +28,7 @@ import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
-//import coil.compose.rememberAsyncImagePainter
-
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun AppsDetailScreen(
