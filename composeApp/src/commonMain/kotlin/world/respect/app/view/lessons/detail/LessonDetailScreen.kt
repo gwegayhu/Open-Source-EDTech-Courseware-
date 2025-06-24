@@ -88,7 +88,7 @@ fun LessonDetailScreen(
                 },
                 headlineContent = {
                     Text(
-                        text = uiState.lessonDetailData?.metadata?.title?.getTitle().orEmpty(),
+                        text = uiState.lessonDetail?.metadata?.title?.getTitle().orEmpty(),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -120,7 +120,7 @@ fun LessonDetailScreen(
                         }
 
                         Text(
-                            text = uiState.lessonDetailData?.metadata?.subtitle?.getTitle()
+                            text = uiState.lessonDetail?.metadata?.subtitle?.getTitle()
                                 .orEmpty(),
                             style = MaterialTheme.typography.bodySmall
                         )

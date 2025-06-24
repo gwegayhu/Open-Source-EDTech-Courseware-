@@ -1,5 +1,6 @@
 package world.respect.app.view.apps.detail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +28,7 @@ import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
+//import coil.compose.rememberAsyncImagePainter
 
 
 @Composable
@@ -52,8 +54,13 @@ fun AppsDetailScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
+                       /* Image(
+                            painter = rememberAsyncImagePainter(uiState.appDetail?.icon?.toString()),
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp)
+                        )*/
                         Text(
-                            text = uiState.appsDetailData?.imageName.orEmpty(),
+                            text = uiState.appDetail?.name?.getTitle() ?: "",
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodyMedium
                         )
@@ -61,14 +68,14 @@ fun AppsDetailScreen(
                 },
                 headlineContent = {
                     Text(
-                        text = uiState.appsDetailData?.appName.orEmpty(),
+                        text = uiState.appDetail?.name?.getTitle() ?: "",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 supportingContent = {
                     Text(
-                        text = uiState.appsDetailData?.appDescription.orEmpty(),
+                        text = uiState.appDetail?.description?.getTitle() ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -85,7 +92,6 @@ fun AppsDetailScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
 
         item {
             // Buttons Row
@@ -148,12 +154,12 @@ fun AppsDetailScreen(
 
         // Lessons horizontally scrollable list
         item {
-            uiState.appsDetailData?.let { appData ->
+            uiState.publications.let { publications ->
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    items(appData.publications) { publication ->
+                    items(publications) { publication ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(100.dp)

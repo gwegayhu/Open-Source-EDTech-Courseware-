@@ -10,7 +10,12 @@ import world.respect.app.model.appsdetail.AppsDetailModel
 import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
+import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.model.appsdetail.Images
+import world.respect.app.model.lesson.FakeOpdsDataSource
+import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.LangMapStringValue
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumContributorStringValue
@@ -20,10 +25,14 @@ import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 
 
 data class AppsDetailUiState(
-    val appsDetailData: AppsDetailModel? = null
+    val appDetail: RespectAppManifest? = null,
+    val publications: List<OpdsPublication> = emptyList(),
 )
 
-class AppsDetailViewModel : RespectViewModel() {
+class AppsDetailViewModel(
+    private val appDataSource: FakeAppDataSource = FakeAppDataSource(),
+    private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()
+) : RespectViewModel() {
     private val _uiState = MutableStateFlow(AppsDetailUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -32,95 +41,41 @@ class AppsDetailViewModel : RespectViewModel() {
             _appUiState.update {
                 it.copy(title = getString(resource = Res.string.apps_detail))
             }
+            //once navigation is fixed will pass argument learning units
+            appDataSource.getApp(
+                manifestUrl = "",
+                loadParams = DataLoadParams()
+            ).collect { result ->
+                when (result) {
+                    is DataLoadResult -> {
+                        val appDetail = result.data
+                        _uiState.update {
+                            it.copy(
+                                appDetail = appDetail
+                            )
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+            opdsDataSource.loadOpdsFeed(
+                url = "",
+                params = DataLoadParams()
+            ).collect { result ->
+                when (result) {
+                    is DataLoadResult -> {
+                        _uiState.update {
+                            it.copy(
+                                publications = result.data?.publications ?: emptyList(),
+                            )
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+
         }
-        loaddata()
-    }
-
-    //mock data
-    private fun loaddata() {
-        val appsDetailData = AppsDetailModel(
-            imageName = "Chimple",
-            appName = "Chimple: Kids",
-            appDescription = "Chimple kids is an educational app to learn basic reading, writing & math skills",
-            publications = listOf(
-                OpdsPublication(
-                    metadata = ReadiumMetadata(
-                        title = LangMapStringValue("Lesson 001"),
-                        author = listOf(
-                            ReadiumContributorStringValue("Mullah Nasruddin")
-                        ),
-                        language = listOf("en"),
-                        modified = "2015-09-29T17:00:00Z",
-                        subject = listOf(
-                            ReadiumSubjectStringValue("English"),
-                        ),
-                        duration = 2.0
-
-                    ),
-                    links = listOf(
-                        ReadiumLink(
-                            href = "",
-                            type = "application/opds-publication+json",
-                            rel = listOf("self")
-                        ),
-                        ReadiumLink(
-                            href = "",
-                            type = "text/html",
-                            rel = listOf("http://opds-spec.org/acquisition/open-access")
-                        )
-                    ),
-                    images = listOf(
-                        ReadiumLink(
-                            href = "",
-                            type = "image/jpeg",
-                            height = 700,
-                            width = 400
-                        )
-                    )
-                ),
-                OpdsPublication(
-                    metadata = ReadiumMetadata(
-                        title = LangMapStringValue("Lesson 005"),
-                        author = listOf(
-                            ReadiumContributorStringValue("Mullah Nasruddin")
-                        ),
-                        language = listOf("en"),
-                        modified = "2015-09-29T17:00:00Z",
-                        subject = listOf(
-                            ReadiumSubjectStringValue("Mathematics"),
-                        ),
-                        duration = 1.0
-
-
-                    ),
-                    links = listOf(
-                        ReadiumLink(
-                            href = "",
-                            type = "application/opds-publication+json",
-                            rel = listOf("self")
-                        ),
-                        ReadiumLink(
-                            href = "",
-                            type = "text/html",
-                            rel = listOf("http://opds-spec.org/acquisition/open-access")
-                        )
-                    ),
-                    images = listOf(
-                        ReadiumLink(
-                            href = "",
-                            type = "image/jpeg",
-                            height = 700,
-                            width = 400
-                        )
-                    )
-                )
-            ),
-            images = listOf(
-                Images(""),
-                Images(""),
-                Images(""),
-            )
-        )
-        _uiState.value = AppsDetailUiState(appsDetailData = appsDetailData)
     }
 }

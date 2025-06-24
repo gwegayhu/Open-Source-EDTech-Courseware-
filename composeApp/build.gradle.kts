@@ -57,8 +57,10 @@ kotlin {
             implementation(libs.kodein.compose)
             implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.datetime.v050)
-            implementation(libs.coil)
             implementation(libs.coil.compose)
+
+
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
