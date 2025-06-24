@@ -9,12 +9,7 @@ import world.respect.app.model.lesson.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.opds.model.LangMapStringValue
 import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumContributorStringValue
-import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.datasource.opds.model.ReadiumMetadata
-import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 
 data class LessonDetailUiState(
     val lessonDetail: OpdsPublication? = null,
