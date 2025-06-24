@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.sqldelight.CompatibleAppEntityQueries
@@ -29,20 +31,31 @@ class CompatibleAppsDataSourceSqld(
         return emptyFlow()
     }
 
-    override suspend fun upsertCompatibleApps(apps: List<RespectAppManifest>) {
+    override suspend fun upsertCompatibleApps(apps: List<DataLoadResult<RespectAppManifest>>) {
         withContext(coroutineContext) {
             queries.transaction {
-                apps.forEach {
-                    queries.upsert(it.asCompatibleAppEntity(json))
+                apps.mapNotNull {
+                    it.asCompatibleAppEntity(json)
+                }.forEach {
+                    queries.upsert(it)
                 }
             }
         }
     }
 
-    override fun getAddableApps(loadParams: DataLoadParams): Flow<DataLoadState<List<RespectAppManifest>>> {
+
+    override fun getAddableApps(
+        loadParams: DataLoadParams
+    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
         return queries.selectAll().asFlow().mapToList(coroutineContext).map { resultList ->
             DataLoadResult(
-                data = resultList.map { it.asRespectManifest(json) },
+                data = resultList.map {
+                    it.asRespectManifestLoadResult(json)
+                },
+                metaInfo = DataLoadMetaInfo(
+                    status = LoadingStatus.LOADED,
+                    lastModified = resultList.maxOfOrNull { it.caeLastModified } ?: -1L,
+                )
             )
         }
     }

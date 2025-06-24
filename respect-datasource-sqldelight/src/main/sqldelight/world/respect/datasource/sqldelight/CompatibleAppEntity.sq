@@ -1,6 +1,8 @@
 CREATE TABLE CompatibleAppEntity (
     caeUid INTEGER PRIMARY KEY NOT NULL,
-    caeSelfUrl TEXT NOT NULL,
+    caeUrl TEXT NOT NULL,
+    caeLastModified INTEGER NOT NULL,
+    caeEtag TEXT,
     caeLicense TEXT NOT NULL,
     caeWebsite TEXT NOT NULL,
     caeLearningUnits TEXT NOT NULL,

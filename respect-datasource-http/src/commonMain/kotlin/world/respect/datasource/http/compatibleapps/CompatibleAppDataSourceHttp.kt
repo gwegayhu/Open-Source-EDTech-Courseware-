@@ -7,13 +7,15 @@ import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.DataLoadingState
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.DataLoadingState
 import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.ext.getDataLoadResult
 
 class CompatibleAppDataSourceHttp(
     private val httpClient: HttpClient,
@@ -26,29 +28,34 @@ class CompatibleAppDataSourceHttp(
     ): Flow<DataLoadState<RespectAppManifest>> {
         return flow {
             emit(DataLoadingState())
-            val loadUrl = Url(manifestUrl)
-            val result: RespectAppManifest = httpClient.get(loadUrl).body()
-            emit(DataLoadResult(data = result.copy(selfUrl = loadUrl)))
+            emit(httpClient.getDataLoadResult(Url(manifestUrl)))
         }
     }
 
     override fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<RespectAppManifest>>> {
+    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
         return flow {
             emit(DataLoadingState())
             val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrl).body()
-            val manifests = respectAppUrls.mapNotNull { url ->
+            val manifests: List<DataLoadResult<RespectAppManifest>> = respectAppUrls.mapNotNull { url ->
                 try {
-                    httpClient.get(url).body<RespectAppManifest>().copy(
-                        selfUrl = Url(url),
-                    )
+                    httpClient.getDataLoadResult(Url(url))
                 }catch(e: Throwable) {
                     //Log
+                    println("getAddableApps: error: $e")
                     null
                 }
             }
-            emit(DataLoadResult(data = manifests))
+            emit(
+                DataLoadResult(
+                    data = manifests,
+                    metaInfo = DataLoadMetaInfo(
+                        status = LoadingStatus.LOADED,
+                        lastModified = manifests.maxOfOrNull { it.metaInfo.lastModified } ?: -1L
+                    ),
+                )
+            )
         }
     }
 

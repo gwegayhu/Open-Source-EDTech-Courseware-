@@ -1,5 +1,10 @@
 package world.respect.datasource
 
+import io.ktor.http.HttpMessage
+import io.ktor.http.Url
+import io.ktor.http.etag
+import world.respect.datasource.ext.lastModifiedAsLong
+
 /**
  * Combined metadata (e.g. data about data) on loaded data. This includes the loading status and
  * validation info (e.g. last modified time and etags as available).
@@ -15,6 +20,8 @@ package world.respect.datasource
  *         be -1L
  *
  * @param etag etag as provided by the origin server (if any)
+ *
+ * @param url the URL
  */
 data class DataLoadMetaInfo(
     val status: LoadingStatus,
@@ -23,6 +30,25 @@ data class DataLoadMetaInfo(
 
     val etag: String? = null,
 
+    val url: Url? = null,
+) {
+
+    fun requireUrl() = url ?: throw IllegalStateException("requireUrl: load meta info has no url")
+
+    companion object {
+
+        fun fromHttpMessage(
+            url: Url,
+            message: HttpMessage,
+        ) = DataLoadMetaInfo(
+            status = LoadingStatus.LOADED,
+            lastModified = message.lastModifiedAsLong(),
+            etag = message.etag(),
+            url = url,
+        )
+
+    }
+
+}
 
 
-)

@@ -39,7 +39,6 @@ data class RespectAppManifest(
     val defaultLaunchUri: Uri,
     val android: AndroidDetails? = null,
     val web: WebDetails? = null,
-    val selfUrl: Url? = null,
 ) {
     /**
      * Contains Android-specific details for the RESPECT manifest.
@@ -65,10 +64,6 @@ data class RespectAppManifest(
         val url: Url? = null,
         val sourceCode: Url? = null,
     )
-
-    fun requireSelfUrl(): Url {
-        return selfUrl ?: throw IllegalStateException("requireSelfUrl: unset")
-    }
 
     companion object {
 

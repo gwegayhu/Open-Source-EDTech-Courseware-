@@ -3,6 +3,7 @@ package world.respect.datasource.repository.compatibleapps
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
@@ -21,7 +22,9 @@ class CompatibleAppDataSourceRepository(
         return emptyFlow()
     }
 
-    override fun getAddableApps(loadParams: DataLoadParams): Flow<DataLoadState<List<RespectAppManifest>>> {
+    override fun getAddableApps(
+        loadParams: DataLoadParams
+    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
         return local.getAddableApps(loadParams).combineLocalWithRemote(
             remoteFlow = remote.getAddableApps(loadParams),
             onRemoteNewer = {
