@@ -1,12 +1,11 @@
 package world.respect.app.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
-import kotlinx.serialization.json.Json
 import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
@@ -27,7 +26,7 @@ import world.respect.app.viewmodel.lessons.detail.LessonDetailViewModel
 import world.respect.app.viewmodel.lessons.list.LessonListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.navigation.RespectComposeNavController
 
 
 @Composable
@@ -36,26 +35,25 @@ fun AppNavHost(
     onSetAppUiState: (AppUiState) -> Unit,
     modifier: Modifier,
 ) {
+    val respectNavController = remember {
+        RespectComposeNavController(navController)
+    }
 
-    NavHost(navController = navController, startDestination = AppLauncher, modifier = modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = AppLauncher,
+        modifier = modifier
+    ) {
 
         composable<AppLauncher> {
             val viewModel = respectViewModel(
                 modelClass = AppLauncherViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController,
+                navController = respectNavController,
             )
+
             AppLauncherScreen(
                 viewModel = viewModel,
-                onClick = { it->
-                    //passing direct object throws error so converted it to string
-                    val json = Json.encodeToString(RespectAppManifest.serializer(), it)
-                    navController.navigate(
-                        AppsDetail(
-                            manifestUrl = json,
-                        )
-                    )
-                }
             )
         }
 
@@ -63,12 +61,10 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = AppsDetailViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
-            val args = it.toRoute<AppsDetail>()
             AppsDetailScreen(
                 viewModel = viewModel,
-                manifestUrl = args.manifestUrl,
                 navController = navController
             )
         }
@@ -77,7 +73,7 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = AssignmentViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             AssignmentScreen(
                 navController = navController,
@@ -89,7 +85,7 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = ClazzViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             ClazzScreen(navController = navController, viewModel = viewModel)
         }
@@ -98,7 +94,7 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = ReportViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             ReportScreen(navController = navController, viewModel = viewModel)
         }
@@ -107,7 +103,7 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = AppListViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             AppListScreen(navController = navController, viewModel = viewModel)
         }
@@ -116,7 +112,7 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = EnterLinkViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             EnterLinkScreen(navController = navController, viewModel = viewModel)
         }
@@ -125,7 +121,7 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = LessonListViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             LessonListScreen(navController = navController, viewModel = viewModel)
         }
@@ -134,12 +130,10 @@ fun AppNavHost(
             val viewModel = respectViewModel(
                 modelClass = LessonDetailViewModel::class,
                 onSetAppUiState = onSetAppUiState,
-                navController = navController
+                navController = respectNavController
             )
             LessonDetailScreen(navController = navController, viewModel = viewModel)
-
         }
-
     }
 
 }

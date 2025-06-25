@@ -1,24 +1,26 @@
 package world.respect.app.app
 
 import kotlinx.serialization.Serializable
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
+
+sealed interface AppDestination
 
 @Serializable
-object AppLauncher
+object AppLauncher: AppDestination
+
 @Serializable
-object Assignment
+object Assignment: AppDestination
 @Serializable
-object Clazz
+object Clazz: AppDestination
 @Serializable
-object Report
+object Report: AppDestination
 @Serializable
-object AppList
+object AppList: AppDestination
 @Serializable
-object EnterLink
+object EnterLink: AppDestination
 @Serializable
-data class AppsDetail(val manifestUrl: String)
+data class AppsDetail(val manifestUrl: String): AppDestination
 @Serializable
-object LessonList
+object LessonList: AppDestination
 @Serializable
-object LessonDetail
+object LessonDetail: AppDestination
 

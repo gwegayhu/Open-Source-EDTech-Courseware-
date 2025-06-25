@@ -1,5 +1,6 @@
 package world.respect.app.viewmodel.lessons.list
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,8 +24,11 @@ data class LessonListUiState(
 )
 
 class LessonListViewModel(
+    savedStateHandle: SavedStateHandle
+) : RespectViewModel(savedStateHandle) {
+
     private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()
-) : RespectViewModel() {
+
     private val _uiState = MutableStateFlow(LessonListUiState())
     val uiState = _uiState.asStateFlow()
 

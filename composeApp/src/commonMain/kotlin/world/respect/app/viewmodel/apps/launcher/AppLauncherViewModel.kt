@@ -1,5 +1,6 @@
 package world.respect.app.viewmodel.apps.launcher
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,22 +11,27 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.app
 import respect.composeapp.generated.resources.apps
 import world.respect.app.app.AppList
+import world.respect.app.app.AppsDetail
 import world.respect.app.appstate.FabUiState
-import world.respect.app.model.applauncher.AppLauncherModel
 import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.navigation.NavCommand
 
 data class AppLauncherUiState(
     val appList: List<RespectAppManifest> = emptyList(),
 )
 
-class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAppDataSource()) :
-    RespectViewModel() {
+class AppLauncherViewModel(
+    savedStateHandle: SavedStateHandle
+) : RespectViewModel(savedStateHandle) {
+
+    private val appDataSource: FakeAppDataSource = FakeAppDataSource()
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
+
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -39,10 +45,12 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
                         icon = FabUiState.FabIcon.ADD,
                         text = getString(resource = Res.string.app),
                         onClick = {
-                            navController.navigate(AppList)
-                        })
+                            _navCommandFlow.tryEmit(NavCommand.Navigate(AppList))
+                        }
+                    )
                 )
             }
+
             appDataSource.getAddableApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
@@ -61,8 +69,14 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
 
         }
     }
-    fun onClick(app: RespectAppManifest){
 
+    fun onClickApp(app: RespectAppManifest){
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                //Placeholder string
+                AppsDetail(manifestUrl = app.license)
+            )
+        )
     }
 }
 

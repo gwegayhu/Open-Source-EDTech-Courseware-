@@ -23,11 +23,11 @@ import kotlin.Boolean
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ImportContacts
-import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
@@ -61,7 +61,7 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
     ),
     TopNavigationItem(
         destRoute = Clazz,
-        icon = Icons.Filled.LibraryBooks,
+        icon = Icons.AutoMirrored.Filled.LibraryBooks,
         label = Res.string.clazz
     ),
     TopNavigationItem(
@@ -170,7 +170,7 @@ fun App(
                     appUiStateVal = it
                 },
                 modifier = Modifier.padding(innerPadding)
-                )
+            )
         }
     }
 

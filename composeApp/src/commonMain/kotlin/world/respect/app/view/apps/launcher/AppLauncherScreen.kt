@@ -19,23 +19,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
+import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun AppLauncherScreen(
     viewModel: AppLauncherViewModel,
-    onClick: (RespectAppManifest) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    AppLauncherScreen(
+        uiState = uiState,
+        onClickApp = { viewModel.onClickApp(it) }
+    )
+}
+
+
+@Composable
+fun AppLauncherScreen(
+    uiState: AppLauncherUiState,
+    onClickApp: (RespectAppManifest) -> Unit
+) {
     if (uiState.appList.isEmpty()) {
         Column(
             modifier = Modifier
@@ -73,7 +84,7 @@ fun AppLauncherScreen(
             items(uiState.appList) { app ->
                 AppGridItem(
                     app = app,
-                    onClick = { onClick(app) }
+                    onClick = { onClickApp(app) }
                 )
             }
         }

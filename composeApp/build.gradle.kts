@@ -1,14 +1,13 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.awt.SystemColor.window
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    kotlin("plugin.serialization") version "1.9.0"
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 compose.resources {
     publicResClass = true
@@ -56,7 +55,7 @@ kotlin {
             implementation(libs.androidx.compose.bom)
             implementation(libs.kodein.compose)
             implementation(libs.kotlinx.io.core)
-            implementation(libs.kotlinx.datetime.v050)
+            implementation(libs.kotlinx.date.time)
             implementation(libs.coil3.coil.compose)
         }
         desktopMain.dependencies {

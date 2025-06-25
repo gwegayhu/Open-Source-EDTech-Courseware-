@@ -1,27 +1,23 @@
 package world.respect.app.viewmodel.apps.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.app.model.appsdetail.AppsDetailModel
-import world.respect.app.viewmodel.RespectViewModel
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
+import world.respect.app.app.AppsDetail
 import world.respect.app.model.applist.FakeAppDataSource
-import world.respect.app.model.appsdetail.Images
 import world.respect.app.model.lesson.FakeOpdsDataSource
+import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.opds.model.LangMapStringValue
 import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumContributorStringValue
-import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.datasource.opds.model.ReadiumMetadata
-import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 
 
 data class AppsDetailUiState(
@@ -30,13 +26,23 @@ data class AppsDetailUiState(
 )
 
 class AppsDetailViewModel(
-    private val appDataSource: FakeAppDataSource = FakeAppDataSource(),
+    savedStateHandle: SavedStateHandle,
+) : RespectViewModel(savedStateHandle) {
+
+    private val appDataSource: FakeAppDataSource = FakeAppDataSource()
+
     private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()
-) : RespectViewModel() {
+
     private val _uiState = MutableStateFlow(AppsDetailUiState())
+
     val uiState = _uiState.asStateFlow()
 
+    private val route: AppsDetail = savedStateHandle.toRoute()
+
     init {
+        //Get the argument here
+        println(route.manifestUrl)
+
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(title = getString(resource = Res.string.apps_detail))

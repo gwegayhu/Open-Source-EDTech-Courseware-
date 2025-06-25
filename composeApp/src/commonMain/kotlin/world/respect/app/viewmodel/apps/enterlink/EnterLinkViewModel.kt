@@ -1,5 +1,6 @@
 package world.respect.app.viewmodel.apps.enterlink
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ data class EnterLinkUiState(
 )
 
 class EnterLinkViewModel(
-) : RespectViewModel() {
+    savedStateHandle: SavedStateHandle,
+) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(EnterLinkUiState())
     val uiState = _uiState.asStateFlow()
