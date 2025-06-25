@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -45,6 +46,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.clazz
 import respect.composeapp.generated.resources.duration
 import world.respect.app.app.LessonDetail
+import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
 import world.respect.app.viewmodel.lessons.list.LessonListViewModel
@@ -126,11 +128,11 @@ fun LessonListScreen(
                                 .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Android,
-                                modifier = Modifier.size(18.dp),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
+                            RespectAsyncImage(
+                                uri = "",
+                                contentDescription = "",
+                                contentScale=ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                     },
@@ -154,12 +156,10 @@ fun LessonListScreen(
                                         ?.joinToString(", ") { it.toDisplayString() }
                                         ?: " ",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
                                     text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }

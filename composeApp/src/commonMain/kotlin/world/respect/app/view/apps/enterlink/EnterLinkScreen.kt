@@ -20,7 +20,6 @@ fun EnterLinkScreen(
 
     var link by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()
-    var showError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -56,7 +55,7 @@ fun EnterLinkScreen(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth(),
-            isError = showError
+            isError = uiState.isError
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -73,7 +72,7 @@ fun EnterLinkScreen(
             )
         }
 
-        if (showError) {
+        if (uiState.isError) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(Res.string.error_link_message),

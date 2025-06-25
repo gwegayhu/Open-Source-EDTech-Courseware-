@@ -1,6 +1,5 @@
 package world.respect.app.view.apps.launcher
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,7 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -25,6 +24,7 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
+import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
@@ -96,9 +96,10 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                model = app.icon?.toString(),
-                contentDescription = null,
+            RespectAsyncImage(
+                uri = app.icon.toString(),
+                contentDescription = "",
+                contentScale=ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -108,7 +109,6 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
         Text(
             text = app.name.getTitle(),
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.align(Alignment.Start)
         )
 

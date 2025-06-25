@@ -1,5 +1,6 @@
 package world.respect.app.view.apps.detail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,16 +18,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.try_it
 import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
+import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 
@@ -53,11 +58,10 @@ fun AppsDetailScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
-                        val iconUrl = uiState.appDetail?.icon?.toString()
-                        println("Icon URL: $iconUrl")
-                        AsyncImage(
-                            model = uiState.appDetail?.icon?.toString(),
-                            contentDescription = null,
+                        RespectAsyncImage(
+                            uri = uiState.appDetail?.icon.toString(),
+                            contentDescription = "",
+                            contentScale=ContentScale.Fit,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -153,6 +157,7 @@ fun AppsDetailScreen(
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                             )
+
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = publication.metadata.title.getTitle(),
