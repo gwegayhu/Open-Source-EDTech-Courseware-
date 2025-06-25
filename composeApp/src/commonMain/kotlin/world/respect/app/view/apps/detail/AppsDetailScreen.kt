@@ -1,6 +1,5 @@
 package world.respect.app.view.apps.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,8 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.try_it
@@ -28,8 +29,6 @@ import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
-//import coil.compose.rememberAsyncImagePainter
-
 
 @Composable
 fun AppsDetailScreen(
@@ -54,38 +53,26 @@ fun AppsDetailScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
-                       /* Image(
-                            painter = rememberAsyncImagePainter(uiState.appDetail?.icon?.toString()),
+                        val iconUrl = uiState.appDetail?.icon?.toString()
+                        println("Icon URL: $iconUrl")
+                        AsyncImage(
+                            model = uiState.appDetail?.icon?.toString(),
                             contentDescription = null,
-                            modifier = Modifier.size(48.dp)
-                        )*/
-                        Text(
-                            text = uiState.appDetail?.name?.getTitle() ?: "",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodyMedium
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 },
                 headlineContent = {
-                    Text(
-                        text = uiState.appDetail?.name?.getTitle() ?: "",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Text(text = uiState.appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(
-                        text = uiState.appDetail?.description?.getTitle() ?: "",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Text(text = uiState.appDetail?.description?.getTitle() ?: "")
                 },
                 trailingContent = {
                     IconButton(onClick = { /* Options */ }) {
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -133,18 +120,14 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.lessons),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Text(text = stringResource(Res.string.lessons),
+                        fontWeight = FontWeight.Bold)
                 },
                 trailingContent = {
                     IconButton(onClick = { navController.navigate(LessonList) }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowForward,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -174,7 +157,6 @@ fun AppsDetailScreen(
                             Text(
                                 text = publication.metadata.title.getTitle(),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1
                             )
                         }

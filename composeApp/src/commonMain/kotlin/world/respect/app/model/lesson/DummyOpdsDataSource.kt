@@ -143,7 +143,43 @@ class FakeOpdsDataSource : OpdsDataSource {
         params: DataLoadParams,
         referrerUrl: String?,
         expectedPublicationId: String?
-    ): Flow<DataResult<OpdsPublication>> {
-        TODO("Not yet implemented")
+    ): Flow<DataResult<OpdsPublication>> = flow {
+
+        val dummyPublication =  OpdsPublication(
+            metadata = ReadiumMetadata(
+                title = LangMapStringValue("Lesson 002"),
+                author = listOf(ReadiumContributorStringValue("Mullah Nasruddin")),
+                language = listOf("en"),
+                modified = "2015-09-29T17:00:00Z",
+                subject = listOf(ReadiumSubjectStringValue("Urdu")),
+                duration = 2.0
+            ),
+            links = listOf(
+                ReadiumLink(
+                    href = "",
+                    type = "application/opds-publication+json",
+                    rel = listOf("self")
+                ),
+                ReadiumLink(
+                    href = "",
+                    type = "text/html",
+                    rel = listOf("http://opds-spec.org/acquisition/open-access")
+                )
+            ),
+            images = listOf(
+                ReadiumLink(
+                    href = "",
+                    type = "image/jpeg",
+                    height = 700,
+                    width = 400
+                )
+            )
+        )
+        emit(
+            DataLoadResult(
+                data = dummyPublication,
+                status = LoadingStatus.LOADED
+            )
+        )
     }
 }

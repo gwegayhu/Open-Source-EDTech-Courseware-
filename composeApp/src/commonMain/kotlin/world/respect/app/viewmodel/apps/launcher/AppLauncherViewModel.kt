@@ -61,5 +61,8 @@ class AppLauncherViewModel(private val appDataSource: FakeAppDataSource = FakeAp
 
         }
     }
+    fun onClick(app: RespectAppManifest){
+
+    }
 }
 

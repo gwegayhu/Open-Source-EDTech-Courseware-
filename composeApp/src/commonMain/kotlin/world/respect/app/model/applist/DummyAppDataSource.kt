@@ -24,7 +24,7 @@ class FakeAppDataSource : CompatibleAppsDataSource {
             description = LangMapStringValue("A sample RESPECT-compatible learning app."),
             license = "proprietary",
             website = Url("https://example.com"),
-            icon = Url("https://example.com/icon.png"),
+            icon = Url("https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"),
             learningUnits = Uri.parse("https://example.com/opds/learning-units"),
             defaultLaunchUri = Uri.parse("https://example.com/launch"),
             android = RespectAppManifest.AndroidDetails(
@@ -85,7 +85,7 @@ class FakeAppDataSource : CompatibleAppsDataSource {
                 description = LangMapStringValue("A sample RESPECT-compatible learning app."),
                 license = "proprietary",
                 website = Url("https://example.com"),
-                icon = Url("https://example.com/icon.png"),
+                icon = Url("https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"),
                 learningUnits = Uri.parse("https://example.com/opds/learning-units"),
                 defaultLaunchUri = Uri.parse("https://example.com/launch"),
                 android = RespectAppManifest.AndroidDetails(
@@ -105,7 +105,7 @@ class FakeAppDataSource : CompatibleAppsDataSource {
                 description = LangMapStringValue("A sample RESPECT-compatible learning app."),
                 license = "proprietary",
                 website = Url("https://example.com"),
-                icon = Url("https://example.com/icon.png"),
+                icon = Url("https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"),
                 learningUnits = Uri.parse("https://example.com/opds/learning-units"),
                 defaultLaunchUri = Uri.parse("https://example.com/launch"),
                 android = RespectAppManifest.AndroidDetails(

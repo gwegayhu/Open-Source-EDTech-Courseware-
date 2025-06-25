@@ -12,6 +12,7 @@ import world.respect.app.viewmodel.RespectViewModel
 
 data class EnterLinkUiState(
     val reportData: List<String> = emptyList(),
+    val isError: Boolean = false,
 )
 
 class EnterLinkViewModel(
@@ -31,9 +32,17 @@ class EnterLinkViewModel(
 
         }
     }
-    fun isValidUrl(url: String): Boolean {
+    fun isValidUrl(link: String): Boolean {
         return true
     }
-
+    fun onButtonClick(link: String):Boolean{
+        val isValid = isValidUrl(link)
+        _uiState.update {
+            it.copy(
+                isError = !isValid,
+            )
+        }
+        return isValid
+    }
 
 }

@@ -12,6 +12,7 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 argparse4j = "0.9.0"
 coil =  "2.5.0"
+coilCompose = "3.2.0"
 compose-multiplatform = "1.7.3"
 composeBom = "2025.05.00"
 junit = "4.13.2"
@@ -51,6 +52,7 @@ argparse4j = { module = "net.sourceforge.argparse4j:argparse4j", version.ref = "
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil"}
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
+coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

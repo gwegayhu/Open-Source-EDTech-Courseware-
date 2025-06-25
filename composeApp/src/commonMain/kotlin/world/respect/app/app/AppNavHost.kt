@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import kotlinx.serialization.json.Json
 import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
@@ -26,6 +27,7 @@ import world.respect.app.viewmodel.lessons.detail.LessonDetailViewModel
 import world.respect.app.viewmodel.lessons.list.LessonListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 
 @Composable
@@ -45,10 +47,12 @@ fun AppNavHost(
             )
             AppLauncherScreen(
                 viewModel = viewModel,
-                onClickAction = {
+                onClick = { it->
+                    //passing direct object throws error so converted it to string
+                    val json = Json.encodeToString(RespectAppManifest.serializer(), it)
                     navController.navigate(
                         AppsDetail(
-                            manifestUrl = it,
+                            manifestUrl = json,
                         )
                     )
                 }

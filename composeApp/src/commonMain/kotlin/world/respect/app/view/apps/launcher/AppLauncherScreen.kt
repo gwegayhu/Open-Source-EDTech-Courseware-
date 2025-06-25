@@ -1,5 +1,6 @@
 package world.respect.app.view.apps.launcher
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,8 +17,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
@@ -29,7 +32,7 @@ import world.respect.datasource.compatibleapps.model.RespectAppManifest
 @Composable
 fun AppLauncherScreen(
     viewModel: AppLauncherViewModel,
-    onClickAction: (String) -> Unit
+    onClick: (RespectAppManifest) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -44,20 +47,17 @@ fun AppLauncherScreen(
             Icon(
                 imageVector = Icons.Filled.CrueltyFree,
                 contentDescription = null,
-                modifier = Modifier.size(100.dp),
-                tint = MaterialTheme.colorScheme.onBackground
+                modifier = Modifier.size(100.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(resource = Res.string.empty_list),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(resource = Res.string.empty_list_description),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
         }
@@ -71,21 +71,22 @@ fun AppLauncherScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(uiState.appList) { app ->
-                AppGridItem(app) {
-                    onClickAction(app.learningUnits.toString())
-                }
+                AppGridItem(
+                    app = app,
+                    onClick = { onClick(app) }
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppGridItem(app: RespectAppManifest, function: () -> Unit) {
+fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .clickable { function() },
+            .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -95,12 +96,10 @@ fun AppGridItem(app: RespectAppManifest, function: () -> Unit) {
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = app.name.getTitle(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+            AsyncImage(
+                model = app.icon?.toString(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
             )
         }
 
@@ -121,12 +120,10 @@ fun AppGridItem(app: RespectAppManifest, function: () -> Unit) {
             Text(
                 text = "-",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = "-",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
