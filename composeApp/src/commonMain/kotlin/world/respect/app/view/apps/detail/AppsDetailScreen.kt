@@ -1,6 +1,5 @@
 package world.respect.app.view.apps.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,7 +27,6 @@ import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun AppsDetailScreen(
@@ -53,11 +51,6 @@ fun AppsDetailScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
-                        /*
-                             painter = rememberAsyncImagePainter(uiState.appDetail?.icon?.toString()),
-                             contentDescription = null,
-                             modifier = Modifier.size(48.dp)
-                         )*/
                         Text(text = uiState.appDetail?.name?.getTitle() ?: "")
                     }
                 },
@@ -72,7 +65,6 @@ fun AppsDetailScreen(
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },

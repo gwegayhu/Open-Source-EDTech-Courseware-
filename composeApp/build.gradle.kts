@@ -57,8 +57,7 @@ kotlin {
             implementation(libs.kodein.compose)
             implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.datetime.v050)
-            implementation(libs.coil.compose)
-
+            implementation(libs.coil3.coil.compose)
 
 
         }
