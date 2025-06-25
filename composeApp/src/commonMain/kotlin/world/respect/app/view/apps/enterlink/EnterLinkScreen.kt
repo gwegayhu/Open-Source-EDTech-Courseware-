@@ -37,7 +37,9 @@ fun EnterLinkScreen(
             value = link,
             onValueChange = {
                 link = it
-                if (showError) showError = false
+                if (uiState.isError) {
+                    viewModel.onButtonClick(it)
+                }
             },
             label = {
                 Text(
@@ -61,8 +63,7 @@ fun EnterLinkScreen(
 
         Button(
             onClick = {
-                showError = !viewModel.isValidUrl(link)
-                if (!showError) { }
+                viewModel.onButtonClick(link)
             },
             modifier = Modifier.fillMaxWidth()
         ) {

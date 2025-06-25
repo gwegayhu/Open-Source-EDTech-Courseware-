@@ -17,8 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.try_it
@@ -51,7 +53,13 @@ fun AppsDetailScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = uiState.appDetail?.name?.getTitle() ?: "")
+                        val iconUrl = uiState.appDetail?.icon?.toString()
+                        println("Icon URL: $iconUrl")
+                        AsyncImage(
+                            model = uiState.appDetail?.icon?.toString(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
                 },
                 headlineContent = {
@@ -112,7 +120,8 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 headlineContent = {
-                    Text(text = stringResource(Res.string.lessons))
+                    Text(text = stringResource(Res.string.lessons),
+                        fontWeight = FontWeight.Bold)
                 },
                 trailingContent = {
                     IconButton(onClick = { navController.navigate(LessonList) }) {

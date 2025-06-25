@@ -58,8 +58,6 @@ kotlin {
             implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.datetime.v050)
             implementation(libs.coil3.coil.compose)
-
-
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

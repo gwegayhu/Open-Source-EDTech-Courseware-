@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
@@ -95,11 +96,10 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = app.name.getTitle(),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+            AsyncImage(
+                model = app.icon?.toString(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
             )
         }
 
