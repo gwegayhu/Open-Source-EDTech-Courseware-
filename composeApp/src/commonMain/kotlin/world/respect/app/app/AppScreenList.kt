@@ -20,7 +20,7 @@ object EnterLink: AppDestination
 @Serializable
 data class AppsDetail(val manifestUrl: String): AppDestination
 @Serializable
-object LessonList: AppDestination
+data class LessonList(val manifestUrl : String): AppDestination
 @Serializable
-object LessonDetail: AppDestination
+data class LessonDetail(val manifestUrl : String): AppDestination
 

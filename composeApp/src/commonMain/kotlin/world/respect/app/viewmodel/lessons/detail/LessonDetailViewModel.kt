@@ -2,10 +2,13 @@ package world.respect.app.viewmodel.lessons.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import world.respect.app.app.LessonDetail
+import world.respect.app.app.LessonList
 import world.respect.app.model.lesson.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
@@ -24,15 +27,20 @@ class LessonDetailViewModel(
     private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()
 
     private val _uiState = MutableStateFlow(LessonDetailUiState())
+
     val uiState = _uiState.asStateFlow()
 
+    private val route: LessonDetail = savedStateHandle.toRoute()
+
     init {
+        val manifestUrl = route.manifestUrl
+
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(title = "")
             }
             opdsDataSource.loadOpdsPublication(
-                url = "",
+                url = manifestUrl,
                 params = DataLoadParams(),
                 referrerUrl = "",
                 expectedPublicationId = ""
@@ -51,7 +59,7 @@ class LessonDetailViewModel(
                 }
             }
             opdsDataSource.loadOpdsFeed(
-                url = "https://your.api.endpoint/opds/lessons",
+                url = manifestUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {

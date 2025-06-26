@@ -63,7 +63,6 @@ class AppListViewModel(
         }
     }
     fun onClickAddLink() {
-        println("ENTER LINK FUNCTION CALLED")
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 EnterLink

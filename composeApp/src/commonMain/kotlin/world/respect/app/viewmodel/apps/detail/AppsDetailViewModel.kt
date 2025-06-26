@@ -92,7 +92,7 @@ class AppsDetailViewModel(
     fun onClickLessonList() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonList
+                LessonList(manifestUrl = route.manifestUrl)
             )
         )
     }
@@ -100,7 +100,7 @@ class AppsDetailViewModel(
     fun onClickLesson() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail
+                LessonDetail(manifestUrl = route.manifestUrl)
             )
         )
     }
