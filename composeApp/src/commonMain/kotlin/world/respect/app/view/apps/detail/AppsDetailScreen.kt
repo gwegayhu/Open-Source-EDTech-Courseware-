@@ -65,8 +65,7 @@ fun AppsDetailScreen(
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
+                            .size(80.dp)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
                 },
@@ -160,9 +159,12 @@ fun AppsDetailScreen(
                                     onClickLesson()
                                 }
                         ) {
-                            Box(
+                            RespectAsyncImage(
+                                uri = "",
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier
-                                    .aspectRatio(1f)
+                                    .size(90.dp)
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                             )
