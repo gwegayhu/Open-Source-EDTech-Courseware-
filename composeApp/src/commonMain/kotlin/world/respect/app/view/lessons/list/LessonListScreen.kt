@@ -131,21 +131,16 @@ fun LessonListScreen(
                         .clickable { onClickLesson() },
 
                     leadingContent = {
-                        Box(
+                        RespectAsyncImage(
+                            uri = "",
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                                 .background(MaterialTheme.colorScheme.background)
-                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            RespectAsyncImage(
-                                uri = "",
-                                contentDescription = "",
-                                contentScale=ContentScale.Fit,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
+                        )
                     },
 
                     headlineContent = {

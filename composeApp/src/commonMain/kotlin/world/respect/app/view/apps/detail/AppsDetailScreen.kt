@@ -60,19 +60,15 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 leadingContent = {
-                    Box(
+                    RespectAsyncImage(
+                        uri = uiState.appDetail?.icon.toString(),
+                        contentDescription = "",
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .size(80.dp)
-                            .background(MaterialTheme.colorScheme.surfaceVariant),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        RespectAsyncImage(
-                            uri = uiState.appDetail?.icon.toString(),
-                            contentDescription = "",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
                 },
                 headlineContent = {
                     Text(text = uiState.appDetail?.name?.getTitle() ?: "")
