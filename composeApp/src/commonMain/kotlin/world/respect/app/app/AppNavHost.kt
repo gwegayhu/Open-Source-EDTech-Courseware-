@@ -122,7 +122,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LessonListScreen(navController = navController, viewModel = viewModel)
+            LessonListScreen( viewModel = viewModel)
         }
 
         composable<LessonDetail> {
