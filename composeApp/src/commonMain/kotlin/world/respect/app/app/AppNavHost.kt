@@ -53,7 +53,7 @@ fun AppNavHost(
             )
 
             AppLauncherScreen(
-                viewModel = viewModel,
+                viewModel = viewModel
             )
         }
 
@@ -64,8 +64,7 @@ fun AppNavHost(
                 navController = respectNavController
             )
             AppsDetailScreen(
-                viewModel = viewModel,
-                navController = navController
+                viewModel = viewModel
             )
         }
 

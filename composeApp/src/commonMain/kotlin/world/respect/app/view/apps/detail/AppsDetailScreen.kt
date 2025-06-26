@@ -1,6 +1,7 @@
 package world.respect.app.view.apps.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,14 +30,28 @@ import respect.composeapp.generated.resources.lessons
 import world.respect.app.app.LessonList
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
+import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 
 @Composable
 fun AppsDetailScreen(
     viewModel: AppsDetailViewModel,
-    navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    AppsDetailScreen(
+        uiState = uiState,
+        onClickLessonList = { viewModel.onClickLessonList() },
+        onClickLesson = { viewModel.onClickLesson() }
+    )
+}
+
+@Composable
+fun AppsDetailScreen(
+    uiState: AppsDetailUiState,
+    onClickLessonList: () -> Unit,
+    onClickLesson: () -> Unit
+) {
 
     LazyColumn(
         modifier = Modifier
@@ -56,7 +71,7 @@ fun AppsDetailScreen(
                         RespectAsyncImage(
                             uri = uiState.appDetail?.icon.toString(),
                             contentDescription = "",
-                            contentScale=ContentScale.Fit,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -119,11 +134,13 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 headlineContent = {
-                    Text(text = stringResource(Res.string.lessons),
-                        fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(Res.string.lessons),
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 trailingContent = {
-                    IconButton(onClick = { navController.navigate(LessonList) }) {
+                    IconButton(onClick = { onClickLessonList() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                             contentDescription = null,
@@ -145,6 +162,9 @@ fun AppsDetailScreen(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(100.dp)
+                                .clickable {
+                                    onClickLesson()
+                                }
                         ) {
                             Box(
                                 modifier = Modifier
@@ -164,6 +184,5 @@ fun AppsDetailScreen(
                 }
             }
         }
-
     }
 }

@@ -11,6 +11,8 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
 import world.respect.app.app.AppsDetail
+import world.respect.app.app.LessonDetail
+import world.respect.app.app.LessonList
 import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.model.lesson.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
@@ -18,6 +20,7 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.navigation.NavCommand
 
 
 data class AppsDetailUiState(
@@ -83,5 +86,23 @@ class AppsDetailViewModel(
             }
 
         }
+    }
+
+    fun onClickLessonList() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                //Placeholder string
+                LessonList
+            )
+        )
+    }
+
+    fun onClickLesson() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                //Placeholder string
+                LessonDetail
+            )
+        )
     }
 }
