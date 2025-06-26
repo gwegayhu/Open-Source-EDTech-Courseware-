@@ -58,6 +58,7 @@ fun LessonListScreen(
     LessonListScreen(
         uiState = uiState,
         onClickLesson = { viewModel.onClickLesson() },
+        onClickFilter = { viewModel.onClickFilter(it) }
 
     )
 }
@@ -66,6 +67,7 @@ fun LessonListScreen(
 fun LessonListScreen(
     uiState: LessonListUiState,
     onClickLesson: () -> Unit,
+    onClickFilter: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         uiState.lessonFilter.firstOrNull()?.let { facet ->
@@ -110,6 +112,7 @@ fun LessonListScreen(
                         DropdownMenuItem(
                             text = { Text(link.title ?: "") },
                             onClick = {
+                                onClickFilter(link.title ?: "")
                                 expanded = false
                             }
                         )

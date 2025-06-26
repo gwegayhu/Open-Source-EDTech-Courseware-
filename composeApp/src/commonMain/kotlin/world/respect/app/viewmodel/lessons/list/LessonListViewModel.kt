@@ -66,7 +66,7 @@ class LessonListViewModel(
         }
     }
 
-    fun onFilterSelected(title: String) {
+    fun onClickFilter(title: String) {
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
     fun onClickLesson() {
