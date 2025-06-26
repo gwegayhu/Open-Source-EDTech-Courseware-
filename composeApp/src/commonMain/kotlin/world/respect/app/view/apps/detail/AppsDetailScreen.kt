@@ -21,13 +21,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.try_it
 import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
-import world.respect.app.app.LessonList
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState

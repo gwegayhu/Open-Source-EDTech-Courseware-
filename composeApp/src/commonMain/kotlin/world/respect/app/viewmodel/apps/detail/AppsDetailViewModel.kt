@@ -91,7 +91,6 @@ class AppsDetailViewModel(
     fun onClickLessonList() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                //Placeholder string
                 LessonList
             )
         )

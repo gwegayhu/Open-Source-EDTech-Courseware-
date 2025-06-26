@@ -104,7 +104,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            AppListScreen(navController = navController, viewModel = viewModel)
+            AppListScreen(viewModel = viewModel)
         }
 
         composable<EnterLink> {

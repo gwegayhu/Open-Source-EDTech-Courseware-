@@ -23,14 +23,32 @@ import respect.composeapp.generated.resources.add_link
 import respect.composeapp.generated.resources.add_from_link
 import world.respect.app.app.EnterLink
 import world.respect.app.appstate.getTitle
+import world.respect.app.view.apps.detail.AppsDetailScreen
+import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
+import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
+import world.respect.app.viewmodel.apps.list.AppListUiState
 import world.respect.app.viewmodel.apps.list.AppListViewModel
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun AppListScreen(
-    navController: NavHostController,
     viewModel: AppListViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    AppListScreen(
+        uiState = uiState,
+        onClickAddLink = { viewModel.onClickAddLink() },
+        onClickApp = { viewModel.onClickApp(it) }
+    )
+}
+
+@Composable
+fun AppListScreen(
+    uiState: AppListUiState,
+    onClickAddLink: () -> Unit,
+    onClickApp: (RespectAppManifest) -> Unit
+) {
 
     LazyColumn(
         modifier = Modifier
@@ -49,7 +67,7 @@ fun AppListScreen(
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { navController.navigate(EnterLink) },
+                    .clickable { onClickAddLink() },
                 leadingContent = {
                     Icon(
                         imageVector = Icons.Default.Link,
@@ -104,7 +122,11 @@ fun AppListScreen(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onClickApp(app)
+                    }
             )
         }
     }
