@@ -100,20 +100,15 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
             .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
+        RespectAsyncImage(
+            uri = app.icon.toString(),
+            contentDescription = "",
+            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            RespectAsyncImage(
-                uri = app.icon.toString(),
-                contentDescription = "",
-                contentScale=ContentScale.Fit,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        )
 
         Spacer(modifier = Modifier.height(4.dp))
 

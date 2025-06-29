@@ -1,6 +1,7 @@
 package world.respect.app.view.apps.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,23 +21,35 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.try_it
 import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
-import world.respect.app.app.LessonList
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
+import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 
 @Composable
 fun AppsDetailScreen(
     viewModel: AppsDetailViewModel,
-    navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    AppsDetailScreen(
+        uiState = uiState,
+        onClickLessonList = { viewModel.onClickLessonList() },
+        onClickLesson = { viewModel.onClickLesson() }
+    )
+}
+
+@Composable
+fun AppsDetailScreen(
+    uiState: AppsDetailUiState,
+    onClickLessonList: () -> Unit,
+    onClickLesson: () -> Unit
+) {
 
     LazyColumn(
         modifier = Modifier
@@ -47,19 +60,14 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 leadingContent = {
-                    Box(
+                    RespectAsyncImage(
+                        uri = uiState.appDetail?.icon.toString(),
+                        contentDescription = "",
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .size(80.dp)
-                            .background(MaterialTheme.colorScheme.surfaceVariant),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        RespectAsyncImage(
-                            uri = uiState.appDetail?.icon.toString(),
-                            contentDescription = "",
-                            contentScale=ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
                 },
                 headlineContent = {
                     Text(text = uiState.appDetail?.name?.getTitle() ?: "")
@@ -119,11 +127,13 @@ fun AppsDetailScreen(
         item {
             ListItem(
                 headlineContent = {
-                    Text(text = stringResource(Res.string.lessons),
-                        fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(Res.string.lessons),
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 trailingContent = {
-                    IconButton(onClick = { navController.navigate(LessonList) }) {
+                    IconButton(onClick = { onClickLessonList() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                             contentDescription = null,
@@ -145,10 +155,16 @@ fun AppsDetailScreen(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(100.dp)
+                                .clickable {
+                                    onClickLesson()
+                                }
                         ) {
-                            Box(
+                            RespectAsyncImage(
+                                uri = "",
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier
-                                    .aspectRatio(1f)
+                                    .size(90.dp)
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                             )
@@ -164,6 +180,5 @@ fun AppsDetailScreen(
                 }
             }
         }
-
     }
 }

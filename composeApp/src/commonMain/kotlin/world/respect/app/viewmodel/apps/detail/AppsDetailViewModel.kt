@@ -12,6 +12,8 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
 import world.respect.DummyRepo
 import world.respect.app.app.AppsDetail
+import world.respect.app.app.LessonDetail
+import world.respect.app.app.LessonList
 import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.model.lesson.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
@@ -19,6 +21,7 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.navigation.NavCommand
 
 
 data class AppsDetailUiState(
@@ -45,6 +48,7 @@ class AppsDetailViewModel(
         //Get the argument here
         println(route.manifestUrl)
         println(dummyRepo)
+        val manifestUrl = route.manifestUrl
 
         viewModelScope.launch {
             _appUiState.update {
@@ -52,7 +56,7 @@ class AppsDetailViewModel(
             }
             //once navigation is fixed will pass argument learning units
             appDataSource.getApp(
-                manifestUrl = "",
+                manifestUrl = manifestUrl,
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -69,7 +73,7 @@ class AppsDetailViewModel(
                 }
             }
             opdsDataSource.loadOpdsFeed(
-                url = "",
+                url = manifestUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -86,5 +90,21 @@ class AppsDetailViewModel(
             }
 
         }
+    }
+
+    fun onClickLessonList() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LessonList(manifestUrl = route.manifestUrl)
+            )
+        )
+    }
+
+    fun onClickLesson() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LessonDetail(manifestUrl = route.manifestUrl)
+            )
+        )
     }
 }

@@ -58,6 +58,8 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.layout.ContentScale
+import world.respect.app.app.RespectAsyncImage
 
 
 @Composable
@@ -181,20 +183,16 @@ fun LessonDetailScreen(
                     .clickable { navController.navigate(LessonDetail) },
 
                 leadingContent = {
-                    Box(
+                    RespectAsyncImage(
+                        uri = "",
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(36.dp)
                             .clip(CircleShape)
-                            .background(white)
-                            .border(1.dp, black, CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Android,
-                            contentDescription = null,
-                            modifier = Modifier.padding(6.dp),
-                        )
-                    }
+                            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                            .background(MaterialTheme.colorScheme.background)
+                    )
                 },
 
                 headlineContent = {

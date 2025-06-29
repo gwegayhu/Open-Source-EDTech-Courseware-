@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
@@ -39,25 +38,37 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.ustadmobile.libuicompose.theme.black
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.clazz
 import respect.composeapp.generated.resources.duration
-import world.respect.app.app.LessonDetail
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
+import world.respect.app.viewmodel.lessons.list.LessonListUiState
 import world.respect.app.viewmodel.lessons.list.LessonListViewModel
 
 @Composable
 fun LessonListScreen(
-    navController: NavHostController,
     viewModel: LessonListViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LessonListScreen(
+        uiState = uiState,
+        onClickLesson = { viewModel.onClickLesson() },
+        onClickFilter = { viewModel.onClickFilter(it) }
+
+    )
+}
+
+@Composable
+fun LessonListScreen(
+    uiState: LessonListUiState,
+    onClickLesson: () -> Unit,
+    onClickFilter: (String) -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         uiState.lessonFilter.firstOrNull()?.let { facet ->
             var expanded by remember { mutableStateOf(false) }
@@ -101,7 +112,7 @@ fun LessonListScreen(
                         DropdownMenuItem(
                             text = { Text(link.title ?: "") },
                             onClick = {
-                                viewModel.onFilterSelected(link.title ?: "")
+                                onClickFilter(link.title ?: "")
                                 expanded = false
                             }
                         )
@@ -117,24 +128,19 @@ fun LessonListScreen(
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { navController.navigate(LessonDetail) },
+                        .clickable { onClickLesson() },
 
                     leadingContent = {
-                        Box(
+                        RespectAsyncImage(
+                            uri = "",
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                                 .background(MaterialTheme.colorScheme.background)
-                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            RespectAsyncImage(
-                                uri = "",
-                                contentDescription = "",
-                                contentScale=ContentScale.Fit,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
+                        )
                     },
 
                     headlineContent = {

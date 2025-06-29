@@ -52,7 +52,7 @@ fun AppNavHost(
             )
 
             AppLauncherScreen(
-                viewModel = viewModel,
+                viewModel = viewModel
             )
         }
 
@@ -62,8 +62,7 @@ fun AppNavHost(
                 navController = respectNavController
             )
             AppsDetailScreen(
-                viewModel = viewModel,
-                navController = navController
+                viewModel = viewModel
             )
         }
 
@@ -99,7 +98,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            AppListScreen(navController = navController, viewModel = viewModel)
+            AppListScreen(viewModel = viewModel)
         }
 
         composable<EnterLink> {
@@ -115,7 +114,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LessonListScreen(navController = navController, viewModel = viewModel)
+            LessonListScreen( viewModel = viewModel)
         }
 
         composable<LessonDetail> {
