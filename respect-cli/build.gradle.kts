@@ -23,8 +23,10 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.okhttp)
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
 
-    implementation(project(":shared"))
+    implementation(projects.shared)
 }
 
 kotlin {
