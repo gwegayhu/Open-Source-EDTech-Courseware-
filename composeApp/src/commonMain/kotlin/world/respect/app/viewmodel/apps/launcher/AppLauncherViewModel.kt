@@ -13,11 +13,11 @@ import respect.composeapp.generated.resources.apps
 import world.respect.app.app.AppList
 import world.respect.app.app.AppsDetail
 import world.respect.app.appstate.FabUiState
+import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
-import world.respect.datasource.RespectAppDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.navigation.NavCommand
 
@@ -27,12 +27,14 @@ data class AppLauncherUiState(
 
 class AppLauncherViewModel(
     savedStateHandle: SavedStateHandle,
-    private val dataSource: RespectAppDataSource,
+    dataSourceProvider: RespectAppDataSourceProvider,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
 
     val uiState = _uiState.asStateFlow()
+
+    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
         viewModelScope.launch {

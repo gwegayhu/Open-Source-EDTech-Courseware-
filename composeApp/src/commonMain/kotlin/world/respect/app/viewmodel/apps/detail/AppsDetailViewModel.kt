@@ -13,14 +13,13 @@ import respect.composeapp.generated.resources.apps_detail
 import world.respect.app.app.AppsDetail
 import world.respect.app.app.LessonDetail
 import world.respect.app.app.LessonList
+import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.RespectAppDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.navigation.NavCommand
-
 
 data class AppsDetailUiState(
     val appDetail: RespectAppManifest? = null,
@@ -29,7 +28,7 @@ data class AppsDetailUiState(
 
 class AppsDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    private val dataSource: RespectAppDataSource,
+    dataSourceProvider: RespectAppDataSourceProvider,
 ) : RespectViewModel(savedStateHandle) {
 
 
@@ -38,6 +37,8 @@ class AppsDetailViewModel(
     val uiState = _uiState.asStateFlow()
 
     private val route: AppsDetail = savedStateHandle.toRoute()
+
+    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
         //Get the argument here

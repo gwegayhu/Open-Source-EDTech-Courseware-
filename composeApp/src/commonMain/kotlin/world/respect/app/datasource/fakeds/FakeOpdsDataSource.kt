@@ -1,4 +1,4 @@
-package world.respect.app.fakeds
+package world.respect.app.datasource.fakeds
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

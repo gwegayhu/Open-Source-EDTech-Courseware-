@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.app.app.LessonDetail
-import world.respect.app.fakeds.FakeOpdsDataSource
+import world.respect.app.datasource.fakeds.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult

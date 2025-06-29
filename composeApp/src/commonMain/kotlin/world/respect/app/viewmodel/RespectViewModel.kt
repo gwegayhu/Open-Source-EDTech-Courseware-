@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import world.respect.app.appstate.AppUiState
 import world.respect.app.appstate.LoadingUiState
+import world.respect.app.domain.account.RespectAccount
 import world.respect.navigation.NavCommand
 
 abstract class RespectViewModel(
@@ -28,6 +29,9 @@ abstract class RespectViewModel(
     )
 
     val navCommandFlow: Flow<NavCommand> = _navCommandFlow.asSharedFlow()
+
+    //Placeholder: will be provided via an AccountManager that will use multiplatform settings.
+    protected val activeAccount = RespectAccount("testacct")
 
     /**
      * Shorthand to make it easier to update the loading state

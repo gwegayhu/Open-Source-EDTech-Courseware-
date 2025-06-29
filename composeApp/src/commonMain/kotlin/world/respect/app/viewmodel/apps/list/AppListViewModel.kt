@@ -13,7 +13,7 @@ import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.select_app
 import world.respect.app.app.AppsDetail
 import world.respect.app.app.EnterLink
-import world.respect.app.fakeds.FakeAppDataSource
+import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
@@ -27,9 +27,11 @@ data class AppListUiState(
 
 class AppListViewModel(
     savedStateHandle: SavedStateHandle,
+    dataSourceProvider: RespectAppDataSourceProvider,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val appDataSource: FakeAppDataSource = FakeAppDataSource()
+
+    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     private val _uiState = MutableStateFlow(AppListUiState())
 
@@ -43,7 +45,7 @@ class AppListViewModel(
                 )
             }
 
-            appDataSource.getAddableApps(
+            dataSource.compatibleAppsDataSource.getAddableApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {

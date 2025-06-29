@@ -1,5 +1,6 @@
 package world.respect.app.datasource
 
+import world.respect.app.domain.account.RespectAccount
 import world.respect.datasource.RespectAppDataSource
 
 /**
@@ -23,6 +24,6 @@ interface RespectAppDataSourceProvider {
     /**
      *
      */
-    fun getDataSource(accountId: String): RespectAppDataSource
+    fun getDataSource(account: RespectAccount): RespectAppDataSource
 
 }
