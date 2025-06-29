@@ -25,7 +25,7 @@ data class AppLauncherUiState(
 )
 
 class AppLauncherViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
     private val appDataSource: FakeAppDataSource = FakeAppDataSource()

@@ -46,8 +46,7 @@ fun AppNavHost(
     ) {
 
         composable<AppLauncher> {
-            val viewModel = respectViewModel(
-                modelClass = AppLauncherViewModel::class,
+            val viewModel: AppLauncherViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController,
             )
@@ -58,8 +57,7 @@ fun AppNavHost(
         }
 
         composable<AppsDetail> {
-            val viewModel = respectViewModel(
-                modelClass = AppsDetailViewModel::class,
+            val viewModel: AppsDetailViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -70,8 +68,7 @@ fun AppNavHost(
         }
 
         composable<Assignment> {
-            val viewModel = respectViewModel(
-                modelClass = AssignmentViewModel::class,
+            val viewModel: AssignmentViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -82,8 +79,7 @@ fun AppNavHost(
         }
 
         composable<Clazz> {
-            val viewModel = respectViewModel(
-                modelClass = ClazzViewModel::class,
+            val viewModel: ClazzViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -91,8 +87,7 @@ fun AppNavHost(
         }
 
         composable<Report> {
-            val viewModel = respectViewModel(
-                modelClass = ReportViewModel::class,
+            val viewModel: ReportViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -100,8 +95,7 @@ fun AppNavHost(
         }
 
         composable<AppList> {
-            val viewModel = respectViewModel(
-                modelClass = AppListViewModel::class,
+            val viewModel: AppListViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -109,8 +103,7 @@ fun AppNavHost(
         }
 
         composable<EnterLink> {
-            val viewModel = respectViewModel(
-                modelClass = EnterLinkViewModel::class,
+            val viewModel: EnterLinkViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -118,8 +111,7 @@ fun AppNavHost(
         }
 
         composable<LessonList> {
-            val viewModel = respectViewModel(
-                modelClass = LessonListViewModel::class,
+            val viewModel: LessonListViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -127,8 +119,7 @@ fun AppNavHost(
         }
 
         composable<LessonDetail> {
-            val viewModel = respectViewModel(
-                modelClass = LessonDetailViewModel::class,
+            val viewModel: LessonDetailViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )

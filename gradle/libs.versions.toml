@@ -44,6 +44,7 @@ kodein-di = "7.26.1"
 kotlinStdlib = "2.1.10"
 runner = "1.5.2"
 core = "1.5.0"
+koin = "4.1.0"
 
 
 [libraries]
@@ -101,6 +102,12 @@ kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", versio
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

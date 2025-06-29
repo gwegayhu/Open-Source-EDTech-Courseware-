@@ -1,11 +1,15 @@
 package world.respect
 
 import android.app.Application
-import org.kodein.di.DI
-import org.kodein.di.DIAware
+import org.koin.core.context.startKoin
 
-class RespectApp : Application(), DIAware {
-    override val di = DI.lazy {
-        // Initialize your DI container and bind the dependencies
+class RespectApp : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            modules(appKoinModule)
+        }
     }
 }

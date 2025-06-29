@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
+import world.respect.DummyRepo
 import world.respect.app.app.AppsDetail
 import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.model.lesson.FakeOpdsDataSource
@@ -27,6 +28,7 @@ data class AppsDetailUiState(
 
 class AppsDetailViewModel(
     savedStateHandle: SavedStateHandle,
+    private val dummyRepo: DummyRepo,
 ) : RespectViewModel(savedStateHandle) {
 
     private val appDataSource: FakeAppDataSource = FakeAppDataSource()
@@ -42,6 +44,7 @@ class AppsDetailViewModel(
     init {
         //Get the argument here
         println(route.manifestUrl)
+        println(dummyRepo)
 
         viewModelScope.launch {
             _appUiState.update {

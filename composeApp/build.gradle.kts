@@ -34,7 +34,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
-
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.material)
@@ -57,6 +57,11 @@ kotlin {
             implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.date.time)
             implementation(libs.coil3.coil.compose)
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose.viewmodel.navigation)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
