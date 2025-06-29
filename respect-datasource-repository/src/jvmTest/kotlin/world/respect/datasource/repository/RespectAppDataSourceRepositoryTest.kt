@@ -15,11 +15,12 @@ import world.respect.datasource.repository.compatibleapps.CompatibleAppDataSourc
 import world.respect.datasource.sqldelight.RespectDb
 import world.respect.datasource.sqldelight.compatibleapps.CompatibleAppsDataSourceSqld
 import java.util.Properties
-import kotlin.test.Test
 
+@Suppress("unused")
 class RespectAppDataSourceRepositoryTest {
 
-    @Test
+    //This test is for rough prototyping and design experimentation only.
+    //@Test
     fun runIt() {
         val driver: SqlDriver = JdbcSqliteDriver(
             JdbcSqliteDriver.IN_MEMORY, Properties(), RespectDb.Schema
@@ -54,9 +55,6 @@ class RespectAppDataSourceRepositoryTest {
                 println(state)
             }
         }
-
-
-
     }
 
 
