@@ -27,6 +27,8 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
+import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
@@ -84,7 +86,9 @@ fun AppLauncherScreen(
             items(uiState.appList) { app ->
                 AppGridItem(
                     app = app,
-                    onClick = { onClickApp(app) }
+                    onClick = {
+                        (app as? DataLoadResult)?.data?.also(onClickApp)
+                    }
                 )
             }
         }
@@ -92,7 +96,11 @@ fun AppLauncherScreen(
 }
 
 @Composable
-fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
+fun AppGridItem(
+    app: DataLoadState<RespectAppManifest>,
+    onClick: () -> Unit
+) {
+    val appData = (app as? DataLoadResult)?.data
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,7 +109,7 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         RespectAsyncImage(
-            uri = app.icon.toString(),
+            uri = appData?.icon?.toString() ?: "",
             contentDescription = "",
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -113,7 +121,7 @@ fun AppGridItem(app: RespectAppManifest, onClick: () -> Unit) {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = app.name.getTitle(),
+            text = appData?.name?.getTitle() ?: "",
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.align(Alignment.Start)
         )

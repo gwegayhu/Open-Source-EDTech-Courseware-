@@ -23,7 +23,7 @@ kotlin {
             api(libs.uri.kmp)
             api(libs.kotlinx.date.time)
             api(libs.ktor.client.core)
-            api(project(":respect-datasource"))
+            api(projects.respectDatasource)
             api(libs.sqldelight.coroutine.extensions)
         }
 
@@ -32,7 +32,7 @@ kotlin {
         }
 
         jvmTest.dependencies {
-            implementation(libs.sqldelight.android.driver)
+
         }
 
         val commonTest by getting {

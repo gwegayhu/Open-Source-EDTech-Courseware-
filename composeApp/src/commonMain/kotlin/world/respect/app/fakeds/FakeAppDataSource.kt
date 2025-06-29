@@ -1,23 +1,22 @@
-package world.respect.app.model.applist
+package world.respect.app.fakeds
 
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.DataResult
-import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.LangMapStringValue
 import com.eygraber.uri.Uri
+import world.respect.datasource.DataLoadState
 
 class FakeAppDataSource : CompatibleAppsDataSource {
 
     override fun getApp(
         manifestUrl: String,
         loadParams: DataLoadParams
-    ): Flow<DataResult<RespectAppManifest>> = flow {
+    ): Flow<DataLoadState<RespectAppManifest>> = flow {
 
         val dummyAppManifest = RespectAppManifest(
             name = LangMapStringValue("Learning App"),
@@ -43,29 +42,28 @@ class FakeAppDataSource : CompatibleAppsDataSource {
         emit(
             DataLoadResult(
                 data = dummyAppManifest,
-                status = LoadingStatus.LOADED
             )
         )
     }
 
-    override fun getAddableApps(loadParams: DataLoadParams): Flow<DataResult<List<RespectAppManifest>>> =
+
+
+    override fun getAddableApps(loadParams: DataLoadParams): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> =
         flow {
             emit(
                 DataLoadResult(
-                    data = getDummyAppsList(),
-                    status = LoadingStatus.LOADED
+                    data = getDummyAppsList().map { DataLoadResult(it) },
                 )
             )
         }
 
     override fun getLaunchpadApps(
         loadParams: DataLoadParams
-    ): Flow<DataResult<List<RespectAppManifest>>> = flow {
+    ): Flow<DataLoadState<List<RespectAppManifest>>> = flow {
 
         emit(
             DataLoadResult(
                 data = getDummyAppsList(),
-                status = LoadingStatus.LOADED
             )
         )
     }

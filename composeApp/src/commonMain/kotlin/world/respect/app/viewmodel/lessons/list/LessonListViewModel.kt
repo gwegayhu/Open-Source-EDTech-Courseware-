@@ -10,11 +10,10 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.lesson_list
-import world.respect.app.app.AppsDetail
 import world.respect.app.app.LessonDetail
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.AppBarSearchUiState
-import world.respect.app.model.lesson.FakeOpdsDataSource
+import world.respect.app.fakeds.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult

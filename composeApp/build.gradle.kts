@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -14,7 +13,6 @@ compose.resources {
 }
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -35,14 +33,21 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
             implementation(libs.koin.android)
+            implementation(libs.sqldelight.android.driver)
         }
+
         commonMain.dependencies {
+            implementation(projects.shared)
+            api(projects.respectDatasource)
+            implementation(projects.respectDatasourceRepository)
+            implementation(projects.respectDatasourceHttp)
+            implementation(projects.respectDatasourceSqldelight)
+
             implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(projects.shared)
             implementation(compose.foundation)
             implementation(libs.runtime)
             implementation(libs.multiplatformsettings)
@@ -57,6 +62,7 @@ kotlin {
             implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.date.time)
             implementation(libs.coil3.coil.compose)
+
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

@@ -13,22 +13,22 @@ import respect.composeapp.generated.resources.apps
 import world.respect.app.app.AppList
 import world.respect.app.app.AppsDetail
 import world.respect.app.appstate.FabUiState
-import world.respect.app.model.applist.FakeAppDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataLoadState
+import world.respect.datasource.RespectAppDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.navigation.NavCommand
 
 data class AppLauncherUiState(
-    val appList: List<RespectAppManifest> = emptyList(),
+    val appList: List<DataLoadState<RespectAppManifest>> = emptyList(),
 )
 
 class AppLauncherViewModel(
     savedStateHandle: SavedStateHandle,
+    private val dataSource: RespectAppDataSource,
 ) : RespectViewModel(savedStateHandle) {
-
-    private val appDataSource: FakeAppDataSource = FakeAppDataSource()
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
 
@@ -51,7 +51,7 @@ class AppLauncherViewModel(
                 )
             }
 
-            appDataSource.getAddableApps(
+            dataSource.compatibleAppsDataSource.getAddableApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {

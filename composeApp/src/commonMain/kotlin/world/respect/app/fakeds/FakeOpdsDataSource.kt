@@ -1,11 +1,9 @@
-package world.respect.app.model.lesson
+package world.respect.app.fakeds
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.DataResult
-import world.respect.datasource.LoadingStatus
 import world.respect.datasource.opds.OpdsDataSource
 import world.respect.datasource.opds.model.LangMapStringValue
 import world.respect.datasource.opds.model.OpdsFacet
@@ -18,6 +16,7 @@ import world.respect.datasource.opds.model.ReadiumMetadata
 import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 import com.eygraber.uri.Uri
 import kotlinx.datetime.LocalDateTime
+import world.respect.datasource.DataLoadState
 
 
 class FakeOpdsDataSource : OpdsDataSource {
@@ -25,7 +24,7 @@ class FakeOpdsDataSource : OpdsDataSource {
     override fun loadOpdsFeed(
         url: String,
         params: DataLoadParams
-    ): Flow<DataResult<OpdsFeed>> = flow {
+    ): Flow<DataLoadState<OpdsFeed>> = flow {
         emit(
             DataLoadResult(
                 data = OpdsFeed(
@@ -133,7 +132,6 @@ class FakeOpdsDataSource : OpdsDataSource {
                     ),
                     groups = emptyList()
                 ),
-                status = LoadingStatus.LOADED,
             )
         )
     }
@@ -143,7 +141,7 @@ class FakeOpdsDataSource : OpdsDataSource {
         params: DataLoadParams,
         referrerUrl: String?,
         expectedPublicationId: String?
-    ): Flow<DataResult<OpdsPublication>> = flow {
+    ): Flow<DataLoadState<OpdsPublication>> = flow {
 
         val dummyPublication =  OpdsPublication(
             metadata = ReadiumMetadata(
@@ -178,7 +176,6 @@ class FakeOpdsDataSource : OpdsDataSource {
         emit(
             DataLoadResult(
                 data = dummyPublication,
-                status = LoadingStatus.LOADED
             )
         )
     }
