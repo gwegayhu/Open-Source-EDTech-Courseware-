@@ -9,10 +9,12 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.kodein.di.DI
-import org.kodein.di.instance
-import world.respect.di.JvmCoreDiMOdule
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.get
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.di.jvmKoinAppModule
 import world.respect.testutil.copyResourcesToTempDir
 import world.respect.testutil.findFreePort
 import world.respect.testutil.recursiveFindAndReplace
@@ -20,7 +22,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class TestValidationScenarios {
+class TestValidationScenarios: KoinTest {
 
     @Rule
     @JvmField
@@ -70,11 +72,11 @@ class TestValidationScenarios {
         try {
             server.start()
 
-            val di = DI {
-                import(JvmCoreDiMOdule)
+            startKoin {
+                modules(jvmKoinAppModule)
             }
 
-            val validator: ValidateLinkUseCase by di.instance()
+            val validator = get<ValidateLinkUseCase>()
 
             val reporter = ListAndPrintlnValidatorReporter()
             runBlocking {
@@ -100,6 +102,7 @@ class TestValidationScenarios {
             )
         } finally {
             server.stop()
+            stopKoin()
         }
     }
 

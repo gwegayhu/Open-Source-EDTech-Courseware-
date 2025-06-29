@@ -17,17 +17,19 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
+            api(projects.respectDatasource)
+
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)
             implementation(libs.argparse4j)
             api(libs.uri.kmp)
             implementation(libs.kotlinx.date.time)
             implementation(libs.ktor.serialization.kotlinx.json)
-            api(libs.kodein.di)
             implementation(libs.ktor.client.json)
             implementation(libs.ktor.client.content.negotiation)
-            api(project(":respect-datasource"))
+
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
         }
 
         jvmMain.dependencies {
@@ -43,6 +45,7 @@ kotlin {
             implementation(libs.ktor.server.content.negotiation)
             implementation(libs.ktor.server.conditional.headers)
             implementation(libs.ktor.client.core)
+            implementation(libs.koin.test)
         }
 
         val commonTest by getting {
