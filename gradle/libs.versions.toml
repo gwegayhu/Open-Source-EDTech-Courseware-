@@ -24,11 +24,10 @@ uri-kmp = "0.0.19"
 kotlinx-date-time = "0.6.2"
 okhttp = "4.12.0"
 jsoup = "1.20.1"
-kodein-di = "7.26.1"
 kotlinStdlib = "2.1.10"
 runner = "1.5.2"
 core = "1.5.0"
-
+koin = "4.1.0"
 
 [libraries]
 argparse4j = { module = "net.sourceforge.argparse4j:argparse4j", version.ref = "argparse4j" }
@@ -63,11 +62,17 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
-kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein-di" }
-kodein-di-framework-ktor-server-jvm = { module = "org.kodein.di:kodein-di-framework-ktor-server-jvm", version.ref = "kodein-di" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation" }
+koin-test = { module = "io.insert-koin:koin-test" }
 
 
 [plugins]
