@@ -60,14 +60,29 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
-
+import world.respect.app.view.lessons.list.LessonListScreen
+import world.respect.app.viewmodel.lessons.detail.LessonDetailUiState
+import world.respect.app.viewmodel.lessons.list.LessonListUiState
+import world.respect.app.viewmodel.lessons.list.LessonListViewModel
 
 @Composable
 fun LessonDetailScreen(
-    navController: NavHostController,
-    viewModel: LessonDetailViewModel,
+    viewModel: LessonDetailViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LessonDetailScreen(
+        uiState = uiState,
+        onClickLesson = { viewModel.onClickLesson() },
+
+        )
+}
+
+@Composable
+fun LessonDetailScreen(
+    uiState: LessonDetailUiState,
+    onClickLesson: () -> Unit,
+) {
 
     LazyColumn(
         modifier = Modifier
@@ -180,8 +195,7 @@ fun LessonDetailScreen(
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { navController.navigate(LessonDetail) },
-
+                    .clickable { onClickLesson() },
                 leadingContent = {
                     RespectAsyncImage(
                         uri = "",

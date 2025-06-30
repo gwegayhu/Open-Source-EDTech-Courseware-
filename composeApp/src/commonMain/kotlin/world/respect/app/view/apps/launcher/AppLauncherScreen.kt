@@ -8,12 +8,18 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CrueltyFree
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,7 +34,6 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.datasource.DataLoadResult
-import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
@@ -39,7 +44,8 @@ fun AppLauncherScreen(
 
     AppLauncherScreen(
         uiState = uiState,
-        onClickApp = { viewModel.onClickApp(it) }
+        onClickApp = { viewModel.onClickApp(it) },
+        onClickRemove = { viewModel.onClickRemove(it) }
     )
 }
 
@@ -47,7 +53,9 @@ fun AppLauncherScreen(
 @Composable
 fun AppLauncherScreen(
     uiState: AppLauncherUiState,
-    onClickApp: (RespectAppManifest) -> Unit
+    onClickApp: (RespectAppManifest) -> Unit,
+    onClickRemove: (RespectAppManifest) -> Unit
+
 ) {
     if (uiState.appList.isEmpty()) {
         Column(
@@ -86,9 +94,10 @@ fun AppLauncherScreen(
             items(uiState.appList) { app ->
                 AppGridItem(
                     app = app,
-                    onClick = {
+                    onClickApp = {
                         (app as? DataLoadResult)?.data?.also(onClickApp)
-                    }
+                                 },
+                    onClickRemove = { onClickRemove(app) }
                 )
             }
         }
@@ -98,25 +107,67 @@ fun AppLauncherScreen(
 @Composable
 fun AppGridItem(
     app: DataLoadState<RespectAppManifest>,
-    onClick: () -> Unit
+    onClickApp: () -> Unit,
+    onClickRemove: () -> Unit
 ) {
     val appData = (app as? DataLoadResult)?.data
+
+    var menuExpanded = remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .clickable { onClick() },
+            .clickable { onClickApp() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RespectAsyncImage(
-            uri = appData?.icon?.toString() ?: "",
-            contentDescription = "",
-            contentScale = ContentScale.Fit,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-        )
+        ) {
+            RespectAsyncImage(
+                uri = appData.icon.toString(),
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
+            // 3-dot menu button
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+            ) {
+                IconButton(onClick = { menuExpanded.value = true }) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = "Menu",
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = menuExpanded.value,
+                    onDismissRequest = { menuExpanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("More info") },
+                        onClick = {
+                            menuExpanded.value = false
+                            onClickApp()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Remove") },
+                        onClick = {
+                            menuExpanded.value = false
+                            onClickRemove()
+                        }
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -130,15 +181,8 @@ fun AppGridItem(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            //"-" is a placeholder for age range/category
-            Text(
-                text = "-",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "-",
-                style = MaterialTheme.typography.bodySmall,
-            )
+            Text(text = "-", style = MaterialTheme.typography.bodySmall)
+            Text(text = "-", style = MaterialTheme.typography.bodySmall)
         }
     }
 }

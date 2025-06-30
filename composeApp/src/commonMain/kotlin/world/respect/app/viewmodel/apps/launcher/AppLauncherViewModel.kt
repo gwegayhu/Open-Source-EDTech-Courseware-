@@ -80,5 +80,13 @@ class AppLauncherViewModel(
             )
         )
     }
+    fun onClickRemove(app: RespectAppManifest) {
+        _uiState.update { state ->
+            state.copy(
+                appList = state.appList.filterNot { it == app }
+            )
+        }
+    }
+
 }
 

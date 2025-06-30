@@ -13,6 +13,7 @@ import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.navigation.NavCommand
 
 data class LessonDetailUiState(
     val lessonDetail: OpdsPublication? = null,
@@ -76,6 +77,13 @@ class LessonDetailViewModel(
                 }
             }
         }
+    }
+    fun onClickLesson() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LessonDetail(manifestUrl = route.manifestUrl)
+            )
+        )
     }
 
 }

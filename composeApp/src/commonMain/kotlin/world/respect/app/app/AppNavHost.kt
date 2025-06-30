@@ -122,7 +122,9 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LessonDetailScreen(navController = navController, viewModel = viewModel)
+            LessonDetailScreen(
+
+                viewModel = viewModel)
         }
     }
 
