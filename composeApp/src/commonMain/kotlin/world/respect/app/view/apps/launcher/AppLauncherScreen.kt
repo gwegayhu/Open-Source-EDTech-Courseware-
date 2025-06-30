@@ -34,6 +34,7 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
@@ -96,8 +97,10 @@ fun AppLauncherScreen(
                     app = app,
                     onClickApp = {
                         (app as? DataLoadResult)?.data?.also(onClickApp)
-                                 },
-                    onClickRemove = { onClickRemove(app) }
+                    },
+                    onClickRemove = {
+                        (app as? DataLoadResult)?.data?.also(onClickRemove)
+                    }
                 )
             }
         }
@@ -127,7 +130,7 @@ fun AppGridItem(
                 .aspectRatio(1f)
         ) {
             RespectAsyncImage(
-                uri = appData.icon.toString(),
+                uri = appData?.icon.toString(),
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier

@@ -74,7 +74,6 @@ fun LessonDetailScreen(
     LessonDetailScreen(
         uiState = uiState,
         onClickLesson = { viewModel.onClickLesson() },
-
         )
 }
 
