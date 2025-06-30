@@ -41,10 +41,7 @@ fun EnterLinkScreen(
                 }
             },
             label = {
-                Text(
-                    text = stringResource(Res.string.link_label),
-                    style = MaterialTheme.typography.labelLarge
-                )
+                Text(text = stringResource(Res.string.link_label))
             },
             placeholder = {
                 Text(

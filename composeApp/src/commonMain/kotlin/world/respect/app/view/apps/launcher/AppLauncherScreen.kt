@@ -29,6 +29,8 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
+import respect.composeapp.generated.resources.more_info
+import respect.composeapp.generated.resources.remove
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
@@ -146,7 +148,7 @@ fun AppGridItem(
                 IconButton(onClick = { menuExpanded.value = true }) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "Menu",
+                        contentDescription = "",
                     )
                 }
 
@@ -155,14 +157,18 @@ fun AppGridItem(
                     onDismissRequest = { menuExpanded.value = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text("More info") },
+                        text = {
+                            Text( stringResource(resource = Res.string.more_info))
+                               },
                         onClick = {
                             menuExpanded.value = false
                             onClickApp()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text("Remove") },
+                        text = {
+                            Text( stringResource(resource = Res.string.remove))
+                               },
                         onClick = {
                             menuExpanded.value = false
                             onClickRemove()

@@ -55,6 +55,7 @@ fun AppListScreen(
     onClickAddLink: () -> Unit,
     onClickApp: (RespectAppManifest) -> Unit
 ) {
+    val key=stringResource(Res.string.add_link)
 
     LazyColumn(
         modifier = Modifier
@@ -62,14 +63,7 @@ fun AppListScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        item {
-            Text(
-                text = stringResource(Res.string.add_link),
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        item {
+        item(key=key) {
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
