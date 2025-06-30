@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.ustadmobile.libuicompose.theme.black
 import com.ustadmobile.libuicompose.theme.white
 import org.jetbrains.compose.resources.stringResource
@@ -53,17 +52,13 @@ import respect.composeapp.generated.resources.duration
 import respect.composeapp.generated.resources.play
 import respect.composeapp.generated.resources.related_lessons
 import respect.composeapp.generated.resources.share
-import world.respect.app.app.LessonDetail
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
-import world.respect.app.view.lessons.list.LessonListScreen
 import world.respect.app.viewmodel.lessons.detail.LessonDetailUiState
-import world.respect.app.viewmodel.lessons.list.LessonListUiState
-import world.respect.app.viewmodel.lessons.list.LessonListViewModel
 
 @Composable
 fun LessonDetailScreen(
