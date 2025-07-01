@@ -72,11 +72,12 @@ class AppLauncherViewModel(
         }
     }
 
-    fun onClickApp(app: RespectAppManifest){
+    fun onClickApp(app: DataLoadState<RespectAppManifest>){
+        val url = app.metaInfo.url ?: return //TODO : Mandvi: needs to show snack bar for error
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
-                AppsDetail(manifestUrl = app.license)
+                AppsDetail(manifestUrl = url.toString())
             )
         )
     }

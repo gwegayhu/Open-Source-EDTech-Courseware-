@@ -56,7 +56,7 @@ fun AppLauncherScreen(
 @Composable
 fun AppLauncherScreen(
     uiState: AppLauncherUiState,
-    onClickApp: (RespectAppManifest) -> Unit,
+    onClickApp: (DataLoadState<RespectAppManifest>) -> Unit,
     onClickRemove: (RespectAppManifest) -> Unit
 
 ) {
@@ -98,7 +98,7 @@ fun AppLauncherScreen(
                 AppGridItem(
                     app = app,
                     onClickApp = {
-                        (app as? DataLoadResult)?.data?.also(onClickApp)
+                        (app as? DataLoadResult)?.also(onClickApp)
                     },
                     onClickRemove = {
                         (app as? DataLoadResult)?.data?.also(onClickRemove)
