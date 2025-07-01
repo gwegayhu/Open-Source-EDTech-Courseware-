@@ -10,16 +10,32 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.*
+import world.respect.app.view.apps.launcher.AppLauncherScreen
+import world.respect.app.viewmodel.apps.enterlink.EnterLinkUiState
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
+import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
+import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
+import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun EnterLinkScreen(
-    viewModel: EnterLinkViewModel,
-    navController: NavHostController,
+    viewModel: EnterLinkViewModel
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    EnterLinkScreen(
+        uiState = uiState,
+        onButtonClick = { viewModel.onButtonClick(it) },
+    )
+}
+
+@Composable
+fun EnterLinkScreen(
+    uiState: EnterLinkUiState,
+    onButtonClick: (String) -> Unit,
 ) {
 
     var link by remember { mutableStateOf("") }
-    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -37,7 +53,7 @@ fun EnterLinkScreen(
             onValueChange = {
                 link = it
                 if (uiState.isError) {
-                    viewModel.onButtonClick(it)
+                    onButtonClick(it)
                 }
             },
             label = {
@@ -59,7 +75,7 @@ fun EnterLinkScreen(
 
         Button(
             onClick = {
-                viewModel.onButtonClick(link)
+                onButtonClick(link)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
