@@ -14,7 +14,6 @@ import world.respect.app.app.LessonDetail
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.datasource.RespectAppDataSourceProvider
-import world.respect.app.datasource.fakeds.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
@@ -56,7 +55,7 @@ class LessonListViewModel(
                 )
             }
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.opdsUrl,
+                url = route.learningUnitsUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -90,7 +89,7 @@ class LessonListViewModel(
                 LessonDetail(
                     selfLink = selfLink ?: "",
                     publicationSelfLink = publicationSelfLink ?: "",
-                    url = route.opdsUrl,
+                    learningUnitsUrl = route.learningUnitsUrl,
                     identifier = publication.metadata.identifier.toString()
                 )
             )

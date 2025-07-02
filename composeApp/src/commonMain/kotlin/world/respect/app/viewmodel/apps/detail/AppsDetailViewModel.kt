@@ -93,7 +93,7 @@ class AppsDetailViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LessonList(
-                    opdsUrl = uiState.value.appDetail?.learningUnits?.toString() ?: ""
+                    learningUnitsUrl = uiState.value.appDetail?.learningUnits?.toString() ?: ""
                 )
             )
         )
@@ -108,7 +108,7 @@ class AppsDetailViewModel(
                 LessonDetail(
                     selfLink = selfLink ?: "",
                     publicationSelfLink = publicationSelfLink ?: "",
-                    url = uiState.value.appDetail?.learningUnits?.toString() ?: "",
+                    learningUnitsUrl = uiState.value.appDetail?.learningUnits?.toString() ?: "",
                     identifier = publication.metadata.identifier.toString()
                 )
             )

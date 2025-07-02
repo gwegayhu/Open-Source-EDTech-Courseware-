@@ -1,7 +1,6 @@
 package world.respect.app.app
 
 import kotlinx.serialization.Serializable
-import world.respect.datasource.opds.model.OpdsPublication
 
 sealed interface AppDestination
 
@@ -30,14 +29,14 @@ data class AppsDetail(
 
 @Serializable
 data class LessonList(
-    val opdsUrl: String
+    val learningUnitsUrl: String
 ) : AppDestination
 
 @Serializable
 data class LessonDetail(
     val selfLink: String,
     val publicationSelfLink: String,
-    val url: String,
+    val learningUnitsUrl: String,
     val identifier: String
 
 ) : AppDestination

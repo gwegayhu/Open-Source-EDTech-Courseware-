@@ -60,7 +60,7 @@ class LessonDetailViewModel(
                 }
             }
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.url,
+                url = route.learningUnitsUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -85,7 +85,7 @@ class LessonDetailViewModel(
                 LessonDetail(
                     selfLink = route.selfLink,
                     publicationSelfLink = route.publicationSelfLink,
-                    url = route.url,
+                    learningUnitsUrl = route.learningUnitsUrl,
                     identifier = route.identifier
                 )
             )
