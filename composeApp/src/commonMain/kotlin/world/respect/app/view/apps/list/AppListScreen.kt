@@ -99,14 +99,8 @@ fun AppListScreen(
                 supportingContent = {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         //"-" is a placeholder for age range/category
-                        Text(
-                            text = "-",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                        Text(
-                            text = "-",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+                        Text("-")
+                        Text("-")
                     }
                 },
                 leadingContent = {

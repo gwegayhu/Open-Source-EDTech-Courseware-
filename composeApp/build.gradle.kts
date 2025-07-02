@@ -34,6 +34,8 @@ kotlin {
             implementation(libs.androidx.appcompat)
             implementation(libs.koin.android)
             implementation(libs.sqldelight.android.driver)
+            implementation(libs.okhttp)
+            implementation(libs.ktor.client.okhttp)
         }
 
         commonMain.dependencies {
@@ -68,6 +70,11 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
 
         desktopMain.dependencies {
