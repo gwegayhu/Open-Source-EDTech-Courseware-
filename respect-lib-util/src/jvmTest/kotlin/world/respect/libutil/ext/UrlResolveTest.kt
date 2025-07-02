@@ -1,4 +1,4 @@
-package world.respect.util.ext
+package world.respect.libutil.ext
 
 import io.ktor.http.Url
 import org.junit.Test

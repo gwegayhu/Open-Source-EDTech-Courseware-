@@ -16,11 +16,15 @@ import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.ext.getDataLoadResult
+import world.respect.libutil.ext.resolve
+
 
 class CompatibleAppDataSourceHttp(
     private val httpClient: HttpClient,
     private val defaultCompatibleAppListUrl: String,
 ): CompatibleAppsDataSource {
+
+    private val defaultCompatibleAppListUrlObj = Url(defaultCompatibleAppListUrl)
 
     override fun getApp(
         manifestUrl: String,
@@ -38,9 +42,11 @@ class CompatibleAppDataSourceHttp(
         return flow {
             emit(DataLoadingState())
             val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrl).body()
-            val manifests: List<DataLoadResult<RespectAppManifest>> = respectAppUrls.mapNotNull { url ->
+            val manifests: List<DataLoadResult<RespectAppManifest>> = respectAppUrls.mapNotNull { manifestHref ->
                 try {
-                    httpClient.getDataLoadResult(Url(url))
+                    httpClient.getDataLoadResult<RespectAppManifest>(
+                        defaultCompatibleAppListUrlObj.resolve(manifestHref)
+                    )
                 }catch(e: Throwable) {
                     //Log
                     println("getAddableApps: error: $e")

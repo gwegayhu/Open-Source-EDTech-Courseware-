@@ -17,12 +17,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.respectLibUtil)
-            implementation(libs.kotlinx.serialization.json)
+            // put your Multiplatform dependencies here
             api(libs.uri.kmp)
-            api(libs.kotlinx.date.time)
             api(libs.ktor.client.core)
-            api(project(":respect-datasource"))
         }
 
         jvmMain.dependencies {
@@ -42,7 +39,7 @@ kotlin {
 }
 
 android {
-    namespace = "world.respect.datasource.http"
+    namespace = "world.respect.libutil"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

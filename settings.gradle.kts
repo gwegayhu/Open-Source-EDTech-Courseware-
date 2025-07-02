@@ -36,3 +36,5 @@ include(":respect-datasource")
 include(":respect-datasource-http")
 include(":respect-datasource-repository")
 include(":respect-datasource-sqldelight")
+include(":respect-lib-util")
+
