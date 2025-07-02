@@ -10,6 +10,7 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.app
 import respect.composeapp.generated.resources.apps
+import respect.composeapp.generated.resources.invalid_url
 import world.respect.app.app.AppList
 import world.respect.app.app.AppsDetail
 import world.respect.app.appstate.FabUiState
@@ -23,6 +24,7 @@ import world.respect.navigation.NavCommand
 
 data class AppLauncherUiState(
     val appList: List<DataLoadState<RespectAppManifest>> = emptyList(),
+    val snackbarMessage: String? = null,
 )
 
 class AppLauncherViewModel(
@@ -36,8 +38,12 @@ class AppLauncherViewModel(
 
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
+    var errorMessage: String = ""
+
     init {
         viewModelScope.launch {
+            errorMessage = getString(resource = Res.string.invalid_url)
+
             _appUiState.update {
                 it.copy(
                     title = getString(resource = Res.string.apps),
@@ -65,6 +71,7 @@ class AppLauncherViewModel(
                             )
                         }
                     }
+
                     else -> {}
                 }
             }
@@ -72,8 +79,15 @@ class AppLauncherViewModel(
         }
     }
 
-    fun onClickApp(app: DataLoadState<RespectAppManifest>){
-      val url = app.metaInfo.url ?: return //TODO : Mandvi: needs to show snack bar for error
+    fun showSnackBar(message: String) {
+        _uiState.update {
+            it.copy(snackbarMessage = message)
+        }
+    }
+
+    fun onClickApp(app: DataLoadState<RespectAppManifest>) {
+        val url = app.metaInfo.url ?: showSnackBar(errorMessage)
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
@@ -83,6 +97,7 @@ class AppLauncherViewModel(
             )
         )
     }
+
     fun onClickRemove(app: RespectAppManifest) {
         _uiState.update { state ->
             state.copy(

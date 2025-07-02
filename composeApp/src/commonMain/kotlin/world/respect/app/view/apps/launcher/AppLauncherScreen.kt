@@ -61,6 +61,7 @@ fun AppLauncherScreen(
     onClickRemove: (RespectAppManifest) -> Unit
 
 ) {
+
     if (uiState.appList.isEmpty()) {
         Column(
             modifier = Modifier
