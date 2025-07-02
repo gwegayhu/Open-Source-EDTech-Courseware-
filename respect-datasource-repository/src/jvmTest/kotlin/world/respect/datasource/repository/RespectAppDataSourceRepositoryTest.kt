@@ -19,7 +19,8 @@ import kotlin.test.Test
 
 class RespectAppDataSourceRepositoryTest {
 
-    @Test
+    //This test should only be enabled for testing/architecture experimentation
+    //@Test
     fun runIt() {
         val driver: SqlDriver = JdbcSqliteDriver(
             JdbcSqliteDriver.IN_MEMORY, Properties(), RespectDb.Schema
