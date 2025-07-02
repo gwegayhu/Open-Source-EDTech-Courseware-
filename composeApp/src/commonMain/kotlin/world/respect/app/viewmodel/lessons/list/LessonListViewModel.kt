@@ -13,6 +13,7 @@ import respect.composeapp.generated.resources.lesson_list
 import world.respect.app.app.LessonDetail
 import world.respect.app.app.LessonList
 import world.respect.app.appstate.AppBarSearchUiState
+import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.datasource.fakeds.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
@@ -31,14 +32,15 @@ data class LessonListUiState(
     )
 
 class LessonListViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    dataSourceProvider: RespectAppDataSourceProvider
 ) : RespectViewModel(savedStateHandle) {
-
-    private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()
 
     private val _uiState = MutableStateFlow(LessonListUiState())
 
     val uiState = _uiState.asStateFlow()
+
+    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     private val route: LessonList = savedStateHandle.toRoute()
 
@@ -53,7 +55,7 @@ class LessonListViewModel(
                     )
                 )
             }
-            opdsDataSource.loadOpdsFeed(
+            dataSource.opdsDataSource.loadOpdsFeed(
                 url = route.opdsUrl,
                 params = DataLoadParams()
             ).collect { result ->
@@ -68,6 +70,7 @@ class LessonListViewModel(
                             )
                         }
                     }
+
                     else -> {}
                 }
             }
@@ -77,6 +80,7 @@ class LessonListViewModel(
     fun onClickFilter(title: String) {
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
+
     fun onClickLesson(publication: OpdsPublication) {
         val selfLink = uiState.value.link.find { it.rel?.equals("self") == true }?.href
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href

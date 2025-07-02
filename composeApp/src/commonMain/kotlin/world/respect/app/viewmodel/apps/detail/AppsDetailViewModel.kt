@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -33,7 +34,6 @@ class AppsDetailViewModel(
     dataSourceProvider: RespectAppDataSourceProvider,
 ) : RespectViewModel(savedStateHandle) {
 
-
     private val _uiState = MutableStateFlow(AppsDetailUiState())
 
     val uiState = _uiState.asStateFlow()
@@ -49,12 +49,10 @@ class AppsDetailViewModel(
                 it.copy(title = getString(resource = Res.string.apps_detail))
             }
 
-            var opdsUrl: String? = null
-
             dataSource.compatibleAppsDataSource.getApp(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
-            ).collect { result ->
+            ).collectLatest { result ->
                 when (result) {
                     is DataLoadResult -> {
                         val appDetail = result.data

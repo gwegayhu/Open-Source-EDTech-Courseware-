@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.app.app.LessonDetail
+import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.datasource.fakeds.FakeOpdsDataSource
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
@@ -21,10 +22,11 @@ data class LessonDetailUiState(
 )
 
 class LessonDetailViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    dataSourceProvider: RespectAppDataSourceProvider
 ) : RespectViewModel(savedStateHandle) {
 
-    private val opdsDataSource: FakeOpdsDataSource = FakeOpdsDataSource()
+    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     private val _uiState = MutableStateFlow(LessonDetailUiState())
 
@@ -38,7 +40,7 @@ class LessonDetailViewModel(
             _appUiState.update {
                 it.copy(title = "")
             }
-            opdsDataSource.loadOpdsPublication(
+            dataSource.opdsDataSource.loadOpdsPublication(
                 url = route.publicationSelfLink,
                 params = DataLoadParams(),
                 referrerUrl = route.selfLink,
@@ -57,7 +59,7 @@ class LessonDetailViewModel(
                     }
                 }
             }
-            opdsDataSource.loadOpdsFeed(
+            dataSource.opdsDataSource.loadOpdsFeed(
                 url = route.url,
                 params = DataLoadParams()
             ).collect { result ->
