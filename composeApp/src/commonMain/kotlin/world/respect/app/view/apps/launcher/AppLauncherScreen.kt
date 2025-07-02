@@ -14,8 +14,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
+import respect.composeapp.generated.resources.invalid_url
 import respect.composeapp.generated.resources.more_info
 import respect.composeapp.generated.resources.remove
 import world.respect.app.app.RespectAsyncImage
@@ -49,7 +54,8 @@ fun AppLauncherScreen(
     AppLauncherScreen(
         uiState = uiState,
         onClickApp = { viewModel.onClickApp(it) },
-        onClickRemove = { viewModel.onClickRemove(it) }
+        onClickRemove = { viewModel.onClickRemove(it) },
+        onSnackbarShown = {viewModel.clearSnackbar()}
     )
 }
 
@@ -58,55 +64,72 @@ fun AppLauncherScreen(
 fun AppLauncherScreen(
     uiState: AppLauncherUiState,
     onClickApp: (DataLoadState<RespectAppManifest>) -> Unit,
-    onClickRemove: (RespectAppManifest) -> Unit
+    onClickRemove: (RespectAppManifest) -> Unit,
+    onSnackbarShown: () -> Unit
 
 ) {
-
-    if (uiState.appList.isEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 64.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = Icons.Filled.CrueltyFree,
-                contentDescription = null,
-                modifier = Modifier.size(100.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(resource = Res.string.empty_list),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(resource = Res.string.empty_list_description),
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
-            )
+    val snackbarHostState = remember { SnackbarHostState() }
+    uiState.snackbarMessage?.let { message ->
+        LaunchedEffect(message) {
+            snackbarHostState.showSnackbar(message)
+            onSnackbarShown() // tell ViewModel to clear message
         }
-    } else {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(uiState.appList) { app ->
-                AppGridItem(
-                    app = app,
-                    onClickApp = {
-                        (app as? DataLoadResult)?.also(onClickApp)
-                    },
-                    onClickRemove = {
-                        (app as? DataLoadResult)?.data?.also(onClickRemove)
-                    }
-                )
+    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { padding ->
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
+            if (uiState.appList.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 64.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CrueltyFree,
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(resource = Res.string.empty_list),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(resource = Res.string.empty_list_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
+            else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.appList) { app ->
+                        AppGridItem(
+                            app = app,
+                            onClickApp = {
+                                (app as? DataLoadResult)?.also(onClickApp)
+                            },
+                            onClickRemove = {
+                                (app as? DataLoadResult)?.data?.also(onClickRemove)
+                            }
+                        )
+                    }
+                }
+            }
+
         }
     }
 }

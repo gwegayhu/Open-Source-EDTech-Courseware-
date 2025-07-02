@@ -79,15 +79,8 @@ class AppLauncherViewModel(
         }
     }
 
-    fun showSnackBar(message: String) {
-        _uiState.update {
-            it.copy(snackbarMessage = message)
-        }
-    }
-
     fun onClickApp(app: DataLoadState<RespectAppManifest>) {
-        val url = app.metaInfo.url ?: showSnackBar(errorMessage)
-
+        val url = app.metaInfo.url ?: return showSnackBar()
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
@@ -106,5 +99,16 @@ class AppLauncherViewModel(
         }
     }
 
+    fun showSnackBar() {
+        _uiState.update {
+            it.copy(snackbarMessage = errorMessage)
+        }
+    }
+
+    fun clearSnackbar() {
+        _uiState.update {
+            it.copy(snackbarMessage = null)
+        }
+    }
 }
 
