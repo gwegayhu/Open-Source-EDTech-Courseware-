@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -117,7 +118,7 @@ fun AppGridItem(
 ) {
     val appData = (app as? DataLoadResult)?.data
 
-    var menuExpanded = remember { mutableStateOf(false) }
+    var menuExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -145,7 +146,7 @@ fun AppGridItem(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
             ) {
-                IconButton(onClick = { menuExpanded.value = true }) {
+                IconButton(onClick = { menuExpanded = true }) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
                         contentDescription = "",
@@ -153,15 +154,15 @@ fun AppGridItem(
                 }
 
                 DropdownMenu(
-                    expanded = menuExpanded.value,
-                    onDismissRequest = { menuExpanded.value = false }
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false }
                 ) {
                     DropdownMenuItem(
                         text = {
                             Text( stringResource(resource = Res.string.more_info))
                                },
                         onClick = {
-                            menuExpanded.value = false
+                            menuExpanded = false
                             onClickApp()
                         }
                     )
@@ -170,7 +171,7 @@ fun AppGridItem(
                             Text( stringResource(resource = Res.string.remove))
                                },
                         onClick = {
-                            menuExpanded.value = false
+                            menuExpanded = false
                             onClickRemove()
                         }
                     )
