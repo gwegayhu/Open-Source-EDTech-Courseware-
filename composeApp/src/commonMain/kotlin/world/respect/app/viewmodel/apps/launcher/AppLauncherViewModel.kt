@@ -59,7 +59,7 @@ class AppLauncherViewModel(
                 )
             }
 
-            dataSource.compatibleAppsDataSource.getAddableApps(
+            dataSource.compatibleAppsDataSource.getLaunchpadApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -80,7 +80,8 @@ class AppLauncherViewModel(
     }
 
     fun onClickApp(app: DataLoadState<RespectAppManifest>) {
-        val url = app.metaInfo.url ?: return showSnackBar()
+        val url = app.metaInfo.url ?: return
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string

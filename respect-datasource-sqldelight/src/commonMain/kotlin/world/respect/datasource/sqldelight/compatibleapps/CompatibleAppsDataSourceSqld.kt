@@ -46,7 +46,7 @@ class CompatibleAppsDataSourceSqld(
 
     override fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return queries.selectAll().asFlow().mapToList(coroutineContext).map { resultList ->
             DataLoadResult(
                 data = resultList.map {
@@ -60,7 +60,9 @@ class CompatibleAppsDataSourceSqld(
         }
     }
 
-    override fun getLaunchpadApps(loadParams: DataLoadParams): Flow<DataLoadState<List<RespectAppManifest>>> {
+    override fun getLaunchpadApps(
+        loadParams: DataLoadParams
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return emptyFlow()
     }
 

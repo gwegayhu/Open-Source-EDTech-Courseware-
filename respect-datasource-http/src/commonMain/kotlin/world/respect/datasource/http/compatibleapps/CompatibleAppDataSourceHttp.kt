@@ -34,7 +34,7 @@ class CompatibleAppDataSourceHttp(
 
     override fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return flow {
             emit(DataLoadingState())
             val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrl).body()
@@ -59,7 +59,9 @@ class CompatibleAppDataSourceHttp(
         }
     }
 
-    override fun getLaunchpadApps(loadParams: DataLoadParams): Flow<DataLoadState<List<RespectAppManifest>>> {
+    override fun getLaunchpadApps(
+        loadParams: DataLoadParams
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return emptyFlow()
     }
 
