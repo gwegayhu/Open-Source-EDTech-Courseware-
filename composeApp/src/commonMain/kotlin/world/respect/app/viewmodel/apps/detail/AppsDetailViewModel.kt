@@ -18,6 +18,7 @@ import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
@@ -27,6 +28,7 @@ data class AppsDetailUiState(
     val appDetail: RespectAppManifest? = null,
     val publications: List<OpdsPublication> = emptyList(),
     val link: List<ReadiumLink> = emptyList(),
+    val appDetailState: DataLoadState<RespectAppManifest>? = null,
 )
 
 class AppsDetailViewModel(
@@ -58,6 +60,7 @@ class AppsDetailViewModel(
                         val appDetail = result.data
                         _uiState.update {
                             it.copy(
+                                appDetailState = result,
                                 appDetail = appDetail
                             )
                         }
