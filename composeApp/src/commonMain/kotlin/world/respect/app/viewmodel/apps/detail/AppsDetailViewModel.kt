@@ -41,16 +41,13 @@ class AppsDetailViewModel(
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
-        //Get the argument here
-        println(route.manifestUrl)
-        val manifestUrl = route.manifestUrl
 
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(title = getString(resource = Res.string.apps_detail))
             }
             dataSource.compatibleAppsDataSource.getApp(
-                manifestUrl = manifestUrl,
+                manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -68,7 +65,7 @@ class AppsDetailViewModel(
             }
             //once navigation is fixed will pass argument learning units
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = manifestUrl,
+                url = route.opdsUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {

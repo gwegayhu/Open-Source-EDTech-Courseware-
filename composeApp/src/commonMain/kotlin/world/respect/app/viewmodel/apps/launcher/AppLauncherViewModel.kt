@@ -73,11 +73,15 @@ class AppLauncherViewModel(
     }
 
     fun onClickApp(app: DataLoadState<RespectAppManifest>){
+        val manifest = (app as? DataLoadResult)?.data
         val url = app.metaInfo.url ?: return //TODO : Mandvi: needs to show snack bar for error
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
-                AppsDetail(manifestUrl = url.toString())
+                AppsDetail(
+                    manifestUrl = url.toString(),
+                    opdsUrl = manifest?.learningUnits.toString()
+                )
             )
         )
     }

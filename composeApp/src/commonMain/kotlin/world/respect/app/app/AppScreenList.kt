@@ -18,7 +18,7 @@ object AppList: AppDestination
 @Serializable
 object EnterLink: AppDestination
 @Serializable
-data class AppsDetail(val manifestUrl: String): AppDestination
+data class AppsDetail(val manifestUrl: String,val opdsUrl: String): AppDestination
 @Serializable
 data class LessonList(val manifestUrl : String): AppDestination
 @Serializable
