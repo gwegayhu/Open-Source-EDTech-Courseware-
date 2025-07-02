@@ -19,13 +19,16 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.navigation.NavCommand
 
 data class LessonListUiState(
     val publications: List<OpdsPublication> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
-    val selectedFilterTitle: String? = null
-)
+    val selectedFilterTitle: String? = null,
+    val link: List<ReadiumLink> = emptyList(),
+
+    )
 
 class LessonListViewModel(
     savedStateHandle: SavedStateHandle
@@ -41,8 +44,6 @@ class LessonListViewModel(
 
     init {
 
-        val manifestUrl = route.manifestUrl
-
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
@@ -53,7 +54,7 @@ class LessonListViewModel(
                 )
             }
             opdsDataSource.loadOpdsFeed(
-                url = manifestUrl,
+                url = route.url,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -61,14 +62,13 @@ class LessonListViewModel(
                         _uiState.update {
                             it.copy(
                                 publications = result.data?.publications ?: emptyList(),
-                                lessonFilter = result.data?.facets ?: emptyList()
+                                lessonFilter = result.data?.facets ?: emptyList(),
+                                link = result.data?.links ?: emptyList()
+
                             )
                         }
                     }
-
-                    else -> {
-
-                    }
+                    else -> {}
                 }
             }
         }
@@ -77,10 +77,18 @@ class LessonListViewModel(
     fun onClickFilter(title: String) {
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
-    fun onClickLesson() {
+    fun onClickLesson(publication: OpdsPublication) {
+        val selfLink = uiState.value.link.find { it.rel?.equals("self") == true }?.href
+        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail(manifestUrl = route.manifestUrl)
+                LessonDetail(
+                    selfLink = selfLink ?: "",
+                    publicationSelfLink = publicationSelfLink ?: "",
+                    url = route.url,
+                    identifier = publication.metadata.identifier.toString()
+                )
             )
         )
     }

@@ -63,6 +63,7 @@ class AppListViewModel(
             }
         }
     }
+
     fun onClickAddLink() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
@@ -71,13 +72,16 @@ class AppListViewModel(
         )
     }
 
-    fun onClickApp(app: RespectAppManifest){
-        println("ENTER LINK FUNCTION ")
-
+    fun onClickApp(app: DataLoadState<RespectAppManifest>) {
+        val manifest = (app as? DataLoadResult)?.data
+        val url = app.metaInfo.url ?: return
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
-                AppsDetail(manifestUrl = app.license)
+                AppsDetail(
+                    manifestUrl = url.toString(),
+                    url = manifest?.learningUnits.toString()
+                )
             )
         )
     }

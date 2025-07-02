@@ -30,6 +30,7 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
+import world.respect.datasource.opds.model.OpdsPublication
 
 @Composable
 fun AppsDetailScreen(
@@ -40,7 +41,7 @@ fun AppsDetailScreen(
     AppsDetailScreen(
         uiState = uiState,
         onClickLessonList = { viewModel.onClickLessonList() },
-        onClickLesson = { viewModel.onClickLesson() }
+        onClickLesson = { viewModel.onClickLesson(it) }
     )
 }
 
@@ -48,7 +49,7 @@ fun AppsDetailScreen(
 fun AppsDetailScreen(
     uiState: AppsDetailUiState,
     onClickLessonList: () -> Unit,
-    onClickLesson: () -> Unit
+    onClickLesson: (OpdsPublication) -> Unit
 ) {
 
     LazyColumn(
@@ -156,7 +157,7 @@ fun AppsDetailScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(100.dp)
                                 .clickable {
-                                    onClickLesson()
+                                    onClickLesson(publication)
                                 }
                         ) {
                             RespectAsyncImage(

@@ -33,17 +33,16 @@ class LessonDetailViewModel(
     private val route: LessonDetail = savedStateHandle.toRoute()
 
     init {
-        val manifestUrl = route.manifestUrl
 
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(title = "")
             }
             opdsDataSource.loadOpdsPublication(
-                url = manifestUrl,
+                url = route.publicationSelfLink,
                 params = DataLoadParams(),
-                referrerUrl = "",
-                expectedPublicationId = ""
+                referrerUrl = route.selfLink,
+                expectedPublicationId = route.identifier
             ).collect { result ->
                 when (result) {
                     is DataLoadResult -> {
@@ -59,7 +58,7 @@ class LessonDetailViewModel(
                 }
             }
             opdsDataSource.loadOpdsFeed(
-                url = manifestUrl,
+                url = route.url,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -70,7 +69,6 @@ class LessonDetailViewModel(
                             )
                         }
                     }
-
                     else -> {
 
                     }
@@ -78,10 +76,16 @@ class LessonDetailViewModel(
             }
         }
     }
+
     fun onClickLesson() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail(manifestUrl = route.manifestUrl)
+                LessonDetail(
+                    selfLink = route.selfLink,
+                    publicationSelfLink = route.publicationSelfLink,
+                    url = route.url,
+                    identifier = route.identifier
+                )
             )
         )
     }

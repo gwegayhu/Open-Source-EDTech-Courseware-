@@ -19,12 +19,15 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.navigation.NavCommand
 
 data class AppsDetailUiState(
     val appDetail: RespectAppManifest? = null,
     val publications: List<OpdsPublication> = emptyList(),
-)
+    val link: List<ReadiumLink> = emptyList(),
+
+    )
 
 class AppsDetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -46,6 +49,7 @@ class AppsDetailViewModel(
             _appUiState.update {
                 it.copy(title = getString(resource = Res.string.apps_detail))
             }
+
             dataSource.compatibleAppsDataSource.getApp(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
@@ -73,6 +77,7 @@ class AppsDetailViewModel(
                         _uiState.update {
                             it.copy(
                                 publications = result.data?.publications ?: emptyList(),
+                                link = result.data?.links ?: emptyList()
                             )
                         }
                     }
@@ -92,10 +97,18 @@ class AppsDetailViewModel(
         )
     }
 
-    fun onClickLesson() {
+    fun onClickLesson(publication: OpdsPublication) {
+        val selfLink = uiState.value.link.find { it.rel?.equals("self") == true }?.href
+        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail(manifestUrl = route.manifestUrl)
+                LessonDetail(
+                    selfLink = selfLink ?: "",
+                    publicationSelfLink = publicationSelfLink ?: "",
+                    url = route.url,
+                    identifier = publication.metadata.identifier.toString()
+                )
             )
         )
     }

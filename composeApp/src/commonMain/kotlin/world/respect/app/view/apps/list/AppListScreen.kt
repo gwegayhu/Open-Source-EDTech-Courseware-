@@ -34,6 +34,7 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListUiState
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
@@ -53,7 +54,7 @@ fun AppListScreen(
 fun AppListScreen(
     uiState: AppListUiState,
     onClickAddLink: () -> Unit,
-    onClickApp: (RespectAppManifest) -> Unit
+    onClickApp: (DataLoadState<RespectAppManifest>) -> Unit
 ) {
     val key=stringResource(Res.string.add_link)
 
@@ -88,7 +89,7 @@ fun AppListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        appData?.also(onClickApp)
+                        onClickApp
                     },
                 headlineContent = {
                     Text(

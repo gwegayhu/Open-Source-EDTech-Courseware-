@@ -48,6 +48,7 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
 import world.respect.app.viewmodel.lessons.list.LessonListUiState
 import world.respect.app.viewmodel.lessons.list.LessonListViewModel
+import world.respect.datasource.opds.model.OpdsPublication
 
 @Composable
 fun LessonListScreen(
@@ -57,7 +58,7 @@ fun LessonListScreen(
 
     LessonListScreen(
         uiState = uiState,
-        onClickLesson = { viewModel.onClickLesson() },
+        onClickLesson = { viewModel.onClickLesson(it) },
         onClickFilter = { viewModel.onClickFilter(it) }
 
     )
@@ -66,7 +67,7 @@ fun LessonListScreen(
 @Composable
 fun LessonListScreen(
     uiState: LessonListUiState,
-    onClickLesson: () -> Unit,
+    onClickLesson: (OpdsPublication) -> Unit,
     onClickFilter: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -128,7 +129,7 @@ fun LessonListScreen(
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onClickLesson() },
+                        .clickable { onClickLesson(publication) },
 
                     leadingContent = {
                         RespectAsyncImage(
