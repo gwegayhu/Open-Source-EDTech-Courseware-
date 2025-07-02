@@ -34,7 +34,6 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.empty_list
 import respect.composeapp.generated.resources.empty_list_description
-import respect.composeapp.generated.resources.invalid_url
 import respect.composeapp.generated.resources.more_info
 import respect.composeapp.generated.resources.remove
 import world.respect.app.app.RespectAsyncImage
@@ -55,7 +54,7 @@ fun AppLauncherScreen(
         uiState = uiState,
         onClickApp = { viewModel.onClickApp(it) },
         onClickRemove = { viewModel.onClickRemove(it) },
-        onSnackbarShown = {viewModel.clearSnackbar()}
+        onSnackBarShown = {viewModel.clearSnackBar()}
     )
 }
 
@@ -65,14 +64,14 @@ fun AppLauncherScreen(
     uiState: AppLauncherUiState,
     onClickApp: (DataLoadState<RespectAppManifest>) -> Unit,
     onClickRemove: (RespectAppManifest) -> Unit,
-    onSnackbarShown: () -> Unit
+    onSnackBarShown: () -> Unit
 
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     uiState.snackbarMessage?.let { message ->
         LaunchedEffect(message) {
             snackbarHostState.showSnackbar(message)
-            onSnackbarShown() // tell ViewModel to clear message
+            onSnackBarShown() // tell ViewModel to clear message
         }
     }
     Scaffold(
