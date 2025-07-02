@@ -26,8 +26,7 @@ data class AppsDetailUiState(
     val appDetail: RespectAppManifest? = null,
     val publications: List<OpdsPublication> = emptyList(),
     val link: List<ReadiumLink> = emptyList(),
-
-    )
+)
 
 class AppsDetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -50,6 +49,8 @@ class AppsDetailViewModel(
                 it.copy(title = getString(resource = Res.string.apps_detail))
             }
 
+            var opdsUrl: String? = null
+
             dataSource.compatibleAppsDataSource.getApp(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
@@ -69,7 +70,7 @@ class AppsDetailViewModel(
             }
             //once navigation is fixed will pass argument learning units
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.url,
+                url = uiState.value.appDetail?.learningUnits.toString(),
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -90,9 +91,12 @@ class AppsDetailViewModel(
     }
 
     fun onClickLessonList() {
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonList(url = route.url)
+                LessonList(
+                    opdsUrl = uiState.value.appDetail?.learningUnits?.toString() ?: ""
+                )
             )
         )
     }
@@ -106,7 +110,7 @@ class AppsDetailViewModel(
                 LessonDetail(
                     selfLink = selfLink ?: "",
                     publicationSelfLink = publicationSelfLink ?: "",
-                    url = route.url,
+                    url = uiState.value.appDetail?.learningUnits?.toString() ?: "",
                     identifier = publication.metadata.identifier.toString()
                 )
             )

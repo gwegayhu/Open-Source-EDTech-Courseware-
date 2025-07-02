@@ -73,14 +73,12 @@ class AppListViewModel(
     }
 
     fun onClickApp(app: DataLoadState<RespectAppManifest>) {
-        val manifest = (app as? DataLoadResult)?.data
         val url = app.metaInfo.url ?: return
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
                 AppsDetail(
-                    manifestUrl = url.toString(),
-                    url = manifest?.learningUnits.toString()
+                    manifestUrl = url.toString()
                 )
             )
         )

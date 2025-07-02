@@ -25,13 +25,12 @@ object EnterLink : AppDestination
 
 @Serializable
 data class AppsDetail(
-    val manifestUrl: String,
-    val url: String
+    val manifestUrl: String
 ) : AppDestination
 
 @Serializable
 data class LessonList(
-    val url: String
+    val opdsUrl: String
 ) : AppDestination
 
 @Serializable
