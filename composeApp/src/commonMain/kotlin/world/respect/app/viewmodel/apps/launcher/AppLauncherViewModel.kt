@@ -80,7 +80,7 @@ class AppLauncherViewModel(
                 //Placeholder string
                 AppsDetail(
                     manifestUrl = url.toString(),
-                    opdsUrl = manifest?.learningUnits.toString()
+                    url = manifest?.learningUnits.toString()
                 )
             )
         )

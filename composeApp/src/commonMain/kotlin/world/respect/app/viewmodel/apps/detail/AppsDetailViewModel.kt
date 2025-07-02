@@ -65,7 +65,7 @@ class AppsDetailViewModel(
             }
             //once navigation is fixed will pass argument learning units
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.opdsUrl,
+                url = route.url,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -87,7 +87,7 @@ class AppsDetailViewModel(
     fun onClickLessonList() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonList(manifestUrl = route.manifestUrl)
+                LessonList(url = route.url)
             )
         )
     }
