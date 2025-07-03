@@ -55,39 +55,35 @@ class AppsDetailViewModel(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
-                when (result) {
-                    is DataLoadResult -> {
-                        val appDetail = result.data
-                        _uiState.update {
-                            it.copy(
-                                appDetailState = result,
-                                appDetail = appDetail
-                            )
-                        }
+                if (result is DataLoadResult) {
+                    val appDetail = result.data
+                    _uiState.update {
+                        it.copy(
+                            appDetailState = result,
+                            appDetail = appDetail
+                        )
                     }
-
-                    else -> {}
                 }
-            }
-            //once navigation is fixed will pass argument learning units
-            dataSource.opdsDataSource.loadOpdsFeed(
-                url = uiState.value.appDetail?.learningUnits.toString(),
-                params = DataLoadParams()
-            ).collect { result ->
-                when (result) {
-                    is DataLoadResult -> {
-                        _uiState.update {
-                            it.copy(
-                                publications = result.data?.publications ?: emptyList(),
-                                link = result.data?.links ?: emptyList()
-                            )
+                dataSource.opdsDataSource.loadOpdsFeed(
+                    url = uiState.value.appDetail?.learningUnits.toString(),
+                    params = DataLoadParams()
+                ).collect { result ->
+                    when (result) {
+                        is DataLoadResult -> {
+                            _uiState.update {
+                                it.copy(
+                                    publications = result.data?.publications ?: emptyList(),
+                                    link = result.data?.links ?: emptyList()
+                                )
+                            }
                         }
+
+                        else -> {}
                     }
-
-                    else -> {}
                 }
-            }
 
+
+            }
         }
     }
 
