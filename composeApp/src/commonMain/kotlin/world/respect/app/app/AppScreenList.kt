@@ -54,7 +54,7 @@ data class LearningUnitList(
 @Serializable
 data class LearningUnitDetail(
     val learningUnitManifestUrl: String,
-    val refererUrl: String?,
-    val expectedIdentifier: String?
+    val refererUrl: String? = null,
+    val expectedIdentifier: String? = null
 ) : AppDestination
 
