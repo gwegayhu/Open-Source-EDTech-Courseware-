@@ -37,6 +37,9 @@ kotlin {
             implementation(libs.okhttp)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.compose.material3.window.size.clazz)
+            implementation(projects.respectDatasourceDb)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
 
         commonMain.dependencies {
@@ -44,7 +47,6 @@ kotlin {
             api(projects.respectDatasource)
             implementation(projects.respectDatasourceRepository)
             implementation(projects.respectDatasourceHttp)
-            implementation(projects.respectDatasourceSqldelight)
 
             implementation(compose.material)
             implementation(compose.material3)

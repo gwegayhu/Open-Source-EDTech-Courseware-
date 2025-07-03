@@ -2,6 +2,8 @@
 
 package world.respect
 
+import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -27,20 +29,16 @@ import world.respect.app.viewmodel.clazz.ClazzViewModel
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
+import world.respect.datasource.db.RespectAppDataSourceDb
+import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.http.RespectAppDataSourceHttp
 import world.respect.datasource.repository.RespectAppDataSourceRepository
-import world.respect.datasource.sqldelight.RespectAppDataSourceSqld
-import world.respect.datasource.sqldelight.RespectDb
 
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
 
 val appKoinModule = module {
-    singleOf(::DummyRepoImpl) {
-        bind<DummyRepo>()
-    }
-
     single<Json> {
         Json {
             encodeDefaults = false
@@ -79,23 +77,24 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
 
-    single<RespectDb> {
-        RespectDb(driver = AndroidSqliteDriver(RespectDb.Schema, androidContext(), "respect.db"))
-    }
 
     // Uncomment this to switch to using fake data source provider for development purposes
-     single<RespectAppDataSourceProvider> {
-         FakeRespectAppDataSourceProvider()
-    }
+//     single<RespectAppDataSourceProvider> {
+//         FakeRespectAppDataSourceProvider()
+//    }
      //*/
 
     //Uncomment to switch to using real datasource
-    /*
+
     single<RespectAppDataSourceProvider> {
+        val appContext = androidContext().applicationContext
         SingleDataSourceProvider(
             datasource = RespectAppDataSourceRepository(
-                local = RespectAppDataSourceSqld(
-                    respectDb = get(),
+                local = RespectAppDataSourceDb(
+                    respectDatabase = Room.databaseBuilder<RespectDatabase>(
+                        appContext, appContext.getDatabasePath("respect.db").absolutePath
+                    ).setDriver(BundledSQLiteDriver())
+                    .build(),
                     json = get(),
                 ),
                 remote = RespectAppDataSourceHttp(
@@ -105,5 +104,4 @@ val appKoinModule = module {
             )
         )
     }
-    */
 }
