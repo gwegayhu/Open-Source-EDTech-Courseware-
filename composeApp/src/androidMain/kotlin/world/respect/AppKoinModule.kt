@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImport")
+
 package world.respect
 
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
@@ -15,6 +17,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.datasource.SingleDataSourceProvider
+import world.respect.app.datasource.fakeds.FakeRespectAppDataSourceProvider
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
@@ -30,6 +33,7 @@ import world.respect.datasource.sqldelight.RespectAppDataSourceSqld
 import world.respect.datasource.sqldelight.RespectDb
 
 
+@Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
 
 val appKoinModule = module {
@@ -79,12 +83,14 @@ val appKoinModule = module {
         RespectDb(driver = AndroidSqliteDriver(RespectDb.Schema, androidContext(), "respect.db"))
     }
 
-    /* Uncomment this to switch to using fake data source provider for development purposes
+    // Uncomment this to switch to using fake data source provider for development purposes
      single<RespectAppDataSourceProvider> {
-        FakeRespectAppDataSourceProvider()
+         FakeRespectAppDataSourceProvider()
     }
-     */
+     //*/
 
+    //Uncomment to switch to using real datasource
+    /*
     single<RespectAppDataSourceProvider> {
         SingleDataSourceProvider(
             datasource = RespectAppDataSourceRepository(
@@ -99,5 +105,5 @@ val appKoinModule = module {
             )
         )
     }
-
+    */
 }

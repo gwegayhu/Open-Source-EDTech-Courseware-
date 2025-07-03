@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
             implementation(libs.okhttp)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.compose.material3.window.size.clazz)
         }
 
         commonMain.dependencies {
@@ -51,17 +52,12 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)
-            implementation(libs.runtime)
+            implementation(compose.runtime)
             implementation(libs.multiplatformsettings)
-            implementation(libs.androidx.compose.material3.window.size)
-            implementation(libs.lifecycle.viewmodel.compose)
+            implementation(compose.materialIconsExtended)
             implementation(libs.lifecycle.runtime.compose)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.material.icons.extended)
             implementation(libs.navigation.compose)
-            implementation(libs.androidx.compose.bom)
-            implementation(libs.kodein.compose)
-            implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.date.time)
             implementation(libs.coil3.coil.compose)
 
@@ -75,6 +71,7 @@ kotlin {
             implementation(libs.ktor.client.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.date.time)
         }
 
         desktopMain.dependencies {

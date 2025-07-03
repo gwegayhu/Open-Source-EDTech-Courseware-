@@ -1,7 +1,8 @@
 package world.respect.navigation
 
 import androidx.navigation.NavHostController
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Wrapper that avoids accidental 'replay' of navigation commands.
@@ -10,6 +11,7 @@ class RespectComposeNavController(
     private val navHostController: NavHostController,
 ) {
 
+    @OptIn(ExperimentalTime::class)
     @Volatile
     private var lastNavCommandTime = Clock.System.now().toEpochMilliseconds()
 
