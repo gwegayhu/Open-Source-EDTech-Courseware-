@@ -25,7 +25,7 @@ class RespectAppDataSourceRepositoryTest {
     val temporaryFolder: TemporaryFolder = TemporaryFolder()
 
     //This test should only be enabled for testing/architecture experimentation
-    @Test
+    //@Test
     fun runIt() {
         val dbFile = temporaryFolder.newFile("respect.db")
         val db = Room.databaseBuilder<RespectDatabase>(dbFile.absolutePath)

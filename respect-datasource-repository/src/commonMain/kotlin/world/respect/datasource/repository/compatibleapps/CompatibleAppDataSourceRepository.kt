@@ -24,16 +24,20 @@ class CompatibleAppDataSourceRepository(
 
     override fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return local.getAddableApps(loadParams).combineLocalWithRemote(
             remoteFlow = remote.getAddableApps(loadParams),
-            onRemoteNewer = {
-                local.upsertCompatibleApps(it.data ?: emptyList())
+            onRemoteNewer = { newList ->
+                local.upsertCompatibleApps(
+                    newList.data?.mapNotNull { it as? DataLoadResult } ?: emptyList()
+                )
             }
         )
     }
 
-    override fun getLaunchpadApps(loadParams: DataLoadParams): Flow<DataLoadState<List<RespectAppManifest>>> {
+    override fun getLaunchpadApps(
+        loadParams: DataLoadParams
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return emptyFlow()
     }
 

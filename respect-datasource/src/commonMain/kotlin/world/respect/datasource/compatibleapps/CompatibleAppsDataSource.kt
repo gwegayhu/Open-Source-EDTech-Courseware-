@@ -2,7 +2,6 @@ package world.respect.datasource.compatibleapps
 
 import kotlinx.coroutines.flow.Flow
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
@@ -31,11 +30,11 @@ interface CompatibleAppsDataSource {
      */
     fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>>
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>>
 
     fun getLaunchpadApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<RespectAppManifest>>>
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>>
 
     suspend fun addAppToLaunchpad(
         manifestUrl: String,
