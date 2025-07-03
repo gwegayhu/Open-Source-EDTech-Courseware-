@@ -1,4 +1,4 @@
-package world.respect.app.view.lessons.detail
+package world.respect.app.view.learningunit.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.score_or_progress
 import respect.composeapp.generated.resources.app_name
-import world.respect.app.viewmodel.lessons.detail.LessonDetailViewModel
+import world.respect.app.viewmodel.learningunit.detail.LessonDetailViewModel
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -58,23 +58,23 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
-import world.respect.app.viewmodel.lessons.detail.LessonDetailUiState
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailUiState
 
 @Composable
-fun LessonDetailScreen(
+fun LearningUnitDetailScreen(
     viewModel: LessonDetailViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LessonDetailScreen(
+    LearningUnitDetailScreen(
         uiState = uiState,
         onClickLesson = { viewModel.onClickLesson() },
         )
 }
 
 @Composable
-fun LessonDetailScreen(
-    uiState: LessonDetailUiState,
+fun LearningUnitDetailScreen(
+    uiState: LearningUnitDetailUiState,
     onClickLesson: () -> Unit,
 ) {
 

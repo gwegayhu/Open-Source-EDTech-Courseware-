@@ -1,4 +1,4 @@
-package world.respect.app.view.lessons.list
+package world.respect.app.view.learningunit.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,27 +46,26 @@ import respect.composeapp.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
-import world.respect.app.viewmodel.lessons.list.LessonListUiState
-import world.respect.app.viewmodel.lessons.list.LessonListViewModel
+import world.respect.app.viewmodel.learningunit.list.LearningUnitListUiState
+import world.respect.app.viewmodel.learningunit.list.LessonListViewModel
 import world.respect.datasource.opds.model.OpdsPublication
 
 @Composable
-fun LessonListScreen(
+fun LearningUnitListScreen(
     viewModel: LessonListViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LessonListScreen(
+    LearningUnitListScreen(
         uiState = uiState,
         onClickLesson = { viewModel.onClickLesson(it) },
         onClickFilter = { viewModel.onClickFilter(it) }
-
     )
 }
 
 @Composable
-fun LessonListScreen(
-    uiState: LessonListUiState,
+fun LearningUnitListScreen(
+    uiState: LearningUnitListUiState,
     onClickLesson: (OpdsPublication) -> Unit,
     onClickFilter: (String) -> Unit
 ) {

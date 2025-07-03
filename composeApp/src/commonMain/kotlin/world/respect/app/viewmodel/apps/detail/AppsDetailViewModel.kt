@@ -12,8 +12,8 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.apps_detail
 import world.respect.app.app.AppsDetail
-import world.respect.app.app.LessonDetail
-import world.respect.app.app.LessonList
+import world.respect.app.app.LearningUnitDetail
+import world.respect.app.app.LearningUnitList
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
@@ -95,8 +95,8 @@ class AppsDetailViewModel(
 
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonList(
-                    learningUnitsUrl = uiState.value.appDetail?.learningUnits?.toString() ?: ""
+                LearningUnitList(
+                    opdsFeedUrl = uiState.value.appDetail?.learningUnits?.toString() ?: ""
                 )
             )
         )
@@ -108,11 +108,10 @@ class AppsDetailViewModel(
 
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail(
-                    selfLink = selfLink ?: "",
-                    publicationSelfLink = publicationSelfLink ?: "",
-                    learningUnitsUrl = uiState.value.appDetail?.learningUnits?.toString() ?: "",
-                    identifier = publication.metadata.identifier.toString()
+                LearningUnitDetail(
+                    learningUnitManifestUrl = selfLink ?: "",
+                    refererUrl = publicationSelfLink,
+                    expectedIdentifier = publication.metadata.identifier?.toString()
                 )
             )
         )

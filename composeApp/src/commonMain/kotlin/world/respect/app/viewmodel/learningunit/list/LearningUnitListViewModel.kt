@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.lessons.list
+package world.respect.app.viewmodel.learningunit.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.lesson_list
-import world.respect.app.app.LessonDetail
-import world.respect.app.app.LessonList
+import world.respect.app.app.LearningUnitDetail
+import world.respect.app.app.LearningUnitList
 import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
@@ -22,26 +22,25 @@ import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.navigation.NavCommand
 
-data class LessonListUiState(
+data class LearningUnitListUiState(
     val publications: List<OpdsPublication> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null,
     val link: List<ReadiumLink> = emptyList(),
-
-    )
+)
 
 class LessonListViewModel(
     savedStateHandle: SavedStateHandle,
     dataSourceProvider: RespectAppDataSourceProvider
 ) : RespectViewModel(savedStateHandle) {
 
-    private val _uiState = MutableStateFlow(LessonListUiState())
+    private val _uiState = MutableStateFlow(LearningUnitListUiState())
 
     val uiState = _uiState.asStateFlow()
 
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
-    private val route: LessonList = savedStateHandle.toRoute()
+    private val route: LearningUnitList = savedStateHandle.toRoute()
 
     init {
 
@@ -55,7 +54,7 @@ class LessonListViewModel(
                 )
             }
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.learningUnitsUrl,
+                url = route.opdsFeedUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -86,11 +85,10 @@ class LessonListViewModel(
 
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail(
-                    selfLink = selfLink ?: "",
-                    publicationSelfLink = publicationSelfLink ?: "",
-                    learningUnitsUrl = route.learningUnitsUrl,
-                    identifier = publication.metadata.identifier.toString()
+                LearningUnitDetail(
+                    learningUnitManifestUrl = selfLink ?: "",
+                    refererUrl = publicationSelfLink ?: "",
+                    expectedIdentifier = publication.metadata.identifier.toString()
                 )
             )
         )

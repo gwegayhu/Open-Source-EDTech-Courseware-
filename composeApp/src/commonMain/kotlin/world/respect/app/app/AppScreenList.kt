@@ -22,22 +22,39 @@ object AppList : AppDestination
 @Serializable
 object EnterLink : AppDestination
 
+/**
+ * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app
+ */
 @Serializable
 data class AppsDetail(
     val manifestUrl: String
 ) : AppDestination
 
+/**
+ * @property opdsFeedUrl the URL for an OPDS feed containing a list of learning units and/or links
+ *           to other feeds
+ */
 @Serializable
-data class LessonList(
-    val learningUnitsUrl: String
+data class LearningUnitList(
+    val opdsFeedUrl: String
 ) : AppDestination
 
-@Serializable
-data class LessonDetail(
-    val selfLink: String,
-    val publicationSelfLink: String,
-    val learningUnitsUrl: String,
-    val identifier: String
 
+/**
+ * @property learningUnitManifestUrl the URL of the OPDS Publication (Readium Manifest) for the
+ *           learning unit as per RESPECT integration guide:
+ *           https://github.com/UstadMobile/RESPECT-Consumer-App-Integration-Guide?tab=readme-ov-file#5-support-listing-and-launching-learning-units
+ * @property refererUrl (optional), where available, the URL of the OPDS feed that referred the
+ *           user to this learning unit. This allows the use of cached information from the feed
+ *           to avoid waiting for the learningUnitManifestUrl to load to show the user the title,
+ *           description, etc.
+ * @property expectedIdentifier (optional), where a refererUrl is provided, to use cached feed
+ *           metadata as above, the identifier of the publication within the feed.
+ */
+@Serializable
+data class LearningUnitDetail(
+    val learningUnitManifestUrl: String,
+    val refererUrl: String?,
+    val expectedIdentifier: String?
 ) : AppDestination
 

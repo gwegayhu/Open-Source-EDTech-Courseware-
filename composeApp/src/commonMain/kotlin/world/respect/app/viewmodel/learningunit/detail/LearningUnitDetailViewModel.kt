@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.lessons.detail
+package world.respect.app.viewmodel.learningunit.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.app.app.LessonDetail
+import world.respect.app.app.LearningUnitDetail
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
@@ -15,7 +15,7 @@ import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.navigation.NavCommand
 
-data class LessonDetailUiState(
+data class LearningUnitDetailUiState(
     val lessonDetail: OpdsPublication? = null,
     val publications: List<OpdsPublication> = emptyList()
 )
@@ -27,11 +27,11 @@ class LessonDetailViewModel(
 
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
-    private val _uiState = MutableStateFlow(LessonDetailUiState())
+    private val _uiState = MutableStateFlow(LearningUnitDetailUiState())
 
     val uiState = _uiState.asStateFlow()
 
-    private val route: LessonDetail = savedStateHandle.toRoute()
+    private val route: LearningUnitDetail = savedStateHandle.toRoute()
 
     init {
 
@@ -40,10 +40,10 @@ class LessonDetailViewModel(
                 it.copy(title = "")
             }
             dataSource.opdsDataSource.loadOpdsPublication(
-                url = route.publicationSelfLink,
+                url = route.learningUnitManifestUrl,
                 params = DataLoadParams(),
-                referrerUrl = route.selfLink,
-                expectedPublicationId = route.identifier
+                referrerUrl = route.learningUnitManifestUrl,
+                expectedPublicationId = route.expectedIdentifier
             ).collect { result ->
                 when (result) {
                     is DataLoadResult -> {
@@ -81,11 +81,11 @@ class LessonDetailViewModel(
     fun onClickLesson() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LessonDetail(
-                    selfLink = route.selfLink,
-                    publicationSelfLink = route.publicationSelfLink,
+                LearningUnitDetail(
+                    learningUnitManifestUrl = route.learningUnitManifestUrl,
+                    refererUrl = route.refererUrl,
                     learningUnitsUrl = route.learningUnitsUrl,
-                    identifier = route.identifier
+                    expectedIdentifier = route.expectedIdentifier
                 )
             )
         )

@@ -14,16 +14,16 @@ import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.app.appstate.AppUiState
-import world.respect.app.view.lessons.detail.LessonDetailScreen
-import world.respect.app.view.lessons.list.LessonListScreen
+import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
+import world.respect.app.view.learningunit.list.LearningUnitListScreen
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.assignments.AssignmentViewModel
 import world.respect.app.viewmodel.clazz.ClazzViewModel
-import world.respect.app.viewmodel.lessons.detail.LessonDetailViewModel
-import world.respect.app.viewmodel.lessons.list.LessonListViewModel
+import world.respect.app.viewmodel.learningunit.detail.LessonDetailViewModel
+import world.respect.app.viewmodel.learningunit.list.LessonListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.navigation.RespectComposeNavController
@@ -109,20 +109,20 @@ fun AppNavHost(
             EnterLinkScreen(viewModel = viewModel)
         }
 
-        composable<LessonList> {
+        composable<LearningUnitList> {
             val viewModel: LessonListViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LessonListScreen( viewModel = viewModel)
+            LearningUnitListScreen( viewModel = viewModel)
         }
 
-        composable<LessonDetail> {
+        composable<LearningUnitDetail> {
             val viewModel: LessonDetailViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LessonDetailScreen(
+            LearningUnitDetailScreen(
 
                 viewModel = viewModel)
         }
