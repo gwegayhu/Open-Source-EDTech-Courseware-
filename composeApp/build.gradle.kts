@@ -33,7 +33,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
             implementation(libs.koin.android)
-            implementation(libs.sqldelight.android.driver)
             implementation(libs.okhttp)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.compose.material3.window.size.clazz)
