@@ -110,16 +110,26 @@ fun AppsDetailScreen(
         }
 
         item {
-            // Featured Images
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                repeat(3) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                    )
+            val screenshots = uiState.appDetail?.screenshots.orEmpty()
+
+            if (screenshots.isNotEmpty()) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp)
+                ) {
+                    items(screenshots.size) { index ->
+                        val screenshot = screenshots[index]
+                        RespectAsyncImage(
+                            uri = screenshot.url.toString(),
+                            contentDescription = screenshot.description.getTitle(),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .width(200.dp)
+                                .aspectRatio(16f / 9f)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+                    }
                 }
             }
         }
