@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
@@ -22,6 +24,7 @@ kotlin {
             api(libs.uri.kmp)
             api(libs.kotlinx.date.time)
             api(libs.ktor.client.core)
+            implementation(libs.androidx.room.runtime)
         }
 
         jvmMain.dependencies {
@@ -38,6 +41,16 @@ kotlin {
             }
         }
     }
+}
+
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+
+dependencies {
+    ksp(libs.androidx.room.compiler)
 }
 
 android {

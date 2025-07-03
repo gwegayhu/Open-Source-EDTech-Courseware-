@@ -32,7 +32,7 @@ kotlin {
         }
 
         jvmTest.dependencies {
-            implementation(libs.sqldelight.android.driver)
+
         }
 
         val commonTest by getting {
