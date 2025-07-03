@@ -31,9 +31,11 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.turbine)
-            implementation(project(":respect-datasource-http"))
-            implementation(project(":respect-datasource-sqldelight"))
-            implementation(libs.sqldelight.jvm.driver)
+            implementation(projects.respectDatasourceHttp)
+            implementation(projects.respectDatasourceDb)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+
             implementation(libs.okhttp)
             implementation(libs.ktor.client.okhttp)
 
