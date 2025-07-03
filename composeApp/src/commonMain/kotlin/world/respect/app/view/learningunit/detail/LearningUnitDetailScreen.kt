@@ -59,6 +59,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailUiState
+import world.respect.datasource.opds.model.OpdsPublication
 
 @Composable
 fun LearningUnitDetailScreen(
@@ -68,14 +69,14 @@ fun LearningUnitDetailScreen(
 
     LearningUnitDetailScreen(
         uiState = uiState,
-        onClickLesson = { viewModel.onClickLesson() },
+        onClickLesson = { viewModel.onClickLesson(it) },
         )
 }
 
 @Composable
 fun LearningUnitDetailScreen(
     uiState: LearningUnitDetailUiState,
-    onClickLesson: () -> Unit,
+    onClickLesson: (OpdsPublication) -> Unit,
 ) {
 
     LazyColumn(
@@ -189,7 +190,7 @@ fun LearningUnitDetailScreen(
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onClickLesson() },
+                    .clickable { onClickLesson(publication) },
                 leadingContent = {
                     RespectAsyncImage(
                         uri = "",

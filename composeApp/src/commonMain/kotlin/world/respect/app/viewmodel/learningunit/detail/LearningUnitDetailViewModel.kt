@@ -61,7 +61,7 @@ class LearningUnitDetailViewModel(
         }
     }
 
-    fun onClickLesson() {
+    fun onClickLesson(publication: OpdsPublication) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail(
