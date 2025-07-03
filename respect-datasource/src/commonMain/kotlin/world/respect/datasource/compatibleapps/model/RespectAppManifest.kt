@@ -39,6 +39,7 @@ data class RespectAppManifest(
     val defaultLaunchUri: Uri,
     val android: AndroidDetails? = null,
     val web: WebDetails? = null,
+    val screenshots: List<Screenshot>? = null,
 ) {
     /**
      * Contains Android-specific details for the RESPECT manifest.
@@ -63,6 +64,12 @@ data class RespectAppManifest(
     data class WebDetails(
         val url: Url? = null,
         val sourceCode: Url? = null,
+    )
+
+    @Serializable
+    data class Screenshot(
+        val url: Url,
+        val description: LangMap,
     )
 
     companion object {
