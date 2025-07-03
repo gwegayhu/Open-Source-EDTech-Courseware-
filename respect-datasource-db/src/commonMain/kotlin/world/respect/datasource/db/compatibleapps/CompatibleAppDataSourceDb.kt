@@ -35,8 +35,7 @@ class CompatibleAppDataSourceDb(
 
     override fun getAddableApps(
         loadParams: DataLoadParams
-    ): Flow<DataLoadState<List<DataLoadResult<RespectAppManifest>>>> {
-
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return respectDb.getCompatibleAppEntityDao().selectAllAsFlow().map { list ->
             DataLoadResult(
                 data = list.map { it.asRespectManifestLoadResult(json) },
@@ -48,7 +47,9 @@ class CompatibleAppDataSourceDb(
         }
     }
 
-    override fun getLaunchpadApps(loadParams: DataLoadParams): Flow<DataLoadState<List<RespectAppManifest>>> {
+    override fun getLaunchpadApps(
+        loadParams: DataLoadParams
+    ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return emptyFlow()
     }
 

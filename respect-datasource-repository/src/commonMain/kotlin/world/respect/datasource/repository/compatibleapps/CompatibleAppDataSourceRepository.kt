@@ -27,9 +27,9 @@ class CompatibleAppDataSourceRepository(
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return local.getAddableApps(loadParams).combineLocalWithRemote(
             remoteFlow = remote.getAddableApps(loadParams),
-            onRemoteNewer = { remoteList ->
+            onRemoteNewer = { newList ->
                 local.upsertCompatibleApps(
-                    remoteList.data?.mapNotNull { it as? DataLoadResult } ?: emptyList()
+                    newList.data?.mapNotNull { it as? DataLoadResult } ?: emptyList()
                 )
             }
         )
