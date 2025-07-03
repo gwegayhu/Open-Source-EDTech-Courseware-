@@ -21,8 +21,8 @@ import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.assignments.AssignmentViewModel
 import world.respect.app.viewmodel.clazz.ClazzViewModel
-import world.respect.app.viewmodel.learningunit.detail.LessonDetailViewModel
-import world.respect.app.viewmodel.learningunit.list.LessonListViewModel
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
+import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.datasource.http.RespectAppDataSourceHttp
 import world.respect.datasource.repository.RespectAppDataSourceRepository
@@ -71,8 +71,8 @@ val appKoinModule = module {
     viewModelOf(::AppListViewModel)
     viewModelOf(::AssignmentViewModel)
     viewModelOf(::ClazzViewModel)
-    viewModelOf(::LessonListViewModel)
-    viewModelOf(::LessonDetailViewModel)
+    viewModelOf(::LearningUnitListViewModel)
+    viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
 
     single<RespectDb> {

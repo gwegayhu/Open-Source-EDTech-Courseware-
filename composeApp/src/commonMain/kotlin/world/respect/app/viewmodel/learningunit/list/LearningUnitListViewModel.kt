@@ -29,7 +29,7 @@ data class LearningUnitListUiState(
     val link: List<ReadiumLink> = emptyList(),
 )
 
-class LessonListViewModel(
+class LearningUnitListViewModel(
     savedStateHandle: SavedStateHandle,
     dataSourceProvider: RespectAppDataSourceProvider
 ) : RespectViewModel(savedStateHandle) {
@@ -43,7 +43,6 @@ class LessonListViewModel(
     private val route: LearningUnitList = savedStateHandle.toRoute()
 
     init {
-
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(

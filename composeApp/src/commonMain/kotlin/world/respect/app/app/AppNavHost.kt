@@ -22,8 +22,8 @@ import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.assignments.AssignmentViewModel
 import world.respect.app.viewmodel.clazz.ClazzViewModel
-import world.respect.app.viewmodel.learningunit.detail.LessonDetailViewModel
-import world.respect.app.viewmodel.learningunit.list.LessonListViewModel
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
+import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.navigation.RespectComposeNavController
@@ -110,7 +110,7 @@ fun AppNavHost(
         }
 
         composable<LearningUnitList> {
-            val viewModel: LessonListViewModel = respectViewModel(
+            val viewModel: LearningUnitListViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
@@ -118,7 +118,7 @@ fun AppNavHost(
         }
 
         composable<LearningUnitDetail> {
-            val viewModel: LessonDetailViewModel = respectViewModel(
+            val viewModel: LearningUnitDetailViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )

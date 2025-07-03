@@ -47,12 +47,12 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListUiState
-import world.respect.app.viewmodel.learningunit.list.LessonListViewModel
+import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datasource.opds.model.OpdsPublication
 
 @Composable
 fun LearningUnitListScreen(
-    viewModel: LessonListViewModel
+    viewModel: LearningUnitListViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

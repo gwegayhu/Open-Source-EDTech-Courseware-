@@ -20,7 +20,7 @@ data class LearningUnitDetailUiState(
     val publications: List<OpdsPublication> = emptyList()
 )
 
-class LessonDetailViewModel(
+class LearningUnitDetailViewModel(
     savedStateHandle: SavedStateHandle,
     dataSourceProvider: RespectAppDataSourceProvider
 ) : RespectViewModel(savedStateHandle) {
@@ -58,23 +58,6 @@ class LessonDetailViewModel(
                     }
                 }
             }
-            dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.learningUnitsUrl,
-                params = DataLoadParams()
-            ).collect { result ->
-                when (result) {
-                    is DataLoadResult -> {
-                        _uiState.update {
-                            it.copy(
-                                publications = result.data?.publications ?: emptyList(),
-                            )
-                        }
-                    }
-                    else -> {
-
-                    }
-                }
-            }
         }
     }
 
@@ -84,7 +67,6 @@ class LessonDetailViewModel(
                 LearningUnitDetail(
                     learningUnitManifestUrl = route.learningUnitManifestUrl,
                     refererUrl = route.refererUrl,
-                    learningUnitsUrl = route.learningUnitsUrl,
                     expectedIdentifier = route.expectedIdentifier
                 )
             )

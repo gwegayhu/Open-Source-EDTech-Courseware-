@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.score_or_progress
 import respect.composeapp.generated.resources.app_name
-import world.respect.app.viewmodel.learningunit.detail.LessonDetailViewModel
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -62,7 +62,7 @@ import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailUiState
 
 @Composable
 fun LearningUnitDetailScreen(
-    viewModel: LessonDetailViewModel
+    viewModel: LearningUnitDetailViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
