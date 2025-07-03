@@ -30,7 +30,7 @@ import world.respect.datasource.sqldelight.RespectAppDataSourceSqld
 import world.respect.datasource.sqldelight.RespectDb
 
 
-const val DEFAULT_COMPATIBLE_APP_LIST_URL = "http://10.5.1.2/opds/respect-ds/manifestlist.json"
+const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
 
 val appKoinModule = module {
     singleOf(::DummyRepoImpl) {
