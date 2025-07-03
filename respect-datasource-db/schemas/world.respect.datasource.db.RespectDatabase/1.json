@@ -1,0 +1,87 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "3143695fa2ca5c4e677ca82812539538",
+    "entities": [
+      {
+        "tableName": "CompatibleAppEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`caeUid` INTEGER NOT NULL, `caeUrl` TEXT NOT NULL, `caeLastModified` INTEGER NOT NULL, `caeEtag` TEXT, `caeLicense` TEXT NOT NULL, `caeWebsite` TEXT NOT NULL, `caeLearningUnits` TEXT NOT NULL, `caeDefaultLaunchUri` TEXT NOT NULL, `caeAndroidPackageId` TEXT, `caeAndroidStoreList` TEXT, `caeAndroidSourceCode` TEXT, PRIMARY KEY(`caeUid`))",
+        "fields": [
+          {
+            "fieldPath": "caeUid",
+            "columnName": "caeUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeUrl",
+            "columnName": "caeUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeLastModified",
+            "columnName": "caeLastModified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeEtag",
+            "columnName": "caeEtag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeLicense",
+            "columnName": "caeLicense",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeWebsite",
+            "columnName": "caeWebsite",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeLearningUnits",
+            "columnName": "caeLearningUnits",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeDefaultLaunchUri",
+            "columnName": "caeDefaultLaunchUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeAndroidPackageId",
+            "columnName": "caeAndroidPackageId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeAndroidStoreList",
+            "columnName": "caeAndroidStoreList",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeAndroidSourceCode",
+            "columnName": "caeAndroidSourceCode",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "caeUid"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3143695fa2ca5c4e677ca82812539538')"
+    ]
+  }
+}
