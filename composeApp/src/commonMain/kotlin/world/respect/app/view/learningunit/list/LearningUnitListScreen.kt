@@ -132,7 +132,7 @@ fun LearningUnitListScreen(
 
                     leadingContent = {
                         RespectAsyncImage(
-                            uri = "",
+                            uri = publication.images?.firstOrNull()?.href.toString(),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
