@@ -62,12 +62,14 @@ class LearningUnitDetailViewModel(
     }
 
     fun onClickLesson(publication: OpdsPublication) {
+        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail(
-                    learningUnitManifestUrl = route.learningUnitManifestUrl,
+                    learningUnitManifestUrl = publicationSelfLink?:"",
                     refererUrl = route.refererUrl,
-                    expectedIdentifier = route.expectedIdentifier
+                    expectedIdentifier = publication.metadata.identifier.toString()
                 )
             )
         )
