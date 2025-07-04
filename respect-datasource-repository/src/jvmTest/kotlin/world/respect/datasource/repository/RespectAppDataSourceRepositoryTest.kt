@@ -16,6 +16,7 @@ import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.db.compatibleapps.CompatibleAppDataSourceDb
 import world.respect.datasource.http.compatibleapps.CompatibleAppDataSourceHttp
 import world.respect.datasource.repository.compatibleapps.CompatibleAppDataSourceRepository
+import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import kotlin.test.Test
 
 class RespectAppDataSourceRepositoryTest {
@@ -47,7 +48,8 @@ class RespectAppDataSourceRepositoryTest {
             }
         }
 
-        val localDataSource = CompatibleAppDataSourceDb(db, json)
+        val xxStringHasher = XXStringHasherCommonJvm()
+        val localDataSource = CompatibleAppDataSourceDb(db, json, xxStringHasher)
         val httpDataSource = CompatibleAppDataSourceHttp(
             httpClient,
             "http://localhost/opds/respect-ds/manifestlist.json"

@@ -3,8 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
+    alias(libs.plugins.atomicfu)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
@@ -19,17 +18,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.respectDatasource)
-            implementation(projects.respectLibXxhash)
-            implementation(libs.kotlinx.serialization.json)
-            api(libs.uri.kmp)
-            api(libs.kotlinx.date.time)
-            api(libs.ktor.client.core)
-            implementation(libs.androidx.room.runtime)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.androidx.room.ktx)
+            //Works because this module is currently JVM and Android. Can be moved into another
+            //module as/when iOS/JS target is added
+            implementation(libs.lz4.pure.java)
         }
 
         jvmMain.dependencies {
@@ -48,18 +39,8 @@ kotlin {
     }
 }
 
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-
-dependencies {
-    ksp(libs.androidx.room.compiler)
-}
-
 android {
-    namespace = "world.respect.datasource.db"
+    namespace = "world.respect.libxxhash"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

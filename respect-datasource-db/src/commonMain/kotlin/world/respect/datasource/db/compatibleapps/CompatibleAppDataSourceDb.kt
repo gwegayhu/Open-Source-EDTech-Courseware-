@@ -2,7 +2,6 @@ package world.respect.datasource.db.compatibleapps
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadParams
@@ -12,18 +11,42 @@ import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.db.RespectDatabase
-import world.respect.datasource.db.adapters.asCompatibleAppEntity
+import world.respect.datasource.db.adapters.asCompatibleAppEntities
 import world.respect.datasource.db.adapters.asRespectManifestLoadResult
+import world.respect.libxxhash.XXStringHasher
+import androidx.room.Transactor
+import androidx.room.useWriterConnection
+import kotlinx.coroutines.flow.combine
+import world.respect.datasource.db.entities.CompatibleAppEntity
+import world.respect.datasource.db.entities.composites.CompatibleAppEntities
 
 class CompatibleAppDataSourceDb(
     private val respectDb: RespectDatabase,
     private val json: Json,
+    private val xxStringHasher: XXStringHasher,
 ): CompatibleAppsDataSourceLocal {
 
     override suspend fun upsertCompatibleApps(apps: List<DataLoadResult<RespectAppManifest>>) {
-        respectDb.getCompatibleAppEntityDao().upsert(
-            apps.mapNotNull { it.asCompatibleAppEntity(json) }
-        )
+        val entities = apps.mapNotNull { it.asCompatibleAppEntities(json, xxStringHasher) }
+
+        respectDb.useWriterConnection { con ->
+            con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                respectDb.getCompatibleAppEntityDao().upsert(
+                    entities.map { it.compatibleAppEntity }
+                )
+
+                entities.forEach {
+                    respectDb.getLangMapEntityDao().deleteByTableAndEntityUid(
+                        lmeTableId = CompatibleAppEntity.TABLE_ID,
+                        lmeEntityUid1 = it.compatibleAppEntity.caeUid,
+                    )
+                }
+
+                respectDb.getLangMapEntityDao().insertAsync(
+                    entities.flatMap { it.langMapEntities }
+                )
+            }
+        }
     }
 
     override fun getApp(
@@ -36,12 +59,22 @@ class CompatibleAppDataSourceDb(
     override fun getAddableApps(
         loadParams: DataLoadParams
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
-        return respectDb.getCompatibleAppEntityDao().selectAllAsFlow().map { list ->
+        val appEntities = respectDb.getCompatibleAppEntityDao().selectAllAsFlow()
+        val langmaps = respectDb.getLangMapEntityDao().selectAllByTableId(CompatibleAppEntity.TABLE_ID)
+
+        return appEntities.combine(langmaps) { appEntities, langmaps ->
             DataLoadResult(
-                data = list.map { it.asRespectManifestLoadResult(json) },
+                data = appEntities.map { appEntity ->
+                    CompatibleAppEntities(
+                        compatibleAppEntity = appEntity,
+                        langMapEntities = langmaps.filter { it.lmeEntityUid1 == appEntity.caeUid }
+                    ).asRespectManifestLoadResult(json)
+                },
                 metaInfo = DataLoadMetaInfo(
                     status = LoadingStatus.LOADED,
-                    lastModified = list.maxOfOrNull { it.caeLastModified } ?: -1,
+                    lastModified = appEntities.maxOfOrNull { it.caeLastModified } ?: 0,
+                    etag = null,
+                    url = null,
                 )
             )
         }
