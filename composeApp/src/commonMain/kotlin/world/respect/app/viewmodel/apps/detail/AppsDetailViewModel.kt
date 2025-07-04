@@ -25,10 +25,9 @@ import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.navigation.NavCommand
 
 data class AppsDetailUiState(
-    val appDetail: RespectAppManifest? = null,
+    val appDetail: DataLoadState<RespectAppManifest>? = null,
     val publications: List<OpdsPublication> = emptyList(),
     val link: List<ReadiumLink> = emptyList(),
-    val appDetailState: DataLoadState<RespectAppManifest>? = null,
 )
 
 class AppsDetailViewModel(
@@ -44,6 +43,8 @@ class AppsDetailViewModel(
 
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
+    var learningUnits:String?=null
+
     init {
 
         viewModelScope.launch {
@@ -56,16 +57,19 @@ class AppsDetailViewModel(
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
                 if (result is DataLoadResult) {
-                    val appDetail = result.data
                     _uiState.update {
                         it.copy(
-                            appDetailState = result,
-                            appDetail = appDetail
+                            appDetail = result
                         )
                     }
                 }
+
+                var appManifest = (result as? DataLoadResult)?.data
+
+                learningUnits=appManifest?.learningUnits?.toString()
+
                 dataSource.opdsDataSource.loadOpdsFeed(
-                    url = uiState.value.appDetail?.learningUnits.toString(),
+                    url = learningUnits.toString(),
                     params = DataLoadParams()
                 ).collect { result ->
                     when (result) {
@@ -88,7 +92,8 @@ class AppsDetailViewModel(
     }
 
     fun onClickLessonList() {
-        uiState.value.appDetail?.learningUnits?.toString()?.also { url ->
+        val appManifest = (uiState.value.appDetail as? DataLoadResult)?.data
+        appManifest?.learningUnits?.toString()?.also { url ->
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitList(opdsFeedUrl = url)
@@ -99,7 +104,7 @@ class AppsDetailViewModel(
 
     fun onClickLesson(publication: OpdsPublication) {
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
-        val refererUrl = uiState.value.appDetail?.learningUnits?.toString()
+        val refererUrl = learningUnits?.toString()
 
         publicationSelfLink?.takeIf { it.isNotBlank() }?.also { manifestUrl ->
             _navCommandFlow.tryEmit(
