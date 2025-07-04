@@ -17,5 +17,17 @@ data class CompatibleAppEntity(
     val caeAndroidPackageId: String?,
     val caeAndroidStoreList: String?,
     val caeAndroidSourceCode: String?,
-)
+) {
+
+    companion object {
+
+        const val TABLE_ID = 42
+
+        const val LANGMAP_PROP_NAME = 1L
+
+        const val LANGMAP_PROP_DESC = 2L
+
+    }
+
+}
 

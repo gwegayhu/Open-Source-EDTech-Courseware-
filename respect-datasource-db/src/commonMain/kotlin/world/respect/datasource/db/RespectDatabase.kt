@@ -5,17 +5,21 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import world.respect.datasource.db.daos.CompatibleAppEntityDao
+import world.respect.datasource.db.daos.LangMapEntityDao
 import world.respect.datasource.db.entities.CompatibleAppEntity
+import world.respect.datasource.db.entities.LangMapEntity
 
 
 @Database(
-    entities = [CompatibleAppEntity::class],
+    entities = [CompatibleAppEntity::class, LangMapEntity::class],
     version = 1
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class RespectDatabase: RoomDatabase() {
 
     abstract fun getCompatibleAppEntityDao(): CompatibleAppEntityDao
+
+    abstract fun getLangMapEntityDao(): LangMapEntityDao
 
 }
 

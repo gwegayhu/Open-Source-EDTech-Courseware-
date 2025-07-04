@@ -30,6 +30,7 @@ kotlin {
         }
 
         jvmTest.dependencies {
+            implementation(projects.respectLibXxhash)
             implementation(libs.turbine)
             implementation(projects.respectDatasourceHttp)
             implementation(projects.respectDatasourceDb)
