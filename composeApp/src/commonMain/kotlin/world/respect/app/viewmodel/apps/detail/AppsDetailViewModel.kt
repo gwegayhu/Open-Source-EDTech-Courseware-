@@ -88,7 +88,6 @@ class AppsDetailViewModel(
     }
 
     fun onClickLessonList() {
-
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList(
@@ -99,14 +98,13 @@ class AppsDetailViewModel(
     }
 
     fun onClickLesson(publication: OpdsPublication) {
-        val selfLink = uiState.value.link.find { it.rel?.equals("self") == true }?.href
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
 
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail(
-                    learningUnitManifestUrl = selfLink ?: "",
-                    refererUrl = publicationSelfLink,
+                    learningUnitManifestUrl = publicationSelfLink ?: "",
+                    refererUrl = uiState.value.appDetail?.learningUnits.toString(),
                     expectedIdentifier = publication.metadata.identifier?.toString()
                 )
             )

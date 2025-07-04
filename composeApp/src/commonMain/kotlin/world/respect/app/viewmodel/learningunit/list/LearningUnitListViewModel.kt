@@ -84,8 +84,8 @@ class LearningUnitListViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail(
-                    learningUnitManifestUrl = route.opdsFeedUrl,
-                    refererUrl = publicationSelfLink ?: "",
+                    learningUnitManifestUrl = publicationSelfLink?:"",
+                    refererUrl = route.opdsFeedUrl,
                     expectedIdentifier = publication.metadata.identifier.toString()
                 )
             )
