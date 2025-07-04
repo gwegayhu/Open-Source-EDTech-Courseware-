@@ -32,6 +32,8 @@ import world.respect.datasource.db.RespectAppDataSourceDb
 import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.http.RespectAppDataSourceHttp
 import world.respect.datasource.repository.RespectAppDataSourceRepository
+import world.respect.libxxhash.XXStringHasher
+import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 
 
 @Suppress("unused")
@@ -43,6 +45,10 @@ val appKoinModule = module {
             encodeDefaults = false
             ignoreUnknownKeys = true
         }
+    }
+
+    single<XXStringHasher> {
+        XXStringHasherCommonJvm()
     }
 
     single<OkHttpClient> {
@@ -95,6 +101,7 @@ val appKoinModule = module {
                     ).setDriver(BundledSQLiteDriver())
                     .build(),
                     json = get(),
+                    xxStringHasher = get(),
                 ),
                 remote = RespectAppDataSourceHttp(
                     httpClient = get(),

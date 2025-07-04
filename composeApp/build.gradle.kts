@@ -44,6 +44,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared)
             api(projects.respectDatasource)
+            api(projects.respectLibXxhash)
             implementation(projects.respectDatasourceRepository)
             implementation(projects.respectDatasourceHttp)
 
