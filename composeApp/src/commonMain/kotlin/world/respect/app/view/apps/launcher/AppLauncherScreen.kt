@@ -96,12 +96,10 @@ fun AppLauncherScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(resource = Res.string.empty_list),
-                        style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = stringResource(resource = Res.string.empty_list_description),
-                        style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center
                     )
                 }

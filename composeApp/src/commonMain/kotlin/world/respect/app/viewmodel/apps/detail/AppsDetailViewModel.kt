@@ -88,26 +88,29 @@ class AppsDetailViewModel(
     }
 
     fun onClickLessonList() {
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                LearningUnitList(
-                    opdsFeedUrl = uiState.value.appDetail?.learningUnits?.toString() ?: ""
+        uiState.value.appDetail?.learningUnits?.toString()?.also { url ->
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    LearningUnitList(opdsFeedUrl = url)
                 )
             )
-        )
+        }
     }
 
     fun onClickLesson(publication: OpdsPublication) {
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
+        val refererUrl = uiState.value.appDetail?.learningUnits?.toString()
 
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                LearningUnitDetail(
-                    learningUnitManifestUrl = publicationSelfLink ?: "",
-                    refererUrl = uiState.value.appDetail?.learningUnits.toString(),
-                    expectedIdentifier = publication.metadata.identifier?.toString()
+        publicationSelfLink?.takeIf { it.isNotBlank() }?.also { manifestUrl ->
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    LearningUnitDetail(
+                        learningUnitManifestUrl = manifestUrl,
+                        refererUrl = refererUrl,
+                        expectedIdentifier = publication.metadata.identifier?.toString()
+                    )
                 )
             )
-        )
+        }
     }
 }

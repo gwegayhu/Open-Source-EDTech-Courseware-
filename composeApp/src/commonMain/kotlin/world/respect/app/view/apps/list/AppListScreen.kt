@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
@@ -32,6 +33,7 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListUiState
 import world.respect.app.viewmodel.apps.list.AppListViewModel
+import world.respect.app.viewmodel.apps.list.AppListViewModel.Companion.EMPTY_LIST
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
@@ -55,12 +57,10 @@ fun AppListScreen(
     onClickAddLink: () -> Unit,
     onClickApp: (DataLoadState<RespectAppManifest>) -> Unit
 ) {
-    val key=stringResource(Res.string.add_link)
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
-        item(key=key) {
+        item(key = EMPTY_LIST) {
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -79,7 +79,12 @@ fun AppListScreen(
             )
         }
 
-        items(uiState.appList) { app ->
+        itemsIndexed(
+            items = uiState.appList,
+            key = { index, app ->
+                app.metaInfo.url?.toString() ?: index
+            }
+        ) { index, app ->
             val appData = (app as? DataLoadResult)?.data
             ListItem(
                 modifier = Modifier

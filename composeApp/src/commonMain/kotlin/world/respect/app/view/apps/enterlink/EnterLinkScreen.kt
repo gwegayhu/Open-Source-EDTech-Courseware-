@@ -7,15 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.*
-import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkUiState
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
-import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
-import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
 
 @Composable
 fun EnterLinkScreen(
@@ -34,9 +29,6 @@ fun EnterLinkScreen(
     uiState: EnterLinkUiState,
     onButtonClick: (String) -> Unit,
 ) {
-
-    var link by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,9 +41,9 @@ fun EnterLinkScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = link,
+            value = uiState.linkUrl,
             onValueChange = {
-                link = it
+                uiState.linkUrl = it
                 if (uiState.isError) {
                     onButtonClick(it)
                 }
@@ -62,7 +54,6 @@ fun EnterLinkScreen(
             placeholder = {
                 Text(
                     text = stringResource(Res.string.example_url_placeholder),
-                    style = MaterialTheme.typography.bodySmall
                 )
             },
             singleLine = true,
@@ -75,13 +66,12 @@ fun EnterLinkScreen(
 
         Button(
             onClick = {
-                onButtonClick(link)
+                onButtonClick(uiState.linkUrl)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 text = stringResource(Res.string.next),
-                style = MaterialTheme.typography.labelLarge
             )
         }
 
@@ -89,7 +79,6 @@ fun EnterLinkScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(Res.string.error_link_message),
-                style = MaterialTheme.typography.bodySmall,
             )
         }
     }
