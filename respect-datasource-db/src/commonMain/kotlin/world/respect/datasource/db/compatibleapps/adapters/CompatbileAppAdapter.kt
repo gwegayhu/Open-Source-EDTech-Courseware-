@@ -1,4 +1,4 @@
-package world.respect.datasource.db.adapters
+package world.respect.datasource.db.compatibleapps.adapters
 
 import com.eygraber.uri.Uri
 import io.ktor.http.Url
@@ -7,11 +7,21 @@ import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.db.entities.CompatibleAppEntity
-import world.respect.datasource.db.entities.CompatibleAppEntity.Companion.LANGMAP_PROP_DESC
-import world.respect.datasource.db.entities.CompatibleAppEntity.Companion.LANGMAP_PROP_NAME
-import world.respect.datasource.db.entities.composites.CompatibleAppEntities
+import world.respect.datasource.db.shared.adapters.toEntities
+import world.respect.datasource.db.shared.adapters.toLangMap
+import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
+import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity.Companion.LANGMAP_PROP_DESC
+import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity.Companion.LANGMAP_PROP_NAME
+import world.respect.datasource.db.shared.entities.LangMapEntity
 import world.respect.libxxhash.XXStringHasher
+
+/**
+ * All the entities required to represent a RespectAppManifest.
+ */
+data class CompatibleAppEntities(
+    val compatibleAppEntity: CompatibleAppEntity,
+    val langMapEntities: List<LangMapEntity>,
+)
 
 fun DataLoadResult<RespectAppManifest>.asCompatibleAppEntities(
     json: Json,

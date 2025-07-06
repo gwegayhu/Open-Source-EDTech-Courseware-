@@ -1,6 +1,6 @@
-package world.respect.datasource.db.ext
+package world.respect.datasource.db.shared.ext
 
-import world.respect.datasource.db.entities.LangMapEntity
+import world.respect.datasource.db.shared.entities.LangMapEntity
 
 val LangMapEntity.langMapKey: String
     get() = if(lmeRegion != null) {

@@ -3,9 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
-    kotlin("plugin.serialization") version libs.versions.kotlin.get()
+    alias(libs.plugins.atomicfu)
 }
 
 kotlin {
@@ -19,18 +17,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.respectDatasource)
-            implementation(projects.respectLibPrimarykeygen)
-            implementation(projects.respectLibXxhash)
-            implementation(libs.kotlinx.serialization.json)
-            api(libs.uri.kmp)
-            api(libs.kotlinx.date.time)
-            api(libs.ktor.client.core)
-            implementation(libs.androidx.room.runtime)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.date.time)
         }
 
         androidMain.dependencies {
-            implementation(libs.androidx.room.ktx)
+
         }
 
         jvmMain.dependencies {
@@ -49,18 +41,8 @@ kotlin {
     }
 }
 
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-
-dependencies {
-    ksp(libs.androidx.room.compiler)
-}
-
 android {
-    namespace = "world.respect.datasource.db"
+    namespace = "world.respect.lib.primarykeygen"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

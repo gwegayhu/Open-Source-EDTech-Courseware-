@@ -11,14 +11,14 @@ import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.db.RespectDatabase
-import world.respect.datasource.db.adapters.asCompatibleAppEntities
-import world.respect.datasource.db.adapters.asRespectManifestLoadResult
+import world.respect.datasource.db.compatibleapps.adapters.asCompatibleAppEntities
+import world.respect.datasource.db.compatibleapps.adapters.asRespectManifestLoadResult
 import world.respect.libxxhash.XXStringHasher
 import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.combine
-import world.respect.datasource.db.entities.CompatibleAppEntity
-import world.respect.datasource.db.entities.composites.CompatibleAppEntities
+import world.respect.datasource.db.compatibleapps.adapters.CompatibleAppEntities
+import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
 
 class CompatibleAppDataSourceDb(
     private val respectDb: RespectDatabase,

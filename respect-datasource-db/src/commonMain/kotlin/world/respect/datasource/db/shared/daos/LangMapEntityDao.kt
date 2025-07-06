@@ -1,10 +1,10 @@
-package world.respect.datasource.db.daos
+package world.respect.datasource.db.shared.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import world.respect.datasource.db.entities.LangMapEntity
+import world.respect.datasource.db.shared.entities.LangMapEntity
 
 @Dao
 abstract class LangMapEntityDao {

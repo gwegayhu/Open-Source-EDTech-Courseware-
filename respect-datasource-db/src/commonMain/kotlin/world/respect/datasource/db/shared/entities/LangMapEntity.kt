@@ -1,4 +1,4 @@
-package world.respect.datasource.db.entities
+package world.respect.datasource.db.shared.entities
 
 import androidx.room.Entity
 import androidx.room.Index
