@@ -11,6 +11,7 @@ import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.repository.ext.checkIsRemoteUpdated
 import world.respect.datasource.repository.ext.combineLocalWithRemote
+import world.respect.datasource.repository.ext.copyLoadState
 
 class CompatibleAppDataSourceRepository(
     private val local: CompatibleAppsDataSourceLocal,
@@ -27,7 +28,10 @@ class CompatibleAppDataSourceRepository(
         return localResult.checkIsRemoteUpdated(remoteResult).updatedRemoteData?.also { updatedData ->
             local.upsertCompatibleApps(listOf(updatedData))
             remoteResult
-        } ?: localResult
+        } ?: localResult.copyLoadState(
+            localMetaInfo = localResult.metaInfo,
+            remoteMetaInfo = remoteResult.metaInfo
+        )
     }
 
     override fun getAppAsFlow(
