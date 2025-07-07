@@ -3,6 +3,7 @@ package world.respect.app.viewmodel.apps.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -22,6 +23,7 @@ import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 
 data class AppsDetailUiState(
@@ -68,6 +70,9 @@ class AppsDetailViewModel(
 
                 learningUnits=appManifest?.learningUnits?.toString()
 
+                /*
+                 * Temporarily commented out pending the implementation of this in the real
+                 * datasource
                 dataSource.opdsDataSource.loadOpdsFeed(
                     url = learningUnits.toString(),
                     params = DataLoadParams()
@@ -85,6 +90,7 @@ class AppsDetailViewModel(
                         else -> {}
                     }
                 }
+                */
             }
         }
     }
@@ -101,14 +107,13 @@ class AppsDetailViewModel(
     }
 
     fun onClickLesson(publication: OpdsPublication) {
-        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
-        val refererUrl = learningUnits?.toString()
-
-        publicationSelfLink?.takeIf { it.isNotBlank() }?.also { manifestUrl ->
+        val publicationHref = publication.links.find { it.rel?.equals("self") == true }?.href
+        val refererUrl = (_uiState.value.appDetail as? DataLoadResult)?.data?.learningUnits?.toString()
+        if(refererUrl != null && publicationHref != null) {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitDetail(
-                        learningUnitManifestUrl = manifestUrl,
+                        learningUnitManifestUrl = Url(refererUrl).resolve(publicationHref).toString(),
                         refererUrl = refererUrl,
                         expectedIdentifier = publication.metadata.identifier?.toString()
                     )

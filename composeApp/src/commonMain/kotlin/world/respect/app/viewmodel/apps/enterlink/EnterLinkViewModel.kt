@@ -10,7 +10,10 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.enter_link
+import respect.composeapp.generated.resources.invalid_url
+import world.respect.app.components.UiText
 import world.respect.app.app.AppsDetail
+import world.respect.app.components.StringResourceUiText
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataErrorResult
@@ -20,7 +23,7 @@ import world.respect.navigation.NavCommand
 
 data class EnterLinkUiState(
     val linkUrl: String = "",
-    val errorMessage: String? = null,
+    val errorMessage: UiText? = null,
 )
 
 class EnterLinkViewModel(
@@ -41,12 +44,6 @@ class EnterLinkViewModel(
                     title = getString(Res.string.enter_link)
                 )
             }
-            _uiState.update {
-                //have to use the valid link here
-                it.copy(
-                    linkUrl = "",
-                )
-            }
         }
     }
 
@@ -61,25 +58,25 @@ class EnterLinkViewModel(
 
     fun onClickNext()  {
         val linkUrl = uiState.value.linkUrl
-        try {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            try {
                 val appResult = dataSource.compatibleAppsDataSource.getApp(
                     manifestUrl = Url((linkUrl)), loadParams = DataLoadParams()
                 )
 
-                if(appResult is DataLoadResult) {
+                if(appResult is DataLoadResult && appResult.data != null) {
                     _navCommandFlow.tryEmit(
                         NavCommand.Navigate(AppsDetail(manifestUrl = linkUrl))
                     )
                 }else {
                     throw (appResult as? DataErrorResult)?.error ?: IllegalStateException()
                 }
-            }
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(
-                    errorMessage = e.message ?: e.toString()
-                )
+            } catch (_: Throwable) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = StringResourceUiText(Res.string.invalid_url)
+                    )
+                }
             }
         }
     }

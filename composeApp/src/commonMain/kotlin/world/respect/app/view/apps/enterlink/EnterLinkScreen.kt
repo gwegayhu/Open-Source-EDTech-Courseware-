@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.*
+import world.respect.app.components.uiTextStringResource
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkUiState
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 
@@ -61,7 +62,7 @@ fun EnterLinkScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = uiState.errorMessage != null,
             supportingText = uiState.errorMessage?.let {
-                { Text(it) }
+                { Text(uiTextStringResource(it)) }
             }
         )
 
