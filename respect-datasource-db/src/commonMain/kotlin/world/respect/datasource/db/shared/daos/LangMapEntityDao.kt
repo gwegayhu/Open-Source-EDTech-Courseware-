@@ -40,7 +40,20 @@ abstract class LangMapEntityDao {
            AND LangMapEntity.lmeEntityUid1 = :lmeEntityUid1
            AND LangMapEntity.lmeEntityUid2 = :lmeEntityUid2
     """)
-    abstract fun selectAllByTableAndEntityId(
+    abstract suspend fun selectAllByTableAndEntityId(
+        lmeTableId: Int,
+        lmeEntityUid1: Long,
+        lmeEntityUid2: Long,
+    ): List<LangMapEntity>
+
+    @Query("""
+        SELECT * 
+          FROM LangMapEntity
+         WHERE LangMapEntity.lmeTableId = :lmeTableId
+           AND LangMapEntity.lmeEntityUid1 = :lmeEntityUid1
+           AND LangMapEntity.lmeEntityUid2 = :lmeEntityUid2
+    """)
+    abstract fun selectAllByTableAndEntityIdAsFlow(
         lmeTableId: Int,
         lmeEntityUid1: Long,
         lmeEntityUid2: Long,

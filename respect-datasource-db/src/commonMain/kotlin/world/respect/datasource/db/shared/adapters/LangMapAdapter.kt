@@ -7,7 +7,7 @@ import world.respect.datasource.opds.model.LangMap
 import world.respect.datasource.opds.model.LangMapObjectValue
 import world.respect.datasource.opds.model.LangMapStringValue
 
-fun LangMap.toEntities(
+fun LangMap.asEntities(
     lmeTableId: Int,
     lmeEntityUid1: Long,
     lmeEntityUid2: Long = 0,
@@ -51,7 +51,7 @@ fun LangMap.toEntities(
     }
 }
 
-fun List<LangMapEntity>.toLangMap(): LangMap {
+fun List<LangMapEntity>.toModel(): LangMap {
     return if(this.size == 1 && this.first().lmeLang == LANG_NONE) {
         LangMapStringValue(this.first().lmeValue)
     }else {

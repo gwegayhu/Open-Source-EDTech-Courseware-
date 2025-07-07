@@ -1,5 +1,6 @@
 package world.respect.datasource.compatibleapps
 
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadState
@@ -17,10 +18,15 @@ interface CompatibleAppsDataSource {
     /**
      * Load a specific app manifest
      */
-    fun getApp(
+    fun getAppAsFlow(
         manifestUrl: String,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>>
+
+    suspend fun getApp(
+        manifestUrl: Url,
+        loadParams: DataLoadParams
+    ): DataLoadState<RespectAppManifest>
 
     /**
      * Load a list of apps that can be added to the launchpad

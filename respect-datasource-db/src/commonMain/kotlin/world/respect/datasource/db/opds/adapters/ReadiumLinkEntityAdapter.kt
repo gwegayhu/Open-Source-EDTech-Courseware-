@@ -66,7 +66,7 @@ fun ReadiumLink.asEntities(
 /**
  * Convert a list of database entities to a list of Readium Links
  */
-fun List<ReadiumLinkEntity>.asReadiumLinks(
+fun List<ReadiumLinkEntity>.asModels(
     json: Json,
     rleJoinToLinkId: Long = 0,
     rleJoinToLinkType: LinkEntityJoinType? = null,
@@ -89,17 +89,17 @@ fun List<ReadiumLinkEntity>.asReadiumLinks(
             bitrate = thisLink.rleBitrate,
             duration = thisLink.rleDuration,
             language = thisLink.rleLanguage,
-            children = asReadiumLinks(
+            children = asModels(
                 json = json,
                 rleJoinToLinkId = thisLink.rleId,
                 rleJoinToLinkType = LinkEntityJoinType.CHILDREN_OF,
             ),
-            alternate = asReadiumLinks(
+            alternate = asModels(
                 json = json,
                 rleJoinToLinkId = thisLink.rleId,
                 rleJoinToLinkType = LinkEntityJoinType.ALTERNATE_OF,
             ),
-            subcollections = asReadiumLinks(
+            subcollections = asModels(
                 json = json,
                 rleJoinToLinkId = thisLink.rleId,
                 rleJoinToLinkType = LinkEntityJoinType.SUB_COLLECTION_OF,

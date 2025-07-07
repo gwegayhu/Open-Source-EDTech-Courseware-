@@ -10,6 +10,11 @@ import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
 @Dao
 interface CompatibleAppEntityDao {
 
+    @Query("""SELECT * 
+                        FROM CompatibleAppEntity 
+                       WHERE caeUid = :caeUid""")
+    suspend fun selectByUid(caeUid: Long): CompatibleAppEntity?
+
     @Query("SELECT * FROM CompatibleAppEntity")
     fun selectAllAsFlow(): Flow<List<CompatibleAppEntity>>
 
