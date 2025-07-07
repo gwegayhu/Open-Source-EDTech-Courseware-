@@ -13,6 +13,11 @@ interface CompatibleAppEntityDao {
     @Query("SELECT * FROM CompatibleAppEntity")
     fun selectAllAsFlow(): Flow<List<CompatibleAppEntity>>
 
+    @Query("""SELECT * 
+                        FROM CompatibleAppEntity 
+                       WHERE caeUid = :caeUid""")
+    fun selectByUidAsFlow(caeUid: Long): Flow<CompatibleAppEntity?>
+
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun upsert(compatibleApps: List<CompatibleAppEntity>)
 

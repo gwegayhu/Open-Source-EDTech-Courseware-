@@ -21,7 +21,7 @@ import world.respect.libutil.ext.resolve
 
 class CompatibleAppDataSourceHttp(
     private val httpClient: HttpClient,
-    private val defaultCompatibleAppListUrl: String,
+    defaultCompatibleAppListUrl: String,
 ): CompatibleAppsDataSource {
 
     private val defaultCompatibleAppListUrlObj = Url(defaultCompatibleAppListUrl)
@@ -41,7 +41,8 @@ class CompatibleAppDataSourceHttp(
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return flow {
             emit(DataLoadingState())
-            val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrl).body()
+            val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrlObj)
+                .body()
             val manifests: List<DataLoadResult<RespectAppManifest>> = respectAppUrls.mapNotNull { manifestHref ->
                 try {
                     httpClient.getDataLoadResult<RespectAppManifest>(

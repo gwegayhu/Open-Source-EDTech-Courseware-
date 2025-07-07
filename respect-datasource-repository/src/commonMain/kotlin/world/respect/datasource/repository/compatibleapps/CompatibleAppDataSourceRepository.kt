@@ -19,7 +19,12 @@ class CompatibleAppDataSourceRepository(
         manifestUrl: String,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
-        return emptyFlow()
+        return local.getApp(manifestUrl, loadParams).combineLocalWithRemote(
+            remoteFlow = remote.getApp(manifestUrl, loadParams),
+            onRemoteNewer = { newApp ->
+                local.upsertCompatibleApps(listOf(newApp))
+            }
+        )
     }
 
     override fun getAddableApps(

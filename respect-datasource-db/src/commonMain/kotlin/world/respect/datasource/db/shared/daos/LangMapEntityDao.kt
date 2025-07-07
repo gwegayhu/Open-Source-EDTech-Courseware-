@@ -33,4 +33,17 @@ abstract class LangMapEntityDao {
         lmeTableId: Int,
     ): Flow<List<LangMapEntity>>
 
+    @Query("""
+        SELECT * 
+          FROM LangMapEntity
+         WHERE LangMapEntity.lmeTableId = :lmeTableId
+           AND LangMapEntity.lmeEntityUid1 = :lmeEntityUid1
+           AND LangMapEntity.lmeEntityUid2 = :lmeEntityUid2
+    """)
+    abstract fun selectAllByTableAndEntityId(
+        lmeTableId: Int,
+        lmeEntityUid1: Long,
+        lmeEntityUid2: Long,
+    ): Flow<List<LangMapEntity>>
+
 }

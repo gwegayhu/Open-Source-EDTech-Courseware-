@@ -53,7 +53,23 @@ class CompatibleAppDataSourceDb(
         manifestUrl: String,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
-        return emptyFlow()
+        val caeUid = xxStringHasher.hash(manifestUrl)
+        return respectDb.getCompatibleAppEntityDao().selectByUidAsFlow(
+            xxStringHasher.hash(manifestUrl)
+        ).combine(
+            respectDb.getLangMapEntityDao().selectAllByTableAndEntityId(
+                lmeTableId = CompatibleAppEntity.TABLE_ID,
+                lmeEntityUid1 = caeUid,
+                lmeEntityUid2 = 0
+            )
+        ) { compatibleAppEntity, langMapEntities ->
+            compatibleAppEntity?.let { appEntity ->
+                CompatibleAppEntities(
+                    compatibleAppEntity = appEntity,
+                    langMapEntities = langMapEntities,
+                ).asRespectManifestLoadResult(json)
+            } ?: DataLoadResult()
+        }
     }
 
     override fun getAddableApps(
