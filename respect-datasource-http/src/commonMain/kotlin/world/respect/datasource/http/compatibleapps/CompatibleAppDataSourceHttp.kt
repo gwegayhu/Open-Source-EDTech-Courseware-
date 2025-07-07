@@ -26,7 +26,14 @@ class CompatibleAppDataSourceHttp(
 
     private val defaultCompatibleAppListUrlObj = Url(defaultCompatibleAppListUrl)
 
-    override fun getApp(
+    override suspend fun getApp(
+        manifestUrl: Url,
+        loadParams: DataLoadParams
+    ): DataLoadState<RespectAppManifest> {
+        return httpClient.getDataLoadResult(manifestUrl)
+    }
+
+    override fun getAppAsFlow(
         manifestUrl: String,
         loadParams: DataLoadParams,
     ): Flow<DataLoadState<RespectAppManifest>> {

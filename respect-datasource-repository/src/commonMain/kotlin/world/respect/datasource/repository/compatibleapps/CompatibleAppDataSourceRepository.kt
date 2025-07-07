@@ -1,5 +1,6 @@
 package world.respect.datasource.repository.compatibleapps
 
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import world.respect.datasource.DataLoadParams
@@ -8,6 +9,7 @@ import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.repository.ext.checkIsRemoteUpdated
 import world.respect.datasource.repository.ext.combineLocalWithRemote
 
 class CompatibleAppDataSourceRepository(
@@ -15,12 +17,25 @@ class CompatibleAppDataSourceRepository(
     private val remote: CompatibleAppsDataSource,
 ) : CompatibleAppsDataSource{
 
-    override fun getApp(
+    override suspend fun getApp(
+        manifestUrl: Url,
+        loadParams: DataLoadParams
+    ): DataLoadState<RespectAppManifest> {
+        val localResult = local.getApp(manifestUrl, loadParams)
+        val remoteResult = remote.getApp(manifestUrl, loadParams)
+
+        return localResult.checkIsRemoteUpdated(remoteResult).updatedRemoteData?.also { updatedData ->
+            local.upsertCompatibleApps(listOf(updatedData))
+            remoteResult
+        } ?: localResult
+    }
+
+    override fun getAppAsFlow(
         manifestUrl: String,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
-        return local.getApp(manifestUrl, loadParams).combineLocalWithRemote(
-            remoteFlow = remote.getApp(manifestUrl, loadParams),
+        return local.getAppAsFlow(manifestUrl, loadParams).combineLocalWithRemote(
+            remoteFlow = remote.getAppAsFlow(manifestUrl, loadParams),
             onRemoteNewer = { newApp ->
                 local.upsertCompatibleApps(listOf(newApp))
             }

@@ -37,7 +37,7 @@ fun <T: Any> DataLoadState<T>.copyLoadState(
 /**
  * Given a local datasource flow and a remote datasource flow, combine the two to provide an
  * offline-first datasource for the UI.
- *spo
+ *
  * Any locally available data can therefor displayed immediately whilst the remote datasource checks
  * for updates if/as required or possible.
  *
@@ -53,13 +53,9 @@ fun <T: Any> Flow<DataLoadState<T>>.combineLocalWithRemote(
     val mutex = Mutex()
 
     return combine(remoteFlow) { local, remote ->
-        if(local is DataLoadResult && remote is DataLoadResult
-            && remote.data != null
-            && local.metaInfo.lastModified < remote.metaInfo.lastModified
-        ) {
+        local.checkIsRemoteUpdated(remote).updatedRemoteData?.also { updatedRemoteData ->
             mutex.withLock {
-                println("Updating local")
-                onRemoteNewer(remote)
+                onRemoteNewer(updatedRemoteData)
             }
         }
 
