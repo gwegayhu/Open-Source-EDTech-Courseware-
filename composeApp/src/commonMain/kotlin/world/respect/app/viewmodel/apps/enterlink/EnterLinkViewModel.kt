@@ -2,6 +2,7 @@ package world.respect.app.viewmodel.apps.enterlink
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -9,7 +10,11 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.enter_link
+import world.respect.app.app.AppsDetail
+import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
+import world.respect.datasource.DataLoadParams
+import world.respect.navigation.NavCommand
 
 data class EnterLinkUiState(
     val reportData: List<String> = emptyList(),
@@ -18,9 +23,13 @@ data class EnterLinkUiState(
 
 class EnterLinkViewModel(
     savedStateHandle: SavedStateHandle,
+    dataSourceProvider: RespectAppDataSourceProvider,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(EnterLinkUiState())
+
+    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
+
     val uiState = _uiState.asStateFlow()
 
 
@@ -34,17 +43,25 @@ class EnterLinkViewModel(
 
         }
     }
-    fun isValidUrl(link: String): Boolean {
-        return true
-    }
-    fun onButtonClick(link: String):Boolean{
-        val isValid = isValidUrl(link)
-        _uiState.update {
-            it.copy(
-                isError = !isValid,
-            )
+
+    fun onButtonClick(link: String)  {
+        try {
+            viewModelScope.launch {
+                dataSource.compatibleAppsDataSource.getApp(
+                    manifestUrl = Url((link)), loadParams = DataLoadParams()
+                )
+
+                _navCommandFlow.tryEmit(
+                    NavCommand.Navigate(AppsDetail(manifestUrl = link))
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update {
+                it.copy(
+                    isError = true,
+                )
+            }
         }
-        return isValid
     }
 
 }

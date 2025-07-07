@@ -51,7 +51,7 @@ class AppsDetailViewModel(
                 it.copy(title = getString(resource = Res.string.apps_detail))
             }
 
-            dataSource.compatibleAppsDataSource.getApp(
+            dataSource.compatibleAppsDataSource.getAppAsFlow(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
@@ -64,6 +64,8 @@ class AppsDetailViewModel(
                         )
                     }
                 }
+
+                /*
                 dataSource.opdsDataSource.loadOpdsFeed(
                     url = uiState.value.appDetail?.learningUnits.toString(),
                     params = DataLoadParams()
@@ -81,7 +83,7 @@ class AppsDetailViewModel(
                         else -> {}
                     }
                 }
-
+                */
 
             }
         }

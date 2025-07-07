@@ -15,7 +15,14 @@ import world.respect.datasource.LoadingStatus
 
 class FakeAppDataSource : CompatibleAppsDataSource {
 
-    override fun getApp(
+    override suspend fun getApp(
+        manifestUrl: Url,
+        loadParams: DataLoadParams
+    ): DataLoadState<RespectAppManifest> {
+        return DataLoadResult()
+    }
+
+    override fun getAppAsFlow(
         manifestUrl: String,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> = flow {
