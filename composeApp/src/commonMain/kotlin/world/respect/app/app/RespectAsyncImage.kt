@@ -15,7 +15,7 @@ fun RespectAsyncImage(
     modifier: Modifier
 ) {
     AsyncImage(
-        model = remember { Uri.parse(uri) },
+        model = remember(uri) { Uri.parse(uri) },
         contentDescription = contentDescription,
         contentScale = contentScale,
         modifier = modifier

@@ -30,6 +30,7 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
+import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
 
 @Composable
@@ -52,6 +53,8 @@ fun AppsDetailScreen(
     onClickLesson: (OpdsPublication) -> Unit
 ) {
 
+    val appDetail = (uiState.appDetail as? DataLoadResult)?.data
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -59,10 +62,11 @@ fun AppsDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
+
             ListItem(
                 leadingContent = {
                     RespectAsyncImage(
-                        uri = uiState.appDetail?.icon.toString(),
+                        uri = appDetail?.icon.toString(),
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -71,10 +75,10 @@ fun AppsDetailScreen(
                     )
                 },
                 headlineContent = {
-                    Text(text = uiState.appDetail?.name?.getTitle() ?: "")
+                    Text(text = appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(text = uiState.appDetail?.description?.getTitle() ?: "")
+                    Text(text = appDetail?.description?.getTitle() ?: "")
                 },
                 trailingContent = {
                     IconButton(onClick = { /* Options */ }) {
@@ -110,7 +114,7 @@ fun AppsDetailScreen(
         }
 
         item {
-            val screenshots = uiState.appDetail?.screenshots.orEmpty()
+            val screenshots = appDetail?.screenshots.orEmpty()
 
             if (screenshots.isNotEmpty()) {
                 LazyRow(

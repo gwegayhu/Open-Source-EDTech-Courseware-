@@ -83,4 +83,8 @@ class AppListViewModel(
             )
         )
     }
+    companion object{
+       val EMPTY_LIST = "empty_list"
+    }
 }
+
