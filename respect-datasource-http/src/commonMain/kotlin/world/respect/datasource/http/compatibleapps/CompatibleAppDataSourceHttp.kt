@@ -28,7 +28,7 @@ class CompatibleAppDataSourceHttp(
 
     override suspend fun getApp(
         manifestUrl: Url,
-        loadParams: DataLoadParams
+        loadParams: DataLoadParams,
     ): DataLoadState<RespectAppManifest> {
         return httpClient.getDataLoadResult(manifestUrl)
     }
@@ -50,7 +50,7 @@ class CompatibleAppDataSourceHttp(
             emit(DataLoadingState())
             val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrlObj)
                 .body()
-            val manifests: List<DataLoadResult<RespectAppManifest>> = respectAppUrls.mapNotNull { manifestHref ->
+            val manifests = respectAppUrls.mapNotNull { manifestHref ->
                 try {
                     httpClient.getDataLoadResult<RespectAppManifest>(
                         defaultCompatibleAppListUrlObj.resolve(manifestHref)
