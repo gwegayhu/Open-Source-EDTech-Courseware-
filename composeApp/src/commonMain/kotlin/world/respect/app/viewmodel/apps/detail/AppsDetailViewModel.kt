@@ -23,6 +23,7 @@ import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datasource.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 
@@ -45,8 +46,6 @@ class AppsDetailViewModel(
 
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
-    var learningUnits:String?=null
-
     init {
 
         viewModelScope.launch {
@@ -65,10 +64,6 @@ class AppsDetailViewModel(
                         )
                     }
                 }
-
-                var appManifest = (result as? DataLoadResult)?.data
-
-                learningUnits=appManifest?.learningUnits?.toString()
 
                 /*
                  * Temporarily commented out pending the implementation of this in the real
@@ -96,7 +91,7 @@ class AppsDetailViewModel(
     }
 
     fun onClickLessonList() {
-        val appManifest = (uiState.value.appDetail as? DataLoadResult)?.data
+        val appManifest = uiState.value.appDetail?.dataOrNull()
         appManifest?.learningUnits?.toString()?.also { url ->
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
@@ -108,7 +103,7 @@ class AppsDetailViewModel(
 
     fun onClickLesson(publication: OpdsPublication) {
         val publicationHref = publication.links.find { it.rel?.equals("self") == true }?.href
-        val refererUrl = (_uiState.value.appDetail as? DataLoadResult)?.data?.learningUnits?.toString()
+        val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits?.toString()
         if(refererUrl != null && publicationHref != null) {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
