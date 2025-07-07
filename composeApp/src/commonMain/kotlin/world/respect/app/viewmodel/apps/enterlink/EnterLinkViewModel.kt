@@ -1,9 +1,5 @@
 package world.respect.app.viewmodel.apps.enterlink
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import io.ktor.http.Url
@@ -17,13 +13,14 @@ import respect.composeapp.generated.resources.enter_link
 import world.respect.app.app.AppsDetail
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
+import world.respect.datasource.DataErrorResult
 import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
 import world.respect.navigation.NavCommand
 
 data class EnterLinkUiState(
-    val reportData: List<String> = emptyList(),
-    val isError: Boolean = false,
-    var linkUrl: String=""
+    val linkUrl: String = "",
+    val errorMessage: String? = null,
 )
 
 class EnterLinkViewModel(
@@ -50,25 +47,38 @@ class EnterLinkViewModel(
                     linkUrl = "",
                 )
             }
-
         }
     }
 
-    fun onButtonClick(link: String)  {
+    fun onLinkChanged(link: String) {
+        _uiState.update {
+            it.copy(
+                linkUrl = link,
+                errorMessage = null,
+            )
+        }
+    }
+
+    fun onClickNext()  {
+        val linkUrl = uiState.value.linkUrl
         try {
             viewModelScope.launch {
-                dataSource.compatibleAppsDataSource.getApp(
-                    manifestUrl = Url((link)), loadParams = DataLoadParams()
+                val appResult = dataSource.compatibleAppsDataSource.getApp(
+                    manifestUrl = Url((linkUrl)), loadParams = DataLoadParams()
                 )
 
-                _navCommandFlow.tryEmit(
-                    NavCommand.Navigate(AppsDetail(manifestUrl = link))
-                )
+                if(appResult is DataLoadResult) {
+                    _navCommandFlow.tryEmit(
+                        NavCommand.Navigate(AppsDetail(manifestUrl = linkUrl))
+                    )
+                }else {
+                    throw (appResult as? DataErrorResult)?.error ?: IllegalStateException()
+                }
             }
         } catch (e: Exception) {
             _uiState.update {
                 it.copy(
-                    isError = true,
+                    errorMessage = e.message ?: e.toString()
                 )
             }
         }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.*
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkUiState
@@ -16,18 +17,22 @@ import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 fun EnterLinkScreen(
     viewModel: EnterLinkViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState(
+        EnterLinkUiState(), Dispatchers.Main.immediate
+    )
 
     EnterLinkScreen(
         uiState = uiState,
-        onButtonClick = { viewModel.onButtonClick(it) },
+        onLinkChanged = viewModel::onLinkChanged,
+        onClickNext = viewModel::onClickNext,
     )
 }
 
 @Composable
 fun EnterLinkScreen(
     uiState: EnterLinkUiState,
-    onButtonClick: (String) -> Unit,
+    onLinkChanged: (String) -> Unit,
+    onClickNext: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -42,12 +47,7 @@ fun EnterLinkScreen(
 
         OutlinedTextField(
             value = uiState.linkUrl,
-            onValueChange = {
-                uiState.linkUrl = it
-                if (uiState.isError) {
-                    onButtonClick(it)
-                }
-            },
+            onValueChange = onLinkChanged,
             label = {
                 Text(text = stringResource(Res.string.link_label))
             },
@@ -59,15 +59,16 @@ fun EnterLinkScreen(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth(),
-            isError = uiState.isError
+            isError = uiState.errorMessage != null,
+            supportingText = uiState.errorMessage?.let {
+                { Text(it) }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
-                onButtonClick(uiState.linkUrl)
-            },
+            onClick = onClickNext,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
@@ -75,11 +76,6 @@ fun EnterLinkScreen(
             )
         }
 
-        if (uiState.isError) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(Res.string.error_link_message),
-            )
-        }
+
     }
 }
