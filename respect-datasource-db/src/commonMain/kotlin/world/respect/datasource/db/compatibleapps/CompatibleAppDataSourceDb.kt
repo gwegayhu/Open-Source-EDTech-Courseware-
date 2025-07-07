@@ -11,14 +11,14 @@ import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.db.RespectDatabase
-import world.respect.datasource.db.adapters.asCompatibleAppEntities
-import world.respect.datasource.db.adapters.asRespectManifestLoadResult
+import world.respect.datasource.db.compatibleapps.adapters.asCompatibleAppEntities
+import world.respect.datasource.db.compatibleapps.adapters.asRespectManifestLoadResult
 import world.respect.libxxhash.XXStringHasher
 import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.combine
-import world.respect.datasource.db.entities.CompatibleAppEntity
-import world.respect.datasource.db.entities.composites.CompatibleAppEntities
+import world.respect.datasource.db.compatibleapps.adapters.CompatibleAppEntities
+import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
 
 class CompatibleAppDataSourceDb(
     private val respectDb: RespectDatabase,
@@ -53,7 +53,23 @@ class CompatibleAppDataSourceDb(
         manifestUrl: String,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
-        return emptyFlow()
+        val caeUid = xxStringHasher.hash(manifestUrl)
+        return respectDb.getCompatibleAppEntityDao().selectByUidAsFlow(
+            xxStringHasher.hash(manifestUrl)
+        ).combine(
+            respectDb.getLangMapEntityDao().selectAllByTableAndEntityId(
+                lmeTableId = CompatibleAppEntity.TABLE_ID,
+                lmeEntityUid1 = caeUid,
+                lmeEntityUid2 = 0
+            )
+        ) { compatibleAppEntity, langMapEntities ->
+            compatibleAppEntity?.let { appEntity ->
+                CompatibleAppEntities(
+                    compatibleAppEntity = appEntity,
+                    langMapEntities = langMapEntities,
+                ).asRespectManifestLoadResult(json)
+            } ?: DataLoadResult()
+        }
     }
 
     override fun getAddableApps(

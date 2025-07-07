@@ -1,4 +1,4 @@
-package world.respect.datasource.db.entities
+package world.respect.datasource.db.compatibleapps.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -30,4 +30,3 @@ data class CompatibleAppEntity(
     }
 
 }
-

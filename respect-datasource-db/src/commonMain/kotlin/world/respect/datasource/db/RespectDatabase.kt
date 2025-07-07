@@ -4,16 +4,23 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import world.respect.datasource.db.daos.CompatibleAppEntityDao
-import world.respect.datasource.db.daos.LangMapEntityDao
-import world.respect.datasource.db.entities.CompatibleAppEntity
-import world.respect.datasource.db.entities.LangMapEntity
-
+import androidx.room.TypeConverters
+import world.respect.datasource.db.compatibleapps.daos.CompatibleAppEntityDao
+import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
+import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
+import world.respect.datasource.db.shared.SharedConverters
+import world.respect.datasource.db.shared.daos.LangMapEntityDao
+import world.respect.datasource.db.shared.entities.LangMapEntity
 
 @Database(
-    entities = [CompatibleAppEntity::class, LangMapEntity::class],
-    version = 1
+    entities = [
+        CompatibleAppEntity::class,
+        LangMapEntity::class,
+        ReadiumLinkEntity::class,
+    ],
+    version = 1,
 )
+@TypeConverters(SharedConverters::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class RespectDatabase: RoomDatabase() {
 

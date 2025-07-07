@@ -1,8 +1,8 @@
-package world.respect.datasource.db.adapters
+package world.respect.datasource.db.shared.adapters
 
-import world.respect.datasource.db.entities.LangMapEntity
-import world.respect.datasource.db.entities.LangMapEntity.Companion.LANG_NONE
-import world.respect.datasource.db.ext.langMapKey
+import world.respect.datasource.db.shared.entities.LangMapEntity
+import world.respect.datasource.db.shared.entities.LangMapEntity.Companion.LANG_NONE
+import world.respect.datasource.db.shared.ext.langMapKey
 import world.respect.datasource.opds.model.LangMap
 import world.respect.datasource.opds.model.LangMapObjectValue
 import world.respect.datasource.opds.model.LangMapStringValue
