@@ -21,3 +21,8 @@ fun <T: Any> DataLoadState<T>.checkIsRemoteUpdated(
         }
     )
 }
+
+fun <T: Any> DataLoadState<T>.dataOrNull(): T? {
+    return (this as? DataLoadResult)?.data
+}
+
