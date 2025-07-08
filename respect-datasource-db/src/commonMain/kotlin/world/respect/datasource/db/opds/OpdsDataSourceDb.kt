@@ -1,5 +1,6 @@
 package world.respect.datasource.db.opds
 
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.json.Json
@@ -16,16 +17,16 @@ class OpdsDataSourceDb(
 ): OpdsDataSource {
 
     override fun loadOpdsFeed(
-        url: String,
+        url: Url,
         params: DataLoadParams
     ): Flow<DataLoadState<OpdsFeed>> {
         return emptyFlow()
     }
 
     override fun loadOpdsPublication(
-        url: String,
+        url: Url,
         params: DataLoadParams,
-        referrerUrl: String?,
+        referrerUrl: Url?,
         expectedPublicationId: String?
     ): Flow<DataLoadState<OpdsPublication>> {
         return emptyFlow()
