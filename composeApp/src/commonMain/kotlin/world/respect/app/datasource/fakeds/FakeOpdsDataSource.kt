@@ -15,6 +15,7 @@ import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.datasource.opds.model.ReadiumMetadata
 import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 import com.eygraber.uri.Uri
+import io.ktor.http.Url
 import kotlinx.datetime.LocalDateTime
 import world.respect.datasource.DataLoadState
 
@@ -22,7 +23,7 @@ import world.respect.datasource.DataLoadState
 class FakeOpdsDataSource : OpdsDataSource {
 
     override fun loadOpdsFeed(
-        url: String,
+        url: Url,
         params: DataLoadParams
     ): Flow<DataLoadState<OpdsFeed>> = flow {
         emit(
