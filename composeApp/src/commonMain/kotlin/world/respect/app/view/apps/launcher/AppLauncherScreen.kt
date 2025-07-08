@@ -67,15 +67,15 @@ fun AppLauncherScreen(
     onSnackBarShown: () -> Unit
 
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     uiState.snackbarMessage?.let { message ->
         LaunchedEffect(message) {
-            snackbarHostState.showSnackbar(message)
-            onSnackBarShown() // tell ViewModel to clear message
+            snackBarHostState.showSnackbar(message)
+            onSnackBarShown()
         }
     }
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { padding ->
         Box(
             modifier = Modifier
