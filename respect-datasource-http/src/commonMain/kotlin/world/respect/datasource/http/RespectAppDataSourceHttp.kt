@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import world.respect.datasource.RespectAppDataSource
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.http.compatibleapps.CompatibleAppDataSourceHttp
+import world.respect.datasource.http.opds.OpdsDataSourceHttp
 import world.respect.datasource.opds.OpdsDataSource
 
 class RespectAppDataSourceHttp(
@@ -18,6 +19,10 @@ class RespectAppDataSourceHttp(
         )
     }
 
-    override val opdsDataSource: OpdsDataSource
-        get() = TODO("Not yet implemented")
+    override val opdsDataSource: OpdsDataSource by lazy {
+        OpdsDataSourceHttp(
+            httpClient = httpClient
+        )
+    }
+
 }

@@ -4,6 +4,7 @@ import kotlinx.serialization.json.Json
 import world.respect.datasource.RespectAppDataSourceLocal
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.db.compatibleapps.CompatibleAppDataSourceDb
+import world.respect.datasource.db.opds.OpdsDataSourceDb
 import world.respect.datasource.opds.OpdsDataSource
 import world.respect.libxxhash.XXStringHasher
 
@@ -17,6 +18,7 @@ class RespectAppDataSourceDb(
         CompatibleAppDataSourceDb(respectDatabase, json, xxStringHasher)
     }
 
-    override val opdsDataSource: OpdsDataSource
-        get() = TODO("Not yet implemented")
+    override val opdsDataSource: OpdsDataSource by lazy {
+        OpdsDataSourceDb(respectDatabase, json)
+    }
 }
