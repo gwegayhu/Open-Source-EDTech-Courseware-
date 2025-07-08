@@ -65,27 +65,27 @@ class AppsDetailViewModel(
                     }
                 }
 
-                /*
-                 * Temporarily commented out pending the implementation of this in the real
-                 * datasource
-                dataSource.opdsDataSource.loadOpdsFeed(
-                    url = learningUnits.toString(),
-                    params = DataLoadParams()
-                ).collect { result ->
-                    when (result) {
-                        is DataLoadResult -> {
-                            _uiState.update {
-                                it.copy(
-                                    publications = result.data?.publications ?: emptyList(),
-                                    link = result.data?.links ?: emptyList()
-                                )
+                result.dataOrNull()?.learningUnits?.also { learningUnitsUri ->
+                    dataSource.opdsDataSource.loadOpdsFeed(
+                        url = Url(route.manifestUrl).resolve(
+                            learningUnitsUri.toString()
+                        ).toString(),
+                        params = DataLoadParams()
+                    ).collect { result ->
+                        when (result) {
+                            is DataLoadResult -> {
+                                _uiState.update {
+                                    it.copy(
+                                        publications = result.data?.publications ?: emptyList(),
+                                        link = result.data?.links ?: emptyList()
+                                    )
+                                }
                             }
-                        }
 
-                        else -> {}
+                            else -> {}
+                        }
                     }
                 }
-                */
             }
         }
     }
