@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.add_from_link
-import respect.composeapp.generated.resources.add_link
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListUiState

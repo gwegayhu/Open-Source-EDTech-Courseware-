@@ -117,4 +117,9 @@ class AppsDetailViewModel(
             )
         }
     }
+    companion object{
+        val BUTTONS_ROW = "buttons_row"
+        val LESSON_HEADER = "lesson_header"
+
+    }
 }
