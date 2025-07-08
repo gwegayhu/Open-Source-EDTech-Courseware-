@@ -22,6 +22,7 @@ import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 
 data class LearningUnitListUiState(
@@ -85,14 +86,19 @@ class LearningUnitListViewModel(
     fun onClickLesson(publication: OpdsPublication) {
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
 
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                LearningUnitDetail(
-                    learningUnitManifestUrl = publicationSelfLink?:"",
-                    refererUrl = route.opdsFeedUrl,
-                    expectedIdentifier = publication.metadata.identifier.toString()
+        if(publicationSelfLink != null) {
+            val learningUnitUrl = Url(route.opdsFeedUrl).resolve(publicationSelfLink)
+
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    LearningUnitDetail(
+                        learningUnitManifestUrl = learningUnitUrl.toString(),
+                        refererUrl = route.opdsFeedUrl,
+                        expectedIdentifier = publication.metadata.identifier.toString()
+                    )
                 )
             )
-        )
+        }
+
     }
 }
