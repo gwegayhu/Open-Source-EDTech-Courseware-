@@ -19,12 +19,15 @@ import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsFacet
+import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.navigation.NavCommand
 
 data class LearningUnitListUiState(
     val publications: List<OpdsPublication> = emptyList(),
+    val navigation: List<ReadiumLink> = emptyList(),
+    val group: List<OpdsGroup> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null,
     val link: List<ReadiumLink> = emptyList(),

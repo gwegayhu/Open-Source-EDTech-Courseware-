@@ -123,7 +123,30 @@ fun LearningUnitListScreen(
             }
         }
 
+
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            /* TODO: Mandvi implement LearningUnitListScreen structure as follows
+            items(uiState.navigation) {
+                //NavigationLinkListItem(...)
+            }
+
+            items(uiState.publications) { //TODO: must have keys as per comment
+                //PublicationListItem(...)
+            }
+
+            uiState.group.forEach { group ->
+                //Add group header ListItem using group.title
+
+                items(group.navigation ?: emptyList()) {
+                    //NavigationLinkListItem(..)
+                }
+                items(group.publications ?: emptyList()) {
+                    //PublicationListItem(..)
+                }
+            }
+             */
+
+
             items(uiState.publications) { publication ->
                 ListItem(
                     modifier = Modifier
