@@ -19,7 +19,7 @@ interface CompatibleAppsDataSource {
      * Load a specific app manifest
      */
     fun getAppAsFlow(
-        manifestUrl: String,
+        manifestUrl: Url,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>>
 
@@ -43,11 +43,11 @@ interface CompatibleAppsDataSource {
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>>
 
     suspend fun addAppToLaunchpad(
-        manifestUrl: String,
+        manifestUrl: Url,
     )
 
     suspend fun removeAppFromLaunchpad(
-        manifestUrl: String
+        manifestUrl: Url
     )
 
 }

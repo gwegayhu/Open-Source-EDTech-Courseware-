@@ -66,12 +66,12 @@ class CompatibleAppDataSourceDb(
     }
 
     override fun getAppAsFlow(
-        manifestUrl: String,
+        manifestUrl: Url,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
-        val caeUid = xxStringHasher.hash(manifestUrl)
+        val caeUid = xxStringHasher.hash(manifestUrl.toString())
         return respectDb.getCompatibleAppEntityDao().selectByUidAsFlow(
-            xxStringHasher.hash(manifestUrl)
+            caeUid
         ).combine(
             respectDb.getLangMapEntityDao().selectAllByTableAndEntityIdAsFlow(
                 lmeTableId = CompatibleAppEntity.TABLE_ID,
@@ -117,11 +117,11 @@ class CompatibleAppDataSourceDb(
         return emptyFlow()
     }
 
-    override suspend fun addAppToLaunchpad(manifestUrl: String) {
+    override suspend fun addAppToLaunchpad(manifestUrl: Url) {
         //Do nothing yet
     }
 
-    override suspend fun removeAppFromLaunchpad(manifestUrl: String) {
+    override suspend fun removeAppFromLaunchpad(manifestUrl: Url) {
         //Do nothing yet
     }
 }

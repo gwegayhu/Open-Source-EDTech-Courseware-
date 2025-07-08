@@ -35,7 +35,7 @@ class CompatibleAppDataSourceRepository(
     }
 
     override fun getAppAsFlow(
-        manifestUrl: String,
+        manifestUrl: Url,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
         return local.getAppAsFlow(manifestUrl, loadParams).combineLocalWithRemote(
@@ -65,11 +65,11 @@ class CompatibleAppDataSourceRepository(
         return emptyFlow()
     }
 
-    override suspend fun addAppToLaunchpad(manifestUrl: String) {
+    override suspend fun addAppToLaunchpad(manifestUrl: Url) {
 
     }
 
-    override suspend fun removeAppFromLaunchpad(manifestUrl: String) {
+    override suspend fun removeAppFromLaunchpad(manifestUrl: Url) {
 
     }
 }

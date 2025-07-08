@@ -1,5 +1,6 @@
 package world.respect.datasource.opds
 
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadState
@@ -12,7 +13,7 @@ interface OpdsDataSource {
      * Load an OPDS Feed from a given URL
      */
     fun loadOpdsFeed(
-        url: String,
+        url: Url,
         params: DataLoadParams
     ):  Flow<DataLoadState<OpdsFeed>>
 
@@ -28,9 +29,9 @@ interface OpdsDataSource {
      *        version from the cache
      */
     fun loadOpdsPublication(
-        url: String,
+        url: Url,
         params: DataLoadParams,
-        referrerUrl: String?,
+        referrerUrl: Url?,
         expectedPublicationId: String?,
     ): Flow<DataLoadState<OpdsPublication>>
 

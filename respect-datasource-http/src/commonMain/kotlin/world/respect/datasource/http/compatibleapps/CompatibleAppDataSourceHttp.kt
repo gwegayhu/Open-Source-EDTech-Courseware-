@@ -16,6 +16,7 @@ import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.ext.getDataLoadResult
+import world.respect.datasource.ext.getDataLoadResultAsFlow
 import world.respect.libutil.ext.resolve
 
 
@@ -34,13 +35,12 @@ class CompatibleAppDataSourceHttp(
     }
 
     override fun getAppAsFlow(
-        manifestUrl: String,
+        manifestUrl: Url,
         loadParams: DataLoadParams,
     ): Flow<DataLoadState<RespectAppManifest>> {
-        return flow {
-            emit(DataLoadingState())
-            emit(httpClient.getDataLoadResult(Url(manifestUrl)))
-        }
+        return httpClient.getDataLoadResultAsFlow(
+            manifestUrl, loadParams
+        )
     }
 
     override fun getAddableApps(
@@ -79,11 +79,11 @@ class CompatibleAppDataSourceHttp(
         return emptyFlow()
     }
 
-    override suspend fun addAppToLaunchpad(manifestUrl: String) {
+    override suspend fun addAppToLaunchpad(manifestUrl: Url) {
         //do nothing - does not run remotely
     }
 
-    override suspend fun removeAppFromLaunchpad(manifestUrl: String) {
+    override suspend fun removeAppFromLaunchpad(manifestUrl: Url) {
         //do nothing - does not run remotely
     }
 

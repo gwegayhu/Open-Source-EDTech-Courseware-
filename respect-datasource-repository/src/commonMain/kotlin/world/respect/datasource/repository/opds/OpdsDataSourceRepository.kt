@@ -1,7 +1,7 @@
 package world.respect.datasource.repository.opds
 
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.opds.OpdsDataSource
@@ -14,18 +14,18 @@ class OpdsDataSourceRepository(
 ): OpdsDataSource {
 
     override fun loadOpdsFeed(
-        url: String,
+        url: Url,
         params: DataLoadParams
     ): Flow<DataLoadState<OpdsFeed>> {
-        return emptyFlow()
+        return remote.loadOpdsFeed(url, params)
     }
 
     override fun loadOpdsPublication(
-        url: String,
+        url: Url,
         params: DataLoadParams,
-        referrerUrl: String?,
+        referrerUrl: Url?,
         expectedPublicationId: String?
     ): Flow<DataLoadState<OpdsPublication>> {
-        return emptyFlow()
+        return remote.loadOpdsPublication(url, params, referrerUrl, expectedPublicationId)
     }
 }
