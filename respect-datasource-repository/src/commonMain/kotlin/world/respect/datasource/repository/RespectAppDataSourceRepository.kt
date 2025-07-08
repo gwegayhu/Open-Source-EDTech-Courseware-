@@ -5,6 +5,7 @@ import world.respect.datasource.RespectAppDataSourceLocal
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.opds.OpdsDataSource
 import world.respect.datasource.repository.compatibleapps.CompatibleAppDataSourceRepository
+import world.respect.datasource.repository.opds.OpdsDataSourceRepository
 
 class RespectAppDataSourceRepository(
     private val local: RespectAppDataSourceLocal,
@@ -16,6 +17,7 @@ class RespectAppDataSourceRepository(
             local.compatibleAppsDataSource, remote.compatibleAppsDataSource
         )
     }
-    override val opdsDataSource: OpdsDataSource
-        get() = TODO("Not yet implemented")
+    override val opdsDataSource: OpdsDataSource by lazy {
+        OpdsDataSourceRepository(local.opdsDataSource, remote.opdsDataSource)
+    }
 }
