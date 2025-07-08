@@ -3,6 +3,7 @@ package world.respect.app.viewmodel.learningunit.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -53,7 +54,7 @@ class LearningUnitListViewModel(
                 )
             }
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = route.opdsFeedUrl,
+                url = Url(route.opdsFeedUrl),
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {

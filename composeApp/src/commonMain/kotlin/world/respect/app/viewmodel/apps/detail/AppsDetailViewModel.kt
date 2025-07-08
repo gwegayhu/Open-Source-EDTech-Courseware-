@@ -69,7 +69,7 @@ class AppsDetailViewModel(
                     dataSource.opdsDataSource.loadOpdsFeed(
                         url = Url(route.manifestUrl).resolve(
                             learningUnitsUri.toString()
-                        ).toString(),
+                        ),
                         params = DataLoadParams()
                     ).collect { result ->
                         when (result) {
