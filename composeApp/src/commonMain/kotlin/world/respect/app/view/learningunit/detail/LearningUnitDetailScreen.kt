@@ -117,19 +117,16 @@ fun LearningUnitDetailScreen(
 
                             Text(
                                 text = stringResource(Res.string.app_name),
-                                style = MaterialTheme.typography.bodySmall
                             )
                         }
 
                         Text(
                             text = uiState.lessonDetail?.metadata?.subtitle?.getTitle()
                                 .orEmpty(),
-                            style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             text = stringResource(Res.string.score_or_progress),
-                            style = MaterialTheme.typography.bodySmall
                         )
 
                         LinearProgressIndicator(

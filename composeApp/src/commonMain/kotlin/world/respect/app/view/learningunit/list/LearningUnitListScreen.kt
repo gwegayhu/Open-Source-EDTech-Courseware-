@@ -162,14 +162,12 @@ fun LearningUnitListScreen(
                                 .size(36.dp)
                                 .clip(CircleShape)
                                 .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
-                                .background(MaterialTheme.colorScheme.background)
                         )
                     },
 
                     headlineContent = {
                         Text(
                             text = publication.metadata.title.getTitle(),
-                            style = MaterialTheme.typography.titleSmall
                         )
                     },
 
@@ -177,18 +175,15 @@ fun LearningUnitListScreen(
                         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(
                                 text = stringResource(Res.string.clazz),
-                                style = MaterialTheme.typography.bodySmall
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text(
                                     text = publication.metadata.subject
                                         ?.joinToString(", ") { it.toDisplayString() }
                                         ?: " ",
-                                    style = MaterialTheme.typography.bodySmall,
                                 )
                                 Text(
                                     text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
-                                    style = MaterialTheme.typography.bodySmall,
                                 )
                             }
                         }
