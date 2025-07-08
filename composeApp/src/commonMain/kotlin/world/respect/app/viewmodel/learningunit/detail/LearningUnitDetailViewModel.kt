@@ -18,7 +18,6 @@ import world.respect.navigation.NavCommand
 
 data class LearningUnitDetailUiState(
     val lessonDetail: OpdsPublication? = null,
-    val publications: List<OpdsPublication> = emptyList()
 )
 
 class LearningUnitDetailViewModel(
@@ -54,26 +53,10 @@ class LearningUnitDetailViewModel(
                             )
                         }
                     }
-
                     else -> {
                     }
                 }
             }
         }
     }
-
-    fun onClickLesson(publication: OpdsPublication) {
-        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
-
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                LearningUnitDetail(
-                    learningUnitManifestUrl = publicationSelfLink?:"",
-                    refererUrl = route.refererUrl,
-                    expectedIdentifier = publication.metadata.identifier.toString()
-                )
-            )
-        )
-    }
-
 }
