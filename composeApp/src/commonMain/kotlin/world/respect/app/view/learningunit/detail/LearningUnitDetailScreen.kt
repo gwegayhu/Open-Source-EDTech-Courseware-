@@ -68,15 +68,13 @@ fun LearningUnitDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LearningUnitDetailScreen(
-        uiState = uiState,
-        onClickLesson = { viewModel.onClickLesson(it) },
-        )
+        uiState = uiState
+    )
 }
 
 @Composable
 fun LearningUnitDetailScreen(
     uiState: LearningUnitDetailUiState,
-    onClickLesson: (OpdsPublication) -> Unit,
 ) {
 
     LazyColumn(
@@ -184,55 +182,6 @@ fun LearningUnitDetailScreen(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(8.dp))
-        }
-
-        items(uiState.publications) { publication ->
-            ListItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onClickLesson(publication) },
-                leadingContent = {
-                    RespectAsyncImage(
-                        uri = "",
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
-                            .background(MaterialTheme.colorScheme.background)
-                    )
-                },
-
-                headlineContent = {
-                    Text(
-                        text = publication.metadata.title.getTitle(),
-                    )
-                },
-
-                supportingContent = {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(
-                            text = stringResource(Res.string.clazz),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                text = publication.metadata.subject
-                                    ?.joinToString(", ") { it.toDisplayString() }
-                                    ?: " ",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            )
         }
     }
 }
