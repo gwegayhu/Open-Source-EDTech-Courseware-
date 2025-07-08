@@ -138,9 +138,9 @@ class FakeOpdsDataSource : OpdsDataSource {
     }
 
     override fun loadOpdsPublication(
-        url: String,
+        url: Url,
         params: DataLoadParams,
-        referrerUrl: String?,
+        referrerUrl: Url?,
         expectedPublicationId: String?
     ): Flow<DataLoadState<OpdsPublication>> = flow {
 

@@ -23,7 +23,7 @@ class FakeAppDataSource : CompatibleAppsDataSource {
     }
 
     override fun getAppAsFlow(
-        manifestUrl: String,
+        manifestUrl: Url,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> = flow {
 
@@ -82,11 +82,11 @@ class FakeAppDataSource : CompatibleAppsDataSource {
         )
     }
 
-    override suspend fun addAppToLaunchpad(manifestUrl: String) {
+    override suspend fun addAppToLaunchpad(manifestUrl: Url) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeAppFromLaunchpad(manifestUrl: String) {
+    override suspend fun removeAppFromLaunchpad(manifestUrl: Url) {
         TODO("Not yet implemented")
     }
 

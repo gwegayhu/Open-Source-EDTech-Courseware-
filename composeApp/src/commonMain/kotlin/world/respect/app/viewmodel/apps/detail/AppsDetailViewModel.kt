@@ -54,7 +54,7 @@ class AppsDetailViewModel(
             }
 
             dataSource.compatibleAppsDataSource.getAppAsFlow(
-                manifestUrl = route.manifestUrl,
+                manifestUrl = Url(route.manifestUrl),
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
                 if (result is DataLoadResult) {
