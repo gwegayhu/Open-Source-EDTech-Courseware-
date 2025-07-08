@@ -54,7 +54,7 @@ class AppsDetailViewModel(
             }
 
             dataSource.compatibleAppsDataSource.getAppAsFlow(
-                manifestUrl = Url(route.manifestUrl),
+                manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
                 if (result is DataLoadResult) {
@@ -67,7 +67,7 @@ class AppsDetailViewModel(
 
                 result.dataOrNull()?.learningUnits?.also { learningUnitsUri ->
                     dataSource.opdsDataSource.loadOpdsFeed(
-                        url = Url(route.manifestUrl).resolve(
+                        url = route.manifestUrl.resolve(
                             learningUnitsUri.toString()
                         ),
                         params = DataLoadParams()
@@ -92,10 +92,11 @@ class AppsDetailViewModel(
 
     fun onClickLessonList() {
         val appManifest = uiState.value.appDetail?.dataOrNull()
-        appManifest?.learningUnits?.toString()?.also { url ->
+        appManifest?.learningUnits?.toString()?.also { uri ->
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    LearningUnitList(opdsFeedUrl = url)
+                    LearningUnitList.create(
+                        opdsFeedUrl = route.manifestUrl.resolve(uri))
                 )
             )
         }
@@ -107,9 +108,9 @@ class AppsDetailViewModel(
         if(refererUrl != null && publicationHref != null) {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    LearningUnitDetail(
-                        learningUnitManifestUrl = Url(refererUrl).resolve(publicationHref).toString(),
-                        refererUrl = refererUrl,
+                    LearningUnitDetail.create(
+                        learningUnitManifestUrl = Url(refererUrl).resolve(publicationHref),
+                        refererUrl = Url(refererUrl),
                         expectedIdentifier = publication.metadata.identifier?.toString()
                     )
                 )

@@ -85,9 +85,7 @@ class AppLauncherViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
-                AppsDetail(
-                    manifestUrl = url.toString()
-                )
+                AppsDetail.create(url)
             )
         )
     }

@@ -77,12 +77,11 @@ class AppListViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
-                AppsDetail(
-                    manifestUrl = url.toString()
-                )
+                AppsDetail.create(manifestUrl = url)
             )
         )
     }
+
     companion object{
        val EMPTY_LIST = "empty_list"
     }

@@ -3,7 +3,6 @@ package world.respect.app.viewmodel.learningunit.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -57,8 +56,9 @@ class LearningUnitListViewModel(
                     )
                 )
             }
+
             dataSource.opdsDataSource.loadOpdsFeed(
-                url = Url(route.opdsFeedUrl),
+                url = route.opdsFeedUrl,
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -68,7 +68,6 @@ class LearningUnitListViewModel(
                                 publications = result.data?.publications ?: emptyList(),
                                 lessonFilter = result.data?.facets ?: emptyList(),
                                 link = result.data?.links ?: emptyList()
-
                             )
                         }
                     }
@@ -87,12 +86,12 @@ class LearningUnitListViewModel(
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
 
         if(publicationSelfLink != null) {
-            val learningUnitUrl = Url(route.opdsFeedUrl).resolve(publicationSelfLink)
+            val learningUnitUrl = route.opdsFeedUrl.resolve(publicationSelfLink)
 
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    LearningUnitDetail(
-                        learningUnitManifestUrl = learningUnitUrl.toString(),
+                    LearningUnitDetail.create(
+                        learningUnitManifestUrl = learningUnitUrl,
                         refererUrl = route.opdsFeedUrl,
                         expectedIdentifier = publication.metadata.identifier.toString()
                     )

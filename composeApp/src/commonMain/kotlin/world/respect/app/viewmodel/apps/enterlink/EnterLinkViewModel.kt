@@ -57,16 +57,16 @@ class EnterLinkViewModel(
     }
 
     fun onClickNext()  {
-        val linkUrl = uiState.value.linkUrl
         viewModelScope.launch {
             try {
+                val linkUrl = Url(uiState.value.linkUrl)
                 val appResult = dataSource.compatibleAppsDataSource.getApp(
-                    manifestUrl = Url((linkUrl)), loadParams = DataLoadParams()
+                    manifestUrl = linkUrl, loadParams = DataLoadParams()
                 )
 
                 if(appResult is DataLoadResult && appResult.data != null) {
                     _navCommandFlow.tryEmit(
-                        NavCommand.Navigate(AppsDetail(manifestUrl = linkUrl))
+                        NavCommand.Navigate(AppsDetail.create(linkUrl))
                     )
                 }else {
                     throw (appResult as? DataErrorResult)?.error ?: IllegalStateException()

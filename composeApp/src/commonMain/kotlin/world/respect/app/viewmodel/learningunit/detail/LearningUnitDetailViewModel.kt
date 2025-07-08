@@ -3,7 +3,6 @@ package world.respect.app.viewmodel.learningunit.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,7 +13,6 @@ import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.navigation.NavCommand
 
 data class LearningUnitDetailUiState(
     val lessonDetail: OpdsPublication? = null,
@@ -39,10 +37,11 @@ class LearningUnitDetailViewModel(
             _appUiState.update {
                 it.copy(title = "")
             }
+
             dataSource.opdsDataSource.loadOpdsPublication(
-                url = Url(route.learningUnitManifestUrl),
+                url = route.learningUnitManifestUrl,
                 params = DataLoadParams(),
-                referrerUrl = Url(route.learningUnitManifestUrl),
+                referrerUrl = route.learningUnitManifestUrl,
                 expectedPublicationId = route.expectedIdentifier
             ).collect { result ->
                 when (result) {

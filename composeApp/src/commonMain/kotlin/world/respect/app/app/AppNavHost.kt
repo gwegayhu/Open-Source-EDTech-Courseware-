@@ -42,7 +42,7 @@ fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = AppLauncher,
-        modifier = modifier
+        modifier = modifier,
     ) {
 
         composable<AppLauncher> {
