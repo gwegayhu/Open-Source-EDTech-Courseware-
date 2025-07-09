@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import world.respect.datasource.db.compatibleapps.daos.CompatibleAppEntityDao
 import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
 import world.respect.datasource.db.opds.OpdsTypeConverters
+import world.respect.datasource.db.opds.entities.OpdsPublicationEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
 import world.respect.datasource.db.shared.SharedConverters
 import world.respect.datasource.db.shared.daos.LangMapEntityDao
@@ -29,6 +30,14 @@ abstract class RespectDatabase: RoomDatabase() {
 
     abstract fun getLangMapEntityDao(): LangMapEntityDao
 
+    companion object {
+
+        val TABLE_IDS = listOf(
+            ReadiumLinkEntity.TABLE_ID,
+            OpdsPublicationEntity.TABLE_ID,
+        )
+
+    }
 }
 
 // The Room compiler generates the `actual` implementations.

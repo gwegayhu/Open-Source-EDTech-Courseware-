@@ -4,6 +4,7 @@ import kotlinx.serialization.json.Json
 import world.respect.datasource.db.opds.OpdsTopParentType
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity.LinkEntityJoinType
+import world.respect.datasource.db.shared.ext.takeIfNotEmpty
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 
@@ -97,17 +98,17 @@ fun List<ReadiumLinkEntity>.asModels(
                 json = json,
                 rleJoinToLinkId = thisLink.rleId,
                 rleJoinToLinkType = LinkEntityJoinType.CHILDREN_OF,
-            ),
+            ).takeIfNotEmpty(),
             alternate = asModels(
                 json = json,
                 rleJoinToLinkId = thisLink.rleId,
                 rleJoinToLinkType = LinkEntityJoinType.ALTERNATE_OF,
-            ),
+            ).takeIfNotEmpty(),
             subcollections = asModels(
                 json = json,
                 rleJoinToLinkId = thisLink.rleId,
                 rleJoinToLinkType = LinkEntityJoinType.SUB_COLLECTION_OF,
-            ),
+            ).takeIfNotEmpty(),
         )
     }
 }

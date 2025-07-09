@@ -40,7 +40,9 @@ data class LangMapEntity(
     enum class PropType(val id: Int) {
         RESPECT_MANIFEST_NAME(1), RESPECT_MANIFEST_DESCRIPTION(2),
 
-        READIUM_SUBJECT_NAME(3)
+        READIUM_SUBJECT_NAME(3),
+
+        OPDS_PUB_TITLE(4), OPDS_PUB_SORT_AS(5), OPDS_PUB_SUBTITLE(6),
     }
 
 

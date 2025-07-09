@@ -21,12 +21,13 @@ class OpdsPublicationEntity(
     val opeOfeIndex: Int,
     val opeUrl: Url?,
     val opeUrlHash: Long,
-    val opeIdentifier: Uri?,
-    val opeLanguage: List<String>?,
-    val opeSubjectSortAs: String?,
-    val opeSubjectCode: String?,
-    val opeSubjectScheme: Uri?,
+    val opeLastModified: Long,
+    val opeMdIdentifier: Uri?,
+    val opeMdLanguage: List<String>?,
     val opeMdType: Uri? = null,
+    val opeMdDescription: String?,
+    val opeMdNumberOfPages: Int?,
+    val opeMdDuration: Double?,
 ) {
 
 
@@ -34,15 +35,7 @@ class OpdsPublicationEntity(
 
         const val TABLE_ID = 12
 
-        /**
-         * Langmap constants are used for LangMapEntity.lmePropId when joining to
-         * LangMapEntity
-         */
-        const val LANGMAP_PROP_TITLE = 1
 
-        const val LANGMAP_PROP_SORTAS = 2
-
-        const val LANGMAP_PROP_SUBJECT_NAME = 3
 
 
     }
