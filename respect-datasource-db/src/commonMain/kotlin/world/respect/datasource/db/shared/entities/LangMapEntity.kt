@@ -33,12 +33,12 @@ data class LangMapEntity(
     val lmeValue: String,
 ) {
 
-    enum class TopParentType {
-        RESPECT_MANIFEST, OPDS_FEED, OPDS_PUBLICATION
+    enum class TopParentType(val id: Int) {
+        RESPECT_MANIFEST(1), OPDS_FEED(2), OPDS_PUBLICATION(3)
     }
 
-    enum class PropType {
-        RESPECT_MANIFEST_NAME, RESPECT_MANIFEST_DESCRIPTION,
+    enum class PropType(val id: Int) {
+        RESPECT_MANIFEST_NAME(1), RESPECT_MANIFEST_DESCRIPTION(2),
     }
 
 

@@ -13,8 +13,8 @@ package world.respect.datasource.db.opds
  * b) Upsert queries (used when data is updated from the network) can easily delete entities related
  *    to old versions of an OpdsFeed or OpdsPublication
  */
-enum class OpdsTopParentType {
+enum class OpdsTopParentType(val id: Int) {
 
-    OPDS_FEED, OPDS_PUBLICATION
+    OPDS_FEED(1), OPDS_PUBLICATION(2)
 
 }
