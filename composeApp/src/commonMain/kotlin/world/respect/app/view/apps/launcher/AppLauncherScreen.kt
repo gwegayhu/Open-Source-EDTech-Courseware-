@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CrueltyFree
 import androidx.compose.material.icons.filled.MoreVert
@@ -54,7 +54,7 @@ fun AppLauncherScreen(
         uiState = uiState,
         onClickApp = { viewModel.onClickApp(it) },
         onClickRemove = { viewModel.onClickRemove(it) },
-        onSnackBarShown = {viewModel.clearSnackBar()}
+        onSnackBarShown = { viewModel.clearSnackBar() }
     )
 }
 
@@ -67,19 +67,21 @@ fun AppLauncherScreen(
     onSnackBarShown: () -> Unit
 
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     uiState.snackbarMessage?.let { message ->
         LaunchedEffect(message) {
-            snackbarHostState.showSnackbar(message)
-            onSnackBarShown() // tell ViewModel to clear message
+            snackBarHostState.showSnackbar(message)
+            onSnackBarShown()
         }
     }
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { padding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
             if (uiState.appList.isEmpty()) {
                 Column(
                     modifier = Modifier
@@ -103,8 +105,7 @@ fun AppLauncherScreen(
                         textAlign = TextAlign.Center
                     )
                 }
-            }
-            else {
+            } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     modifier = Modifier
@@ -113,7 +114,12 @@ fun AppLauncherScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(uiState.appList) { app ->
+                    itemsIndexed(
+                        items = uiState.appList,
+                        key = { index, app ->
+                            app.metaInfo.url?.toString() ?: index
+                        }
+                    ) { index, app ->
                         AppGridItem(
                             app = app,
                             onClickApp = {
@@ -180,8 +186,8 @@ fun AppGridItem(
                 ) {
                     DropdownMenuItem(
                         text = {
-                            Text( stringResource(resource = Res.string.more_info))
-                               },
+                            Text(stringResource(resource = Res.string.more_info))
+                        },
                         onClick = {
                             menuExpanded = false
                             onClickApp()
@@ -189,8 +195,8 @@ fun AppGridItem(
                     )
                     DropdownMenuItem(
                         text = {
-                            Text( stringResource(resource = Res.string.remove))
-                               },
+                            Text(stringResource(resource = Res.string.remove))
+                        },
                         onClick = {
                             menuExpanded = false
                             onClickRemove()
@@ -204,7 +210,6 @@ fun AppGridItem(
 
         Text(
             text = appData?.name?.getTitle() ?: "",
-            style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.align(Alignment.Start)
         )
 
@@ -212,8 +217,8 @@ fun AppGridItem(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "-", style = MaterialTheme.typography.bodySmall)
-            Text(text = "-", style = MaterialTheme.typography.bodySmall)
+            Text(text = "-")
+            Text(text = "-")
         }
     }
 }

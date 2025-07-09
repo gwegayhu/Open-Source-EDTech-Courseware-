@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
@@ -30,6 +30,8 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
+import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.BUTTONS_ROW
+import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
 
@@ -92,8 +94,7 @@ fun AppsDetailScreen(
             )
         }
 
-        item {
-            // Buttons Row
+        item(key = BUTTONS_ROW) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
                     onClick = { /* Try it */ },
@@ -121,7 +122,10 @@ fun AppsDetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    items(screenshots.size) { index ->
+                    items(
+                        count = screenshots.size,
+                        key = { index -> screenshots[index].url.toString() }
+                    ) { index ->
                         val screenshot = screenshots[index]
                         RespectAsyncImage(
                             uri = screenshot.url.toString(),
@@ -131,7 +135,6 @@ fun AppsDetailScreen(
                                 .width(200.dp)
                                 .aspectRatio(16f / 9f)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
                         )
                     }
                 }
@@ -139,7 +142,7 @@ fun AppsDetailScreen(
         }
 
         // Lessons header
-        item {
+        item(key = LESSON_HEADER) {
             ListItem(
                 headlineContent = {
                     Text(
@@ -166,7 +169,12 @@ fun AppsDetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    items(publications) { publication ->
+                    itemsIndexed(
+                        items = publications,
+                        key = { index, publications ->
+                            publications.metadata.identifier.toString() ?: index
+                        })
+                    { index, publication ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(100.dp)
@@ -175,19 +183,17 @@ fun AppsDetailScreen(
                                 }
                         ) {
                             RespectAsyncImage(
-                                uri = "",
+                                uri = publication.images?.firstOrNull()?.href.toString(),
                                 contentDescription = "",
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .size(90.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
                             )
 
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = publication.metadata.title.getTitle(),
-                                style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1
                             )
                         }
