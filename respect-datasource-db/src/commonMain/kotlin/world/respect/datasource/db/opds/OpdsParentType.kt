@@ -8,14 +8,17 @@ import world.respect.datasource.db.shared.entities.LangMapEntity
  * relationships e.g. A ReadiumLinkEntity may represent a ReadiumLink which is a child of
  * another ReadiumLink (via the children, subcollection, or alternate properties).
  *
- * All OPDS entities have a top level parent that is an OpdsFeed or OpdsPublication. All entities
+ * All OPDS entities have a parent that is an OpdsFeed or OpdsPublication. All entities
  * keep a direct reference to the top level parent so that:
  * a) Select queries can easily select all entities related to a given OpdsFeed or OpdsPublication
  *    which the adapter can then reassemble into the network model
  * b) Upsert queries (used when data is updated from the network) can easily delete entities related
  *    to old versions of an OpdsFeed or OpdsPublication
+ *
+ * When an entity is within a publication that is also part of an OPDS Feed, then the publication's
+ * uid is considered the top level parent uid
  */
-enum class OpdsTopParentType(
+enum class OpdsParentType(
     val id: Int,
     val langMapTopParentType: LangMapEntity.TopParentType,
 ) {

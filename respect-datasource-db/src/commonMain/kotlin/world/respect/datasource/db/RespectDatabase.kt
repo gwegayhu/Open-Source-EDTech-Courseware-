@@ -8,8 +8,12 @@ import androidx.room.TypeConverters
 import world.respect.datasource.db.compatibleapps.daos.CompatibleAppEntityDao
 import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
 import world.respect.datasource.db.opds.OpdsTypeConverters
+import world.respect.datasource.db.opds.entities.OpdsFacetEntity
+import world.respect.datasource.db.opds.entities.OpdsFeedEntity
+import world.respect.datasource.db.opds.entities.OpdsGroupEntity
 import world.respect.datasource.db.opds.entities.OpdsPublicationEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
+import world.respect.datasource.db.opds.entities.ReadiumSubjectEntity
 import world.respect.datasource.db.shared.SharedConverters
 import world.respect.datasource.db.shared.daos.LangMapEntityDao
 import world.respect.datasource.db.shared.entities.LangMapEntity
@@ -19,6 +23,11 @@ import world.respect.datasource.db.shared.entities.LangMapEntity
         CompatibleAppEntity::class,
         LangMapEntity::class,
         ReadiumLinkEntity::class,
+        OpdsPublicationEntity::class,
+        ReadiumSubjectEntity::class,
+        OpdsFacetEntity::class,
+        OpdsGroupEntity::class,
+        OpdsFeedEntity::class,
     ],
     version = 1,
 )
@@ -35,6 +44,9 @@ abstract class RespectDatabase: RoomDatabase() {
         val TABLE_IDS = listOf(
             ReadiumLinkEntity.TABLE_ID,
             OpdsPublicationEntity.TABLE_ID,
+            OpdsFacetEntity.TABLE_ID,
+            OpdsGroupEntity.TABLE_ID,
+            OpdsFeedEntity.TABLE_ID,
         )
 
     }

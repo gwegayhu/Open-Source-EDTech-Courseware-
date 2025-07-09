@@ -3,7 +3,7 @@ package world.respect.datasource.db.opds.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.eygraber.uri.Uri
-import world.respect.datasource.db.opds.OpdsTopParentType
+import world.respect.datasource.db.opds.OpdsParentType
 
 /**
  * @property rseStringValue a ReadiumSubject can be a simple string value type or an object type.
@@ -15,7 +15,7 @@ data class ReadiumSubjectEntity(
     @PrimaryKey(autoGenerate = true)
     val rseUid: Long,
     val rseStringValue: String?,
-    val rseTopParentType: OpdsTopParentType,
+    val rseTopParentType: OpdsParentType,
     val rseTopParentUid: Long,
     val rseSubjectSortAs: String?,
     val rseSubjectCode: String?,

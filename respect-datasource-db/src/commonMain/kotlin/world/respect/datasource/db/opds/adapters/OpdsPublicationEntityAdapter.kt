@@ -4,7 +4,7 @@ import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.LoadingStatus
-import world.respect.datasource.db.opds.OpdsTopParentType
+import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.entities.OpdsPublicationEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
 import world.respect.datasource.db.shared.adapters.asEntities
@@ -41,10 +41,11 @@ fun OpdsPublication.asEntities(
             link.asEntities(
                 pkGenerator = primaryKeyGenerator,
                 json = json,
-                rleTopTableType = OpdsTopParentType.OPDS_PUBLICATION,
-                rleTopParentUid = opeUid,
+                opdsParentType = OpdsParentType.OPDS_PUBLICATION,
+                opdsParentUid = opeUid,
                 rlePropType = propType,
-                rleIndex = linkIndex
+                rlePropFk = opeUid,
+                rleIndex = linkIndex,
             )
         }?.flatten() ?: emptyList()
     }
@@ -113,10 +114,10 @@ fun OpdsPublicationEntities.asModel(
     fun List<ReadiumLinkEntity>.asModelsSub(
         propType: ReadiumLinkEntity.PropertyType
     ): List<ReadiumLink> {
-        return this.filter {
-            it.rlePropType == propType && it.rleTopParentUid == opdsPublicationEntity.opeUid
-        }.asModels(
+        return asModels(
             json = json,
+            propType = propType,
+            propFk = opdsPublicationEntity.opeUid
         )
     }
 

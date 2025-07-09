@@ -1,7 +1,7 @@
 package world.respect.datasource.db.opds.adapters
 
 import kotlinx.serialization.json.Json
-import world.respect.datasource.db.opds.OpdsTopParentType
+import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
 import world.respect.datasource.db.opds.entities.ReadiumSubjectEntity
 import world.respect.datasource.db.shared.adapters.asEntities
@@ -21,7 +21,7 @@ class ReadiumSubjectEntities(
 fun ReadiumSubject.asEntities(
     primaryKeyGenerator: PrimaryKeyGenerator,
     json: Json,
-    topParentType: OpdsTopParentType,
+    topParentType: OpdsParentType,
     topParentUid: Long,
     index: Int,
 ): ReadiumSubjectEntities {
@@ -48,9 +48,10 @@ fun ReadiumSubject.asEntities(
             link.asEntities(
                 pkGenerator = primaryKeyGenerator,
                 json = json,
-                rleTopTableType = topParentType,
-                rleTopParentUid = topParentUid,
+                opdsParentType = topParentType,
+                opdsParentUid = topParentUid,
                 rlePropType = ReadiumLinkEntity.PropertyType.READIUM_SUBJECT_LINKS,
+                rlePropFk = rseUid,
                 rleIndex = linkIndex,
             )
         }?.flatten() ?: emptyList(),
@@ -66,7 +67,11 @@ fun ReadiumSubjectEntities.asModel(json: Json): ReadiumSubject {
             sortAs = readiumSubject.rseSubjectSortAs,
             code = readiumSubject.rseSubjectCode,
             scheme = readiumSubject.rseSubjectScheme,
-            links = readiumLinkEntities.asModels(json = json),
+            links = readiumLinkEntities.asModels(
+                json = json,
+                propType = ReadiumLinkEntity.PropertyType.READIUM_SUBJECT_LINKS,
+                propFk = readiumSubject.rseUid,
+            ),
         )
     }
 }
