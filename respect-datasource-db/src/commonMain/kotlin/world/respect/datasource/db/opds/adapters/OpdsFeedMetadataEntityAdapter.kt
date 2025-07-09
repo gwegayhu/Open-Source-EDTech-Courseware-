@@ -3,6 +3,10 @@ package world.respect.datasource.db.opds.adapters
 import world.respect.datasource.db.opds.entities.OpdsFeedMetadataEntity
 import world.respect.datasource.opds.model.OpdsFeedMetadata
 
+class OpdsFeedMetadataEntities(
+
+)
+
 fun OpdsFeedMetadata.asEntity(
     ofmeOfeUid: Long,
     ofmePropType: OpdsFeedMetadataEntity.PropType,
@@ -11,7 +15,7 @@ fun OpdsFeedMetadata.asEntity(
     return OpdsFeedMetadataEntity(
         ofmeOfeUid = ofmeOfeUid,
         ofmePropType = ofmePropType,
-        ofmeRelUid = ofmeRelUid,
+        ofmePropFk = ofmeRelUid,
         ofmeIdentifier = identifier,
         ofmeType = type,
         ofmeTitle = title,

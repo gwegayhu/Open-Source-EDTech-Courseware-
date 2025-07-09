@@ -57,6 +57,7 @@ fun OpdsPublication.asEntities(
             lmeTopParentType = LangMapEntity.TopParentType.OPDS_PUBLICATION,
             lmeTopParentUid1 = opeUid,
             lmePropType = propType,
+            lmePropFk = 0,
         ) ?: emptyList()
     }
 

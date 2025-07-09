@@ -42,7 +42,8 @@ fun ReadiumSubject.asEntities(
         langMapEntities = subjectObject?.name?.asEntities(
             lmeTopParentType = topParentType.langMapTopParentType,
             lmeTopParentUid1 = topParentUid,
-            lmePropType = LangMapEntity.PropType.READIUM_SUBJECT_NAME
+            lmePropType = LangMapEntity.PropType.READIUM_SUBJECT_NAME,
+            lmePropFk = rseUid,
         ) ?: emptyList(),
         readiumLinkEntities = subjectObject?.links?.mapIndexed { linkIndex, link ->
             link.asEntities(

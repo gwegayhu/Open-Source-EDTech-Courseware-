@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "70ce7de6992b06f73cc96c23a79b95e9",
+    "identityHash": "7aa6e66e5b38d9ef1cfa9f8a640c9e77",
     "entities": [
       {
         "tableName": "CompatibleAppEntity",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "LangMapEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lmeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lmeTopParentType` INTEGER NOT NULL, `lmeTopParentUid1` INTEGER NOT NULL, `lmeTopParentUid2` INTEGER NOT NULL, `lmePropType` INTEGER NOT NULL, `lmeLang` TEXT NOT NULL, `lmeRegion` TEXT, `lmeValue` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lmeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lmeTopParentType` INTEGER NOT NULL, `lmeTopParentUid1` INTEGER NOT NULL, `lmeTopParentUid2` INTEGER NOT NULL, `lmePropType` INTEGER NOT NULL, `lmePropFk` INTEGER NOT NULL, `lmeLang` TEXT NOT NULL, `lmeRegion` TEXT, `lmeValue` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "lmeId",
@@ -109,6 +109,12 @@
           {
             "fieldPath": "lmePropType",
             "columnName": "lmePropType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lmePropFk",
+            "columnName": "lmePropFk",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -486,7 +492,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '70ce7de6992b06f73cc96c23a79b95e9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7aa6e66e5b38d9ef1cfa9f8a640c9e77')"
     ]
   }
 }

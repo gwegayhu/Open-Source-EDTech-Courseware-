@@ -11,9 +11,12 @@ import androidx.room.PrimaryKey
  * LangMaps are used on the RespectAppManifest, OPDS, and various Xapi entities.
  *
  * @property lmeTopParentType a unique table id (e.g. using TABLE_ID constants)
- * @property lmeTopParentUid1 the uid of the related entity (e.g. RespectAppManifest, OpdsPublication, etc)
+ * @property lmeTopParentUid1 the uid of the related entity (e.g. RespectAppManifest, OpdsPublication, XapiStatement, etc)
  * @property lmeTopParentUid2 second uid of the related entity, where applicable (e.g. Xapi Statements UUID)
  * @property lmePropType Entities have multiple properties that use a LangMap, this field can be used to differentiate
+ * @property lmePropFk when related to an entity that is not directly the topParent e.g.
+ *           ReadiumSubject name, then this is the foreign key for the entity, otherwise 0 (e.g.
+ *           when the LangMap is directly related to the top parent).
  * @property lmeLang Language code (e.g. en)
  * @property lmeRegion Region code (e.g. US)
  * @property lmeValue the actual string value
@@ -28,6 +31,7 @@ data class LangMapEntity(
     val lmeTopParentUid1: Long,
     val lmeTopParentUid2: Long = 0,
     val lmePropType: PropType,
+    val lmePropFk: Long,
     val lmeLang: String,
     val lmeRegion: String?,
     val lmeValue: String,

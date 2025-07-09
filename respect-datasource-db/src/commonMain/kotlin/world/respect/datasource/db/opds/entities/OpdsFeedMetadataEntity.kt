@@ -9,7 +9,8 @@ import kotlinx.datetime.LocalDateTime
  * @property ofmeUid auto generated primary key
  * @property ofmeOfeUid the OpdsFeed uid (always set, even if this is for a facet or group)
  * @property ofmePropType the property type of this metadata
- * @property ofmeRelUid the uid for the facet or group (if applicable), otherwise 0
+ * @property ofmePropFk the uid of the entity as per property type e.g. OpdsFeed uid, OpdsFacet uid,
+ *           OpdsGroup uid. If propType is FEED_METADATA, then ofmePropFk = ofmeOfeUid
  */
 @Entity
 data class OpdsFeedMetadataEntity(
@@ -17,7 +18,7 @@ data class OpdsFeedMetadataEntity(
     val ofmeUid: Long = 0,
     val ofmeOfeUid: Long,
     val ofmePropType: PropType,
-    val ofmeRelUid: Long,
+    val ofmePropFk: Long,
     val ofmeIdentifier: Uri?,
     val ofmeType: String?,
     val ofmeTitle: String,

@@ -4,7 +4,9 @@ import kotlinx.serialization.json.Json
 import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.entities.OpdsFeedMetadataEntity
 import world.respect.datasource.db.opds.entities.OpdsGroupEntity
+import world.respect.datasource.db.opds.entities.OpdsPublicationEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
+import world.respect.datasource.db.shared.entities.LangMapEntity
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
@@ -13,8 +15,9 @@ import world.respect.libxxhash.XXStringHasher
 data class OpdsGroupEntities(
     val group: OpdsGroupEntity,
     val metadata: OpdsFeedMetadataEntity,
-    val publications: List<OpdsPublicationEntities>,
+    val publications: List<OpdsPublicationEntity>,
     val links: List<ReadiumLinkEntity>,
+    val langMapEntities: List<LangMapEntity>,
 )
 
 fun OpdsGroup.asEntities(
@@ -42,6 +45,17 @@ fun OpdsGroup.asEntities(
         }?.flatten() ?: emptyList()
     }
 
+    val publicationEntities = publications?.mapIndexed { pubIndex, publication ->
+        publication.asEntities(
+            dataLoadResult = null,
+            primaryKeyGenerator = primaryKeyGenerator,
+            json = json,
+            xxStringHasher = xxStringHasher,
+            opeOfeUid = ofeUid,
+            opeOfeIndex = pubIndex
+        )
+    } ?: emptyList()
+
     return OpdsGroupEntities(
         group = OpdsGroupEntity(
             ogeUid = groupUid,
@@ -53,18 +67,15 @@ fun OpdsGroup.asEntities(
             ofmePropType = OpdsFeedMetadataEntity.PropType.GROUP_METADATA,
             ofmeRelUid = groupUid,
         ),
-        publications = publications?.mapIndexed { pubIndex, publication ->
-            publication.asEntities(
-                dataLoadResult = null,
-                primaryKeyGenerator = primaryKeyGenerator,
-                json = json,
-                xxStringHasher = xxStringHasher,
-                opeOfeUid = ofeUid,
-                opeOfeIndex = pubIndex
-            )
-        } ?: emptyList(),
-        links = links.asEntitiesSub(ReadiumLinkEntity.PropertyType.OPDS_GROUP_LINKS) +
-            navigation.asEntitiesSub(ReadiumLinkEntity.PropertyType.OPDS_GROUP_NAVIGATION)
+        publications = publicationEntities.map { it.opdsPublicationEntity },
+        langMapEntities = buildList {
+            addAll(publicationEntities.flatMap { it.langMapEntities })
+        },
+        links = buildList {
+            addAll(links.asEntitiesSub(ReadiumLinkEntity.PropertyType.OPDS_GROUP_LINKS))
+            addAll(navigation.asEntitiesSub(ReadiumLinkEntity.PropertyType.OPDS_GROUP_NAVIGATION))
+            addAll(publicationEntities.flatMap { it.linkEntities })
+        }
     )
 }
 
@@ -87,7 +98,11 @@ fun OpdsGroupEntities.asModel(
         links = links.asModelsSub(ReadiumLinkEntity.PropertyType.OPDS_GROUP_LINKS),
         navigation = links.asModelsSub(ReadiumLinkEntity.PropertyType.OPDS_GROUP_NAVIGATION),
         publications = publications.mapNotNull { publication ->
-            publication.asModel(json).data
+            OpdsPublicationEntities(
+                opdsPublicationEntity = publication,
+                langMapEntities = langMapEntities.filter { it.lmeTopParentUid1 == publication.opeUid },
+                linkEntities = links.filter { it.rlePropFk == publication.opeUid },
+            ).asModel(json).data
         }
     )
 }
