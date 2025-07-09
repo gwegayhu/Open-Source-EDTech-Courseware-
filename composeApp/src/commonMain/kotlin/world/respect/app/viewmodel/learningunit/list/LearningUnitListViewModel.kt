@@ -30,7 +30,6 @@ data class LearningUnitListUiState(
     val group: List<OpdsGroup> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null,
-    val link: List<ReadiumLink> = emptyList(),
 )
 
 class LearningUnitListViewModel(
@@ -69,7 +68,6 @@ class LearningUnitListViewModel(
                                 publications = result.data?.publications ?: emptyList(),
                                 group = result.data?.groups ?: emptyList(),
                                 lessonFilter = result.data?.facets ?: emptyList(),
-                                link = result.data?.links ?: emptyList()
                             )
                         }
                     }

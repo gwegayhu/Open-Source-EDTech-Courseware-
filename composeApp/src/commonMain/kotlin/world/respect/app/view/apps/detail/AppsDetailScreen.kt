@@ -2,16 +2,33 @@ package world.respect.app.view.apps.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,9 +40,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import respect.composeapp.generated.resources.Res
-import respect.composeapp.generated.resources.try_it
 import respect.composeapp.generated.resources.add_app
 import respect.composeapp.generated.resources.lessons
+import respect.composeapp.generated.resources.try_it
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
@@ -34,6 +51,7 @@ import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.BUT
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumLink
 
 @Composable
 fun AppsDetailScreen(
@@ -64,7 +82,6 @@ fun AppsDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-
             ListItem(
                 leadingContent = {
                     RespectAsyncImage(
@@ -80,7 +97,7 @@ fun AppsDetailScreen(
                     Text(text = appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(text = appDetail?.description?.getTitle() ?: "")
+                    Text(text = "Desscription")
                 },
                 trailingContent = {
                     IconButton(onClick = { /* Options */ }) {
@@ -135,6 +152,8 @@ fun AppsDetailScreen(
                                 .width(200.dp)
                                 .aspectRatio(16f / 9f)
                                 .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+
                         )
                     }
                 }
@@ -161,45 +180,107 @@ fun AppsDetailScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
-        // Lessons horizontally scrollable list
         item {
-            uiState.publications.let { publications ->
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(horizontal = 4.dp)
-                ) {
-                    itemsIndexed(
-                        items = publications,
-                        key = { index, publications ->
-                            publications.metadata.identifier.toString() ?: index
-                        })
-                    { index, publication ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.width(100.dp)
-                                .clickable {
-                                    onClickLesson(publication)
-                                }
-                        ) {
-                            RespectAsyncImage(
-                                uri = publication.images?.firstOrNull()?.href.toString(),
-                                contentDescription = "",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .size(90.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = publication.metadata.title.getTitle(),
-                                maxLines = 1
-                            )
-                        }
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
+                itemsIndexed(
+                    items = uiState.navigation,
+                    key = { index, navigation ->
+                        navigation.href
                     }
+                ) { index, navigation ->
+                    NavigationList(navigation)
+                }
+
+                itemsIndexed(
+                    items = uiState.publications,
+                    key = { index, publication ->
+                        publication.metadata.identifier.toString()
+                    }
+                ) { index, publication ->
+
+                    PublicationList(publication, onClickLesson)
+                }
+
+                uiState.group.forEach { group ->
+                    itemsIndexed(
+                        items = uiState.navigation,
+                        key = { index, navigation ->
+                            navigation.href
+                        }
+                    ) { index, navigation ->
+                        NavigationList(navigation)
+                    }
+
+                    itemsIndexed(
+                        items = uiState.publications,
+                        key = { index, publication ->
+                            publication.metadata.identifier.toString()
+                        }
+                    ) { index, publication ->
+                        PublicationList(publication, onClickLesson)
+                    }
+
                 }
             }
         }
+    }
+}
+
+@Composable
+fun NavigationList(navigation: ReadiumLink) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .width(100.dp)
+    ) {
+        RespectAsyncImage(
+            uri = "",
+            contentDescription = "",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(90.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = navigation.title ?: "",
+            maxLines = 1,
+            modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+        )
+    }
+}
+
+@Composable
+fun PublicationList(
+    publication: OpdsPublication, onClickLesson: (OpdsPublication) -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .width(100.dp)
+            .clickable { onClickLesson(publication) }
+    ) {
+        RespectAsyncImage(
+            uri = publication.images?.firstOrNull()?.href.toString(),
+            contentDescription = "",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(90.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = publication.metadata.title.getTitle(),
+            maxLines = 1,
+        )
     }
 }

@@ -21,6 +21,7 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.datasource.repository.ext.dataOrNull
@@ -30,7 +31,8 @@ import world.respect.navigation.NavCommand
 data class AppsDetailUiState(
     val appDetail: DataLoadState<RespectAppManifest>? = null,
     val publications: List<OpdsPublication> = emptyList(),
-    val link: List<ReadiumLink> = emptyList(),
+    val navigation: List<ReadiumLink> = emptyList(),
+    val group: List<OpdsGroup> = emptyList(),
 )
 
 class AppsDetailViewModel(
@@ -77,7 +79,7 @@ class AppsDetailViewModel(
                                 _uiState.update {
                                     it.copy(
                                         publications = result.data?.publications ?: emptyList(),
-                                        link = result.data?.links ?: emptyList()
+                                        navigation = result.data?.navigation ?: emptyList(),
                                     )
                                 }
                             }
@@ -96,7 +98,8 @@ class AppsDetailViewModel(
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitList.create(
-                        opdsFeedUrl = route.manifestUrl.resolve(uri))
+                        opdsFeedUrl = route.manifestUrl.resolve(uri)
+                    )
                 )
             )
         }
@@ -105,7 +108,7 @@ class AppsDetailViewModel(
     fun onClickLesson(publication: OpdsPublication) {
         val publicationHref = publication.links.find { it.rel?.equals("self") == true }?.href
         val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits?.toString()
-        if(refererUrl != null && publicationHref != null) {
+        if (refererUrl != null && publicationHref != null) {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitDetail.create(
@@ -117,7 +120,8 @@ class AppsDetailViewModel(
             )
         }
     }
-    companion object{
+
+    companion object {
         val BUTTONS_ROW = "buttons_row"
         val LESSON_HEADER = "lesson_header"
 
