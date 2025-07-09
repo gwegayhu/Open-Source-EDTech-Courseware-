@@ -1,6 +1,5 @@
 package world.respect.app.view.learningunit.list
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,7 +59,8 @@ fun LearningUnitListScreen(
     LearningUnitListScreen(
         uiState = uiState,
         onClickLesson = { viewModel.onClickLesson(it) },
-        onClickFilter = { viewModel.onClickFilter(it) }
+        onClickFilter = { viewModel.onClickFilter(it) },
+        onClickNavigation = { viewModel.onClickNavigation(it) }
     )
 }
 
@@ -69,7 +68,8 @@ fun LearningUnitListScreen(
 fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
     onClickLesson: (OpdsPublication) -> Unit,
-    onClickFilter: (String) -> Unit
+    onClickFilter: (String) -> Unit,
+    onClickNavigation: (ReadiumLink) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         uiState.lessonFilter.firstOrNull()?.let { facet ->
@@ -131,18 +131,18 @@ fun LearningUnitListScreen(
             itemsIndexed(
                 items = uiState.navigation,
                 key = { index, navigation ->
-                    navigation.href ?: index
+                    navigation.href
                 }
             ) { index, navigation ->
-                NavigationListItem(index, navigation)
+                NavigationListItem(navigation, onClickNavigation)
             }
 
             itemsIndexed(
                 items = uiState.publications,
                 key = { index, publications ->
-                    publications.metadata.identifier.toString() ?: index
+                    publications.metadata.identifier.toString()
                 }) { index, publication ->
-                PublicationListItem(index, publication, onClickLesson = onClickLesson)
+                PublicationListItem(publication, onClickLesson = onClickLesson)
             }
 
             uiState.group.forEach { group ->
@@ -160,18 +160,18 @@ fun LearningUnitListScreen(
                 itemsIndexed(
                     items = group.navigation ?: emptyList(),
                     key = { index, navigation ->
-                        navigation.href ?: index
+                        navigation.href
                     }
                 ) { index, navigation ->
-                    NavigationListItem(index, navigation)
+                    NavigationListItem( navigation,onClickNavigation)
                 }
                 itemsIndexed(
                     items = group.publications ?: emptyList(),
                     key = { index, publication ->
-                        publication.metadata.identifier.toString() ?: index
+                        publication.metadata.identifier.toString()
                     }
                 ) { index, publication ->
-                    PublicationListItem(index, publication, onClickLesson = onClickLesson)
+                    PublicationListItem(publication, onClickLesson = onClickLesson)
 
                 }
 
@@ -183,7 +183,6 @@ fun LearningUnitListScreen(
 
 @Composable
 fun PublicationListItem(
-    index: Int,
     publication: OpdsPublication,
     onClickLesson: (OpdsPublication) -> Unit
 ) {
@@ -240,10 +239,14 @@ fun PublicationListItem(
 }
 
 @Composable
-fun NavigationListItem(index: Int, navigation: ReadiumLink) {
+fun NavigationListItem(
+     navigation: ReadiumLink,
+    onClickNavigation: (ReadiumLink) -> Unit
+) {
     ListItem(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClickNavigation(navigation) },
 
         leadingContent = {
             RespectAsyncImage(

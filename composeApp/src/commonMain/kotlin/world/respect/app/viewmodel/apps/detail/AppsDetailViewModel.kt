@@ -108,6 +108,7 @@ class AppsDetailViewModel(
     fun onClickLesson(publication: OpdsPublication) {
         val publicationHref = publication.links.find { it.rel?.equals("self") == true }?.href
         val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits?.toString()
+
         if (refererUrl != null && publicationHref != null) {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
@@ -120,6 +121,26 @@ class AppsDetailViewModel(
             )
         }
     }
+
+    fun onClickNavigation(navigation: ReadiumLink) {
+        val navigationHref = navigation.href
+
+        val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits.toString()
+        println("Learning Unit URL 1: navigation $navigationHref LU-${Url(refererUrl).resolve(navigationHref)}  Url-${refererUrl}")
+
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitDetail.create(
+                    learningUnitManifestUrl = Url(refererUrl).resolve(navigationHref),
+                    refererUrl = Url(refererUrl),
+                    expectedIdentifier = null
+                )
+            )
+        )
+
+
+    }
+
 
     companion object {
         val BUTTONS_ROW = "buttons_row"

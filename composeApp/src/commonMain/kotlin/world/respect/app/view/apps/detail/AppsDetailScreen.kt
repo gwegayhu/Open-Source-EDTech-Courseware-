@@ -62,7 +62,9 @@ fun AppsDetailScreen(
     AppsDetailScreen(
         uiState = uiState,
         onClickLessonList = { viewModel.onClickLessonList() },
-        onClickLesson = { viewModel.onClickLesson(it) }
+        onClickLesson = { viewModel.onClickLesson(it) },
+        onClickNavigation = { viewModel.onClickNavigation(it) }
+
     )
 }
 
@@ -70,7 +72,9 @@ fun AppsDetailScreen(
 fun AppsDetailScreen(
     uiState: AppsDetailUiState,
     onClickLessonList: () -> Unit,
-    onClickLesson: (OpdsPublication) -> Unit
+    onClickLesson: (OpdsPublication) -> Unit,
+    onClickNavigation: (ReadiumLink) -> Unit
+
 ) {
 
     val appDetail = (uiState.appDetail as? DataLoadResult)?.data
@@ -191,7 +195,7 @@ fun AppsDetailScreen(
                         navigation.href
                     }
                 ) { index, navigation ->
-                    NavigationList(navigation)
+                    NavigationList(navigation,onClickNavigation)
                 }
 
                 itemsIndexed(
@@ -211,7 +215,7 @@ fun AppsDetailScreen(
                             navigation.href
                         }
                     ) { index, navigation ->
-                        NavigationList(navigation)
+                        NavigationList(navigation,onClickNavigation)
                     }
 
                     itemsIndexed(
@@ -230,11 +234,14 @@ fun AppsDetailScreen(
 }
 
 @Composable
-fun NavigationList(navigation: ReadiumLink) {
+fun NavigationList(navigation: ReadiumLink,onClickNavigation: (ReadiumLink) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .width(100.dp)
+            .clickable{
+                onClickNavigation(navigation)
+            }
     ) {
         RespectAsyncImage(
             uri = "",

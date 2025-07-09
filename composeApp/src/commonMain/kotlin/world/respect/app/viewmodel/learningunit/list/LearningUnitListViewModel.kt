@@ -100,4 +100,23 @@ class LearningUnitListViewModel(
         }
 
     }
+
+    fun onClickNavigation(navigation: ReadiumLink) {
+        val navigationSelfLink = navigation.href
+
+        val learningUnitUrl = route.opdsFeedUrl.resolve(navigationSelfLink)
+
+        println("Learning Unit URL 2: navigation-$navigationSelfLink LU-$learningUnitUrl Url-${route.opdsFeedUrl} ")
+
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitDetail.create(
+                    learningUnitManifestUrl = learningUnitUrl,
+                    refererUrl = route.opdsFeedUrl,
+                    expectedIdentifier = null
+                )
+            )
+        )
+
+    }
 }
