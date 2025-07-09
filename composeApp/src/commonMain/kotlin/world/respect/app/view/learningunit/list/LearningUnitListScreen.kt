@@ -58,18 +58,16 @@ fun LearningUnitListScreen(
 
     LearningUnitListScreen(
         uiState = uiState,
-        onClickLesson = { viewModel.onClickLesson(it) },
+        onClickLearningUnit = { viewModel.onClickLearningUnit(it) },
         onClickFilter = { viewModel.onClickFilter(it) },
-        onClickNavigation = { viewModel.onClickNavigation(it) }
     )
 }
 
 @Composable
 fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
-    onClickLesson: (OpdsPublication) -> Unit,
+    onClickLearningUnit: (String) -> Unit,
     onClickFilter: (String) -> Unit,
-    onClickNavigation: (ReadiumLink) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         uiState.lessonFilter.firstOrNull()?.let { facet ->
@@ -134,7 +132,9 @@ fun LearningUnitListScreen(
                     navigation.href
                 }
             ) { index, navigation ->
-                NavigationListItem(navigation, onClickNavigation)
+                NavigationListItem(
+                    navigation,
+                    onClickLearningUnit = { onClickLearningUnit(navigation.href) })
             }
 
             itemsIndexed(
@@ -142,7 +142,10 @@ fun LearningUnitListScreen(
                 key = { index, publications ->
                     publications.metadata.identifier.toString()
                 }) { index, publication ->
-                PublicationListItem(publication, onClickLesson = onClickLesson)
+                val href = publication.links.find { it.rel?.equals("self") == true }?.href
+                PublicationListItem(
+                    publication,
+                    onClickLearningUnit = { onClickLearningUnit(href.toString()) })
             }
 
             uiState.group.forEach { group ->
@@ -163,7 +166,9 @@ fun LearningUnitListScreen(
                         navigation.href
                     }
                 ) { index, navigation ->
-                    NavigationListItem( navigation,onClickNavigation)
+                    NavigationListItem(
+                        navigation,
+                        onClickLearningUnit = { onClickLearningUnit(navigation.href) })
                 }
                 itemsIndexed(
                     items = group.publications ?: emptyList(),
@@ -171,8 +176,10 @@ fun LearningUnitListScreen(
                         publication.metadata.identifier.toString()
                     }
                 ) { index, publication ->
-                    PublicationListItem(publication, onClickLesson = onClickLesson)
-
+                    val href = publication.links.find { it.rel?.equals("self") == true }?.href
+                    PublicationListItem(
+                        publication,
+                        onClickLearningUnit = { onClickLearningUnit(href.toString()) })
                 }
 
             }
@@ -184,12 +191,12 @@ fun LearningUnitListScreen(
 @Composable
 fun PublicationListItem(
     publication: OpdsPublication,
-    onClickLesson: (OpdsPublication) -> Unit
+    onClickLearningUnit: (String) -> Unit
 ) {
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClickLesson(publication) },
+            .clickable { onClickLearningUnit(publication.links.firstOrNull()?.href.toString()) },
 
         leadingContent = {
             RespectAsyncImage(
@@ -240,13 +247,13 @@ fun PublicationListItem(
 
 @Composable
 fun NavigationListItem(
-     navigation: ReadiumLink,
-    onClickNavigation: (ReadiumLink) -> Unit
+    navigation: ReadiumLink,
+    onClickLearningUnit: (String) -> Unit
 ) {
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClickNavigation(navigation) },
+            .clickable { onClickLearningUnit(navigation.href) },
 
         leadingContent = {
             RespectAsyncImage(

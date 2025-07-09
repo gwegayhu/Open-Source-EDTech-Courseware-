@@ -82,41 +82,15 @@ class LearningUnitListViewModel(
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
 
-    fun onClickLesson(publication: OpdsPublication) {
-        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
-
-        if (publicationSelfLink != null) {
-            val learningUnitUrl = route.opdsFeedUrl.resolve(publicationSelfLink)
-
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    LearningUnitDetail.create(
-                        learningUnitManifestUrl = learningUnitUrl,
-                        refererUrl = route.opdsFeedUrl,
-                        expectedIdentifier = publication.metadata.identifier.toString()
-                    )
-                )
-            )
-        }
-
-    }
-
-    fun onClickNavigation(navigation: ReadiumLink) {
-        val navigationSelfLink = navigation.href
-
-        val learningUnitUrl = route.opdsFeedUrl.resolve(navigationSelfLink)
-
-        println("Learning Unit URL 2: navigation-$navigationSelfLink LU-$learningUnitUrl Url-${route.opdsFeedUrl} ")
-
+    fun onClickLearningUnit(href: String) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail.create(
-                    learningUnitManifestUrl = learningUnitUrl,
+                    learningUnitManifestUrl = route.opdsFeedUrl.resolve(href),
                     refererUrl = route.opdsFeedUrl,
                     expectedIdentifier = null
                 )
             )
         )
-
     }
 }
