@@ -1,6 +1,7 @@
 package world.respect.datasource.db.opds.adapters
 
 import kotlinx.serialization.json.Json
+import world.respect.datasource.db.opds.OpdsTopParentType
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity.LinkEntityJoinType
 import world.respect.datasource.opds.model.ReadiumLink
@@ -13,8 +14,9 @@ import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 fun ReadiumLink.asEntities(
     pkGenerator: PrimaryKeyGenerator,
     json: Json,
-    rleTableId: Int,
-    rleEntityId: Long,
+    rleTopTableType: OpdsTopParentType,
+    rleTopParentUid: Long,
+    rlePropType: ReadiumLinkEntity.PropertyType,
     rleIndex: Int,
     rleJoinToLinkId: Long = 0,
     rleJoinToLinkType: LinkEntityJoinType? = null,
@@ -28,8 +30,9 @@ fun ReadiumLink.asEntities(
             link.asEntities(
                 pkGenerator = pkGenerator,
                 json = json,
-                rleTableId = rleTableId,
-                rleEntityId = rleEntityId,
+                rleTopTableType = rleTopTableType,
+                rleTopParentUid = rleTopParentUid,
+                rlePropType = rlePropType,
                 rleIndex = index,
                 rleJoinToLinkId = rleId,
                 rleJoinToLinkType = joinType,
@@ -40,8 +43,9 @@ fun ReadiumLink.asEntities(
     return listOf(
         ReadiumLinkEntity(
             rleId = rleId,
-            rleTableId = rleTableId,
-            rleEntityId = rleEntityId,
+            rleTopParentType = rleTopTableType,
+            rleTopParentUid = rleTopParentUid,
+            rlePropType = rlePropType,
             rleJoinToLinkId = rleJoinToLinkId,
             rleJoinToLinkType = rleJoinToLinkType,
             rleIndex = rleIndex,

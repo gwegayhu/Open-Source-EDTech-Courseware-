@@ -93,12 +93,12 @@ class CompatibleAppDataSourceDb(
             DataLoadResult(
                 data = appEntities.map { appEntity ->
                     appEntity.asModel(
-                        langMapEntities = langmaps.filter { it.lmeEntityUid1 == appEntity.caeUid },
+                        langMapEntities = langmaps.filter { it.lmeTopParentUid1 == appEntity.caeUid },
                         json = json
                     )
                     CompatibleAppEntities(
                         compatibleAppEntity = appEntity,
-                        langMapEntities = langmaps.filter { it.lmeEntityUid1 == appEntity.caeUid }
+                        langMapEntities = langmaps.filter { it.lmeTopParentUid1 == appEntity.caeUid }
                     ).asModel(json)
                 },
                 metaInfo = DataLoadMetaInfo(

@@ -8,19 +8,19 @@ import world.respect.datasource.opds.model.LangMapObjectValue
 import world.respect.datasource.opds.model.LangMapStringValue
 
 fun LangMap.asEntities(
-    lmeTableId: Int,
-    lmeEntityUid1: Long,
-    lmeEntityUid2: Long = 0,
-    lmePropId: Long = 0,
+    lmeTopParentType: LangMapEntity.TopParentType,
+    lmeTopParentUid1: Long,
+    lmeTopParentUid2: Long = 0,
+    lmePropType: LangMapEntity.PropType,
 ): List<LangMapEntity> {
     return when(this) {
         is LangMapStringValue -> {
             listOf(
                 LangMapEntity(
-                    lmeTableId = lmeTableId,
-                    lmeEntityUid1 = lmeEntityUid1,
-                    lmeEntityUid2 = lmeEntityUid2,
-                    lmePropId = lmePropId,
+                    lmeTopParentType = lmeTopParentType,
+                    lmeTopParentUid1 = lmeTopParentUid1,
+                    lmeTopParentUid2 = lmeTopParentUid2,
+                    lmePropType = lmePropType,
                     lmeLang = "",
                     lmeRegion = null,
                     lmeValue = value,
@@ -38,10 +38,10 @@ fun LangMap.asEntities(
                 }
 
                 LangMapEntity(
-                    lmeTableId = lmeTableId,
-                    lmeEntityUid1 = lmeEntityUid1,
-                    lmeEntityUid2 = lmeEntityUid2,
-                    lmePropId = lmePropId,
+                    lmeTopParentType = lmeTopParentType,
+                    lmeTopParentUid1 = lmeTopParentUid1,
+                    lmeTopParentUid2 = lmeTopParentUid2,
+                    lmePropType = lmePropType,
                     lmeLang = langCode,
                     lmeRegion = region,
                     lmeValue = value,

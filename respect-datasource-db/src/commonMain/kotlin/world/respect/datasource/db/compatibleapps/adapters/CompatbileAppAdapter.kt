@@ -10,10 +10,10 @@ import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.db.shared.adapters.asEntities
 import world.respect.datasource.db.shared.adapters.toModel
 import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
-import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity.Companion.LANGMAP_PROP_DESC
-import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity.Companion.LANGMAP_PROP_NAME
 import world.respect.datasource.db.shared.entities.LangMapEntity
 import world.respect.libxxhash.XXStringHasher
+import world.respect.datasource.db.shared.entities.LangMapEntity.PropType.RESPECT_MANIFEST_NAME
+import world.respect.datasource.db.shared.entities.LangMapEntity.PropType.RESPECT_MANIFEST_DESCRIPTION
 
 /**
  * All the entities required to represent a RespectAppManifest.
@@ -29,7 +29,6 @@ fun DataLoadResult<RespectAppManifest>.asEntities(
 ) : CompatibleAppEntities? {
     val manifest = data ?: return null
     val caeUid = xxStringHasher.hash(metaInfo.requireUrl().toString())
-
     return CompatibleAppEntities(
         compatibleAppEntity = CompatibleAppEntity(
             caeUid = caeUid,
@@ -47,13 +46,13 @@ fun DataLoadResult<RespectAppManifest>.asEntities(
             caeAndroidSourceCode = manifest.android?.sourceCode?.toString(),
         ),
         langMapEntities = manifest.name.asEntities(
-            lmeTableId = CompatibleAppEntity.TABLE_ID,
-            lmeEntityUid1 = caeUid,
-            lmePropId = LANGMAP_PROP_NAME,
+            lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST,
+            lmeTopParentUid1 = caeUid,
+            lmePropType= RESPECT_MANIFEST_NAME,
         ) + (manifest.description?.asEntities(
-            lmeTableId = CompatibleAppEntity.TABLE_ID,
-            lmeEntityUid1 = caeUid,
-            lmePropId = LANGMAP_PROP_DESC,
+            lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST,
+            lmeTopParentUid1 = caeUid,
+            lmePropType = RESPECT_MANIFEST_NAME,
         ) ?: emptyList()),
     )
 }
@@ -75,8 +74,8 @@ fun CompatibleAppEntities.asModel(
 ): DataLoadResult<RespectAppManifest> {
     return DataLoadResult(
         data = RespectAppManifest(
-            name = langMapEntities.filter { it.lmePropId == LANGMAP_PROP_NAME }.toModel(),
-            description = langMapEntities.filter { it.lmePropId == LANGMAP_PROP_DESC }.toModel(),
+            name = langMapEntities.filter { it.lmePropType == RESPECT_MANIFEST_NAME }.toModel(),
+            description = langMapEntities.filter { it.lmePropType == RESPECT_MANIFEST_DESCRIPTION }.toModel(),
             license = compatibleAppEntity.caeLicense,
             website = compatibleAppEntity.caeWebsite.takeIf { it.isNotBlank() }?.let { Url(it) },
             learningUnits = Uri.parse(compatibleAppEntity.caeLearningUnits),
