@@ -84,7 +84,7 @@ class ReadiumLinkEntity(
         OPDS_PUB_SUBJECT_LINKS,
 
         OPDS_PUBLICATION, OPDS_FACET, OPDS_GROUP, OPDS_SERIES, READIUM_CONTRIBUTOR,
-        READIUM_SUBJECT
+        READIUM_SUBJECT_LINKS
     }
 
     companion object {

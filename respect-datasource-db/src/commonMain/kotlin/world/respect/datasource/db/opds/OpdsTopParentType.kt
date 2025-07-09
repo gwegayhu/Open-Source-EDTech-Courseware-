@@ -1,5 +1,7 @@
 package world.respect.datasource.db.opds
 
+import world.respect.datasource.db.shared.entities.LangMapEntity
+
 /**
  * The OPDS network models are represented in the database using various 1:many joins e.g. with
  * ReadiumLinkEntity, ReadiumSubjectEntity etc. These joins often represent nested
@@ -13,8 +15,12 @@ package world.respect.datasource.db.opds
  * b) Upsert queries (used when data is updated from the network) can easily delete entities related
  *    to old versions of an OpdsFeed or OpdsPublication
  */
-enum class OpdsTopParentType(val id: Int) {
+enum class OpdsTopParentType(
+    val id: Int,
+    val langMapTopParentType: LangMapEntity.TopParentType,
+) {
 
-    OPDS_FEED(1), OPDS_PUBLICATION(2)
+    OPDS_FEED(1, LangMapEntity.TopParentType.OPDS_FEED),
+    OPDS_PUBLICATION(2, LangMapEntity.TopParentType.OPDS_PUBLICATION),
 
 }

@@ -5,15 +5,22 @@ import androidx.room.PrimaryKey
 import com.eygraber.uri.Uri
 import world.respect.datasource.db.opds.OpdsTopParentType
 
+/**
+ * @property rseStringValue a ReadiumSubject can be a simple string value type or an object type.
+ *           If its a simple string value, then the stringValue is stored here. If its an object
+ *           rseStringValue is null
+ */
 @Entity
 data class ReadiumSubjectEntity(
     @PrimaryKey(autoGenerate = true)
     val rseUid: Long,
+    val rseStringValue: String?,
     val rseTopParentType: OpdsTopParentType,
     val rseTopParentUid: Long,
     val rseSubjectSortAs: String?,
     val rseSubjectCode: String?,
     val rseSubjectScheme: Uri?,
+    val rseIndex: Int,
 ) {
 
     companion object {

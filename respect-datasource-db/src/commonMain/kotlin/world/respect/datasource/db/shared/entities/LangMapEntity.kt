@@ -39,6 +39,8 @@ data class LangMapEntity(
 
     enum class PropType(val id: Int) {
         RESPECT_MANIFEST_NAME(1), RESPECT_MANIFEST_DESCRIPTION(2),
+
+        READIUM_SUBJECT_NAME(3)
     }
 
 

@@ -14,6 +14,4 @@ class OpdsTypeConverters {
         return OpdsTopParentType.entries.first { it.id == value }
     }
 
-
-
 }
