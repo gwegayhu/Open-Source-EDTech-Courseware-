@@ -65,7 +65,9 @@ class LearningUnitListViewModel(
                     is DataLoadResult -> {
                         _uiState.update {
                             it.copy(
+                                navigation = result.data?.navigation ?: emptyList(),
                                 publications = result.data?.publications ?: emptyList(),
+                                group = result.data?.groups ?: emptyList(),
                                 lessonFilter = result.data?.facets ?: emptyList(),
                                 link = result.data?.links ?: emptyList()
                             )
@@ -85,7 +87,7 @@ class LearningUnitListViewModel(
     fun onClickLesson(publication: OpdsPublication) {
         val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
 
-        if(publicationSelfLink != null) {
+        if (publicationSelfLink != null) {
             val learningUnitUrl = route.opdsFeedUrl.resolve(publicationSelfLink)
 
             _navCommandFlow.tryEmit(
