@@ -12,47 +12,55 @@ abstract class LangMapEntityDao {
     @Insert
     abstract suspend fun insertAsync(entity: List<LangMapEntity>)
 
-    @Query("""
+    @Query(
+        """
         DELETE FROM LangMapEntity
-         WHERE LangMapEntity.lmeTableId = :lmeTableId
-           AND LangMapEntity.lmeEntityUid1 = :lmeEntityUid1
-           AND LangMapEntity.lmeEntityUid2 = :lmeEntityUid2
-    """)
+         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+           AND LangMapEntity.lmeTopParentUid1 = :lmeEntityUid1
+           AND LangMapEntity.lmeTopParentUid2 = :lmeEntityUid2
+    """
+    )
     abstract suspend fun deleteByTableAndEntityUid(
         lmeTableId: Int,
         lmeEntityUid1: Long,
         lmeEntityUid2: Long = 0,
     )
 
-    @Query("""
+    @Query(
+        """
         SELECT * 
           FROM LangMapEntity
-         WHERE LangMapEntity.lmeTableId = :lmeTableId
-    """)
+         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+    """
+    )
     abstract fun selectAllByTableId(
         lmeTableId: Int,
     ): Flow<List<LangMapEntity>>
 
-    @Query("""
+    @Query(
+        """
         SELECT * 
           FROM LangMapEntity
-         WHERE LangMapEntity.lmeTableId = :lmeTableId
-           AND LangMapEntity.lmeEntityUid1 = :lmeEntityUid1
-           AND LangMapEntity.lmeEntityUid2 = :lmeEntityUid2
-    """)
+         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+           AND LangMapEntity.lmeTopParentUid1 = :lmeEntityUid1
+           AND LangMapEntity.lmeTopParentUid2 = :lmeEntityUid2
+    """
+    )
     abstract suspend fun selectAllByTableAndEntityId(
         lmeTableId: Int,
         lmeEntityUid1: Long,
         lmeEntityUid2: Long,
     ): List<LangMapEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT * 
           FROM LangMapEntity
-         WHERE LangMapEntity.lmeTableId = :lmeTableId
-           AND LangMapEntity.lmeEntityUid1 = :lmeEntityUid1
-           AND LangMapEntity.lmeEntityUid2 = :lmeEntityUid2
-    """)
+         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+           AND LangMapEntity.lmeTopParentUid1 = :lmeEntityUid1
+           AND LangMapEntity.lmeTopParentUid2 = :lmeEntityUid2
+    """
+    )
     abstract fun selectAllByTableAndEntityIdAsFlow(
         lmeTableId: Int,
         lmeEntityUid1: Long,

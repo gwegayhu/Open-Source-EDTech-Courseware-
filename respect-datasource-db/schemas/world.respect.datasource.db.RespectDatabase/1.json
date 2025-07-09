@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5cfb91ec4950066541a7201f4ed99b24",
+    "identityHash": "339cc1d94c3067c4c2a1fa1fc0077c55",
     "entities": [
       {
         "tableName": "CompatibleAppEntity",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "LangMapEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lmeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lmeTableId` INTEGER NOT NULL, `lmeEntityUid1` INTEGER NOT NULL, `lmeEntityUid2` INTEGER NOT NULL, `lmePropId` INTEGER NOT NULL, `lmeLang` TEXT NOT NULL, `lmeRegion` TEXT, `lmeValue` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lmeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lmeTopParentType` TEXT NOT NULL, `lmeTopParentUid1` INTEGER NOT NULL, `lmeTopParentUid2` INTEGER NOT NULL, `lmePropType` TEXT NOT NULL, `lmeLang` TEXT NOT NULL, `lmeRegion` TEXT, `lmeValue` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "lmeId",
@@ -89,27 +89,27 @@
             "notNull": true
           },
           {
-            "fieldPath": "lmeTableId",
-            "columnName": "lmeTableId",
+            "fieldPath": "lmeTopParentType",
+            "columnName": "lmeTopParentType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lmeTopParentUid1",
+            "columnName": "lmeTopParentUid1",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "lmeEntityUid1",
-            "columnName": "lmeEntityUid1",
+            "fieldPath": "lmeTopParentUid2",
+            "columnName": "lmeTopParentUid2",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "lmeEntityUid2",
-            "columnName": "lmeEntityUid2",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lmePropId",
-            "columnName": "lmePropId",
-            "affinity": "INTEGER",
+            "fieldPath": "lmePropType",
+            "columnName": "lmePropType",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -138,22 +138,22 @@
         },
         "indices": [
           {
-            "name": "index_LangMapEntity_lmeTableId_lmeEntityUid1_lmeEntityUid2_lmePropId",
+            "name": "index_LangMapEntity_lmeTopParentType_lmeTopParentUid1_lmeTopParentUid2_lmePropType",
             "unique": false,
             "columnNames": [
-              "lmeTableId",
-              "lmeEntityUid1",
-              "lmeEntityUid2",
-              "lmePropId"
+              "lmeTopParentType",
+              "lmeTopParentUid1",
+              "lmeTopParentUid2",
+              "lmePropType"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LangMapEntity_lmeTableId_lmeEntityUid1_lmeEntityUid2_lmePropId` ON `${TABLE_NAME}` (`lmeTableId`, `lmeEntityUid1`, `lmeEntityUid2`, `lmePropId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LangMapEntity_lmeTopParentType_lmeTopParentUid1_lmeTopParentUid2_lmePropType` ON `${TABLE_NAME}` (`lmeTopParentType`, `lmeTopParentUid1`, `lmeTopParentUid2`, `lmePropType`)"
           }
         ]
       },
       {
         "tableName": "ReadiumLinkEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rleId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `rleTableId` INTEGER NOT NULL, `rleEntityId` INTEGER NOT NULL, `rleJoinToLinkId` INTEGER NOT NULL, `rleJoinToLinkType` TEXT, `rleIndex` INTEGER NOT NULL, `rleHref` TEXT NOT NULL, `rleRel` TEXT, `rleType` TEXT, `rleTitle` TEXT, `rleTemplated` INTEGER, `rleProperties` TEXT, `rleHeight` INTEGER, `rleWidth` INTEGER, `rleSize` INTEGER, `rleBitrate` REAL, `rleDuration` REAL, `rleLanguage` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rleId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `rleTopParentType` TEXT NOT NULL, `rleTopParentUid` INTEGER NOT NULL, `rlePropType` TEXT NOT NULL, `rleJoinToLinkId` INTEGER NOT NULL, `rleJoinToLinkType` TEXT, `rleIndex` INTEGER NOT NULL, `rleHref` TEXT NOT NULL, `rleRel` TEXT, `rleType` TEXT, `rleTitle` TEXT, `rleTemplated` INTEGER, `rleProperties` TEXT, `rleHeight` INTEGER, `rleWidth` INTEGER, `rleSize` INTEGER, `rleBitrate` REAL, `rleDuration` REAL, `rleLanguage` TEXT)",
         "fields": [
           {
             "fieldPath": "rleId",
@@ -162,15 +162,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "rleTableId",
-            "columnName": "rleTableId",
+            "fieldPath": "rleTopParentType",
+            "columnName": "rleTopParentType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rleTopParentUid",
+            "columnName": "rleTopParentUid",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "rleEntityId",
-            "columnName": "rleEntityId",
-            "affinity": "INTEGER",
+            "fieldPath": "rlePropType",
+            "columnName": "rlePropType",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -262,7 +268,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5cfb91ec4950066541a7201f4ed99b24')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '339cc1d94c3067c4c2a1fa1fc0077c55')"
     ]
   }
 }

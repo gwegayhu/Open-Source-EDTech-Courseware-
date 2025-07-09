@@ -10,28 +10,37 @@ import androidx.room.PrimaryKey
  *
  * LangMaps are used on the RespectAppManifest, OPDS, and various Xapi entities.
  *
- * @property lmeTableId a unique table id (e.g. using TABLE_ID constants)
- * @property lmeEntityUid1 the uid of the related entity (e.g. RespectAppManifest, OpdsPublication, etc)
- * @property lmeEntityUid2 second uid of the related entity, where applicable (e.g. Xapi Statements UUID)
- * @property lmePropId Some entities have multiple properties that use a LangMap, this field can be used to differentiate
+ * @property lmeTopParentType a unique table id (e.g. using TABLE_ID constants)
+ * @property lmeTopParentUid1 the uid of the related entity (e.g. RespectAppManifest, OpdsPublication, etc)
+ * @property lmeTopParentUid2 second uid of the related entity, where applicable (e.g. Xapi Statements UUID)
+ * @property lmePropType Entities have multiple properties that use a LangMap, this field can be used to differentiate
  * @property lmeLang Language code (e.g. en)
  * @property lmeRegion Region code (e.g. US)
  * @property lmeValue the actual string value
  */
 @Entity(
-    indices = [Index(value = ["lmeTableId", "lmeEntityUid1", "lmeEntityUid2", "lmePropId"])]
+    indices = [Index(value = ["lmeTopParentType", "lmeTopParentUid1", "lmeTopParentUid2", "lmePropType"])]
 )
 data class LangMapEntity(
     @PrimaryKey(autoGenerate = true)
     val lmeId: Long = 0,
-    val lmeTableId: Int,
-    val lmeEntityUid1: Long,
-    val lmeEntityUid2: Long = 0,
-    val lmePropId: Long = 0,
+    val lmeTopParentType: TopParentType,
+    val lmeTopParentUid1: Long,
+    val lmeTopParentUid2: Long = 0,
+    val lmePropType: PropType,
     val lmeLang: String,
     val lmeRegion: String?,
     val lmeValue: String,
 ) {
+
+    enum class TopParentType {
+        RESPECT_MANIFEST, OPDS_FEED, OPDS_PUBLICATION
+    }
+
+    enum class PropType {
+        RESPECT_MANIFEST_NAME, RESPECT_MANIFEST_DESCRIPTION,
+    }
+
 
     companion object {
 
