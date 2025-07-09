@@ -77,7 +77,7 @@ class AppListViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 //Placeholder string
-                AppsDetail.create(manifestUrl = url)
+                AppsDetail.create(url)
             )
         )
     }

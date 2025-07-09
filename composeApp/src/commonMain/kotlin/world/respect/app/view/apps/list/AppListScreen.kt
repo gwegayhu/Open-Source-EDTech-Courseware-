@@ -89,7 +89,7 @@ fun AppListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onClickApp
+                        onClickApp(app)
                     },
                 headlineContent = {
                     Text(
