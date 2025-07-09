@@ -20,6 +20,7 @@ import io.ktor.http.Url
 import kotlinx.coroutines.flow.combine
 import world.respect.datasource.db.compatibleapps.adapters.CompatibleAppEntities
 import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
+import world.respect.datasource.db.shared.entities.LangMapEntity
 
 class CompatibleAppDataSourceDb(
     private val respectDb: RespectDatabase,
@@ -37,8 +38,8 @@ class CompatibleAppDataSourceDb(
                 )
 
                 entities.forEach {
-                    respectDb.getLangMapEntityDao().deleteByTableAndEntityUid(
-                        lmeTableId = CompatibleAppEntity.TABLE_ID,
+                    respectDb.getLangMapEntityDao().deleteByTableAndTopParentType(
+                        lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST.id,
                         lmeEntityUid1 = it.compatibleAppEntity.caeUid,
                     )
                 }
@@ -57,7 +58,7 @@ class CompatibleAppDataSourceDb(
         val caeUid = xxStringHasher.hash(manifestUrl.toString())
         val appEntity =  respectDb.getCompatibleAppEntityDao().selectByUid(caeUid)
         val langMapEntities = respectDb.getLangMapEntityDao().selectAllByTableAndEntityId(
-            lmeTableId = CompatibleAppEntity.TABLE_ID,
+            lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST.id,
             lmeEntityUid1 = caeUid,
             lmeEntityUid2 = 0
         )
@@ -74,7 +75,7 @@ class CompatibleAppDataSourceDb(
             caeUid
         ).combine(
             respectDb.getLangMapEntityDao().selectAllByTableAndEntityIdAsFlow(
-                lmeTableId = CompatibleAppEntity.TABLE_ID,
+                lmeTopParentTypeId = LangMapEntity.TopParentType.RESPECT_MANIFEST.id,
                 lmeEntityUid1 = caeUid,
                 lmeEntityUid2 = 0
             )
@@ -87,7 +88,9 @@ class CompatibleAppDataSourceDb(
         loadParams: DataLoadParams
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         val appEntities = respectDb.getCompatibleAppEntityDao().selectAllAsFlow()
-        val langmaps = respectDb.getLangMapEntityDao().selectAllByTableId(CompatibleAppEntity.TABLE_ID)
+        val langmaps = respectDb.getLangMapEntityDao().selectAllByTopParentType(
+            LangMapEntity.TopParentType.RESPECT_MANIFEST.id
+        )
 
         return appEntities.combine(langmaps) { appEntities, langmaps ->
             DataLoadResult(
