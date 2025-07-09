@@ -15,13 +15,13 @@ abstract class LangMapEntityDao {
     @Query(
         """
         DELETE FROM LangMapEntity
-         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+         WHERE LangMapEntity.lmeTopParentType = :lmeTopParentType
            AND LangMapEntity.lmeTopParentUid1 = :lmeEntityUid1
            AND LangMapEntity.lmeTopParentUid2 = :lmeEntityUid2
     """
     )
-    abstract suspend fun deleteByTableAndEntityUid(
-        lmeTableId: Int,
+    abstract suspend fun deleteByTableAndTopParentType(
+        lmeTopParentType: Int,
         lmeEntityUid1: Long,
         lmeEntityUid2: Long = 0,
     )
@@ -30,24 +30,24 @@ abstract class LangMapEntityDao {
         """
         SELECT * 
           FROM LangMapEntity
-         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+         WHERE LangMapEntity.lmeTopParentType = :lmeTopParentType 
     """
     )
-    abstract fun selectAllByTableId(
-        lmeTableId: Int,
+    abstract fun selectAllByTopParentType(
+        lmeTopParentType: Int,
     ): Flow<List<LangMapEntity>>
 
     @Query(
         """
         SELECT * 
           FROM LangMapEntity
-         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+         WHERE LangMapEntity.lmeTopParentType = :lmeTopParentType
            AND LangMapEntity.lmeTopParentUid1 = :lmeEntityUid1
            AND LangMapEntity.lmeTopParentUid2 = :lmeEntityUid2
     """
     )
     abstract suspend fun selectAllByTableAndEntityId(
-        lmeTableId: Int,
+        lmeTopParentType: Int,
         lmeEntityUid1: Long,
         lmeEntityUid2: Long,
     ): List<LangMapEntity>
@@ -56,13 +56,13 @@ abstract class LangMapEntityDao {
         """
         SELECT * 
           FROM LangMapEntity
-         WHERE LangMapEntity.lmeTopParentType = :lmeTableId
+         WHERE LangMapEntity.lmeTopParentType = :lmeTopParentTypeId
            AND LangMapEntity.lmeTopParentUid1 = :lmeEntityUid1
            AND LangMapEntity.lmeTopParentUid2 = :lmeEntityUid2
     """
     )
     abstract fun selectAllByTableAndEntityIdAsFlow(
-        lmeTableId: Int,
+        lmeTopParentTypeId: Int,
         lmeEntityUid1: Long,
         lmeEntityUid2: Long,
     ): Flow<List<LangMapEntity>>
