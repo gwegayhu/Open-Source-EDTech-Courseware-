@@ -14,8 +14,11 @@ import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.app.appstate.AppUiState
+import world.respect.app.view.acknowledgement.AcknowledgementScreen
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
+import world.respect.app.view.splash.SplashScreen
+import world.respect.app.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
@@ -26,6 +29,7 @@ import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewMod
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
+import world.respect.app.viewmodel.splash.SplashViewModel
 import world.respect.navigation.RespectComposeNavController
 
 
@@ -41,9 +45,25 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = AppLauncher,
+        startDestination = Splash,
         modifier = modifier,
     ) {
+
+        composable<Splash> {
+            val viewModel: SplashViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            SplashScreen(viewModel)
+        }
+
+        composable<Acknowledgement> {
+            val viewModel: AcknowledgementViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            AcknowledgementScreen(viewModel)
+        }
 
         composable<AppLauncher> {
             val viewModel: AppLauncherViewModel = respectViewModel(

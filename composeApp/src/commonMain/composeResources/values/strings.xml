@@ -34,4 +34,6 @@
     <string name="more_info">More Info</string>
     <string name="remove">Remove</string>
     <string name="invalid_url">Invalid app Url</string>
+    <string name="supported_by">Supported by:</string>
+    <string name="network_powered_by">Network powered by:</string>
 </resources>

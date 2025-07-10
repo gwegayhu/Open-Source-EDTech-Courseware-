@@ -14,5 +14,10 @@ sealed class NavCommand(
         timestamp: Long= Clock.System.now().toEpochMilliseconds(),
     ): NavCommand(timestamp)
 
+    class NavigateAndClearBackStack(
+        val destination: AppDestination,
+        timestamp: Long = Clock.System.now().toEpochMilliseconds(),
+    ) : NavCommand(timestamp)
+
 }
 

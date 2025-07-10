@@ -21,6 +21,8 @@ import world.respect.app.datasource.SingleDataSourceProvider
 import world.respect.app.datasource.fakeds.FakeRespectAppDataSourceProvider
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
+import world.respect.app.viewmodel.splash.SplashViewModel
+import world.respect.app.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.assignments.AssignmentViewModel
@@ -81,7 +83,8 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
-
+    viewModelOf(::SplashViewModel)
+    viewModelOf(::AcknowledgementViewModel)
 
     // Uncomment this to switch to using fake data source provider for development purposes
 //     single<RespectAppDataSourceProvider> {

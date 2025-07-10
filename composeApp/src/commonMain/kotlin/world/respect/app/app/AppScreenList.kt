@@ -16,6 +16,12 @@ import kotlinx.serialization.Transient
  * type and then add a transient property
  */
 @Serializable
+object Splash : AppDestination
+
+@Serializable
+object Acknowledgement : AppDestination
+
+@Serializable
 sealed interface AppDestination
 
 @Serializable
