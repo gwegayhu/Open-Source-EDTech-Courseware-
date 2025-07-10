@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b7889017fae7f4ec5773f9443ce01c20",
+    "identityHash": "d360b62b5039d6138f46db125a42a231",
     "entities": [
       {
         "tableName": "CompatibleAppEntity",
@@ -494,11 +494,93 @@
             "ofeUid"
           ]
         }
+      },
+      {
+        "tableName": "OpdsFeedMetadataEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ofmeUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ofmeOfeUid` INTEGER NOT NULL, `ofmePropType` INTEGER NOT NULL, `ofmePropFk` INTEGER NOT NULL, `ofmeIdentifier` TEXT, `ofmeType` TEXT, `ofmeTitle` TEXT NOT NULL, `ofmeSubtitle` TEXT, `ofmeModified` TEXT, `ofmeDescription` TEXT, `ofmeItemsPerPage` INTEGER, `ofmeCurrentPage` INTEGER, `ofmeNumberOfItems` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "ofmeUid",
+            "columnName": "ofmeUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofmeOfeUid",
+            "columnName": "ofmeOfeUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofmePropType",
+            "columnName": "ofmePropType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofmePropFk",
+            "columnName": "ofmePropFk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofmeIdentifier",
+            "columnName": "ofmeIdentifier",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ofmeType",
+            "columnName": "ofmeType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ofmeTitle",
+            "columnName": "ofmeTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofmeSubtitle",
+            "columnName": "ofmeSubtitle",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ofmeModified",
+            "columnName": "ofmeModified",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ofmeDescription",
+            "columnName": "ofmeDescription",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ofmeItemsPerPage",
+            "columnName": "ofmeItemsPerPage",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "ofmeCurrentPage",
+            "columnName": "ofmeCurrentPage",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "ofmeNumberOfItems",
+            "columnName": "ofmeNumberOfItems",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "ofmeUid"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b7889017fae7f4ec5773f9443ce01c20')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd360b62b5039d6138f46db125a42a231')"
     ]
   }
 }

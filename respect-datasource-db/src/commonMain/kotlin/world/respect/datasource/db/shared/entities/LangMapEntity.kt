@@ -38,7 +38,9 @@ data class LangMapEntity(
 ) {
 
     enum class TopParentType(val id: Int) {
-        RESPECT_MANIFEST(1), OPDS_FEED(2), OPDS_PUBLICATION(3)
+        RESPECT_MANIFEST(RESPECT_MANIFEST_PARENT_ID),
+        OPDS_FEED(OPDS_FEED_PARENT_ID),
+        OPDS_PUBLICATION(ODPS_PUBLICATION_PARENT_ID)
     }
 
     enum class PropType(val id: Int) {
@@ -51,6 +53,12 @@ data class LangMapEntity(
 
 
     companion object {
+
+        const val RESPECT_MANIFEST_PARENT_ID = 1
+
+        const val OPDS_FEED_PARENT_ID = 2
+
+        const val ODPS_PUBLICATION_PARENT_ID = 3
 
         const val LANG_NONE = ""
 

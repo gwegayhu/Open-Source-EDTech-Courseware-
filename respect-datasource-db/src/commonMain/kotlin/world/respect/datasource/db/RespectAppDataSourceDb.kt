@@ -19,6 +19,6 @@ class RespectAppDataSourceDb(
     }
 
     override val opdsDataSource: OpdsDataSource by lazy {
-        OpdsDataSourceDb(respectDatabase, json)
+        OpdsDataSourceDb(respectDatabase, json, xxStringHasher)
     }
 }

@@ -4,7 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import world.respect.datasource.db.opds.daos.OpdsPublicationEntityDao.Companion.PUBLICATION_UIDS_FOR_FEED_UID_CTE
 import world.respect.datasource.db.shared.entities.LangMapEntity
+import world.respect.datasource.db.shared.entities.LangMapEntity.Companion.ODPS_PUBLICATION_PARENT_ID
+import world.respect.datasource.db.shared.entities.LangMapEntity.Companion.OPDS_FEED_PARENT_ID
 
 @Dao
 abstract class LangMapEntityDao {
@@ -66,5 +69,18 @@ abstract class LangMapEntityDao {
         lmeEntityUid1: Long,
         lmeEntityUid2: Long,
     ): Flow<List<LangMapEntity>>
+
+
+    @Query("""
+        WITH $PUBLICATION_UIDS_FOR_FEED_UID_CTE
+         
+        SELECT LangMapEntity.*
+          FROM LangMapEntity
+         WHERE (    LangMapEntity.lmeTopParentType = $OPDS_FEED_PARENT_ID
+                AND LangMapEntity.lmeTopParentUid1 = :feedUid)
+            OR (    LangMapEntity.lmeTopParentType = $ODPS_PUBLICATION_PARENT_ID
+                AND LangMapEntity.lmeTopParentUid1 IN (SELECT publicationUid FROM FeedPublicationUids))    
+    """)
+    abstract fun findAllByFeedUid(feedUid: Long): List<LangMapEntity>
 
 }

@@ -1,7 +1,6 @@
 package world.respect.datasource.db.opds
 
 import world.respect.datasource.db.shared.entities.LangMapEntity
-
 /**
  * The OPDS network models are represented in the database using various 1:many joins e.g. with
  * ReadiumLinkEntity, ReadiumSubjectEntity etc. These joins often represent nested
@@ -24,6 +23,14 @@ enum class OpdsParentType(
 ) {
 
     OPDS_FEED(1, LangMapEntity.TopParentType.OPDS_FEED),
-    OPDS_PUBLICATION(2, LangMapEntity.TopParentType.OPDS_PUBLICATION),
+    OPDS_PUBLICATION(2, LangMapEntity.TopParentType.OPDS_PUBLICATION);
+
+    companion object {
+
+        const val ID_FEED = 1
+
+        const val ID_PUBLICATION = 2
+
+    }
 
 }
