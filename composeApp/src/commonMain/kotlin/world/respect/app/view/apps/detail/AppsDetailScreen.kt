@@ -252,8 +252,10 @@ fun AppsDetailScreen(
 }
 
 @Composable
-fun NavigationList(navigation: ReadiumLink, onClickNavigation: (ReadiumLink) -> Unit) {
-
+fun NavigationList(
+    navigation: ReadiumLink,
+    onClickNavigation: (ReadiumLink) -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -263,7 +265,6 @@ fun NavigationList(navigation: ReadiumLink, onClickNavigation: (ReadiumLink) -> 
             }
     ) {
         val iconUrl = navigation.alternate?.find { it.rel?.contains("icon") == true }?.href
-        println("navigation icon $iconUrl")
         RespectAsyncImage(
             uri = iconUrl ?: "",
             contentDescription = "",

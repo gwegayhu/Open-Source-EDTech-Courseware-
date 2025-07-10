@@ -64,7 +64,8 @@ class AppsDetailViewModel(
                     _uiState.update {
                         it.copy(
                             appDetail = result,
-                            appIcon = route.manifestUrl.resolve(result.data?.icon.toString()).toString()
+                            appIcon = route.manifestUrl.resolve(result.data?.icon.toString())
+                                .toString()
                         )
                     }
 
@@ -112,8 +113,11 @@ class AppsDetailViewModel(
     }
 
     fun onClickPublication(publication: OpdsPublication) {
-        val publicationHref=  publication.links.firstOrNull()?.href.toString()
+
+        val publicationHref =
+            publication.links.find { it.rel?.equals(SELF) == true }?.href.toString()
         val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits.toString()
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail.create(
@@ -124,17 +128,17 @@ class AppsDetailViewModel(
             )
         )
     }
-    fun onClickNavigation(navigation: ReadiumLink){
+
+    fun onClickNavigation(navigation: ReadiumLink) {
         val navigationHref = navigation.href
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    LearningUnitList.create(
-                        opdsFeedUrl = route.manifestUrl.resolve(navigationHref)
-                    )
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitList.create(
+                    opdsFeedUrl = route.manifestUrl.resolve(navigationHref)
                 )
             )
-        }
-
+        )
+    }
 
 
     companion object {
@@ -142,6 +146,7 @@ class AppsDetailViewModel(
         val LESSON_HEADER = "lesson_header"
         val SCREENSHOT = "screenshot"
         val LEARNING_UNIT_LIST = "learning_unit_list"
+        val SELF = "self"
 
 
     }

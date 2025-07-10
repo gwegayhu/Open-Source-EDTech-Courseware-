@@ -49,6 +49,8 @@ import respect.composeapp.generated.resources.share
 import world.respect.app.appstate.getTitle
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.layout.ContentScale
+import world.respect.app.app.RespectAsyncImage
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailUiState
 
 @Composable
@@ -77,14 +79,18 @@ fun LearningUnitDetailScreen(
         item {
             ListItem(
                 leadingContent = {
-                    Box(
+                    val iconUrl = uiState.lessonDetail?.images?.find { it.type?.contains("image/png")==true }?.href
+                    RespectAsyncImage(
+                        uri = iconUrl ?: "",
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(100.dp)
-                            .background(Color.Gray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("", color = Color.White)
-                    }
+                            .size(120.dp)
+                            .clip(CircleShape)
+                            .border(1.dp,
+                                MaterialTheme.colorScheme.outline,
+                                CircleShape)
+                    )
                 },
                 headlineContent = {
                     Text(

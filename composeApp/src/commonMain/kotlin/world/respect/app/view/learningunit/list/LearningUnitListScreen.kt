@@ -60,6 +60,8 @@ fun LearningUnitListScreen(
         uiState = uiState,
         onClickLearningUnit = { viewModel.onClickLearningUnit(it) },
         onClickFilter = { viewModel.onClickFilter(it) },
+        onClickPublication = { viewModel.onClickPublication(it) },
+        onClickNavigation = { viewModel.onClickNavigation(it) }
     )
 }
 
@@ -68,6 +70,9 @@ fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
     onClickLearningUnit: (String) -> Unit,
     onClickFilter: (String) -> Unit,
+    onClickPublication: (OpdsPublication) -> Unit,
+    onClickNavigation: (ReadiumLink) -> Unit
+
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         uiState.lessonFilter.firstOrNull()?.let { facet ->
@@ -134,22 +139,27 @@ fun LearningUnitListScreen(
             ) { index, navigation ->
                 NavigationListItem(
                     navigation,
-                    onClickLearningUnit = { onClickLearningUnit(navigation.href) })
+                    onClickNavigation = {
+                        onClickNavigation(navigation)
+                    }
+                )
             }
 
             itemsIndexed(
                 items = uiState.publications,
                 key = { index, publications ->
                     publications.metadata.identifier.toString()
-                }) { index, publication ->
-                val href = publication.links.find { it.rel?.equals("self") == true }?.href
+                }
+            ) { index, publication ->
                 PublicationListItem(
                     publication,
-                    onClickLearningUnit = { onClickLearningUnit(href.toString()) })
+                    onClickPublication = {
+                        onClickPublication(publication)
+                    }
+                )
             }
 
             uiState.group.forEach { group ->
-                //Add group header ListItem using group.title
                 item {
                     ListItem(
                         headlineContent = {
@@ -168,7 +178,10 @@ fun LearningUnitListScreen(
                 ) { index, navigation ->
                     NavigationListItem(
                         navigation,
-                        onClickLearningUnit = { onClickLearningUnit(navigation.href) })
+                        onClickNavigation = {
+                            onClickNavigation(navigation)
+                        }
+                    )
                 }
                 itemsIndexed(
                     items = group.publications ?: emptyList(),
@@ -176,10 +189,12 @@ fun LearningUnitListScreen(
                         publication.metadata.identifier.toString()
                     }
                 ) { index, publication ->
-                    val href = publication.links.find { it.rel?.equals("self") == true }?.href
                     PublicationListItem(
                         publication,
-                        onClickLearningUnit = { onClickLearningUnit(href.toString()) })
+                        onClickPublication = {
+                            onClickPublication(publication)
+                        }
+                    )
                 }
 
             }
@@ -189,14 +204,69 @@ fun LearningUnitListScreen(
 }
 
 @Composable
-fun PublicationListItem(
-    publication: OpdsPublication,
-    onClickLearningUnit: (String) -> Unit
+fun NavigationListItem(
+    navigation: ReadiumLink,
+    onClickNavigation: (ReadiumLink) -> Unit
 ) {
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClickLearningUnit(publication.links.firstOrNull()?.href.toString()) },
+            .clickable { onClickNavigation(navigation) },
+
+        leadingContent = {
+            val iconUrl = navigation.alternate?.find { it.rel?.contains("icon") == true }?.href
+            RespectAsyncImage(
+                uri = iconUrl ?: "",
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+            )
+        },
+
+        headlineContent = {
+            Text(
+                text = navigation.title.toString(),
+            )
+        },
+
+        supportingContent = {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    text = stringResource(Res.string.clazz),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = navigation.type.toString()
+                    )
+                    Text(
+                        text = "${stringResource(Res.string.duration)} - ${navigation.duration}",
+                    )
+                }
+            }
+        },
+
+        trailingContent = {
+            Icon(
+                imageVector = Icons.Filled.ArrowCircleDown,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    )
+}
+
+@Composable
+fun PublicationListItem(
+    publication: OpdsPublication, onClickPublication: (OpdsPublication) -> Unit
+) {
+    ListItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClickPublication(publication) },
 
         leadingContent = {
             RespectAsyncImage(
@@ -229,61 +299,6 @@ fun PublicationListItem(
                     )
                     Text(
                         text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
-                    )
-                }
-            }
-        },
-
-        trailingContent = {
-            Icon(
-                imageVector = Icons.Filled.ArrowCircleDown,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    )
-}
-
-@Composable
-fun NavigationListItem(
-    navigation: ReadiumLink,
-    onClickLearningUnit: (String) -> Unit
-) {
-    ListItem(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClickLearningUnit(navigation.href) },
-
-        leadingContent = {
-            RespectAsyncImage(
-                uri = "",
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
-            )
-        },
-
-        headlineContent = {
-            Text(
-                text = navigation.title.toString(),
-            )
-        },
-
-        supportingContent = {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text = stringResource(Res.string.clazz),
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        text = navigation.type.toString()
-                    )
-                    Text(
-                        text = "${stringResource(Res.string.duration)} - ${navigation.duration}",
                     )
                 }
             }

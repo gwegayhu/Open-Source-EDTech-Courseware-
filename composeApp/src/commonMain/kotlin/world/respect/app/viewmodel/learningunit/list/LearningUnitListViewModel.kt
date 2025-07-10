@@ -3,6 +3,7 @@ package world.respect.app.viewmodel.learningunit.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,6 +22,7 @@ import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datasource.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 
@@ -92,5 +94,34 @@ class LearningUnitListViewModel(
                 )
             )
         )
+    }
+    fun onClickPublication(publication: OpdsPublication) {
+        val publicationHref = publication.links.find { it.rel?.contains(SELF) == true }?.href.toString()
+        val refererUrl = route.opdsFeedUrl.resolve(publicationHref).toString()
+
+        println("LESSON $publicationHref ${route.opdsFeedUrl.resolve(publicationHref)}")
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitDetail.create(
+                    learningUnitManifestUrl = route.opdsFeedUrl.resolve(publicationHref),
+                    refererUrl = Url(refererUrl),
+                    expectedIdentifier = publication.metadata.identifier.toString()
+                )
+            )
+        )
+    }
+    fun onClickNavigation(navigation: ReadiumLink){
+        val navigationHref = navigation.href
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitList.create(
+                    opdsFeedUrl = route.opdsFeedUrl.resolve(navigationHref)
+                )
+            )
+        )
+    }
+    companion object{
+        val SELF = "self"
+
     }
 }
