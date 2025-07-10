@@ -1,0 +1,29 @@
+appId:  world.respect.app
+---
+- clearState:  world.respect.app
+- launchApp
+- assertVisible:
+    id: "app_title"
+    text: "Apps"
+- tapOn:
+    id: "floating_action_button"
+- tapOn: "Add from Link"
+- tapOn: "Link*"
+- inputText: "https://respect.world/respect-ds/case_valid/appmanifest.json"
+- tapOn: "Next"
+- assertVisible:
+    id: "app_title"
+    text: "App detail"
+- assertVisible: "My app"
+- assertVisible: "Try it"
+- assertVisible: "Add App"
+- tapOn: "Add App"
+- assertVisible: "Lessons"
+#- tapOn:                    #Click on Lessons or "Arrow icon"
+#   id: "profile_icon"   #test id is inappropriate for this icon
+#   index: 2
+- assertVisible: "Grade 1"
+- tapOn: "Grade 1"
+- assertVisible: "Play"
+- assertVisible: "App name"
+- assertVisible: "Example listing publications"
