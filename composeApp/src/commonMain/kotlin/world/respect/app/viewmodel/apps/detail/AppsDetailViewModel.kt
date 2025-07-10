@@ -21,9 +21,13 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.opds.model.LangMapStringValue
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.opds.model.ReadiumContributorStringValue
 import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datasource.opds.model.ReadiumMetadata
+import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 import world.respect.datasource.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
@@ -80,6 +84,7 @@ class AppsDetailViewModel(
                                     it.copy(
                                         publications = result.data?.publications ?: emptyList(),
                                         navigation = result.data?.navigation ?: emptyList(),
+                                        group = result.data?.groups ?: emptyList()
                                     )
                                 }
                             }
@@ -106,6 +111,7 @@ class AppsDetailViewModel(
     }
 
     fun onClickLearningUnit(href: String) {
+        println("HREF ADV $href")
         val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits.toString()
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
@@ -122,6 +128,9 @@ class AppsDetailViewModel(
     companion object {
         val BUTTONS_ROW = "buttons_row"
         val LESSON_HEADER = "lesson_header"
+        val SCREENSHOT = "screenshot"
+        val LEARNING_UNIT_LIST = "learning_unit_list"
+
 
     }
 }

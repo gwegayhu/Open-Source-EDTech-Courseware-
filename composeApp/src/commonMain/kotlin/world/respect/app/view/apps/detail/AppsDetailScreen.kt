@@ -48,7 +48,9 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.BUTTONS_ROW
+import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LEARNING_UNIT_LIST
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
+import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.SCREENSHOT
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
@@ -97,7 +99,9 @@ fun AppsDetailScreen(
                     Text(text = appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(text = "Desscription")
+                    Text(text = "Desc"
+                        //appDetail?.description?.getTitle() ?: ""
+                    )
                 },
                 trailingContent = {
                     IconButton(onClick = { /* Options */ }) {
@@ -131,7 +135,7 @@ fun AppsDetailScreen(
             }
         }
 
-        item {
+        item(key = SCREENSHOT) {
             val screenshots = appDetail?.screenshots.orEmpty()
 
             if (screenshots.isNotEmpty()) {
@@ -180,7 +184,7 @@ fun AppsDetailScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        item {
+        item(key = LEARNING_UNIT_LIST) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(horizontal = 4.dp)
