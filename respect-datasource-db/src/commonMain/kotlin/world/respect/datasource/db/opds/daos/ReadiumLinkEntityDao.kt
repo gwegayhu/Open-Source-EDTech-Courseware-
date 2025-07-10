@@ -20,6 +20,14 @@ abstract class ReadiumLinkEntityDao {
     abstract suspend fun findAllByFeedUid(feedUid: Long): List<ReadiumLinkEntity>
 
     @Query("""
+        SELECT ReadiumLinkEntity.*
+          FROM ReadiumLinkEntity
+         WHERE ReadiumLinkEntity.rleOpdsParentType = ${OpdsParentType.ID_PUBLICATION}
+           AND ReadiumLinkEntity.rleOpdsParentUid = :publicationUid
+    """)
+    abstract suspend fun findAllByPubUid(publicationUid: Long): List<ReadiumLinkEntity>
+
+    @Query("""
         WITH $PUBLICATION_UIDS_FOR_FEED_UID_CTE 
         
        DELETE
@@ -27,6 +35,14 @@ abstract class ReadiumLinkEntityDao {
         WHERE $LINK_ENTITIES_FOR_FEEDUID_WHERE_CLAUSE
     """)
     abstract suspend fun deleteAllByFeedUid(feedUid: Long)
+
+    @Query(""" 
+       DELETE
+         FROM ReadiumLinkEntity
+        WHERE ReadiumLinkEntity.rleOpdsParentUid = :publicationUid
+          AND ReadiumLinkEntity.rleOpdsParentType = ${OpdsParentType.ID_PUBLICATION}
+    """)
+    abstract suspend fun deleteAllByPublicationUid(publicationUid: Long)
 
     @Insert
     abstract suspend fun insertList(entities: List<ReadiumLinkEntity>)

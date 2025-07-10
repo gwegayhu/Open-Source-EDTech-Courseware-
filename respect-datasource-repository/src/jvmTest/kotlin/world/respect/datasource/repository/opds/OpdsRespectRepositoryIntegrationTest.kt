@@ -31,7 +31,9 @@ import world.respect.libutil.findFreePort
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 class OpdsRespectRepositoryIntegrationTest {
 
@@ -106,15 +108,21 @@ class OpdsRespectRepositoryIntegrationTest {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     fun givenOpdsFeed_whenLoadOpdsFeed_thenFlowWillLoadIt() {
         opdsIntegrationTest {
             val url = Url("http://localhost:$port/resources/index.json")
             runBlocking {
+                db.getReadiumLinkEntityDao().findAllByFeedUid(0)
+
+                val loadStart = Clock.System.now().toEpochMilliseconds()
                 repository.loadOpdsFeed(url, DataLoadParams()).filter {
                     it is DataLoadResult && it.data != null
                 }.test(timeout = 10.seconds) {
                     val data = awaitItem()
+                    val waitTime = Clock.System.now().toEpochMilliseconds() - loadStart
+                    println("Loaded in $waitTime ms")
                     assertEquals("Main Menu", data.dataOrNull()?.metadata?.title)
                     cancelAndIgnoreRemainingEvents()
                 }
@@ -122,17 +130,21 @@ class OpdsRespectRepositoryIntegrationTest {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     fun givenOpdsPublication_whenLoadedThenWillEmitFlow() {
         opdsIntegrationTest {
             val url = Url("http://localhost:$port/resources/lesson001.json")
             runBlocking {
+                val loadStart = Clock.System.now().toEpochMilliseconds()
                 repository.loadOpdsPublication(
                     url, DataLoadParams(), null, null
                 ).filter {
                     it is DataLoadResult && it.data != null
                 }.test(timeout = 10.seconds) {
                     val data = awaitItem()
+                    val waitTime = Clock.System.now().toEpochMilliseconds() - loadStart
+                    println("Loaded in $waitTime ms")
 
                     assertEquals(LangMapStringValue("Lesson 001"),
                         data.dataOrNull()?.metadata?.title)

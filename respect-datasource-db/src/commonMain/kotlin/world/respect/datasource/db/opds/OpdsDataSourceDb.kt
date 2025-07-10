@@ -1,10 +1,10 @@
 package world.respect.datasource.db.opds
 
 import androidx.room.Transactor
+import androidx.room.useReaderConnection
 import androidx.room.useWriterConnection
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadParams
@@ -12,6 +12,7 @@ import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.db.opds.adapters.OpdsFeedEntities
+import world.respect.datasource.db.opds.adapters.OpdsPublicationEntities
 import world.respect.datasource.db.opds.adapters.asEntities
 import world.respect.datasource.db.opds.adapters.asModel
 import world.respect.datasource.db.shared.entities.LangMapEntity
@@ -65,6 +66,8 @@ class OpdsDataSourceDb(
 
     override suspend fun updateOpdsPublication(publication: DataLoadResult<OpdsPublication>) {
         val pubData = publication.data ?: return
+        val url = publication.metaInfo.requireUrl()
+
         val publicationEntities = pubData.asEntities(
             dataLoadResult = publication,
             primaryKeyGenerator = primaryKeyGenerator,
@@ -77,13 +80,24 @@ class OpdsDataSourceDb(
 
         respectDatabase.useWriterConnection { con ->
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                val oldPubUid = respectDatabase.getOpdsPublicationEntityDao().getUidByUrlHash(
+                    xxStringHasher.hash(url.toString())
+                )
+
                 respectDatabase.getLangMapEntityDao().deleteByTableAndTopParentType(
                     lmeTopParentType = LangMapEntity.TopParentType.OPDS_PUBLICATION.id,
-                    lmeEntityUid1 = publicationEntities.opdsPublicationEntity.opeUid,
+                    lmeEntityUid1 = oldPubUid,
                 )
+                respectDatabase.getReadiumLinkEntityDao().deleteAllByPublicationUid(oldPubUid)
+                respectDatabase.getOpdsPublicationEntityDao().deleteByUid(oldPubUid)
+
+                respectDatabase.getOpdsPublicationEntityDao().insertList(
+                    listOf(publicationEntities.opdsPublicationEntity)
+                )
+                respectDatabase.getLangMapEntityDao().insertAsync(publicationEntities.langMapEntities)
+                respectDatabase.getReadiumLinkEntityDao().insertList(publicationEntities.linkEntities)
             }
         }
-
     }
 
     override fun loadOpdsFeed(
@@ -93,17 +107,19 @@ class OpdsDataSourceDb(
         return respectDatabase.getOpdsFeedEntityDao().findByUrlHashAsFlow(
             xxStringHasher.hash(url.toString())
         ).map { feedEntity ->
-            feedEntity?.let {
-                OpdsFeedEntities(
-                    opdsFeed = feedEntity,
-                    feedMetaData = respectDatabase.getOpdsFeedMetadataEntityDao().findByFeedUid(
-                        feedEntity.ofeUid),
-                    langMapEntities = respectDatabase.getLangMapEntityDao().findAllByFeedUid(feedEntity.ofeUid),
-                    linkEntities =respectDatabase.getReadiumLinkEntityDao().findAllByFeedUid(feedEntity.ofeUid),
-                    publications = respectDatabase.getOpdsPublicationEntityDao().findByFeedUid(
-                        feedEntity.ofeUid),
-                    groups = respectDatabase.getOpdsGroupEntityDao().findByFeedUid(feedEntity.ofeUid),
-                ).asModel(json)
+            respectDatabase.takeIf { feedEntity != null }?.useReaderConnection { con ->
+                feedEntity?.let {
+                    OpdsFeedEntities(
+                        opdsFeed = feedEntity,
+                        feedMetaData = respectDatabase.getOpdsFeedMetadataEntityDao().findByFeedUid(
+                            feedEntity.ofeUid),
+                        langMapEntities = respectDatabase.getLangMapEntityDao().findAllByFeedUid(feedEntity.ofeUid),
+                        linkEntities =respectDatabase.getReadiumLinkEntityDao().findAllByFeedUid(feedEntity.ofeUid),
+                        publications = respectDatabase.getOpdsPublicationEntityDao().findByFeedUid(
+                            feedEntity.ofeUid),
+                        groups = respectDatabase.getOpdsGroupEntityDao().findByFeedUid(feedEntity.ofeUid),
+                    ).asModel(json)
+                }
             } ?: DataLoadResult()
         }
     }
@@ -114,6 +130,20 @@ class OpdsDataSourceDb(
         referrerUrl: Url?,
         expectedPublicationId: String?
     ): Flow<DataLoadState<OpdsPublication>> {
-        return emptyFlow()
+        val urlHash = xxStringHasher.hash(url.toString())
+
+        return respectDatabase.getOpdsPublicationEntityDao().findByUrlHashAsFlow(urlHash).map { entity ->
+            entity?.let {
+                OpdsPublicationEntities(
+                    opdsPublicationEntity = entity,
+                    langMapEntities = respectDatabase.getLangMapEntityDao().selectAllByTableAndEntityId(
+                        lmeTopParentType = LangMapEntity.ODPS_PUBLICATION_PARENT_ID,
+                        lmeEntityUid1 = entity.opeUid,
+                        lmeEntityUid2 = 0
+                    ),
+                    linkEntities = respectDatabase.getReadiumLinkEntityDao().findAllByFeedUid(entity.opeUid)
+                ).asModel(json)
+            } ?: DataLoadResult()
+        }
     }
 }

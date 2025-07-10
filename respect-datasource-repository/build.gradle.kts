@@ -29,6 +29,7 @@ kotlin {
         }
 
         jvmTest.dependencies {
+            implementation(kotlin("test"))
             implementation(projects.respectLibXxhash)
             implementation(projects.respectLibUtil)
             implementation(libs.turbine)
