@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7aa6e66e5b38d9ef1cfa9f8a640c9e77",
+    "identityHash": "b7889017fae7f4ec5773f9443ce01c20",
     "entities": [
       {
         "tableName": "CompatibleAppEntity",
@@ -268,7 +268,7 @@
       },
       {
         "tableName": "OpdsPublicationEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`opeUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `opeOfeUid` INTEGER NOT NULL, `opeOfeIndex` INTEGER NOT NULL, `opeUrl` TEXT, `opeUrlHash` INTEGER NOT NULL, `opeLastModified` INTEGER NOT NULL, `opeMdIdentifier` TEXT, `opeMdLanguage` TEXT, `opeMdType` TEXT, `opeMdDescription` TEXT, `opeMdNumberOfPages` INTEGER, `opeMdDuration` REAL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`opeUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `opeOfeUid` INTEGER NOT NULL, `opeOgeUid` INTEGER NOT NULL, `opeIndex` INTEGER NOT NULL, `opeUrl` TEXT, `opeUrlHash` INTEGER NOT NULL, `opeLastModified` INTEGER NOT NULL, `opeMdIdentifier` TEXT, `opeMdLanguage` TEXT, `opeMdType` TEXT, `opeMdDescription` TEXT, `opeMdNumberOfPages` INTEGER, `opeMdDuration` REAL)",
         "fields": [
           {
             "fieldPath": "opeUid",
@@ -283,8 +283,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "opeOfeIndex",
-            "columnName": "opeOfeIndex",
+            "fieldPath": "opeOgeUid",
+            "columnName": "opeOgeUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "opeIndex",
+            "columnName": "opeIndex",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -492,7 +498,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7aa6e66e5b38d9ef1cfa9f8a640c9e77')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b7889017fae7f4ec5773f9443ce01c20')"
     ]
   }
 }

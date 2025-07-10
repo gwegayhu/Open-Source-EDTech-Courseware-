@@ -51,8 +51,9 @@ fun OpdsGroup.asEntities(
             primaryKeyGenerator = primaryKeyGenerator,
             json = json,
             xxStringHasher = xxStringHasher,
-            opeOfeUid = ofeUid,
-            opeOfeIndex = pubIndex
+            feedUid = ofeUid,
+            groupUid = groupUid,
+            feedIndex = pubIndex
         )
     } ?: emptyList()
 

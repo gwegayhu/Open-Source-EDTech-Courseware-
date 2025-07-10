@@ -29,8 +29,9 @@ fun OpdsPublication.asEntities(
     primaryKeyGenerator: PrimaryKeyGenerator,
     json: Json,
     xxStringHasher: XXStringHasher,
-    opeOfeUid: Long,
-    opeOfeIndex: Int,
+    feedUid: Long,
+    groupUid: Long,
+    feedIndex: Int,
 ): OpdsPublicationEntities {
     val opeUid = primaryKeyGenerator.nextId(OpdsPublicationEntity.TABLE_ID)
 
@@ -64,8 +65,9 @@ fun OpdsPublication.asEntities(
     return OpdsPublicationEntities(
         opdsPublicationEntity = OpdsPublicationEntity(
             opeUid = opeUid,
-            opeOfeUid = opeOfeUid,
-            opeOfeIndex = opeOfeIndex,
+            opeOfeUid = feedUid,
+            opeOgeUid = groupUid,
+            opeIndex = feedIndex,
             opeUrl = dataLoadResult?.metaInfo?.url,
             opeUrlHash = dataLoadResult?.metaInfo?.url?.toString()?.let { xxStringHasher.hash(it) } ?: 0,
             opeLastModified = dataLoadResult?.metaInfo?.lastModified ?: 0,

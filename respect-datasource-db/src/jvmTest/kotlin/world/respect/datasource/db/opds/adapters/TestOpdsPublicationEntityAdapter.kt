@@ -30,8 +30,9 @@ class TestOpdsPublicationEntityAdapter {
             primaryKeyGenerator = pkGenerator,
             json = json,
             xxStringHasher = XXStringHasherCommonJvm(),
-            opeOfeUid = 0,
-            opeOfeIndex = 0,
+            feedUid = 0,
+            feedIndex = 0,
+            groupUid = 0
         )
 
         val model = entities.asModel(

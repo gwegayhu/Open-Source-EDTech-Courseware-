@@ -7,10 +7,12 @@ import io.ktor.http.Url
 
 /**
  * @property opeUid auto generated primary key
- * @property opeOfeUid where this OpdsPublicationEntity is part of a Feed, the UID of the feed,
+ * @property opeOfeUid where this OpdsPublicationEntity is part of a feed, the UID of the feed,
  *           otherwise 0
- * @property opeOfeIndex where this OpdsPublicationEntity is part of a Feed, the index of this
- *           publication within the feed.
+ * @property opeOgeUid where this OpdsPublicationEntity is part of a group, the UID of the group,
+ *           otherwise 0
+ * @property opeIndex where this OpdsPublicationEntity is part of a feed or group, the index of this
+ *           publication within the feed or group respectively.
  * @property
  */
 @Entity
@@ -18,7 +20,8 @@ class OpdsPublicationEntity(
     @PrimaryKey(autoGenerate = true)
     val opeUid: Long = 0,
     val opeOfeUid: Long,
-    val opeOfeIndex: Int,
+    val opeOgeUid: Long,
+    val opeIndex: Int,
     val opeUrl: Url?,
     val opeUrlHash: Long,
     val opeLastModified: Long,
