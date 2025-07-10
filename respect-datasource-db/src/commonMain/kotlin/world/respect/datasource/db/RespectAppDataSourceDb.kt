@@ -6,12 +6,14 @@ import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.db.compatibleapps.CompatibleAppDataSourceDb
 import world.respect.datasource.db.opds.OpdsDataSourceDb
 import world.respect.datasource.opds.OpdsDataSource
+import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 
 class RespectAppDataSourceDb(
     private val respectDatabase: RespectDatabase,
     private val json: Json,
     private val xxStringHasher: XXStringHasher,
+    private val primaryKeyGenerator: PrimaryKeyGenerator,
 ): RespectAppDataSourceLocal {
 
     override val compatibleAppsDataSource: CompatibleAppsDataSourceLocal by lazy {
@@ -19,6 +21,6 @@ class RespectAppDataSourceDb(
     }
 
     override val opdsDataSource: OpdsDataSource by lazy {
-        OpdsDataSourceDb(respectDatabase, json, xxStringHasher)
+        OpdsDataSourceDb(respectDatabase, json, xxStringHasher, primaryKeyGenerator)
     }
 }

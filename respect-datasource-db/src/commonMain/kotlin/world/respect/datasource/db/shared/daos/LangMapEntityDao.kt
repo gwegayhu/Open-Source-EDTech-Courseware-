@@ -76,11 +76,29 @@ abstract class LangMapEntityDao {
          
         SELECT LangMapEntity.*
           FROM LangMapEntity
-         WHERE (    LangMapEntity.lmeTopParentType = $OPDS_FEED_PARENT_ID
+         WHERE $LANG_MAPS_FOR_FEEDUID_CLAUSE
+    """)
+    abstract suspend fun findAllByFeedUid(feedUid: Long): List<LangMapEntity>
+
+    @Query("""
+        WITH $PUBLICATION_UIDS_FOR_FEED_UID_CTE
+        
+      DELETE FROM LangMapEntity
+       WHERE $LANG_MAPS_FOR_FEEDUID_CLAUSE
+    """)
+    abstract suspend fun deleteAllByFeedUid(feedUid: Long)
+
+    companion object {
+
+        const val LANG_MAPS_FOR_FEEDUID_CLAUSE = """
+               (    LangMapEntity.lmeTopParentType = $OPDS_FEED_PARENT_ID
                 AND LangMapEntity.lmeTopParentUid1 = :feedUid)
             OR (    LangMapEntity.lmeTopParentType = $ODPS_PUBLICATION_PARENT_ID
                 AND LangMapEntity.lmeTopParentUid1 IN (SELECT publicationUid FROM FeedPublicationUids))    
-    """)
-    abstract fun findAllByFeedUid(feedUid: Long): List<LangMapEntity>
+        """
+
+
+    }
+
 
 }

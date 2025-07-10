@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.ktor.http.Url
 
+/**
+ * @property ofeUid the uid of the feed: will always be the xxhash of the URL
+ */
 @Entity
 class OpdsFeedEntity(
     @PrimaryKey

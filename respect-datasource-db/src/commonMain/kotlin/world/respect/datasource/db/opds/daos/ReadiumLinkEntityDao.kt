@@ -1,6 +1,7 @@
 package world.respect.datasource.db.opds.daos
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.daos.OpdsPublicationEntityDao.Companion.PUBLICATION_UIDS_FOR_FEED_UID_CTE
@@ -14,11 +15,28 @@ abstract class ReadiumLinkEntityDao {
 
        SELECT ReadiumLinkEntity.*
          FROM ReadiumLinkEntity
-        WHERE (     ReadiumLinkEntity.rleOpdsParentType = ${OpdsParentType.ID_FEED}
-                AND ReadiumLinkEntity.rleOpdsParentUid = :feedUid)
-          OR  (     ReadiumLinkEntity.rleOpdsParentType = ${OpdsParentType.ID_PUBLICATION}
-                AND ReadiumLinkEntity.rleOpdsParentUid IN (SELECT publicationUid FROM FeedPublicationUids))
+        WHERE $LINK_ENTITIES_FOR_FEEDUID_WHERE_CLAUSE
     """)
     abstract suspend fun findAllByFeedUid(feedUid: Long): List<ReadiumLinkEntity>
 
+    @Query("""
+        WITH $PUBLICATION_UIDS_FOR_FEED_UID_CTE 
+        
+       DELETE
+         FROM ReadiumLinkEntity
+        WHERE $LINK_ENTITIES_FOR_FEEDUID_WHERE_CLAUSE
+    """)
+    abstract suspend fun deleteAllByFeedUid(feedUid: Long)
+
+    @Insert
+    abstract suspend fun insertList(entities: List<ReadiumLinkEntity>)
+
+    companion object {
+        const val LINK_ENTITIES_FOR_FEEDUID_WHERE_CLAUSE = """
+              (     ReadiumLinkEntity.rleOpdsParentType = ${OpdsParentType.ID_FEED}
+                AND ReadiumLinkEntity.rleOpdsParentUid = :feedUid)
+          OR  (     ReadiumLinkEntity.rleOpdsParentType = ${OpdsParentType.ID_PUBLICATION}
+                AND ReadiumLinkEntity.rleOpdsParentUid IN (SELECT publicationUid FROM FeedPublicationUids))  
+        """
+    }
 }
