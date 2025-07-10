@@ -8,9 +8,11 @@ plugins {
     alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
+
 compose.resources {
     publicResClass = true
 }
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -47,6 +49,7 @@ kotlin {
             api(projects.respectLibXxhash)
             implementation(projects.respectDatasourceRepository)
             implementation(projects.respectDatasourceHttp)
+            implementation(projects.respectLibPrimarykeygen)
 
             implementation(compose.material)
             implementation(compose.material3)
