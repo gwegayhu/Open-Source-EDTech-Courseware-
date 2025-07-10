@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -105,7 +104,7 @@ fun AppListScreen(
                 },
                 leadingContent = {
                     RespectAsyncImage(
-                        uri = appData?.icon?.toString() ?: "", // Safely get the icon URL
+                        uri = appData?.icon?.toString() ?: "",
                         contentDescription = appData?.name?.getTitle() ?: "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

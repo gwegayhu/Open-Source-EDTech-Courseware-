@@ -21,13 +21,9 @@ import world.respect.datasource.DataLoadParams
 import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.opds.model.LangMapStringValue
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumContributorStringValue
 import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.datasource.opds.model.ReadiumMetadata
-import world.respect.datasource.opds.model.ReadiumSubjectStringValue
 import world.respect.datasource.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand

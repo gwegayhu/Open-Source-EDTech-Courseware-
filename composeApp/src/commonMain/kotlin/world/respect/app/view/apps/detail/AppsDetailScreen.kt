@@ -92,15 +92,14 @@ fun AppsDetailScreen(
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .size(80.dp)
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
                 },
                 headlineContent = {
                     Text(text = appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(text = "Desc"
-                        //appDetail?.description?.getTitle() ?: ""
+                    Text(text = appDetail?.description?.getTitle() ?: "",
+                        maxLines = 1
                     )
                 },
                 trailingContent = {
