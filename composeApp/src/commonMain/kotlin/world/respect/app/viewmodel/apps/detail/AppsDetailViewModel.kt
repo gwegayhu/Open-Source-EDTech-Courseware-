@@ -33,6 +33,7 @@ data class AppsDetailUiState(
     val publications: List<OpdsPublication> = emptyList(),
     val navigation: List<ReadiumLink> = emptyList(),
     val group: List<OpdsGroup> = emptyList(),
+    val appIcon: String? = null
 )
 
 class AppsDetailViewModel(
@@ -62,9 +63,11 @@ class AppsDetailViewModel(
                 if (result is DataReadyState) {
                     _uiState.update {
                         it.copy(
-                            appDetail = result
+                            appDetail = result,
+                            appIcon = route.manifestUrl.resolve(result.data?.icon.toString()).toString()
                         )
                     }
+
                 }
 
                 result.dataOrNull()?.learningUnits?.also { learningUnitsUri ->
@@ -83,6 +86,8 @@ class AppsDetailViewModel(
                                         group = result.data.groups ?: emptyList()
                                     )
                                 }
+                                println("Nav list- ${result.data?.navigation}")
+
                             }
 
                             else -> {}
@@ -118,6 +123,9 @@ class AppsDetailViewModel(
                 )
             )
         )
+    }
+    fun onClickNavigation(){
+
     }
 
 

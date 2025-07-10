@@ -88,7 +88,8 @@ fun AppsDetailScreen(
             ListItem(
                 leadingContent = {
                     RespectAsyncImage(
-                        uri = appDetail?.icon.toString(),
+                        uri = "https://respect.world/respect-ds/case_valid/icon.webp",
+                           // uiState.appIcon.toString(),
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -255,8 +256,10 @@ fun NavigationList(navigation: ReadiumLink, onClickLearningUnit: (String) -> Uni
                 onClickLearningUnit(navigation.href)
             }
     ) {
+        val iconUrl = navigation.alternate?.find { it.rel?.contains("icon") == true }?.href
+        println("navigation icon $iconUrl")
         RespectAsyncImage(
-            uri = "",
+            uri = iconUrl?:"",
             contentDescription = "",
             contentScale = ContentScale.Fit,
             modifier = Modifier
