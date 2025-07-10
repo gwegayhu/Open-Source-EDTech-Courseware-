@@ -30,14 +30,9 @@ kotlin {
         }
 
         jvmTest.dependencies {
-
+            implementation(kotlin("test"))
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
     }
 }
 

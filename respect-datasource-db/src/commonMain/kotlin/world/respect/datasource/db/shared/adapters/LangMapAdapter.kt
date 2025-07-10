@@ -11,6 +11,7 @@ fun LangMap.asEntities(
     lmeTopParentType: LangMapEntity.TopParentType,
     lmeTopParentUid1: Long,
     lmeTopParentUid2: Long = 0,
+    lmePropFk: Long,
     lmePropType: LangMapEntity.PropType,
 ): List<LangMapEntity> {
     return when(this) {
@@ -21,6 +22,7 @@ fun LangMap.asEntities(
                     lmeTopParentUid1 = lmeTopParentUid1,
                     lmeTopParentUid2 = lmeTopParentUid2,
                     lmePropType = lmePropType,
+                    lmePropFk = lmePropFk,
                     lmeLang = "",
                     lmeRegion = null,
                     lmeValue = value,
@@ -42,6 +44,7 @@ fun LangMap.asEntities(
                     lmeTopParentUid1 = lmeTopParentUid1,
                     lmeTopParentUid2 = lmeTopParentUid2,
                     lmePropType = lmePropType,
+                    lmePropFk = lmePropFk,
                     lmeLang = langCode,
                     lmeRegion = region,
                     lmeValue = value,

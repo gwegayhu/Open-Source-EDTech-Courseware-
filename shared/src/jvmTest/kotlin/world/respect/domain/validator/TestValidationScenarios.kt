@@ -16,7 +16,7 @@ import org.koin.test.get
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.di.jvmKoinAppModule
 import world.respect.testutil.copyResourcesToTempDir
-import world.respect.testutil.findFreePort
+import world.respect.libutil.findFreePort
 import world.respect.testutil.recursiveFindAndReplace
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -11,9 +11,15 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 /**
- * Manage generation of unique primary keys a list of tables. Based on DoorPrimaryKeyManager. This
- * is inspired by the Twitter snowflake approach. It is slightly modified so that the 64bit keys are
- * generated as follows:
+ * Manage generation of unique primary keys a list of tables. Based on DoorPrimaryKeyManager. It is
+ * often helpful to get a unique primary key _before_ committing anything to the database (e.g. when
+ * creating entities that are joined such as a publication and link entities. The link entities
+ * require the publication uid to use as a foreign key. This allows creating entities with the
+ * appropriate foreign keys set without having to commit to the database (especially helpful in
+ * screens where data can be edited that the user may discard).
+ *
+ * This is inspired by the Twitter snowflake approach. It is slightly modified so that the 64bit
+ * keys are generated as follows:
  *
  * 31 bits: unix timestamp (offset by CUSTOM_EPOCH)
  * 20 bits: Node Id

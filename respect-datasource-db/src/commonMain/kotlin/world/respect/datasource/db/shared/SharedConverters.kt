@@ -1,6 +1,9 @@
 package world.respect.datasource.db.shared
 
 import androidx.room.TypeConverter
+import com.eygraber.uri.Uri
+import io.ktor.http.Url
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
 import world.respect.datasource.db.shared.entities.LangMapEntity
 
@@ -34,6 +37,36 @@ class SharedConverters {
     @TypeConverter
     fun toLangMapPropType(value: Int): LangMapEntity.PropType {
         return LangMapEntity.PropType.entries.first { it.id == value }
+    }
+
+    @TypeConverter
+    fun fromLocalDateTime(value: LocalDateTime?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toLocalDateTime(value: String?): LocalDateTime? {
+        return value?.let { LocalDateTime.parse(it) }
+    }
+
+    @TypeConverter
+    fun fromUri(value: Uri?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toUri(value: String?): Uri? {
+        return value?.let { Uri.parse(it) }
+    }
+
+    @TypeConverter
+    fun fromUrl(value: Url?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toUrl(value: String?): Url? {
+        return value?.let { Url(it) }
     }
 
 }

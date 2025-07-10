@@ -49,10 +49,12 @@ fun DataLoadResult<RespectAppManifest>.asEntities(
             lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST,
             lmeTopParentUid1 = caeUid,
             lmePropType= RESPECT_MANIFEST_NAME,
+            lmePropFk = 0,
         ) + (manifest.description?.asEntities(
             lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST,
             lmeTopParentUid1 = caeUid,
             lmePropType = RESPECT_MANIFEST_DESCRIPTION,
+            lmePropFk = 0,
         ) ?: emptyList()),
     )
 }

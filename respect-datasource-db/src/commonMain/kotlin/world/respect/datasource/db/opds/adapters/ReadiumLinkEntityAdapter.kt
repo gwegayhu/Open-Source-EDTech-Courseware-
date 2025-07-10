@@ -1,9 +1,10 @@
 package world.respect.datasource.db.opds.adapters
 
 import kotlinx.serialization.json.Json
-import world.respect.datasource.db.opds.OpdsTopParentType
+import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
-import world.respect.datasource.db.opds.entities.ReadiumLinkEntity.LinkEntityJoinType
+import world.respect.datasource.db.opds.entities.ReadiumLinkEntity.PropertyType
+import world.respect.datasource.db.shared.ext.takeIfNotEmpty
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 
@@ -14,28 +15,26 @@ import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 fun ReadiumLink.asEntities(
     pkGenerator: PrimaryKeyGenerator,
     json: Json,
-    rleTopTableType: OpdsTopParentType,
-    rleTopParentUid: Long,
-    rlePropType: ReadiumLinkEntity.PropertyType,
+    opdsParentType: OpdsParentType,
+    opdsParentUid: Long,
+    rlePropType: PropertyType,
+    rlePropFk: Long,
     rleIndex: Int,
-    rleJoinToLinkId: Long = 0,
-    rleJoinToLinkType: LinkEntityJoinType? = null,
 ): List<ReadiumLinkEntity> {
     val rleId = pkGenerator.nextId(ReadiumLinkEntity.TABLE_ID)
 
     fun List<ReadiumLink>?.subListToEntities(
-        joinType: LinkEntityJoinType?
+        propType: PropertyType
     ): List<ReadiumLinkEntity> {
         return this?.mapIndexed { index, link ->
             link.asEntities(
                 pkGenerator = pkGenerator,
                 json = json,
-                rleTopTableType = rleTopTableType,
-                rleTopParentUid = rleTopParentUid,
-                rlePropType = rlePropType,
+                opdsParentType = opdsParentType,
+                opdsParentUid = opdsParentUid,
+                rlePropType = propType,
+                rlePropFk = rleId,
                 rleIndex = index,
-                rleJoinToLinkId = rleId,
-                rleJoinToLinkType = joinType,
             )
         }?.flatten() ?: emptyList()
     }
@@ -43,11 +42,10 @@ fun ReadiumLink.asEntities(
     return listOf(
         ReadiumLinkEntity(
             rleId = rleId,
-            rleTopParentType = rleTopTableType,
-            rleTopParentUid = rleTopParentUid,
+            rleOpdsParentType = opdsParentType,
+            rleOpdsParentUid = opdsParentUid,
             rlePropType = rlePropType,
-            rleJoinToLinkId = rleJoinToLinkId,
-            rleJoinToLinkType = rleJoinToLinkType,
+            rlePropFk = rlePropFk,
             rleIndex = rleIndex,
             rleHref = href,
             rleRel = rel,
@@ -62,9 +60,9 @@ fun ReadiumLink.asEntities(
             rleDuration = duration,
             rleLanguage = language,
         )
-    ) + alternate.subListToEntities(LinkEntityJoinType.ALTERNATE_OF) +
-            children.subListToEntities(LinkEntityJoinType.CHILDREN_OF) +
-            subcollections.subListToEntities(LinkEntityJoinType.SUB_COLLECTION_OF)
+    ) + alternate.subListToEntities(PropertyType.LINK_ALTERNATE) +
+            children.subListToEntities(PropertyType.LINK_CHILDREN) +
+            subcollections.subListToEntities(PropertyType.LINK_SUB_COLLECTION)
 }
 
 /**
@@ -72,11 +70,11 @@ fun ReadiumLink.asEntities(
  */
 fun List<ReadiumLinkEntity>.asModels(
     json: Json,
-    rleJoinToLinkId: Long = 0,
-    rleJoinToLinkType: LinkEntityJoinType? = null,
+    propType: PropertyType,
+    propFk: Long,
 ): List<ReadiumLink> {
     return filter {
-        it.rleJoinToLinkId == rleJoinToLinkId && it.rleJoinToLinkType == rleJoinToLinkType
+        it.rlePropFk == propFk && it.rlePropType == propType
     }.sortedBy {
         it.rleIndex
     }.map { thisLink ->
@@ -95,19 +93,19 @@ fun List<ReadiumLinkEntity>.asModels(
             language = thisLink.rleLanguage,
             children = asModels(
                 json = json,
-                rleJoinToLinkId = thisLink.rleId,
-                rleJoinToLinkType = LinkEntityJoinType.CHILDREN_OF,
-            ),
+                propType = PropertyType.LINK_CHILDREN,
+                propFk = thisLink.rleId,
+            ).takeIfNotEmpty(),
             alternate = asModels(
                 json = json,
-                rleJoinToLinkId = thisLink.rleId,
-                rleJoinToLinkType = LinkEntityJoinType.ALTERNATE_OF,
-            ),
+                propType = PropertyType.LINK_ALTERNATE,
+                propFk = thisLink.rleId,
+            ).takeIfNotEmpty(),
             subcollections = asModels(
                 json = json,
-                rleJoinToLinkId = thisLink.rleId,
-                rleJoinToLinkType = LinkEntityJoinType.SUB_COLLECTION_OF,
-            ),
+                propType = PropertyType.LINK_SUB_COLLECTION,
+                propFk = thisLink.rleId,
+            ).takeIfNotEmpty(),
         )
     }
 }

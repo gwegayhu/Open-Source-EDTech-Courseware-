@@ -2,14 +2,19 @@ package world.respect.datasource.repository.opds
 
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.opds.OpdsDataSource
+import world.respect.datasource.opds.OpdsDataSourceLocal
 import world.respect.datasource.opds.model.OpdsFeed
 import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datasource.repository.ext.copyLoadState
 
 class OpdsDataSourceRepository(
-    private val local: OpdsDataSource,
+    private val local: OpdsDataSourceLocal,
     private val remote: OpdsDataSource,
 ): OpdsDataSource {
 
@@ -17,7 +22,22 @@ class OpdsDataSourceRepository(
         url: Url,
         params: DataLoadParams
     ): Flow<DataLoadState<OpdsFeed>> {
-        return remote.loadOpdsFeed(url, params)
+        val remoteFeed = remote.loadOpdsFeed(url, params).onEach { loadState ->
+            if(loadState is DataLoadResult) {
+                local.updateOpdsFeed(loadState)
+            }
+        }
+
+        return local.loadOpdsFeed(url, params).combine(remoteFeed) { local, remote ->
+            local.copyLoadState(
+                metaInfo = local.metaInfo.copy(
+                    status = remote.metaInfo.status,
+                    url = remote.metaInfo.url,
+                ),
+                localMetaInfo = local.metaInfo,
+                remoteMetaInfo = remote.metaInfo,
+            )
+        }
     }
 
     override fun loadOpdsPublication(
