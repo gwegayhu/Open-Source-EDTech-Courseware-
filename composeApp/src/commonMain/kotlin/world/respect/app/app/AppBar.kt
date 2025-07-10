@@ -134,12 +134,14 @@ fun RespectAppBar(
                     }
                 }
             }
-            IconButton(
-                onClick = onProfileClick,
-                modifier = Modifier.testTag("profile_icon")
-            ) {
-                Icon(Icons.Default.Person,
-                    contentDescription =null)
+            if(appUiState.userAccountIconVisible) {
+                IconButton(
+                    onClick = onProfileClick,
+                    modifier = Modifier.testTag("profile_icon")
+                ) {
+                    Icon(Icons.Default.Person,
+                        contentDescription =null)
+                }
             }
         },
         colors = if(appUiState.appBarColors == AppBarColors.STANDARD) {

@@ -36,4 +36,11 @@
     <string name="invalid_url">Invalid app Url</string>
     <string name="supported_by">Supported by:</string>
     <string name="network_powered_by">Network powered by:</string>
+    <string name="enter_invite_code_message">Enter the code provided by your teacher or school admin</string>
+    <string name="invite_code_label">Invite Code</string>
+    <string name="enter_code_label">Enter invite Code</string>
+    <string name="invalid_invite_code">Please enter a valid code</string>
+    <string name="already_have_account">I already have an account</string>
+    <string name="add_my_school">Add my school</string>
+
 </resources>

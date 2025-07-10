@@ -15,6 +15,10 @@ import kotlinx.serialization.Transient
  * If using a non-primitive type (e.g. Url) then use a private constructor property with a primitive
  * type and then add a transient property
  */
+
+@Serializable
+sealed interface AppDestination
+
 @Serializable
 object Splash : AppDestination
 
@@ -22,7 +26,7 @@ object Splash : AppDestination
 object Acknowledgement : AppDestination
 
 @Serializable
-sealed interface AppDestination
+object JoinClazzWithCode : AppDestination
 
 @Serializable
 object AppLauncher : AppDestination

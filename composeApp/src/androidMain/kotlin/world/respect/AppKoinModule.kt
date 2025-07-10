@@ -12,13 +12,10 @@ import kotlinx.serialization.json.Json
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.datasource.SingleDataSourceProvider
-import world.respect.app.datasource.fakeds.FakeRespectAppDataSourceProvider
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.app.viewmodel.splash.SplashViewModel
@@ -29,6 +26,7 @@ import world.respect.app.viewmodel.assignments.AssignmentViewModel
 import world.respect.app.viewmodel.clazz.ClazzViewModel
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
+import world.respect.app.viewmodel.manageuser.JoinClazzWithCodeViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.datasource.db.RespectAppDataSourceDb
 import world.respect.datasource.db.RespectDatabase
@@ -85,6 +83,7 @@ val appKoinModule = module {
     viewModelOf(::ReportViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::AcknowledgementViewModel)
+    viewModelOf(::JoinClazzWithCodeViewModel)
 
     // Uncomment this to switch to using fake data source provider for development purposes
 //     single<RespectAppDataSourceProvider> {

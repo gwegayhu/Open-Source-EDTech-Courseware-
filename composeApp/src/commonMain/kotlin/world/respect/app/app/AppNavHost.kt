@@ -17,6 +17,7 @@ import world.respect.app.appstate.AppUiState
 import world.respect.app.view.acknowledgement.AcknowledgementScreen
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
+import world.respect.app.view.manageuser.JoinClazzWithCodeScreen
 import world.respect.app.view.splash.SplashScreen
 import world.respect.app.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
@@ -27,6 +28,7 @@ import world.respect.app.viewmodel.assignments.AssignmentViewModel
 import world.respect.app.viewmodel.clazz.ClazzViewModel
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
+import world.respect.app.viewmodel.manageuser.JoinClazzWithCodeViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.app.viewmodel.splash.SplashViewModel
@@ -45,7 +47,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Splash,
+        startDestination = JoinClazzWithCode,
         modifier = modifier,
     ) {
 
@@ -63,6 +65,13 @@ fun AppNavHost(
                 navController = respectNavController
             )
             AcknowledgementScreen(viewModel)
+        }
+        composable<JoinClazzWithCode> {
+            val viewModel: JoinClazzWithCodeViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            JoinClazzWithCodeScreen(viewModel)
         }
 
         composable<AppLauncher> {
