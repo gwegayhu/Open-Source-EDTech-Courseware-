@@ -111,22 +111,30 @@ class AppsDetailViewModel(
         }
     }
 
-    fun onClickLearningUnit(href: String) {
-        println("HREF ADV $href")
+    fun onClickPublication(publication: OpdsPublication) {
+        val publicationHref=  publication.links.firstOrNull()?.href.toString()
         val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits.toString()
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail.create(
-                    learningUnitManifestUrl = route.manifestUrl.resolve(href),
+                    learningUnitManifestUrl = route.manifestUrl.resolve(publicationHref),
                     refererUrl = Url(refererUrl),
-                    expectedIdentifier = null
+                    expectedIdentifier = publication.metadata.identifier.toString()
                 )
             )
         )
     }
-    fun onClickNavigation(){
+    fun onClickNavigation(navigation: ReadiumLink){
+        val navigationHref = navigation.href
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    LearningUnitList.create(
+                        opdsFeedUrl = route.manifestUrl.resolve(navigationHref)
+                    )
+                )
+            )
+        }
 
-    }
 
 
     companion object {

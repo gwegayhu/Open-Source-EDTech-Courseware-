@@ -1,5 +1,6 @@
 package world.respect.app.view.apps.detail
 
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -64,7 +65,9 @@ fun AppsDetailScreen(
     AppsDetailScreen(
         uiState = uiState,
         onClickLessonList = { viewModel.onClickLessonList() },
-        onClickLearningUnit = { viewModel.onClickLearningUnit(it) }
+        onClickPublication = { viewModel.onClickPublication(it) },
+        onClickNavigation = { viewModel.onClickNavigation(it) }
+
     )
 }
 
@@ -72,7 +75,8 @@ fun AppsDetailScreen(
 fun AppsDetailScreen(
     uiState: AppsDetailUiState,
     onClickLessonList: () -> Unit,
-    onClickLearningUnit: (String) -> Unit
+    onClickPublication: (OpdsPublication) -> Unit,
+    onClickNavigation: (ReadiumLink) -> Unit
 
 ) {
 
@@ -89,7 +93,7 @@ fun AppsDetailScreen(
                 leadingContent = {
                     RespectAsyncImage(
                         uri = "https://respect.world/respect-ds/case_valid/icon.webp",
-                           // uiState.appIcon.toString(),
+                        // uiState.appIcon.toString(),
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -100,7 +104,8 @@ fun AppsDetailScreen(
                     Text(text = appDetail?.name?.getTitle() ?: "")
                 },
                 supportingContent = {
-                    Text(text = appDetail?.description?.getTitle() ?: "",
+                    Text(
+                        text = appDetail?.description?.getTitle() ?: "",
                         maxLines = 1
                     )
                 },
@@ -198,7 +203,8 @@ fun AppsDetailScreen(
                 ) { index, navigation ->
                     NavigationList(
                         navigation,
-                        onClickLearningUnit = { onClickLearningUnit(navigation.href) })
+                        onClickNavigation = { onClickNavigation(navigation) }
+                    )
                 }
 
                 itemsIndexed(
@@ -210,7 +216,8 @@ fun AppsDetailScreen(
                     val href = publication.links.find { it.rel?.equals("self") == true }?.href
                     PublicationList(
                         publication,
-                        onClickLearningUnit = { onClickLearningUnit(href.toString()) })
+                        onClickPublication = { onClickPublication(publication) }
+                    )
                 }
 
                 uiState.group.forEach { group ->
@@ -220,11 +227,10 @@ fun AppsDetailScreen(
                             navigation.href
                         }
                     ) { index, navigation ->
-                        NavigationList(navigation, onClickLearningUnit = {
-                            onClickLearningUnit(
-                                navigation.href
-                            )
-                        })
+                        NavigationList(
+                            navigation,
+                            onClickNavigation = { onClickNavigation(navigation) }
+                        )
                     }
 
                     itemsIndexed(
@@ -236,7 +242,7 @@ fun AppsDetailScreen(
                         val href = publication.links.find { it.rel?.equals("self") == true }?.href
                         PublicationList(
                             publication,
-                            onClickLearningUnit = { onClickLearningUnit(href.toString()) })
+                            onClickPublication = { onClickPublication(publication) })
                     }
 
                 }
@@ -246,20 +252,20 @@ fun AppsDetailScreen(
 }
 
 @Composable
-fun NavigationList(navigation: ReadiumLink, onClickLearningUnit: (String) -> Unit) {
+fun NavigationList(navigation: ReadiumLink, onClickNavigation: (ReadiumLink) -> Unit) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .width(100.dp)
             .clickable {
-                onClickLearningUnit(navigation.href)
+                onClickNavigation(navigation)
             }
     ) {
         val iconUrl = navigation.alternate?.find { it.rel?.contains("icon") == true }?.href
         println("navigation icon $iconUrl")
         RespectAsyncImage(
-            uri = iconUrl?:"",
+            uri = iconUrl ?: "",
             contentDescription = "",
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -280,13 +286,13 @@ fun NavigationList(navigation: ReadiumLink, onClickLearningUnit: (String) -> Uni
 
 @Composable
 fun PublicationList(
-    publication: OpdsPublication, onClickLearningUnit: (String) -> Unit
+    publication: OpdsPublication, onClickPublication: (OpdsPublication) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .width(100.dp)
-            .clickable { onClickLearningUnit(publication.links.firstOrNull()?.href.toString()) }
+            .clickable { onClickPublication(publication) }
     ) {
         RespectAsyncImage(
             uri = publication.images?.firstOrNull()?.href.toString(),
