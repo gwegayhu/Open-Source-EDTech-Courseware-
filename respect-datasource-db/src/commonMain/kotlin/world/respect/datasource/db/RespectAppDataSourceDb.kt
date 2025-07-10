@@ -2,10 +2,8 @@ package world.respect.datasource.db
 
 import kotlinx.serialization.json.Json
 import world.respect.datasource.RespectAppDataSourceLocal
-import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.db.compatibleapps.CompatibleAppDataSourceDb
 import world.respect.datasource.db.opds.OpdsDataSourceDb
-import world.respect.datasource.opds.OpdsDataSource
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 
@@ -16,11 +14,11 @@ class RespectAppDataSourceDb(
     private val primaryKeyGenerator: PrimaryKeyGenerator,
 ): RespectAppDataSourceLocal {
 
-    override val compatibleAppsDataSource: CompatibleAppsDataSourceLocal by lazy {
+    override val compatibleAppsDataSource by lazy {
         CompatibleAppDataSourceDb(respectDatabase, json, xxStringHasher)
     }
 
-    override val opdsDataSource: OpdsDataSource by lazy {
+    override val opdsDataSource by lazy {
         OpdsDataSourceDb(respectDatabase, json, xxStringHasher, primaryKeyGenerator)
     }
 }

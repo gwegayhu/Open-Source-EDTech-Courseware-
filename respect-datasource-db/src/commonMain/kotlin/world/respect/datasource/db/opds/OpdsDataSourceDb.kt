@@ -14,6 +14,7 @@ import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.db.opds.adapters.OpdsFeedEntities
 import world.respect.datasource.db.opds.adapters.asEntities
 import world.respect.datasource.db.opds.adapters.asModel
+import world.respect.datasource.db.shared.entities.LangMapEntity
 import world.respect.datasource.opds.OpdsDataSourceLocal
 import world.respect.datasource.opds.model.OpdsFeed
 import world.respect.datasource.opds.model.OpdsPublication
@@ -24,7 +25,9 @@ class OpdsDataSourceDb(
     private val respectDatabase: RespectDatabase,
     private val json: Json,
     private val xxStringHasher: XXStringHasher,
-    private val primaryKeyGenerator: PrimaryKeyGenerator,
+    private val primaryKeyGenerator: PrimaryKeyGenerator = PrimaryKeyGenerator(
+        RespectDatabase.TABLE_IDS
+    ),
 ): OpdsDataSourceLocal {
 
     /**
@@ -61,6 +64,25 @@ class OpdsDataSourceDb(
     }
 
     override suspend fun updateOpdsPublication(publication: DataLoadResult<OpdsPublication>) {
+        val pubData = publication.data ?: return
+        val publicationEntities = pubData.asEntities(
+            dataLoadResult = publication,
+            primaryKeyGenerator = primaryKeyGenerator,
+            json = json,
+            xxStringHasher = xxStringHasher,
+            feedUid = 0,
+            groupUid = 0,
+            feedIndex = 0,
+        )
+
+        respectDatabase.useWriterConnection { con ->
+            con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                respectDatabase.getLangMapEntityDao().deleteByTableAndTopParentType(
+                    lmeTopParentType = LangMapEntity.TopParentType.OPDS_PUBLICATION.id,
+                    lmeEntityUid1 = publicationEntities.opdsPublicationEntity.opeUid,
+                )
+            }
+        }
 
     }
 
