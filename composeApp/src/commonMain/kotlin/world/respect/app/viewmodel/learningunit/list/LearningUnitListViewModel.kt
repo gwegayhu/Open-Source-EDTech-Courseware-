@@ -16,7 +16,7 @@ import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
@@ -61,13 +61,13 @@ class LearningUnitListViewModel(
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
-                    is DataLoadResult -> {
+                    is DataReadyState -> {
                         _uiState.update {
                             it.copy(
-                                navigation = result.data?.navigation ?: emptyList(),
-                                publications = result.data?.publications ?: emptyList(),
-                                group = result.data?.groups ?: emptyList(),
-                                lessonFilter = result.data?.facets ?: emptyList(),
+                                navigation = result.data.navigation ?: emptyList(),
+                                publications = result.data.publications ?: emptyList(),
+                                group = result.data.groups ?: emptyList(),
+                                lessonFilter = result.data.facets ?: emptyList(),
                             )
                         }
                     }

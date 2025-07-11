@@ -18,8 +18,8 @@ import world.respect.app.app.LearningUnitList
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
@@ -59,7 +59,7 @@ class AppsDetailViewModel(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
-                if (result is DataLoadResult) {
+                if (result is DataReadyState) {
                     _uiState.update {
                         it.copy(
                             appDetail = result
@@ -75,12 +75,12 @@ class AppsDetailViewModel(
                         params = DataLoadParams()
                     ).collect { result ->
                         when (result) {
-                            is DataLoadResult -> {
+                            is DataReadyState -> {
                                 _uiState.update {
                                     it.copy(
-                                        publications = result.data?.publications ?: emptyList(),
-                                        navigation = result.data?.navigation ?: emptyList(),
-                                        group = result.data?.groups ?: emptyList()
+                                        publications = result.data.publications ?: emptyList(),
+                                        navigation = result.data.navigation ?: emptyList(),
+                                        group = result.data.groups ?: emptyList()
                                     )
                                 }
                             }

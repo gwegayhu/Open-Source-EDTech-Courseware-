@@ -18,7 +18,7 @@ import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataErrorResult
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.navigation.NavCommand
 
 data class EnterLinkUiState(
@@ -64,7 +64,7 @@ class EnterLinkViewModel(
                     manifestUrl = linkUrl, loadParams = DataLoadParams()
                 )
 
-                if(appResult is DataLoadResult && appResult.data != null) {
+                if(appResult is DataReadyState) {
                     _navCommandFlow.tryEmit(
                         NavCommand.Navigate(AppsDetail.create(linkUrl))
                     )

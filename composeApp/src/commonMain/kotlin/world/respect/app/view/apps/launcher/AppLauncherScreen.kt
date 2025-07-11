@@ -40,9 +40,9 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.repository.ext.dataOrNull
 
 @Composable
 fun AppLauncherScreen(
@@ -123,10 +123,10 @@ fun AppLauncherScreen(
                         AppGridItem(
                             app = app,
                             onClickApp = {
-                                (app as? DataLoadResult)?.also(onClickApp)
+                                app.dataOrNull()?.also { onClickApp(app) }
                             },
                             onClickRemove = {
-                                (app as? DataLoadResult)?.data?.also(onClickRemove)
+                                app.dataOrNull()?.also { onClickRemove(it) }
                             }
                         )
                     }
@@ -143,7 +143,7 @@ fun AppGridItem(
     onClickApp: () -> Unit,
     onClickRemove: () -> Unit
 ) {
-    val appData = (app as? DataLoadResult)?.data
+    val appData = app.dataOrNull()
 
     var menuExpanded by remember { mutableStateOf(false) }
 

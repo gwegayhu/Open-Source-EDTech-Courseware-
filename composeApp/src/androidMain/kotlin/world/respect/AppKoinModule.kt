@@ -18,7 +18,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.datasource.SingleDataSourceProvider
-import world.respect.app.datasource.fakeds.FakeRespectAppDataSourceProvider
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.app.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel

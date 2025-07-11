@@ -32,9 +32,9 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListUiState
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel.Companion.EMPTY_LIST
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.repository.ext.dataOrNull
 
 @Composable
 fun AppListScreen(
@@ -83,7 +83,7 @@ fun AppListScreen(
                 app.metaInfo.url?.toString() ?: index
             }
         ) { index, app ->
-            val appData = (app as? DataLoadResult)?.data
+            val appData = app.dataOrNull()
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()

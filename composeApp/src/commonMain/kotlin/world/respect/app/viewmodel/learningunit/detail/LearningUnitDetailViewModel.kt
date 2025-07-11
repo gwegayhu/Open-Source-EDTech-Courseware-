@@ -11,7 +11,7 @@ import world.respect.app.app.LearningUnitDetail
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.opds.model.OpdsPublication
 
 data class LearningUnitDetailUiState(
@@ -45,7 +45,7 @@ class LearningUnitDetailViewModel(
                 expectedPublicationId = route.expectedIdentifier
             ).collect { result ->
                 when (result) {
-                    is DataLoadResult -> {
+                    is DataReadyState -> {
                         _uiState.update {
                             it.copy(
                                 lessonDetail = result.data,

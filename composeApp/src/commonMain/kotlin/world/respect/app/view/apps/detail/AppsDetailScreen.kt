@@ -51,7 +51,8 @@ import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.BUT
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LEARNING_UNIT_LIST
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.SCREENSHOT
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
+
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
 
@@ -75,7 +76,7 @@ fun AppsDetailScreen(
 
 ) {
 
-    val appDetail = (uiState.appDetail as? DataLoadResult)?.data
+    val appDetail = (uiState.appDetail as? DataReadyState)?.data
 
     LazyColumn(
         modifier = Modifier

@@ -15,8 +15,8 @@ import world.respect.app.app.AppsDetail
 import world.respect.app.app.EnterLink
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.navigation.NavCommand
 
@@ -49,11 +49,10 @@ class AppListViewModel(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {
-                    is DataLoadResult -> {
-                        val appList = result.data ?: emptyList()
+                    is DataReadyState -> {
                         _uiState.update {
                             it.copy(
-                                appList = appList
+                                appList = result.data
                             )
                         }
                     }
@@ -83,7 +82,7 @@ class AppListViewModel(
     }
 
     companion object{
-       val EMPTY_LIST = "empty_list"
+       const val EMPTY_LIST = "empty_list"
     }
 }
 
