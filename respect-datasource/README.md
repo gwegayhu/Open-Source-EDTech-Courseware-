@@ -2,15 +2,17 @@
 
 This is based on primarily on the [Android offline-first data layer architecture](https://developer.android.com/topic/architecture/data-layer/offline-first).
 
-For each data domain (e.g. Respect Apps, OPDS, xAPI etc) there is:
+A data source implementation can be:
+ * Local - e.g. a database
+ * Network - using HTTP over a REST API
+ * Repository - an offline-first combination of local and network data sources.
 
-An interface (e.g. OpdsDataSource) which has a local (database based) implementation and a
-network (http based) implementation (in a separate module). There is also a repository implementation 
-that takes care of combining data from local and remote sources.
-
-This allows for both offline-first operation (e.g. in an app) and network-only (e.g. in a browser).
-The network implementation can thus be used directly by the browser implementation (where there is
-no local database).
+Each data source is defined as an interface (e.g. OpdsDataSource).
 
 The ViewModel sees only the interface, and does not need to be concerned with the underlying 
 implementation.
+
+This helps maximize code reusage:
+ * Desktop/mobile apps: uses the repository implementation as the datasource
+ * Browser app: uses the network implementation on its own as the datasource (no local database)
+ * Server app: uses the database implementation on its own as the datasource (no network datasource)
