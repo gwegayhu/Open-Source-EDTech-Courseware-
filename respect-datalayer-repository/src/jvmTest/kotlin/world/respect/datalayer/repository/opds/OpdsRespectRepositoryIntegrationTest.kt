@@ -15,13 +15,16 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.conditionalheaders.ConditionalHeaders
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.RespectDatabase
 import world.respect.datalayer.db.opds.OpdsDataSourceDb
 import world.respect.datalayer.http.opds.OpdsDataSourceHttp
@@ -88,7 +91,9 @@ class OpdsRespectRepositoryIntegrationTest {
             val xxStringHasher = XXStringHasherCommonJvm()
 
             val localDataSource = OpdsDataSourceDb(db, json, xxStringHasher)
-            val httpDataSource = OpdsDataSourceHttp(httpClient)
+            val httpDataSource = OpdsDataSourceHttp(
+                httpClient, localDataSource.feedNetworkValidationHelper
+            )
 
             val repository = OpdsDataSourceRepository(localDataSource, httpDataSource)
             block(
@@ -115,8 +120,6 @@ class OpdsRespectRepositoryIntegrationTest {
         opdsIntegrationTest {
             val url = Url("http://localhost:$port/resources/index.json")
             runBlocking {
-                db.getReadiumLinkEntityDao().findAllByFeedUid(0)
-
                 val loadStart = Clock.System.now().toEpochMilliseconds()
                 repository.loadOpdsFeed(url, DataLoadParams()).filter {
                     it is DataReadyState
@@ -126,6 +129,42 @@ class OpdsRespectRepositoryIntegrationTest {
                     println("Loaded in $waitTime ms")
                     assertEquals("Main Menu", data.dataOrNull()?.metadata?.title)
                     cancelAndIgnoreRemainingEvents()
+                }
+
+                repository.loadOpdsFeed(url, DataLoadParams()).filter {
+                    it is DataReadyState && it.remoteState is NoDataLoadedState
+                }.test(timeout = 10.seconds) {
+                    val data = awaitItem()
+                    val waitTime = Clock.System.now().toEpochMilliseconds() - loadStart
+                    println("Loaded in $waitTime ms")
+                    assertEquals("Main Menu", data.dataOrNull()?.metadata?.title)
+                    cancelAndIgnoreRemainingEvents()
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun givenOpdsFeedLoaded_whenLoadedAgain_thenDataIsLoadedAndNetworkResponseIsNotModified() {
+        opdsIntegrationTest {
+            val url = Url("http://localhost:$port/resources/index.json")
+            runBlocking {
+                withTimeout(15_000) {
+                    repository.loadOpdsFeed(url, DataLoadParams()).filter {
+                        it is DataReadyState
+                    }.first()
+
+                    repository.loadOpdsFeed(url, DataLoadParams()).filter {
+                        it is DataReadyState && it.remoteState is NoDataLoadedState
+                    }.test(timeout = 10.seconds) {
+                        val data = awaitItem()
+                        assertEquals(NoDataLoadedState.Reason.NOT_MODIFIED,
+                            (data.remoteState as? NoDataLoadedState)?.reason)
+
+                        assertEquals("Main Menu", data.dataOrNull()?.metadata?.title)
+                        cancelAndIgnoreRemainingEvents()
+                    }
                 }
             }
         }

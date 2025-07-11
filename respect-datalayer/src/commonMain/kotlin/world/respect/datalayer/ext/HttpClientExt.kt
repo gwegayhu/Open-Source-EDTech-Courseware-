@@ -32,9 +32,7 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
             validationInfo?.lastModified?.takeIf { it > 0 }?.also { lastMod ->
                 headers[HttpHeaders.IfModifiedSince] = Instant.fromEpochMilliseconds(
                     lastMod
-                ).format(
-                    DateTimeComponents.Formats.RFC_1123
-                )
+                ).format(DateTimeComponents.Formats.RFC_1123)
             }
 
             validationInfo?.etag?.also { etag ->
@@ -54,9 +52,7 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
     }catch(e: Throwable) {
         DataErrorResult(
             error = e,
-            metaInfo = DataLoadMetaInfo(
-                url = url,
-            )
+            metaInfo = DataLoadMetaInfo(url = url)
         )
     }
 }

@@ -13,7 +13,7 @@ import io.ktor.http.Url
  *           otherwise 0
  * @property opeIndex where this OpdsPublicationEntity is part of a feed or group, the index of this
  *           publication within the feed or group respectively.
- * @property
+ * @property opeLastModified the last modified date as per the http response
  */
 @Entity
 class OpdsPublicationEntity(
@@ -25,6 +25,7 @@ class OpdsPublicationEntity(
     val opeUrl: Url?,
     val opeUrlHash: Long,
     val opeLastModified: Long,
+    val opeEtag: String?,
     val opeMdIdentifier: Uri?,
     val opeMdLanguage: List<String>?,
     val opeMdType: Uri? = null,

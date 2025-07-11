@@ -70,6 +70,7 @@ fun OpdsPublication.asEntities(
             opeUrl = dataLoadResult?.metaInfo?.url,
             opeUrlHash = dataLoadResult?.metaInfo?.url?.toString()?.let { xxStringHasher.hash(it) } ?: 0,
             opeLastModified = dataLoadResult?.metaInfo?.lastModified ?: 0,
+            opeEtag = dataLoadResult?.metaInfo?.etag,
             opeMdIdentifier = metadata.identifier,
             opeMdLanguage = metadata.language,
             opeMdType = metadata.type,
@@ -155,6 +156,7 @@ fun OpdsPublicationEntities.asModel(
         metaInfo = DataLoadMetaInfo(
             url = opdsPublicationEntity.opeUrl,
             lastModified = opdsPublicationEntity.opeLastModified,
+            etag = opdsPublicationEntity.opeEtag,
         )
     )
 }

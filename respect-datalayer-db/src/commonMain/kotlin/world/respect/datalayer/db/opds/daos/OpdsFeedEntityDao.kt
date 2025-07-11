@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.db.opds.entities.OpdsFeedEntity
+import world.respect.datalayer.db.shared.ValidationInfo
 
 @Dao
 abstract class OpdsFeedEntityDao {
@@ -24,5 +25,14 @@ abstract class OpdsFeedEntityDao {
 
     @Insert
     abstract suspend fun insertList(entities: List<OpdsFeedEntity>)
+
+    @Query("""
+        SELECT OpdsFeedEntity.ofeLastModifiedHeader AS lastModified,
+               OpdsFeedEntity.ofeEtag AS etag
+          FROM OpdsFeedEntity
+         WHERE ofeUrlHash = :urlHash
+    """)
+    abstract suspend fun getValidationInfo(urlHash: Long): ValidationInfo?
+
 
 }

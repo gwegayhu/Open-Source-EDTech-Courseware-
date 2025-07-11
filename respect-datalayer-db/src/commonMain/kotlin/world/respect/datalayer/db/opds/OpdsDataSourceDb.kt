@@ -17,6 +17,8 @@ import world.respect.datalayer.db.opds.adapters.OpdsPublicationEntities
 import world.respect.datalayer.db.opds.adapters.asEntities
 import world.respect.datalayer.db.opds.adapters.asModel
 import world.respect.datalayer.db.shared.entities.LangMapEntity
+import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
+import world.respect.datalayer.networkvalidation.NetworkValidationInfo
 import world.respect.datalayer.opds.OpdsDataSourceLocal
 import world.respect.datalayer.opds.model.OpdsFeed
 import world.respect.datalayer.opds.model.OpdsPublication
@@ -31,6 +33,22 @@ class OpdsDataSourceDb(
         RespectDatabase.TABLE_IDS
     ),
 ): OpdsDataSourceLocal {
+
+    override val feedNetworkValidationHelper = object: NetworkDataSourceValidationHelper {
+        override suspend fun getValidationInfo(url: Url): NetworkValidationInfo? {
+            return respectDatabase.getOpdsFeedEntityDao().getValidationInfo(
+                xxStringHasher.hash(url.toString())
+            )?.asNetworkValidationInfo()
+        }
+    }
+
+    override val publicationNetworkValidationHelper = object: NetworkDataSourceValidationHelper {
+        override suspend fun getValidationInfo(url: Url): NetworkValidationInfo? {
+            return respectDatabase.getOpdsPublicationEntityDao().getValidationInfo(
+                xxStringHasher.hash(url.toString())
+            )?.asNetworkValidationInfo()
+        }
+    }
 
     /**
      * Update the database with the given opdsfeed by converting it to entities. Delete any previous

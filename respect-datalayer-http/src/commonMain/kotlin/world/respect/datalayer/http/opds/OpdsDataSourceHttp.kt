@@ -14,6 +14,7 @@ import world.respect.datalayer.opds.model.OpdsPublication
 class OpdsDataSourceHttp(
     private val httpClient: HttpClient,
     private val feedValidationHelper: NetworkDataSourceValidationHelper? = null,
+    private val publicationValidationHelper: NetworkDataSourceValidationHelper? = null,
 ) : OpdsDataSource {
 
     override fun loadOpdsFeed(
@@ -35,7 +36,8 @@ class OpdsDataSourceHttp(
     ): Flow<DataLoadState<OpdsPublication>> {
         return httpClient.getDataLoadResultAsFlow(
             url = url,
-            dataLoadParams = params
+            dataLoadParams = params,
+            validationHelper = publicationValidationHelper,
         )
     }
 }

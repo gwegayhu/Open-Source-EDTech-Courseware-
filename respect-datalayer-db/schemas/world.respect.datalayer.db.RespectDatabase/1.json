@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cb01df5ff6108269b162fcf0caea7266",
+    "identityHash": "3a1fa6465d90661a408ac8c659ac3aa4",
     "entities": [
       {
         "tableName": "CompatibleAppEntity",
@@ -273,7 +273,7 @@
       },
       {
         "tableName": "OpdsPublicationEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`opeUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `opeOfeUid` INTEGER NOT NULL, `opeOgeUid` INTEGER NOT NULL, `opeIndex` INTEGER NOT NULL, `opeUrl` TEXT, `opeUrlHash` INTEGER NOT NULL, `opeLastModified` INTEGER NOT NULL, `opeMdIdentifier` TEXT, `opeMdLanguage` TEXT, `opeMdType` TEXT, `opeMdDescription` TEXT, `opeMdNumberOfPages` INTEGER, `opeMdDuration` REAL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`opeUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `opeOfeUid` INTEGER NOT NULL, `opeOgeUid` INTEGER NOT NULL, `opeIndex` INTEGER NOT NULL, `opeUrl` TEXT, `opeUrlHash` INTEGER NOT NULL, `opeLastModified` INTEGER NOT NULL, `opeEtag` TEXT, `opeMdIdentifier` TEXT, `opeMdLanguage` TEXT, `opeMdType` TEXT, `opeMdDescription` TEXT, `opeMdNumberOfPages` INTEGER, `opeMdDuration` REAL)",
         "fields": [
           {
             "fieldPath": "opeUid",
@@ -315,6 +315,11 @@
             "columnName": "opeLastModified",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "opeEtag",
+            "columnName": "opeEtag",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "opeMdIdentifier",
@@ -466,7 +471,7 @@
       },
       {
         "tableName": "OpdsFeedEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ofeUid` INTEGER NOT NULL, `ofeUrl` TEXT NOT NULL, `ofeUrlHash` INTEGER NOT NULL, `ofeLastModifiedHeader` INTEGER NOT NULL, PRIMARY KEY(`ofeUid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ofeUid` INTEGER NOT NULL, `ofeUrl` TEXT NOT NULL, `ofeUrlHash` INTEGER NOT NULL, `ofeLastModifiedHeader` INTEGER NOT NULL, `ofeEtag` TEXT, PRIMARY KEY(`ofeUid`))",
         "fields": [
           {
             "fieldPath": "ofeUid",
@@ -491,6 +496,11 @@
             "columnName": "ofeLastModifiedHeader",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "ofeEtag",
+            "columnName": "ofeEtag",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -585,7 +595,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb01df5ff6108269b162fcf0caea7266')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3a1fa6465d90661a408ac8c659ac3aa4')"
     ]
   }
 }

@@ -14,6 +14,7 @@ class OpdsFeedEntity(
     val ofeUrl: Url,
     val ofeUrlHash: Long,
     val ofeLastModifiedHeader: Long,
+    val ofeEtag: String?,
 ) {
 
     companion object {

@@ -1,6 +1,7 @@
 package world.respect.datalayer.db.opds.adapters
 
 import kotlinx.serialization.json.Json
+import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.db.opds.OpdsParentType
 import world.respect.datalayer.db.opds.entities.OpdsFeedEntity
@@ -83,7 +84,8 @@ fun DataReadyState<OpdsFeed>.asEntities(
             ofeUid = ofeUid,
             ofeUrl = url,
             ofeUrlHash = ofeUid,
-            ofeLastModifiedHeader = metaInfo.lastModified
+            ofeLastModifiedHeader = metaInfo.lastModified,
+            ofeEtag = metaInfo.etag,
         ),
         feedMetaData = buildList {
             add(feedMetadata)
@@ -144,6 +146,10 @@ fun OpdsFeedEntities.asModel(
                     langMapEntities = langMapEntities,
                 ).asModel(json)
             }
+        ),
+        metaInfo = DataLoadMetaInfo(
+            lastModified = opdsFeed.ofeLastModifiedHeader,
+            etag = opdsFeed.ofeEtag,
         )
     )
 }
