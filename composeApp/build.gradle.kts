@@ -50,7 +50,6 @@ kotlin {
             implementation(projects.respectDatalayerRepository)
             implementation(projects.respectDatalayerHttp)
             implementation(projects.respectLibPrimarykeygen)
-
             implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
@@ -65,13 +64,12 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.date.time)
             implementation(libs.coil3.coil.compose)
-            implementation(libs.coil3.network)
+            implementation(libs.coil.network.okhttp)
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
-
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.json)
             implementation(libs.ktor.client.content.negotiation)

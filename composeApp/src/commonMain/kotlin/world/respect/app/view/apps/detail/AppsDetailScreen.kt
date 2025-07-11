@@ -21,10 +21,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -52,6 +50,7 @@ import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.BUT
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LEARNING_UNIT_LIST
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.SCREENSHOT
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.datasource.DataReadyState
 
 import world.respect.datasource.opds.model.OpdsPublication
@@ -92,18 +91,22 @@ fun AppsDetailScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item(key = APP_DETAIL) {
+        item(
+            key = APP_DETAIL
+        ) {
             ListItem(
                 leadingContent = {
-                    RespectAsyncImage(
-                        uri = uiState.appIcon.toString(),
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    uiState.appIcon.also { icon ->
+                        RespectAsyncImage(
+                            uri = icon,
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .size(80.dp)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
 
-                    )
+                        )
+                    }
                 },
                 headlineContent = {
                     Text(
@@ -116,19 +119,13 @@ fun AppsDetailScreen(
                         maxLines = 1
                     )
                 },
-                trailingContent = {
-                    IconButton(onClick = { /* Options */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = null,
-                        )
-                    }
-                },
                 modifier = Modifier.fillMaxWidth()
             )
         }
 
-        item(key = BUTTONS_ROW) {
+        item(
+            key = BUTTONS_ROW
+        ) {
             Row(
                 horizontalArrangement =
                     Arrangement.spacedBy(12.dp)
@@ -161,8 +158,9 @@ fun AppsDetailScreen(
             }
         }
 
-        item(key = SCREENSHOT) {
-
+        item(
+            key = SCREENSHOT
+        ) {
             val screenshots = appDetail?.screenshots.orEmpty()
 
             if (screenshots.isNotEmpty()) {
@@ -175,23 +173,28 @@ fun AppsDetailScreen(
                         key = { index -> screenshots[index].url.toString() }
                     ) { index ->
                         val screenshot = screenshots[index]
-                        RespectAsyncImage(
-                            uri = screenshot.url.toString(),
-                            contentDescription = screenshot.description.getTitle(),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .width(200.dp)
-                                .aspectRatio(16f / 9f)
-                                .clip(
-                                    RoundedCornerShape(12.dp)
-                                )
-                        )
+
+                        screenshot.url.also { screenshotUrl ->
+                            RespectAsyncImage(
+                                uri = screenshotUrl.toString(),
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .aspectRatio(16f / 9f)
+                                    .clip(
+                                        RoundedCornerShape(12.dp)
+                                    )
+                            )
+                        }
                     }
                 }
             }
         }
 
-        item(key = LESSON_HEADER) {
+        item(
+            key = LESSON_HEADER
+        ) {
             ListItem(
                 headlineContent = {
                     Text(
@@ -200,14 +203,14 @@ fun AppsDetailScreen(
                     )
                 },
                 trailingContent = {
-                    IconButton(onClick = { onClickLessonList() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                            contentDescription = null,
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                    )
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onClickLessonList() }
             )
         }
         item(key = LEARNING_UNIT_LIST) {
@@ -293,16 +296,19 @@ fun NavigationList(
         val iconUrl = navigation.alternate?.find {
             it.rel?.contains("icon") == true
         }?.href
-        RespectAsyncImage(
-            uri = iconUrl ?: "",
-            contentDescription = "",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(90.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
 
-        )
+        iconUrl.also { icon ->
+            RespectAsyncImage(
+                uri = icon,
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+
+            )
+        }
 
         Spacer(modifier = Modifier.height(4.dp))
         Text(
@@ -323,17 +329,22 @@ fun PublicationList(
             .width(100.dp)
             .clickable { onClickPublication(publication) }
     ) {
-        RespectAsyncImage(
-            uri = publication.images?.firstOrNull()?.href.toString(),
-            contentDescription = "",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(90.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+        val iconUrl = publication.images?.find {
+            it.type?.contains(IMAGE) == true
+        }?.href
 
-        )
+        iconUrl.also { icon ->
+            RespectAsyncImage(
+                uri = icon,
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
 
+            )
+        }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = publication.metadata.title.getTitle(),

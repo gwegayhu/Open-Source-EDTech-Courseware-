@@ -7,7 +7,7 @@ import coil3.compose.AsyncImage
 
 @Composable
 fun RespectAsyncImage(
-    uri: String,
+    uri: String?,
     contentDescription: String,
     contentScale: ContentScale,
     modifier: Modifier
