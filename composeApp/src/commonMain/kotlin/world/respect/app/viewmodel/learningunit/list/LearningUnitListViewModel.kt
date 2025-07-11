@@ -16,7 +16,7 @@ import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
@@ -30,7 +30,6 @@ data class LearningUnitListUiState(
     val group: List<OpdsGroup> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null,
-    val link: List<ReadiumLink> = emptyList(),
 )
 
 class LearningUnitListViewModel(
@@ -62,12 +61,13 @@ class LearningUnitListViewModel(
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
-                    is DataLoadResult -> {
+                    is DataReadyState -> {
                         _uiState.update {
                             it.copy(
-                                publications = result.data?.publications ?: emptyList(),
-                                lessonFilter = result.data?.facets ?: emptyList(),
-                                link = result.data?.links ?: emptyList()
+                                navigation = result.data.navigation ?: emptyList(),
+                                publications = result.data.publications ?: emptyList(),
+                                group = result.data.groups ?: emptyList(),
+                                lessonFilter = result.data.facets ?: emptyList(),
                             )
                         }
                     }
@@ -82,22 +82,15 @@ class LearningUnitListViewModel(
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
 
-    fun onClickLesson(publication: OpdsPublication) {
-        val publicationSelfLink = publication.links.find { it.rel?.equals("self") == true }?.href
-
-        if(publicationSelfLink != null) {
-            val learningUnitUrl = route.opdsFeedUrl.resolve(publicationSelfLink)
-
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    LearningUnitDetail.create(
-                        learningUnitManifestUrl = learningUnitUrl,
-                        refererUrl = route.opdsFeedUrl,
-                        expectedIdentifier = publication.metadata.identifier.toString()
-                    )
+    fun onClickLearningUnit(href: String) {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitDetail.create(
+                    learningUnitManifestUrl = route.opdsFeedUrl.resolve(href),
+                    refererUrl = route.opdsFeedUrl,
+                    expectedIdentifier = null
                 )
             )
-        }
-
+        )
     }
 }

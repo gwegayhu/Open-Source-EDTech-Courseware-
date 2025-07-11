@@ -86,6 +86,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }
 lz4-pure-java = { module = "org.lz4:lz4-pure-java", version.ref = "lz4" }
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

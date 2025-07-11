@@ -32,6 +32,7 @@ import world.respect.datasource.db.RespectAppDataSourceDb
 import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.http.RespectAppDataSourceHttp
 import world.respect.datasource.repository.RespectAppDataSourceRepository
+import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 
@@ -104,6 +105,7 @@ val appKoinModule = module {
                     .build(),
                     json = get(),
                     xxStringHasher = get(),
+                    primaryKeyGenerator = PrimaryKeyGenerator(RespectDatabase.TABLE_IDS),
                 ),
                 remote = RespectAppDataSourceHttp(
                     httpClient = get(),

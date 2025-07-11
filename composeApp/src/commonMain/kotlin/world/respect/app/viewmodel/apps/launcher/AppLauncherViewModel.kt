@@ -17,8 +17,8 @@ import world.respect.app.appstate.FabUiState
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.navigation.NavCommand
 
@@ -63,8 +63,8 @@ class AppLauncherViewModel(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {
-                    is DataLoadResult -> {
-                        val appList = result.data ?: emptyList()
+                    is DataReadyState -> {
+                        val appList = result.data
                         _uiState.update {
                             it.copy(
                                 appList = appList

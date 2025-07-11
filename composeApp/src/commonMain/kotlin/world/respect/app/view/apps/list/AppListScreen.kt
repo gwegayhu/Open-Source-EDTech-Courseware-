@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -33,9 +32,9 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListUiState
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel.Companion.EMPTY_LIST
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.repository.ext.dataOrNull
 
 @Composable
 fun AppListScreen(
@@ -84,12 +83,12 @@ fun AppListScreen(
                 app.metaInfo.url?.toString() ?: index
             }
         ) { index, app ->
-            val appData = (app as? DataLoadResult)?.data
+            val appData = app.dataOrNull()
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onClickApp
+                        onClickApp(app)
                     },
                 headlineContent = {
                     Text(
@@ -105,7 +104,7 @@ fun AppListScreen(
                 },
                 leadingContent = {
                     RespectAsyncImage(
-                        uri = appData?.icon?.toString() ?: "", // Safely get the icon URL
+                        uri = appData?.icon?.toString() ?: "",
                         contentDescription = appData?.name?.getTitle() ?: "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

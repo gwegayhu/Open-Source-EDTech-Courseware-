@@ -18,9 +18,10 @@ import world.respect.app.app.LearningUnitList
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
 import world.respect.datasource.repository.ext.dataOrNull
@@ -30,7 +31,8 @@ import world.respect.navigation.NavCommand
 data class AppsDetailUiState(
     val appDetail: DataLoadState<RespectAppManifest>? = null,
     val publications: List<OpdsPublication> = emptyList(),
-    val link: List<ReadiumLink> = emptyList(),
+    val navigation: List<ReadiumLink> = emptyList(),
+    val group: List<OpdsGroup> = emptyList(),
 )
 
 class AppsDetailViewModel(
@@ -57,7 +59,7 @@ class AppsDetailViewModel(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
-                if (result is DataLoadResult) {
+                if (result is DataReadyState) {
                     _uiState.update {
                         it.copy(
                             appDetail = result
@@ -73,11 +75,12 @@ class AppsDetailViewModel(
                         params = DataLoadParams()
                     ).collect { result ->
                         when (result) {
-                            is DataLoadResult -> {
+                            is DataReadyState -> {
                                 _uiState.update {
                                     it.copy(
-                                        publications = result.data?.publications ?: emptyList(),
-                                        link = result.data?.links ?: emptyList()
+                                        publications = result.data.publications ?: emptyList(),
+                                        navigation = result.data.navigation ?: emptyList(),
+                                        group = result.data.groups ?: emptyList()
                                     )
                                 }
                             }
@@ -96,30 +99,34 @@ class AppsDetailViewModel(
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitList.create(
-                        opdsFeedUrl = route.manifestUrl.resolve(uri))
-                )
-            )
-        }
-    }
-
-    fun onClickLesson(publication: OpdsPublication) {
-        val publicationHref = publication.links.find { it.rel?.equals("self") == true }?.href
-        val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits?.toString()
-        if(refererUrl != null && publicationHref != null) {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    LearningUnitDetail.create(
-                        learningUnitManifestUrl = Url(refererUrl).resolve(publicationHref),
-                        refererUrl = Url(refererUrl),
-                        expectedIdentifier = publication.metadata.identifier?.toString()
+                        opdsFeedUrl = route.manifestUrl.resolve(uri)
                     )
                 )
             )
         }
     }
-    companion object{
+
+    fun onClickLearningUnit(href: String) {
+        println("HREF ADV $href")
+        val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits.toString()
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LearningUnitDetail.create(
+                    learningUnitManifestUrl = route.manifestUrl.resolve(href),
+                    refererUrl = Url(refererUrl),
+                    expectedIdentifier = null
+                )
+            )
+        )
+    }
+
+
+    companion object {
         val BUTTONS_ROW = "buttons_row"
         val LESSON_HEADER = "lesson_header"
+        val SCREENSHOT = "screenshot"
+        val LEARNING_UNIT_LIST = "learning_unit_list"
+
 
     }
 }

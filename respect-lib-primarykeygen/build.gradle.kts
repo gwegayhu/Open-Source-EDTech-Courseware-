@@ -19,6 +19,10 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.date.time)
+
+            //Needs to be added explicitly to avoid crash on Android
+            // See https://github.com/Kotlin/kotlinx-atomicfu/issues/145
+            implementation(libs.atomicfu)
         }
 
         androidMain.dependencies {
@@ -30,14 +34,9 @@ kotlin {
         }
 
         jvmTest.dependencies {
-
+            implementation(kotlin("test"))
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
     }
 }
 

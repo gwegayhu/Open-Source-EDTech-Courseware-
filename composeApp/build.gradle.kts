@@ -8,9 +8,11 @@ plugins {
     alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
+
 compose.resources {
     publicResClass = true
 }
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -36,17 +38,18 @@ kotlin {
             implementation(libs.okhttp)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.compose.material3.window.size.clazz)
-            implementation(projects.respectDatasourceDb)
+            implementation(projects.respectDatalayerDb)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
         }
 
         commonMain.dependencies {
             implementation(projects.shared)
-            api(projects.respectDatasource)
+            api(projects.respectDatalayer)
             api(projects.respectLibXxhash)
-            implementation(projects.respectDatasourceRepository)
-            implementation(projects.respectDatasourceHttp)
+            implementation(projects.respectDatalayerRepository)
+            implementation(projects.respectDatalayerHttp)
+            implementation(projects.respectLibPrimarykeygen)
 
             implementation(compose.material)
             implementation(compose.material3)

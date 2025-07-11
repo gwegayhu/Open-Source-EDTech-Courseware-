@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ustadmobile.libuicompose.theme.black
 import com.ustadmobile.libuicompose.theme.white
 import org.jetbrains.compose.resources.stringResource
@@ -46,7 +45,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import respect.composeapp.generated.resources.assign
 import respect.composeapp.generated.resources.download
 import respect.composeapp.generated.resources.play
-import respect.composeapp.generated.resources.related_lessons
 import respect.composeapp.generated.resources.share
 import world.respect.app.appstate.getTitle
 import androidx.compose.material3.ListItem
@@ -162,15 +160,6 @@ fun LearningUnitDetailScreen(
                 IconLabel(Icons.Filled.Share, stringResource(Res.string.share))
                 IconLabel(Icons.Filled.NearMe, stringResource(Res.string.assign))
             }
-        }
-
-        item {
-            Text(
-                text = stringResource(Res.string.related_lessons),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.width(8.dp))
         }
     }
 }
