@@ -56,7 +56,7 @@ class EnterLinkViewModel(
         }
     }
 
-    fun onClickNext()  {
+    fun onClickNext() {
         viewModelScope.launch {
             try {
                 val linkUrl = Url(uiState.value.linkUrl)
@@ -66,9 +66,11 @@ class EnterLinkViewModel(
 
                 if(appResult is DataReadyState) {
                     _navCommandFlow.tryEmit(
-                        NavCommand.Navigate(AppsDetail.create(linkUrl))
+                        NavCommand.Navigate(
+                            AppsDetail.create(linkUrl)
+                        )
                     )
-                }else {
+                } else {
                     throw (appResult as? DataErrorResult)?.error ?: IllegalStateException()
                 }
             } catch (_: Throwable) {

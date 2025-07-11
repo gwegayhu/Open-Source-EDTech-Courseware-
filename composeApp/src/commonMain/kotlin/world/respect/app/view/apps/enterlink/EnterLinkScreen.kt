@@ -50,7 +50,9 @@ fun EnterLinkScreen(
             value = uiState.linkUrl,
             onValueChange = onLinkChanged,
             label = {
-                Text(text = stringResource(Res.string.link_label))
+                Text(
+                    text = stringResource(Res.string.link_label)
+                )
             },
             placeholder = {
                 Text(
@@ -62,7 +64,11 @@ fun EnterLinkScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = uiState.errorMessage != null,
             supportingText = uiState.errorMessage?.let {
-                { Text(uiTextStringResource(it)) }
+                {
+                    Text(
+                        text = uiTextStringResource(it)
+                    )
+                }
             }
         )
 

@@ -90,21 +90,9 @@ fun AppListScreen(
                     .clickable {
                         onClickApp(app)
                     },
-                headlineContent = {
-                    Text(
-                        text = appData?.name?.getTitle() ?: "",
-                    )
-                },
-                supportingContent = {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        //"-" is a placeholder for age range/category
-                        Text("-")
-                        Text("-")
-                    }
-                },
                 leadingContent = {
                     RespectAsyncImage(
-                        uri = appData?.icon?.toString() ?: "",
+                        uri = appData?.icon.toString(),
                         contentDescription = appData?.name?.getTitle() ?: "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -114,6 +102,21 @@ fun AppListScreen(
                             .background(MaterialTheme.colorScheme.background)
                     )
                 },
+                headlineContent = {
+                    Text(
+                        text = appData?.name?.getTitle() ?: "",
+                    )
+                },
+                supportingContent = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        //"-" is a placeholder for age range/category
+                        Text("-")
+                        Text("-")
+                    }
+                },
+
             )
         }
     }

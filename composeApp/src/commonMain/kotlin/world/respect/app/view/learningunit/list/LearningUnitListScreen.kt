@@ -74,11 +74,15 @@ fun LearningUnitListScreen(
     onClickNavigation: (ReadiumLink) -> Unit
 
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp)
+    ) {
         uiState.lessonFilter.firstOrNull()?.let { facet ->
             var expanded by remember { mutableStateOf(false) }
 
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Box(
                     modifier = Modifier
                         .border(1.dp, black, shape = RoundedCornerShape(6.dp))
@@ -129,7 +133,9 @@ fun LearningUnitListScreen(
         }
 
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
 
             itemsIndexed(
                 items = uiState.navigation,
@@ -211,10 +217,15 @@ fun NavigationListItem(
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClickNavigation(navigation) },
+            .clickable {
+                onClickNavigation(navigation)
+            },
 
         leadingContent = {
-            val iconUrl = navigation.alternate?.find { it.rel?.contains("icon") == true }?.href
+            val iconUrl = navigation.alternate?.find {
+                it.rel?.contains("icon") == true
+            }?.href
+
             RespectAsyncImage(
                 uri = iconUrl ?: "",
                 contentDescription = "",
@@ -222,27 +233,36 @@ fun NavigationListItem(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(CircleShape)
-                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline,
+                        CircleShape
+                    )
             )
         },
 
         headlineContent = {
             Text(
-                text = navigation.title.toString(),
+                text = navigation.title.toString()
             )
         },
 
         supportingContent = {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
                 Text(
                     text = stringResource(Res.string.clazz),
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = navigation.type.toString()
                     )
                     Text(
-                        text = "${stringResource(Res.string.duration)} - ${navigation.duration}",
+                        text = "${stringResource(Res.string.duration)} -" +
+                                " ${navigation.duration}"
                     )
                 }
             }
@@ -276,7 +296,11 @@ fun PublicationListItem(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(CircleShape)
-                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline,
+                        CircleShape
+                    )
             )
         },
 
@@ -287,18 +311,23 @@ fun PublicationListItem(
         },
 
         supportingContent = {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
                 Text(
                     text = stringResource(Res.string.clazz),
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = publication.metadata.subject
                             ?.joinToString(", ") { it.toDisplayString() }
                             ?: " ",
                     )
                     Text(
-                        text = "${stringResource(Res.string.duration)} - ${publication.metadata.duration}",
+                        text = "${stringResource(Res.string.duration)} - " +
+                                "${publication.metadata.duration}",
                     )
                 }
             }

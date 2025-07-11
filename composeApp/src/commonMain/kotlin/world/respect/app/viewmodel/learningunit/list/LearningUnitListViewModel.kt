@@ -95,32 +95,44 @@ class LearningUnitListViewModel(
             )
         )
     }
+
     fun onClickPublication(publication: OpdsPublication) {
-        val publicationHref = publication.links.find { it.rel?.contains(SELF) == true }?.href.toString()
+
+        val publicationHref = publication.links.find {
+            it.rel?.contains(SELF) == true
+        }?.href.toString()
+
         val refererUrl = route.opdsFeedUrl.resolve(publicationHref).toString()
 
-        println("LESSON $publicationHref ${route.opdsFeedUrl.resolve(publicationHref)}")
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitDetail.create(
-                    learningUnitManifestUrl = route.opdsFeedUrl.resolve(publicationHref),
-                    refererUrl = Url(refererUrl),
+                    learningUnitManifestUrl = route.opdsFeedUrl.resolve(
+                        publicationHref
+                    ),
+                    refererUrl = Url(
+                        refererUrl
+                    ),
                     expectedIdentifier = publication.metadata.identifier.toString()
                 )
             )
         )
     }
-    fun onClickNavigation(navigation: ReadiumLink){
+
+    fun onClickNavigation(navigation: ReadiumLink) {
         val navigationHref = navigation.href
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList.create(
-                    opdsFeedUrl = route.opdsFeedUrl.resolve(navigationHref)
+                    opdsFeedUrl = route.opdsFeedUrl.resolve(
+                        navigationHref
+                    )
                 )
             )
         )
     }
-    companion object{
+
+    companion object {
         val SELF = "self"
 
     }

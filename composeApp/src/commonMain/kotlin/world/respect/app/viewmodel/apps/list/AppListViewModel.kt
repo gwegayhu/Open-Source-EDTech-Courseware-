@@ -32,7 +32,6 @@ class AppListViewModel(
 
 
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
-
     private val _uiState = MutableStateFlow(AppListUiState())
 
     val uiState = _uiState.asStateFlow()
@@ -75,7 +74,6 @@ class AppListViewModel(
         val url = app.metaInfo.url ?: return
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                //Placeholder string
                 AppsDetail.create(url)
             )
         )

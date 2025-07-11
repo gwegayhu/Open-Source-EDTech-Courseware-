@@ -1,6 +1,5 @@
 package world.respect.app.view.apps.detail
 
-import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +47,7 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.detail.AppsDetailUiState
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel
+import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.APP_DETAIL
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.BUTTONS_ROW
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LEARNING_UNIT_LIST
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
@@ -59,15 +59,18 @@ import world.respect.datasource.opds.model.ReadiumLink
 
 @Composable
 fun AppsDetailScreen(
-    viewModel: AppsDetailViewModel,
+    viewModel: AppsDetailViewModel
 ) {
+
     val uiState by viewModel.uiState.collectAsState()
+
     AppsDetailScreen(
         uiState = uiState,
         onClickLessonList = { viewModel.onClickLessonList() },
         onClickPublication = { viewModel.onClickPublication(it) },
-        onClickNavigation = { viewModel.onClickNavigation(it) }
-
+        onClickNavigation = { viewModel.onClickNavigation(it) },
+        onClickTry = { viewModel.onClickTry() },
+        onClickAdd = { viewModel.onClickAdd() }
     )
 }
 
@@ -76,8 +79,9 @@ fun AppsDetailScreen(
     uiState: AppsDetailUiState,
     onClickLessonList: () -> Unit,
     onClickPublication: (OpdsPublication) -> Unit,
-    onClickNavigation: (ReadiumLink) -> Unit
-
+    onClickNavigation: (ReadiumLink) -> Unit,
+    onClickTry: () -> Unit,
+    onClickAdd: () -> Unit
 ) {
 
     val appDetail = (uiState.appDetail as? DataReadyState)?.data
@@ -88,12 +92,12 @@ fun AppsDetailScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
+        item(key = APP_DETAIL) {
             ListItem(
                 leadingContent = {
+                    println("APPDETAIL ${uiState.appDetail}")
                     RespectAsyncImage(
-                        uri = "https://respect.world/respect-ds/case_valid/icon.webp",
-                        // uiState.appIcon.toString(),
+                        uri = uiState.appIcon.toString(),
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -101,11 +105,13 @@ fun AppsDetailScreen(
                     )
                 },
                 headlineContent = {
-                    Text(text = appDetail?.name?.getTitle() ?: "")
+                    Text(
+                        text = appDetail?.name?.getTitle().toString()
+                    )
                 },
                 supportingContent = {
                     Text(
-                        text = appDetail?.description?.getTitle() ?: "",
+                        text = appDetail?.description?.getTitle().toString(),
                         maxLines = 1
                     )
                 },
@@ -122,16 +128,22 @@ fun AppsDetailScreen(
         }
 
         item(key = BUTTONS_ROW) {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                horizontalArrangement =
+                    Arrangement.spacedBy(12.dp)
+            ) {
                 Button(
-                    onClick = { /* Try it */ },
+                    onClick = {
+                        onClickTry()
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(text = stringResource(Res.string.try_it))
                 }
-
                 OutlinedButton(
-                    onClick = { /* Add app */ },
+                    onClick = {
+                        onClickAdd()
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Filled.Add, contentDescription = null)
@@ -142,6 +154,7 @@ fun AppsDetailScreen(
         }
 
         item(key = SCREENSHOT) {
+
             val screenshots = appDetail?.screenshots.orEmpty()
 
             if (screenshots.isNotEmpty()) {
@@ -161,16 +174,15 @@ fun AppsDetailScreen(
                             modifier = Modifier
                                 .width(200.dp)
                                 .aspectRatio(16f / 9f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-
+                                .clip(
+                                    RoundedCornerShape(12.dp)
+                                )
                         )
                     }
                 }
             }
         }
 
-        // Lessons header
         item(key = LESSON_HEADER) {
             ListItem(
                 headlineContent = {
@@ -203,7 +215,9 @@ fun AppsDetailScreen(
                 ) { index, navigation ->
                     NavigationList(
                         navigation,
-                        onClickNavigation = { onClickNavigation(navigation) }
+                        onClickNavigation = {
+                            onClickNavigation(navigation)
+                        }
                     )
                 }
 
@@ -213,10 +227,11 @@ fun AppsDetailScreen(
                         publication.metadata.identifier.toString()
                     }
                 ) { index, publication ->
-                    val href = publication.links.find { it.rel?.equals("self") == true }?.href
                     PublicationList(
                         publication,
-                        onClickPublication = { onClickPublication(publication) }
+                        onClickPublication = {
+                            onClickPublication(publication)
+                        }
                     )
                 }
 
@@ -229,7 +244,9 @@ fun AppsDetailScreen(
                     ) { index, navigation ->
                         NavigationList(
                             navigation,
-                            onClickNavigation = { onClickNavigation(navigation) }
+                            onClickNavigation = {
+                                onClickNavigation(navigation)
+                            }
                         )
                     }
 
@@ -239,12 +256,13 @@ fun AppsDetailScreen(
                             publication.metadata.identifier.toString()
                         }
                     ) { index, publication ->
-                        val href = publication.links.find { it.rel?.equals("self") == true }?.href
                         PublicationList(
                             publication,
-                            onClickPublication = { onClickPublication(publication) })
+                            onClickPublication = {
+                                onClickPublication(publication)
+                            }
+                        )
                     }
-
                 }
             }
         }

@@ -18,6 +18,7 @@ import world.respect.app.app.LearningUnitList
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
+import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
@@ -53,7 +54,9 @@ class AppsDetailViewModel(
 
         viewModelScope.launch {
             _appUiState.update {
-                it.copy(title = getString(resource = Res.string.apps_detail))
+                it.copy(
+                    title = getString(resource = Res.string.apps_detail)
+                )
             }
 
             dataSource.compatibleAppsDataSource.getAppAsFlow(
@@ -64,11 +67,12 @@ class AppsDetailViewModel(
                     _uiState.update {
                         it.copy(
                             appDetail = result,
-                            appIcon = route.manifestUrl.resolve(result.data?.icon.toString())
-                                .toString()
+                            appIcon = route.manifestUrl.resolve(
+                                result.data?.icon.toString()
+                            ).toString()
                         )
-                    }
 
+                    }
                 }
 
                 result.dataOrNull()?.learningUnits?.also { learningUnitsUri ->
@@ -87,8 +91,6 @@ class AppsDetailViewModel(
                                         group = result.data.groups ?: emptyList()
                                     )
                                 }
-                                println("Nav list- ${result.data?.navigation}")
-
                             }
 
                             else -> {}
@@ -100,7 +102,9 @@ class AppsDetailViewModel(
     }
 
     fun onClickLessonList() {
+
         val appManifest = uiState.value.appDetail?.dataOrNull()
+
         appManifest?.learningUnits?.toString()?.also { uri ->
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
@@ -114,8 +118,10 @@ class AppsDetailViewModel(
 
     fun onClickPublication(publication: OpdsPublication) {
 
-        val publicationHref =
-            publication.links.find { it.rel?.equals(SELF) == true }?.href.toString()
+        val publicationHref = publication.links.find {
+            it.rel?.equals(SELF) == true
+        }?.href.toString()
+
         val refererUrl = uiState.value.appDetail?.dataOrNull()?.learningUnits.toString()
 
         _navCommandFlow.tryEmit(
@@ -130,7 +136,9 @@ class AppsDetailViewModel(
     }
 
     fun onClickNavigation(navigation: ReadiumLink) {
+
         val navigationHref = navigation.href
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList.create(
@@ -140,6 +148,14 @@ class AppsDetailViewModel(
         )
     }
 
+    fun onClickTry() {
+        /*TRY Button Click*/
+    }
+
+    fun onClickAdd() {
+        /*Add App Button Click*/
+
+    }
 
     companion object {
         val BUTTONS_ROW = "buttons_row"
@@ -147,7 +163,6 @@ class AppsDetailViewModel(
         val SCREENSHOT = "screenshot"
         val LEARNING_UNIT_LIST = "learning_unit_list"
         val SELF = "self"
-
-
+        val APP_DETAIL = "app_detail"
     }
 }

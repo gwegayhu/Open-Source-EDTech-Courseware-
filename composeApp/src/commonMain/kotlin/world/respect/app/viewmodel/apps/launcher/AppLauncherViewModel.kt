@@ -53,7 +53,11 @@ class AppLauncherViewModel(
                         icon = FabUiState.FabIcon.ADD,
                         text = getString(resource = Res.string.app),
                         onClick = {
-                            _navCommandFlow.tryEmit(NavCommand.Navigate(AppList))
+                            _navCommandFlow.tryEmit(
+                                NavCommand.Navigate(
+                                    AppList
+                                )
+                            )
                         }
                     )
                 )
@@ -84,7 +88,6 @@ class AppLauncherViewModel(
 
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                //Placeholder string
                 AppsDetail.create(url)
             )
         )
@@ -95,12 +98,6 @@ class AppLauncherViewModel(
             state.copy(
                 appList = state.appList.filterNot { it == app }
             )
-        }
-    }
-
-    fun showSnackBar() {
-        _uiState.update {
-            it.copy(snackbarMessage = errorMessage)
         }
     }
 

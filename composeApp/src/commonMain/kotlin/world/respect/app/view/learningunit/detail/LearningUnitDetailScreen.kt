@@ -79,7 +79,9 @@ fun LearningUnitDetailScreen(
         item {
             ListItem(
                 leadingContent = {
-                    val iconUrl = uiState.lessonDetail?.images?.find { it.type?.contains("image/png")==true }?.href
+                    val iconUrl = uiState.lessonDetail?.images?.find {
+                        it.type?.contains("image/png") == true
+                    }?.href
                     RespectAsyncImage(
                         uri = iconUrl ?: "",
                         contentDescription = "",
@@ -87,21 +89,27 @@ fun LearningUnitDetailScreen(
                         modifier = Modifier
                             .size(120.dp)
                             .clip(CircleShape)
-                            .border(1.dp,
+                            .border(
+                                1.dp,
                                 MaterialTheme.colorScheme.outline,
-                                CircleShape)
+                                CircleShape
+                            )
                     )
                 },
                 headlineContent = {
                     Text(
                         text = uiState.lessonDetail?.metadata?.title?.getTitle().orEmpty(),
                         fontWeight = FontWeight.Bold
-
                     )
                 },
                 supportingContent = {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(
+                        verticalArrangement =
+                            Arrangement.spacedBy(4.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Box(
                                 modifier = Modifier
                                     .size(20.dp)
@@ -125,8 +133,8 @@ fun LearningUnitDetailScreen(
                         }
 
                         Text(
-                            text = uiState.lessonDetail?.metadata?.subtitle?.getTitle()
-                                .orEmpty(),
+                            text = uiState.lessonDetail?.metadata?.subtitle
+                                ?.getTitle().orEmpty()
                         )
 
                         Text(
@@ -162,9 +170,18 @@ fun LearningUnitDetailScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconLabel(Icons.Filled.ArrowCircleDown, stringResource(Res.string.download))
-                IconLabel(Icons.Filled.Share, stringResource(Res.string.share))
-                IconLabel(Icons.Filled.NearMe, stringResource(Res.string.assign))
+                IconLabel(
+                    Icons.Filled.ArrowCircleDown,
+                    stringResource(Res.string.download)
+                )
+                IconLabel(
+                    Icons.Filled.Share,
+                    stringResource(Res.string.share)
+                )
+                IconLabel(
+                    Icons.Filled.NearMe,
+                    stringResource(Res.string.assign)
+                )
             }
         }
     }
@@ -172,7 +189,9 @@ fun LearningUnitDetailScreen(
 
 @Composable
 private fun IconLabel(icon: ImageVector, labelRes: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
@@ -180,12 +199,13 @@ private fun IconLabel(icon: ImageVector, labelRes: String) {
             tint = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+        )
 
         Text(
-            text = labelRes,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface
+            text = labelRes
         )
 
     }

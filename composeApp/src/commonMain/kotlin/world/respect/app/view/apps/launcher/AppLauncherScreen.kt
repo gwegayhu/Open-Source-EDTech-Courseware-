@@ -65,7 +65,6 @@ fun AppLauncherScreen(
     onClickApp: (DataLoadState<RespectAppManifest>) -> Unit,
     onClickRemove: (RespectAppManifest) -> Unit,
     onSnackBarShown: () -> Unit
-
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     uiState.snackbarMessage?.let { message ->
@@ -75,7 +74,9 @@ fun AppLauncherScreen(
         }
     }
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -95,11 +96,15 @@ fun AppLauncherScreen(
                         contentDescription = null,
                         modifier = Modifier.size(100.dp)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
                     Text(
                         text = stringResource(resource = Res.string.empty_list),
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
                     Text(
                         text = stringResource(resource = Res.string.empty_list_description),
                         textAlign = TextAlign.Center
@@ -132,11 +137,9 @@ fun AppLauncherScreen(
                     }
                 }
             }
-
         }
     }
 }
-
 @Composable
 fun AppGridItem(
     app: DataLoadState<RespectAppManifest>,
@@ -168,7 +171,6 @@ fun AppGridItem(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             )
 
-            // 3-dot menu button
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -206,7 +208,9 @@ fun AppGridItem(
             }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(
+            modifier = Modifier.height(4.dp)
+        )
 
         Text(
             text = appData?.name?.getTitle() ?: "",
