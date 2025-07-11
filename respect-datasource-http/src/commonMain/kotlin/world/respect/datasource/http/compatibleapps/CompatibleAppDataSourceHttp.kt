@@ -7,15 +7,15 @@ import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import world.respect.datasource.DataErrorResult
 import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.DataLoadingState
-import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.ext.getDataLoadResult
+import world.respect.datasource.ext.getAsDataLoadState
 import world.respect.datasource.ext.getDataLoadResultAsFlow
 import world.respect.libutil.ext.resolve
 
@@ -31,7 +31,7 @@ class CompatibleAppDataSourceHttp(
         manifestUrl: Url,
         loadParams: DataLoadParams,
     ): DataLoadState<RespectAppManifest> {
-        return httpClient.getDataLoadResult(manifestUrl)
+        return httpClient.getAsDataLoadState(manifestUrl)
     }
 
     override fun getAppAsFlow(
@@ -48,28 +48,26 @@ class CompatibleAppDataSourceHttp(
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
         return flow {
             emit(DataLoadingState())
-            val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrlObj)
-                .body()
-            val manifests = respectAppUrls.mapNotNull { manifestHref ->
-                try {
-                    httpClient.getDataLoadResult<RespectAppManifest>(
+            try {
+                val respectAppUrls: List<String> = httpClient.get(defaultCompatibleAppListUrlObj)
+                    .body()
+                val manifests = respectAppUrls.map { manifestHref ->
+                    httpClient.getAsDataLoadState<RespectAppManifest>(
                         defaultCompatibleAppListUrlObj.resolve(manifestHref)
                     )
-                }catch(e: Throwable) {
-                    //Log
-                    println("getAddableApps: error: $e")
-                    null
                 }
-            }
-            emit(
-                DataLoadResult(
-                    data = manifests,
-                    metaInfo = DataLoadMetaInfo(
-                        status = LoadingStatus.LOADED,
-                        lastModified = manifests.maxOfOrNull { it.metaInfo.lastModified } ?: -1L
-                    ),
+
+                emit(
+                    DataReadyState(
+                        data = manifests,
+                        metaInfo = DataLoadMetaInfo(
+                            lastModified = manifests.maxOfOrNull { it.metaInfo.lastModified } ?: -1L
+                        ),
+                    )
                 )
-            )
+            }catch(e: Throwable) {
+                emit(DataErrorResult(e))
+            }
         }
     }
 

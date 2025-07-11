@@ -1,7 +1,7 @@
 package world.respect.datasource.db.opds.adapters
 
 import kotlinx.serialization.json.Json
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.entities.OpdsFeedEntity
 import world.respect.datasource.db.opds.entities.OpdsFeedMetadataEntity
@@ -25,13 +25,12 @@ class OpdsFeedEntities(
     val groups: List<OpdsGroupEntity>
 )
 
-fun DataLoadResult<OpdsFeed>.asEntities(
+fun DataReadyState<OpdsFeed>.asEntities(
     json: Json,
     primaryKeyGenerator: PrimaryKeyGenerator,
     xxStringHasher: XXStringHasher,
 ) : OpdsFeedEntities? {
     val url = metaInfo.requireUrl()
-    val opdsFeed = this.data ?: return null
 
     val ofeUid = xxStringHasher.hash(metaInfo.requireUrl().toString())
 
@@ -51,13 +50,13 @@ fun DataLoadResult<OpdsFeed>.asEntities(
         }?.flatten() ?: emptyList()
     }
 
-    val feedMetadata = opdsFeed.metadata.asEntity(
+    val feedMetadata = data.metadata.asEntity(
         ofmeOfeUid = ofeUid,
         ofmePropType = OpdsFeedMetadataEntity.PropType.FEED_METADATA,
         ofmeRelUid = ofeUid,
     )
 
-    val groupEntities = opdsFeed.groups?.mapIndexed { index, group ->
+    val groupEntities = data.groups?.mapIndexed { index, group ->
         group.asEntities(
             primaryKeyGenerator = primaryKeyGenerator,
             json = json,
@@ -67,7 +66,7 @@ fun DataLoadResult<OpdsFeed>.asEntities(
         )
     } ?: emptyList()
 
-    val publicationEntities = opdsFeed.publications?.mapIndexed { index, publication ->
+    val publicationEntities = data.publications?.mapIndexed { index, publication ->
         publication.asEntities(
             dataLoadResult = null,
             primaryKeyGenerator = primaryKeyGenerator,
@@ -96,10 +95,10 @@ fun DataLoadResult<OpdsFeed>.asEntities(
         },
         linkEntities = buildList {
             addAll(
-                opdsFeed.links.asEntitiesSub(OPDS_FEED_LINKS)
+                data.links.asEntitiesSub(OPDS_FEED_LINKS)
             )
             addAll(
-                opdsFeed.navigation.asEntitiesSub(OPDS_FEED_NAVIGATION)
+                data.navigation.asEntitiesSub(OPDS_FEED_NAVIGATION)
             )
 
             addAll(publicationEntities.flatMap { it.linkEntities })
@@ -115,15 +114,15 @@ fun DataLoadResult<OpdsFeed>.asEntities(
 
 fun OpdsFeedEntities.asModel(
     json: Json
-): DataLoadResult<OpdsFeed> {
+): DataReadyState<OpdsFeed> {
     val feedUid = opdsFeed.ofeUid
-    return DataLoadResult(
+    return DataReadyState(
         data = OpdsFeed(
             metadata = feedMetaData.first { it.ofmeOfeUid == feedUid }.asModel(),
             links = linkEntities.asModels(json, OPDS_FEED_LINKS, feedUid),
             publications = publications.filter {
                 it.opeOfeUid == feedUid && it.opeOgeUid == 0L
-            }.mapNotNull { publication ->
+            }.map { publication ->
                 OpdsPublicationEntities(
                     opdsPublicationEntity = publication,
                     langMapEntities = langMapEntities.filter {

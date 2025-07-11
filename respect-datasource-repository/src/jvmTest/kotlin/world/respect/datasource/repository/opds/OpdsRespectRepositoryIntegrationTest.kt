@@ -21,7 +21,7 @@ import okhttp3.OkHttpClient
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.db.opds.OpdsDataSourceDb
 import world.respect.datasource.http.opds.OpdsDataSourceHttp
@@ -118,7 +118,7 @@ class OpdsRespectRepositoryIntegrationTest {
 
                 val loadStart = Clock.System.now().toEpochMilliseconds()
                 repository.loadOpdsFeed(url, DataLoadParams()).filter {
-                    it is DataLoadResult && it.data != null
+                    it is DataReadyState
                 }.test(timeout = 10.seconds) {
                     val data = awaitItem()
                     val waitTime = Clock.System.now().toEpochMilliseconds() - loadStart
@@ -140,7 +140,7 @@ class OpdsRespectRepositoryIntegrationTest {
                 repository.loadOpdsPublication(
                     url, DataLoadParams(), null, null
                 ).filter {
-                    it is DataLoadResult && it.data != null
+                    it is DataReadyState
                 }.test(timeout = 10.seconds) {
                     val data = awaitItem()
                     val waitTime = Clock.System.now().toEpochMilliseconds() - loadStart
