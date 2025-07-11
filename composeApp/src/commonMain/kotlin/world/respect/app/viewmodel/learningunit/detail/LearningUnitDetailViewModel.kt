@@ -58,4 +58,7 @@ class LearningUnitDetailViewModel(
             }
         }
     }
+    companion object{
+        val IMAGE="image/png"
+    }
 }

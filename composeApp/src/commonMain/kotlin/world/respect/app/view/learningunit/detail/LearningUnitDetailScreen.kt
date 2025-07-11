@@ -52,6 +52,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailUiState
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 
 @Composable
 fun LearningUnitDetailScreen(
@@ -80,7 +81,7 @@ fun LearningUnitDetailScreen(
             ListItem(
                 leadingContent = {
                     val iconUrl = uiState.lessonDetail?.images?.find {
-                        it.type?.contains("image/png") == true
+                        it.type?.contains(IMAGE) == true
                     }?.href
                     RespectAsyncImage(
                         uri = iconUrl ?: "",
