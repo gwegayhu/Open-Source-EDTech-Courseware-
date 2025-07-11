@@ -5,10 +5,10 @@ import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 import world.respect.domain.getfavicons.GetFavIconUseCase
 import world.respect.domain.licenses.model.SpdxLicenseList
-import world.respect.datasource.opds.model.toStringMap
+import world.respect.datalayer.opds.model.toStringMap
 import world.respect.domain.opds.validator.verifyMimeTypeAndGetBodyAsText
 import world.respect.domain.validator.Validator
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
 import world.respect.domain.validator.ValidatorReporter
@@ -130,7 +130,7 @@ class RespectAppManifestValidator(
                 referer = url,
                 reporter = reporter,
                 options = ValidateHttpResponseForUrlUseCase.ValidationOptions(
-                    acceptableMimeTypes = listOf("application/json", world.respect.datasource.opds.model.OpdsFeed.MEDIA_TYPE)
+                    acceptableMimeTypes = listOf("application/json", world.respect.datalayer.opds.model.OpdsFeed.MEDIA_TYPE)
                 )
             )
 
@@ -147,9 +147,9 @@ class RespectAppManifestValidator(
             }
 
             linkValidator?.takeIf { options.followLinks }?.invoke(
-                link = world.respect.datasource.opds.model.ReadiumLink(
+                link = world.respect.datalayer.opds.model.ReadiumLink(
                     href = respectAppManifest.learningUnits.toString(),
-                    type = world.respect.datasource.opds.model.OpdsFeed.MEDIA_TYPE,
+                    type = world.respect.datalayer.opds.model.OpdsFeed.MEDIA_TYPE,
                 ),
                 refererUrl = absoluteUrl.toString(),
                 options = options,

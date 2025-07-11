@@ -60,7 +60,7 @@ dependencies {
 }
 
 android {
-    namespace = "world.respect.datasource.db"
+    namespace = "world.respect.datalayer.db"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

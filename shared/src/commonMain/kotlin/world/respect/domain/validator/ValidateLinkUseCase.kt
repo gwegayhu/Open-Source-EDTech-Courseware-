@@ -1,6 +1,6 @@
 package world.respect.domain.validator
 
-import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datalayer.opds.model.ReadiumLink
 
 
 /**

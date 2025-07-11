@@ -3,9 +3,9 @@ package world.respect.domain.opds.validator
 import io.ktor.http.Url
 import io.ktor.util.toMap
 import org.jsoup.Jsoup
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.datasource.opds.model.toStringMap
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.datalayer.opds.model.toStringMap
 import world.respect.domain.validator.HttpLinkHeader
 import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
