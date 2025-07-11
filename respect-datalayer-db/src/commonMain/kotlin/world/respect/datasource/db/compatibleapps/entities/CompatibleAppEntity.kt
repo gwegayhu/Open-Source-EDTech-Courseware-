@@ -2,12 +2,15 @@ package world.respect.datasource.db.compatibleapps.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.eygraber.uri.Uri
+import io.ktor.http.Url
 
 @Entity
 data class CompatibleAppEntity(
     @PrimaryKey
     val caeUid: Long,
-    val caeUrl: String,
+    val caeUrl: Url,
+    val caeIcon: Uri?,
     val caeLastModified: Long,
     val caeEtag: String?,
     val caeLicense: String,
