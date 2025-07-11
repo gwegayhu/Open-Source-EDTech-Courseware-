@@ -32,9 +32,9 @@ import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.list.AppListUiState
 import world.respect.app.viewmodel.apps.list.AppListViewModel
 import world.respect.app.viewmodel.apps.list.AppListViewModel.Companion.EMPTY_LIST
-import world.respect.datasource.DataLoadState
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.repository.ext.dataOrNull
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 
 @Composable

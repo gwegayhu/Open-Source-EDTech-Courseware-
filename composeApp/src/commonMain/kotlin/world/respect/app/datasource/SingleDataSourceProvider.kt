@@ -1,7 +1,7 @@
 package world.respect.app.datasource
 
 import world.respect.app.domain.account.RespectAccount
-import world.respect.datasource.RespectAppDataSource
+import world.respect.datalayer.RespectAppDataSource
 
 class SingleDataSourceProvider(
     private val datasource: RespectAppDataSource

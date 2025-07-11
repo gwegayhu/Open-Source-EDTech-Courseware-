@@ -51,10 +51,10 @@ import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LEA
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.LESSON_HEADER
 import world.respect.app.viewmodel.apps.detail.AppsDetailViewModel.Companion.SCREENSHOT
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
-import world.respect.datasource.DataReadyState
+import world.respect.datalayer.DataReadyState
 
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
 
 @Composable
 fun AppsDetailScreen(

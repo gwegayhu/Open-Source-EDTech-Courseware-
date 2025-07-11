@@ -10,9 +10,9 @@ import kotlinx.coroutines.launch
 import world.respect.app.app.LearningUnitDetail
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
-import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataReadyState
-import world.respect.datasource.opds.model.OpdsPublication
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.opds.model.OpdsPublication
 
 data class LearningUnitDetailUiState(
     val lessonDetail: OpdsPublication? = null,

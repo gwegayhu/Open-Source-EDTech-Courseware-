@@ -16,12 +16,12 @@ import world.respect.app.app.LearningUnitList
 import world.respect.app.appstate.AppBarSearchUiState
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
-import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataReadyState
-import world.respect.datasource.opds.model.OpdsFacet
-import world.respect.datasource.opds.model.OpdsGroup
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.opds.model.OpdsFacet
+import world.respect.datalayer.opds.model.OpdsGroup
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 

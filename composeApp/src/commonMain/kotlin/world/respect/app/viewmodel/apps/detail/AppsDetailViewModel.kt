@@ -17,14 +17,14 @@ import world.respect.app.app.LearningUnitDetail
 import world.respect.app.app.LearningUnitList
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
-import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadState
-import world.respect.datasource.DataReadyState
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.opds.model.OpdsGroup
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.datasource.repository.ext.dataOrNull
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.opds.model.OpdsGroup
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.datalayer.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 

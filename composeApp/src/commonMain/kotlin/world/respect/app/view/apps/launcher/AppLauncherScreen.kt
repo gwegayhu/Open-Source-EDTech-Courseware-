@@ -40,9 +40,9 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.viewmodel.apps.launcher.AppLauncherUiState
 import world.respect.app.viewmodel.apps.launcher.AppLauncherViewModel
-import world.respect.datasource.DataLoadState
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.repository.ext.dataOrNull
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.repository.ext.dataOrNull
 
 @Composable
 fun AppLauncherScreen(

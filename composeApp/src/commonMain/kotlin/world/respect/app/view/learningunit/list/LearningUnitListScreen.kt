@@ -48,8 +48,8 @@ import world.respect.app.appstate.toDisplayString
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
 
 @Composable
 fun LearningUnitListScreen(

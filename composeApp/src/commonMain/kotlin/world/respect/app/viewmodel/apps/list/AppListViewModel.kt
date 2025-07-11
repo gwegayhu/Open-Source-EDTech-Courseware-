@@ -14,10 +14,10 @@ import respect.composeapp.generated.resources.select_app
 import world.respect.app.app.AppsDetail
 import world.respect.app.app.EnterLink
 import world.respect.app.datasource.RespectAppDataSourceProvider
-import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadState
-import world.respect.datasource.DataReadyState
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.navigation.NavCommand
 
 

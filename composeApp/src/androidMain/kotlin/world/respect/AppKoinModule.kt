@@ -27,10 +27,10 @@ import world.respect.app.viewmodel.clazz.ClazzViewModel
 import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.app.viewmodel.report.ReportViewModel
-import world.respect.datasource.db.RespectAppDataSourceDb
-import world.respect.datasource.db.RespectDatabase
-import world.respect.datasource.http.RespectAppDataSourceHttp
-import world.respect.datasource.repository.RespectAppDataSourceRepository
+import world.respect.datalayer.db.RespectAppDataSourceDb
+import world.respect.datalayer.db.RespectDatabase
+import world.respect.datalayer.http.RespectAppDataSourceHttp
+import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm

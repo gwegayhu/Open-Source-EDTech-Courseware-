@@ -16,9 +16,9 @@ import world.respect.app.app.AppsDetail
 import world.respect.app.components.StringResourceUiText
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
-import world.respect.datasource.DataErrorResult
-import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataReadyState
+import world.respect.datalayer.DataErrorResult
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataReadyState
 import world.respect.navigation.NavCommand
 
 data class EnterLinkUiState(
