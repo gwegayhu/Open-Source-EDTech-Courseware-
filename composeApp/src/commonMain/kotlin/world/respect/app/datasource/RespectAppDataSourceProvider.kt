@@ -1,6 +1,6 @@
 package world.respect.app.datasource
 
-import world.respect.datasource.RespectAppDataSource
+import world.respect.datalayer.RespectAppDataSource
 
 /**
  * A RespectAppDataSource is tied to one (user) account.

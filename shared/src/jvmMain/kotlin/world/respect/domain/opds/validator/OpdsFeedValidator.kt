@@ -3,9 +3,9 @@ package world.respect.domain.opds.validator
 import com.networknt.schema.InputFormat
 import io.ktor.client.HttpClient
 import kotlinx.serialization.json.Json
-import world.respect.datasource.opds.model.OpdsFeed
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
+import world.respect.datalayer.opds.model.OpdsFeed
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorMessage
 import world.respect.domain.validator.ValidatorReporter

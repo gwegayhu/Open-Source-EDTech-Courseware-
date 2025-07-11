@@ -1,7 +1,7 @@
 package world.respect
 
 import kotlinx.serialization.json.Json
-import world.respect.datasource.opds.model.OpdsFeed
+import world.respect.datalayer.opds.model.OpdsFeed
 import kotlin.test.Test
 
 class OpdsSerializationTest {

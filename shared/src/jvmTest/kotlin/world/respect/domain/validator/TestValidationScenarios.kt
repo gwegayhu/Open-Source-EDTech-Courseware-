@@ -13,7 +13,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.di.jvmKoinAppModule
 import world.respect.testutil.copyResourcesToTempDir
 import world.respect.libutil.findFreePort
@@ -81,7 +81,7 @@ class TestValidationScenarios: KoinTest {
             val reporter = ListAndPrintlnValidatorReporter()
             runBlocking {
                 validator(
-                    link = world.respect.datasource.opds.model.ReadiumLink(
+                    link = world.respect.datalayer.opds.model.ReadiumLink(
                         href = "http://localhost:$port/resources/appmanifest.json",
                         type = RespectAppManifest.MIME_TYPE,
                     ),
