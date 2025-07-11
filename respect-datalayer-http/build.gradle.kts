@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "world.respect.datasource.http"
+    namespace = "world.respect.datalayer.http"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
