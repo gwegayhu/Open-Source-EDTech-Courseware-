@@ -30,7 +30,8 @@ fun DataReadyState<RespectAppManifest>.asEntities(
     return CompatibleAppEntities(
         compatibleAppEntity = CompatibleAppEntity(
             caeUid = caeUid,
-            caeUrl = metaInfo.requireUrl().toString(),
+            caeUrl = metaInfo.requireUrl(),
+            caeIcon = data.icon,
             caeLastModified = metaInfo.lastModified,
             caeEtag = metaInfo.etag,
             caeLicense = data.license,
@@ -77,6 +78,7 @@ fun CompatibleAppEntities.asModel(
             name = langMapEntities.filter { it.lmePropType == RESPECT_MANIFEST_NAME }.toModel(),
             description = langMapEntities.filter { it.lmePropType == RESPECT_MANIFEST_DESCRIPTION }.toModel(),
             license = compatibleAppEntity.caeLicense,
+            icon = compatibleAppEntity.caeIcon,
             website = compatibleAppEntity.caeWebsite.takeIf { it.isNotBlank() }?.let { Url(it) },
             learningUnits = Uri.parse(compatibleAppEntity.caeLearningUnits),
             defaultLaunchUri = Uri.parse(compatibleAppEntity.caeDefaultLaunchUri),
@@ -93,7 +95,7 @@ fun CompatibleAppEntities.asModel(
         metaInfo = DataLoadMetaInfo(
             lastModified = compatibleAppEntity.caeLastModified,
             etag = compatibleAppEntity.caeEtag,
-            url = Url(compatibleAppEntity.caeUrl),
+            url =compatibleAppEntity.caeUrl,
         )
     )
 }

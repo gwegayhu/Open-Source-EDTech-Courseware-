@@ -32,7 +32,7 @@ data class RespectAppManifest(
     val description: LangMap? = null,
     val license: String,
     val website: Url? = null,
-    val icon: Url? = null,
+    val icon: Uri? = null,
     @Serializable(with = UriStringSerializer::class)
     val learningUnits: Uri,
     @Serializable(with = UriStringSerializer::class)
