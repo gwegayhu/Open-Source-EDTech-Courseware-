@@ -58,7 +58,6 @@ fun LearningUnitListScreen(
 
     LearningUnitListScreen(
         uiState = uiState,
-        onClickLearningUnit = { viewModel.onClickLearningUnit(it) },
         onClickFilter = { viewModel.onClickFilter(it) },
         onClickPublication = { viewModel.onClickPublication(it) },
         onClickNavigation = { viewModel.onClickNavigation(it) }
@@ -68,7 +67,6 @@ fun LearningUnitListScreen(
 @Composable
 fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
-    onClickLearningUnit: (String) -> Unit,
     onClickFilter: (String) -> Unit,
     onClickPublication: (OpdsPublication) -> Unit,
     onClickNavigation: (ReadiumLink) -> Unit
@@ -93,7 +91,7 @@ fun LearningUnitListScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = uiState.selectedFilterTitle ?: (facet.metadata?.title ?: ""))
+                        Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
                         Icon(
                             imageVector = Icons.Filled.ArrowDropDown,
                             modifier = Modifier.padding(6.dp),
@@ -109,7 +107,7 @@ fun LearningUnitListScreen(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = facet.metadata?.title ?: "",
+                                text = facet.metadata.title,
                                 fontSize = 14.sp
                             )
                         },

@@ -59,6 +59,6 @@ class LearningUnitDetailViewModel(
         }
     }
     companion object{
-        val IMAGE="image/png"
+        const val IMAGE="image/png"
     }
 }

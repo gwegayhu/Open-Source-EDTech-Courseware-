@@ -22,7 +22,6 @@ import world.respect.datasource.opds.model.OpdsFacet
 import world.respect.datasource.opds.model.OpdsGroup
 import world.respect.datasource.opds.model.OpdsPublication
 import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.datasource.repository.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.navigation.NavCommand
 
@@ -84,18 +83,6 @@ class LearningUnitListViewModel(
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
 
-    fun onClickLearningUnit(href: String) {
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                LearningUnitDetail.create(
-                    learningUnitManifestUrl = route.opdsFeedUrl.resolve(href),
-                    refererUrl = route.opdsFeedUrl,
-                    expectedIdentifier = null
-                )
-            )
-        )
-    }
-
     fun onClickPublication(publication: OpdsPublication) {
 
         val publicationHref = publication.links.find {
@@ -133,7 +120,7 @@ class LearningUnitListViewModel(
     }
 
     companion object {
-        val SELF = "self"
+        const val SELF = "self"
 
     }
 }
