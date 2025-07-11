@@ -18,7 +18,6 @@ import world.respect.app.app.LearningUnitList
 import world.respect.app.datasource.RespectAppDataSourceProvider
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
@@ -68,7 +67,7 @@ class AppsDetailViewModel(
                         it.copy(
                             appDetail = result,
                             appIcon = route.manifestUrl.resolve(
-                                result.data?.icon.toString()
+                                result.data.icon.toString()
                             ).toString()
                         )
 
@@ -158,11 +157,11 @@ class AppsDetailViewModel(
     }
 
     companion object {
-        val BUTTONS_ROW = "buttons_row"
-        val LESSON_HEADER = "lesson_header"
-        val SCREENSHOT = "screenshot"
-        val LEARNING_UNIT_LIST = "learning_unit_list"
-        val SELF = "self"
-        val APP_DETAIL = "app_detail"
+        const val BUTTONS_ROW = "buttons_row"
+        const val LESSON_HEADER = "lesson_header"
+        const val SCREENSHOT = "screenshot"
+        const val LEARNING_UNIT_LIST = "learning_unit_list"
+        const val SELF = "self"
+        const val APP_DETAIL = "app_detail"
     }
 }
