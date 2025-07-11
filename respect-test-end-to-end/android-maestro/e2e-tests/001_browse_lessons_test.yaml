@@ -23,7 +23,9 @@ appId:  world.respect.app
 #   id: "profile_icon"   #test id is inappropriate for this icon
 #   index: 2
 - assertVisible: "Grade 1"
-- tapOn: "Grade 1"
+- tapOn: "Grade 1"   # list of lessons inside Grade 1 should be visible
+- assertVisible: "Example listing publications" #This is one lesson name
+- tapOn: "Example listing publications"
 - assertVisible: "Play"
 - assertVisible: "App name"
 - assertVisible: "Example listing publications"
