@@ -290,7 +290,9 @@ fun NavigationList(
                 onClickNavigation(navigation)
             }
     ) {
-        val iconUrl = navigation.alternate?.find { it.rel?.contains("icon") == true }?.href
+        val iconUrl = navigation.alternate?.find {
+            it.rel?.contains("icon") == true
+        }?.href
         RespectAsyncImage(
             uri = iconUrl ?: "",
             contentDescription = "",
