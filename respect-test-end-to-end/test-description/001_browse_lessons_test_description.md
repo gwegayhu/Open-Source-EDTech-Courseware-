@@ -18,6 +18,8 @@ So that they can choose a suitable lesson and start learning directly from one p
 10. Verify buttons/labels “Try it”, “Add App”, and “Lessons” are visible.
 11. Click on "Lessons".
 12. Verify user able to browse the lessons.
-13. Click on a lesson
-14. Verify the lesson screen is displayed.
-15. Verify the lesson name , Play button, Download button are visible to user
+13. Click on a lesson - Grade 1
+14. Verify lesson list with lesson 1 in it is visible
+15. Click on lesson 1
+16. Verify the lesson screen is displayed.
+17. Verify the lesson name , Play button, Download button are visible to user
