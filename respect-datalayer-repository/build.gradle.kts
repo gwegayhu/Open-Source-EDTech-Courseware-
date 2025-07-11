@@ -17,7 +17,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.respectDatasource)
+            api(projects.respectDatalayer)
             implementation(libs.kotlinx.serialization.json)
             api(libs.uri.kmp)
             api(libs.kotlinx.date.time)
@@ -33,8 +33,8 @@ kotlin {
             implementation(projects.respectLibXxhash)
             implementation(projects.respectLibUtil)
             implementation(libs.turbine)
-            implementation(projects.respectDatasourceHttp)
-            implementation(projects.respectDatasourceDb)
+            implementation(projects.respectDatalayerHttp)
+            implementation(projects.respectDatalayerDb)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
 

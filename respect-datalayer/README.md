@@ -1,6 +1,6 @@
 ### RESPECT-Datasource
 
-This is based on primarily on the [Android offline-first data layer architecture](https://developer.android.com/topic/architecture/data-layer/offline-first).
+The designed is based primarily on the [Android offline-first data layer architecture](https://developer.android.com/topic/architecture/data-layer/offline-first).
 
 A data source implementation can be:
  * Local - e.g. a database
