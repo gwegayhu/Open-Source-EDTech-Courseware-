@@ -95,13 +95,14 @@ fun AppsDetailScreen(
         item(key = APP_DETAIL) {
             ListItem(
                 leadingContent = {
-                    println("APPDETAIL ${uiState.appDetail}")
                     RespectAsyncImage(
                         uri = uiState.appIcon.toString(),
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .size(80.dp)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+
                     )
                 },
                 headlineContent = {
@@ -146,9 +147,16 @@ fun AppsDetailScreen(
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = null)
-                    Spacer(Modifier.width(4.dp))
-                    Text(text = stringResource(Res.string.add_app))
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = null
+                    )
+                    Spacer(
+                        Modifier.width(4.dp)
+                    )
+                    Text(
+                        text = stringResource(Res.string.add_app)
+                    )
                 }
             }
         }
