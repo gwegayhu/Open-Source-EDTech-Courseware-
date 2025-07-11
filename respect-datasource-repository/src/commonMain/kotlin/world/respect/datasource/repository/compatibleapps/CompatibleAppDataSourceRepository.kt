@@ -2,16 +2,16 @@ package world.respect.datasource.repository.compatibleapps
 
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.onEach
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSource
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.repository.ext.checkIsRemoteUpdated
-import world.respect.datasource.repository.ext.combineLocalWithRemote
-import world.respect.datasource.repository.ext.copyLoadState
+import world.respect.datasource.repository.ext.combineWithRemote
 
 class CompatibleAppDataSourceRepository(
     private val local: CompatibleAppsDataSourceLocal,
@@ -24,39 +24,41 @@ class CompatibleAppDataSourceRepository(
     ): DataLoadState<RespectAppManifest> {
         val localResult = local.getApp(manifestUrl, loadParams)
         val remoteResult = remote.getApp(manifestUrl, loadParams)
-
-        return localResult.checkIsRemoteUpdated(remoteResult).updatedRemoteData?.also { updatedData ->
-            local.upsertCompatibleApps(listOf(updatedData))
+        return if(remoteResult is DataReadyState) {
+            local.upsertCompatibleApps(listOf(remoteResult))
             remoteResult
-        } ?: localResult.copyLoadState(
-            localMetaInfo = localResult.metaInfo,
-            remoteMetaInfo = remoteResult.metaInfo
-        )
+        }else {
+            localResult.combineWithRemote(remoteResult)
+        }
     }
 
     override fun getAppAsFlow(
         manifestUrl: Url,
         loadParams: DataLoadParams
     ): Flow<DataLoadState<RespectAppManifest>> {
-        return local.getAppAsFlow(manifestUrl, loadParams).combineLocalWithRemote(
-            remoteFlow = remote.getAppAsFlow(manifestUrl, loadParams),
-            onRemoteNewer = { newApp ->
-                local.upsertCompatibleApps(listOf(newApp))
+        val remoteFlow = remote.getAppAsFlow(manifestUrl, loadParams).onEach {
+            (it as? DataReadyState)?.also { appRemote ->
+                local.upsertCompatibleApps(listOf(appRemote))
             }
-        )
+        }
+
+        return local.getAppAsFlow(manifestUrl, loadParams).combine(remoteFlow) { local, remote ->
+            local.combineWithRemote(remote)
+        }
     }
 
     override fun getAddableApps(
         loadParams: DataLoadParams
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
-        return local.getAddableApps(loadParams).combineLocalWithRemote(
-            remoteFlow = remote.getAddableApps(loadParams),
-            onRemoteNewer = { newList ->
-                local.upsertCompatibleApps(
-                    newList.data?.mapNotNull { it as? DataLoadResult } ?: emptyList()
-                )
+        val remote = remote.getAddableApps(loadParams).onEach {
+            (it as? DataReadyState)?.also { apps ->
+                local.upsertCompatibleApps(apps.data)
             }
-        )
+        }
+
+        return local.getAddableApps(loadParams).combine(remote) { local, remote ->
+            local.combineWithRemote(remote)
+        }
     }
 
     override fun getLaunchpadApps(

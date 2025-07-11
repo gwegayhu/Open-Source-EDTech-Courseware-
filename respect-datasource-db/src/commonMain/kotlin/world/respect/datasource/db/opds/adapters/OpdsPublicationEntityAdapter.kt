@@ -2,8 +2,7 @@ package world.respect.datasource.db.opds.adapters
 
 import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadMetaInfo
-import world.respect.datasource.DataLoadResult
-import world.respect.datasource.LoadingStatus
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.db.opds.OpdsParentType
 import world.respect.datasource.db.opds.entities.OpdsPublicationEntity
 import world.respect.datasource.db.opds.entities.ReadiumLinkEntity
@@ -25,7 +24,7 @@ data class OpdsPublicationEntities(
 )
 
 fun OpdsPublication.asEntities(
-    dataLoadResult: DataLoadResult<*>?,
+    dataLoadResult: DataReadyState<*>?,
     primaryKeyGenerator: PrimaryKeyGenerator,
     json: Json,
     xxStringHasher: XXStringHasher,
@@ -97,7 +96,7 @@ fun OpdsPublication.asEntities(
  */
 fun OpdsPublicationEntities.asModel(
     json: Json,
-): DataLoadResult<OpdsPublication> {
+): DataReadyState<OpdsPublication> {
     fun List<LangMapEntity>.toModelSub(
         propType: LangMapEntity.PropType
     ): LangMap {
@@ -124,7 +123,7 @@ fun OpdsPublicationEntities.asModel(
         )
     }
 
-    return DataLoadResult(
+    return DataReadyState(
         data = OpdsPublication(
             metadata = ReadiumMetadata(
                 type = opdsPublicationEntity.opeMdType,
@@ -154,7 +153,6 @@ fun OpdsPublicationEntities.asModel(
             ).takeIfNotEmpty(),
         ),
         metaInfo = DataLoadMetaInfo(
-            status = LoadingStatus.LOADED,
             url = opdsPublicationEntity.opeUrl,
             lastModified = opdsPublicationEntity.opeLastModified,
         )

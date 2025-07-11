@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.DataLoadState
+import world.respect.datasource.NoDataLoadedState
 import world.respect.datasource.db.RespectDatabase
 import world.respect.datasource.db.opds.adapters.OpdsFeedEntities
 import world.respect.datasource.db.opds.adapters.OpdsPublicationEntities
@@ -35,7 +36,7 @@ class OpdsDataSourceDb(
      * Update the database with the given opdsfeed by converting it to entities. Delete any previous
      * entities associated with the given publication.
      */
-    override suspend fun updateOpdsFeed(feed: DataLoadResult<OpdsFeed>) {
+    override suspend fun updateOpdsFeed(feed: DataReadyState<OpdsFeed>) {
         val feedUrl = feed.metaInfo.requireUrl()
 
         val feedEntities = feed.asEntities(
@@ -64,8 +65,8 @@ class OpdsDataSourceDb(
         }
     }
 
-    override suspend fun updateOpdsPublication(publication: DataLoadResult<OpdsPublication>) {
-        val pubData = publication.data ?: return
+    override suspend fun updateOpdsPublication(publication: DataReadyState<OpdsPublication>) {
+        val pubData = publication.data
         val url = publication.metaInfo.requireUrl()
 
         val publicationEntities = pubData.asEntities(
@@ -120,7 +121,7 @@ class OpdsDataSourceDb(
                         groups = respectDatabase.getOpdsGroupEntityDao().findByFeedUid(feedEntity.ofeUid),
                     ).asModel(json)
                 }
-            } ?: DataLoadResult()
+            } ?: NoDataLoadedState.notFound()
         }
     }
 
@@ -143,7 +144,7 @@ class OpdsDataSourceDb(
                     ),
                     linkEntities = respectDatabase.getReadiumLinkEntityDao().findAllByFeedUid(entity.opeUid)
                 ).asModel(json)
-            } ?: DataLoadResult()
+            } ?: NoDataLoadedState.notFound()
         }
     }
 }

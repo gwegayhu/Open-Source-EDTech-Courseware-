@@ -24,7 +24,6 @@ import world.respect.datasource.ext.lastModifiedAsLong
  * @param url the URL
  */
 data class DataLoadMetaInfo(
-    val status: LoadingStatus,
 
     val lastModified: Long = -1,
 
@@ -41,7 +40,6 @@ data class DataLoadMetaInfo(
             url: Url,
             message: HttpMessage,
         ) = DataLoadMetaInfo(
-            status = LoadingStatus.LOADED,
             lastModified = message.lastModifiedAsLong(),
             etag = message.etag(),
             url = url,

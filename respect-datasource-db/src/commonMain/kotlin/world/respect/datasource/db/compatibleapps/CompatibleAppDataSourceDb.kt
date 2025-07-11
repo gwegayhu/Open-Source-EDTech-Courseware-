@@ -5,9 +5,8 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.DataLoadState
-import world.respect.datasource.LoadingStatus
 import world.respect.datasource.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.db.RespectDatabase
@@ -18,8 +17,8 @@ import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.combine
+import world.respect.datasource.NoDataLoadedState
 import world.respect.datasource.db.compatibleapps.adapters.CompatibleAppEntities
-import world.respect.datasource.db.compatibleapps.entities.CompatibleAppEntity
 import world.respect.datasource.db.shared.entities.LangMapEntity
 
 class CompatibleAppDataSourceDb(
@@ -28,8 +27,10 @@ class CompatibleAppDataSourceDb(
     private val xxStringHasher: XXStringHasher,
 ): CompatibleAppsDataSourceLocal {
 
-    override suspend fun upsertCompatibleApps(apps: List<DataLoadResult<RespectAppManifest>>) {
-        val entities = apps.mapNotNull { it.asEntities(json, xxStringHasher) }
+    override suspend fun upsertCompatibleApps(apps: List<DataLoadState<RespectAppManifest>>) {
+        val entities = apps.mapNotNull {
+            (it as? DataReadyState)?.asEntities(json, xxStringHasher)
+        }
 
         respectDb.useWriterConnection { con ->
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
@@ -63,7 +64,7 @@ class CompatibleAppDataSourceDb(
             lmeEntityUid2 = 0
         )
 
-        return appEntity?.asModel(langMapEntities, json) ?: DataLoadResult()
+        return appEntity?.asModel(langMapEntities, json) ?: NoDataLoadedState.notFound()
     }
 
     override fun getAppAsFlow(
@@ -80,7 +81,7 @@ class CompatibleAppDataSourceDb(
                 lmeEntityUid2 = 0
             )
         ) { compatibleAppEntity, langMapEntities ->
-            compatibleAppEntity?.asModel(langMapEntities, json) ?: DataLoadResult()
+            compatibleAppEntity?.asModel(langMapEntities, json) ?: NoDataLoadedState.notFound()
         }
     }
 
@@ -93,7 +94,7 @@ class CompatibleAppDataSourceDb(
         )
 
         return appEntities.combine(langmaps) { appEntities, langmaps ->
-            DataLoadResult(
+            DataReadyState(
                 data = appEntities.map { appEntity ->
                     appEntity.asModel(
                         langMapEntities = langmaps.filter { it.lmeTopParentUid1 == appEntity.caeUid },
@@ -105,7 +106,6 @@ class CompatibleAppDataSourceDb(
                     ).asModel(json)
                 },
                 metaInfo = DataLoadMetaInfo(
-                    status = LoadingStatus.LOADED,
                     lastModified = appEntities.maxOfOrNull { it.caeLastModified } ?: 0,
                     etag = null,
                     url = null,

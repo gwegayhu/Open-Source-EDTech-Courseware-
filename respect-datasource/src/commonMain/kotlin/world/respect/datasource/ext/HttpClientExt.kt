@@ -9,18 +9,17 @@ import kotlinx.coroutines.flow.flow
 import world.respect.datasource.DataErrorResult
 import world.respect.datasource.DataLoadMetaInfo
 import world.respect.datasource.DataLoadParams
-import world.respect.datasource.DataLoadResult
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.DataLoadingState
-import world.respect.datasource.LoadingStatus
 
-suspend inline fun <reified T: Any> HttpClient.getDataLoadResult(
+suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
     url: Url
 ): DataLoadState<T> {
     return try {
         val response = this.get(url)
         val data = response.body<T>()
-        DataLoadResult(
+        DataReadyState(
             data = data,
             metaInfo = DataLoadMetaInfo.fromHttpMessage(url, response),
         )
@@ -28,7 +27,6 @@ suspend inline fun <reified T: Any> HttpClient.getDataLoadResult(
         DataErrorResult(
             error = e,
             metaInfo = DataLoadMetaInfo(
-                status = LoadingStatus.LOADED,
                 url = url,
             )
         )
@@ -43,10 +41,10 @@ inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
     return flow {
         emit(
             DataLoadingState(
-                metaInfo = DataLoadMetaInfo(LoadingStatus.LOADING, url = url)
+                metaInfo = DataLoadMetaInfo(url = url)
             )
         )
 
-        emit(getDataLoadResult(url))
+        emit(getAsDataLoadState(url))
     }
 }

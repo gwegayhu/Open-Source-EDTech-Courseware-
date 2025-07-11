@@ -4,8 +4,7 @@ import com.eygraber.uri.Uri
 import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 import world.respect.datasource.DataLoadMetaInfo
-import world.respect.datasource.DataLoadResult
-import world.respect.datasource.LoadingStatus
+import world.respect.datasource.DataReadyState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.db.shared.adapters.asEntities
 import world.respect.datasource.db.shared.adapters.toModel
@@ -23,11 +22,10 @@ data class CompatibleAppEntities(
     val langMapEntities: List<LangMapEntity>,
 )
 
-fun DataLoadResult<RespectAppManifest>.asEntities(
+fun DataReadyState<RespectAppManifest>.asEntities(
     json: Json,
     xxStringHasher: XXStringHasher,
 ) : CompatibleAppEntities? {
-    val manifest = data ?: return null
     val caeUid = xxStringHasher.hash(metaInfo.requireUrl().toString())
     return CompatibleAppEntities(
         compatibleAppEntity = CompatibleAppEntity(
@@ -35,22 +33,22 @@ fun DataLoadResult<RespectAppManifest>.asEntities(
             caeUrl = metaInfo.requireUrl().toString(),
             caeLastModified = metaInfo.lastModified,
             caeEtag = metaInfo.etag,
-            caeLicense = manifest.license,
-            caeWebsite = manifest.website?.toString() ?: "",
-            caeLearningUnits = manifest.learningUnits.toString(),
-            caeAndroidPackageId = manifest.android?.packageId,
-            caeAndroidStoreList = manifest.android?.stores?.map { it.toString() }?.let {
+            caeLicense = data.license,
+            caeWebsite = data.website?.toString() ?: "",
+            caeLearningUnits = data.learningUnits.toString(),
+            caeAndroidPackageId = data.android?.packageId,
+            caeAndroidStoreList = data.android?.stores?.map { it.toString() }?.let {
                 json.encodeToString(it)
             },
-            caeDefaultLaunchUri = manifest.defaultLaunchUri.toString(),
-            caeAndroidSourceCode = manifest.android?.sourceCode?.toString(),
+            caeDefaultLaunchUri = data.defaultLaunchUri.toString(),
+            caeAndroidSourceCode = data.android?.sourceCode?.toString(),
         ),
-        langMapEntities = manifest.name.asEntities(
+        langMapEntities = data.name.asEntities(
             lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST,
             lmeTopParentUid1 = caeUid,
             lmePropType= RESPECT_MANIFEST_NAME,
             lmePropFk = 0,
-        ) + (manifest.description?.asEntities(
+        ) + (data.description?.asEntities(
             lmeTopParentType = LangMapEntity.TopParentType.RESPECT_MANIFEST,
             lmeTopParentUid1 = caeUid,
             lmePropType = RESPECT_MANIFEST_DESCRIPTION,
@@ -62,7 +60,7 @@ fun DataLoadResult<RespectAppManifest>.asEntities(
 fun CompatibleAppEntity.asModel(
     langMapEntities: List<LangMapEntity>,
     json: Json,
-): DataLoadResult<RespectAppManifest>? {
+): DataReadyState<RespectAppManifest>? {
     return CompatibleAppEntities(
         compatibleAppEntity = this,
         langMapEntities = langMapEntities,
@@ -73,8 +71,8 @@ fun CompatibleAppEntity.asModel(
 
 fun CompatibleAppEntities.asModel(
     json: Json,
-): DataLoadResult<RespectAppManifest> {
-    return DataLoadResult(
+): DataReadyState<RespectAppManifest> {
+    return DataReadyState(
         data = RespectAppManifest(
             name = langMapEntities.filter { it.lmePropType == RESPECT_MANIFEST_NAME }.toModel(),
             description = langMapEntities.filter { it.lmePropType == RESPECT_MANIFEST_DESCRIPTION }.toModel(),
@@ -93,7 +91,6 @@ fun CompatibleAppEntities.asModel(
             },
         ),
         metaInfo = DataLoadMetaInfo(
-            status = LoadingStatus.LOADED,
             lastModified = compatibleAppEntity.caeLastModified,
             etag = compatibleAppEntity.caeEtag,
             url = Url(compatibleAppEntity.caeUrl),
