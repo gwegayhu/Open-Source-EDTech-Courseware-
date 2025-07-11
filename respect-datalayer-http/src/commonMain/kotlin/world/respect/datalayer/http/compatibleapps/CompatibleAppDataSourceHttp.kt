@@ -17,12 +17,14 @@ import world.respect.datalayer.compatibleapps.CompatibleAppsDataSource
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.ext.getDataLoadResultAsFlow
+import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
 import world.respect.libutil.ext.resolve
 
 
 class CompatibleAppDataSourceHttp(
     private val httpClient: HttpClient,
     defaultCompatibleAppListUrl: String,
+    private val validationValidationHelper: NetworkDataSourceValidationHelper? = null,
 ): CompatibleAppsDataSource {
 
     private val defaultCompatibleAppListUrlObj = Url(defaultCompatibleAppListUrl)
@@ -31,7 +33,7 @@ class CompatibleAppDataSourceHttp(
         manifestUrl: Url,
         loadParams: DataLoadParams,
     ): DataLoadState<RespectAppManifest> {
-        return httpClient.getAsDataLoadState(manifestUrl)
+        return httpClient.getAsDataLoadState(manifestUrl, validationValidationHelper)
     }
 
     override fun getAppAsFlow(
@@ -39,7 +41,7 @@ class CompatibleAppDataSourceHttp(
         loadParams: DataLoadParams,
     ): Flow<DataLoadState<RespectAppManifest>> {
         return httpClient.getDataLoadResultAsFlow(
-            manifestUrl, loadParams
+            manifestUrl, loadParams, validationValidationHelper
         )
     }
 
@@ -53,7 +55,7 @@ class CompatibleAppDataSourceHttp(
                     .body()
                 val manifests = respectAppUrls.map { manifestHref ->
                     httpClient.getAsDataLoadState<RespectAppManifest>(
-                        defaultCompatibleAppListUrlObj.resolve(manifestHref)
+                        defaultCompatibleAppListUrlObj.resolve(manifestHref), validationValidationHelper
                     )
                 }
 

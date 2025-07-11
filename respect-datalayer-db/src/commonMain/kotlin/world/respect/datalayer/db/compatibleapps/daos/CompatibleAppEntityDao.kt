@@ -6,9 +6,18 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppEntity
+import world.respect.datalayer.db.shared.ValidationInfo
 
 @Dao
 interface CompatibleAppEntityDao {
+
+    @Query("""
+        SELECT CompatibleAppEntity.caeLastModified AS lastModified,
+               CompatibleAppEntity.caeEtag AS etag
+          FROM CompatibleAppEntity
+         WHERE caeUid = :caeUid
+    """)
+    suspend fun getNetworkValidationInfo(caeUid: Long): ValidationInfo?
 
     @Query("""SELECT * 
                         FROM CompatibleAppEntity 

@@ -20,12 +20,20 @@ import kotlinx.coroutines.flow.combine
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.compatibleapps.adapters.CompatibleAppEntities
 import world.respect.datalayer.db.shared.entities.LangMapEntity
+import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
+import world.respect.datalayer.networkvalidation.NetworkValidationInfo
 
 class CompatibleAppDataSourceDb(
     private val respectDb: RespectDatabase,
     private val json: Json,
     private val xxStringHasher: XXStringHasher,
-): CompatibleAppsDataSourceLocal {
+): CompatibleAppsDataSourceLocal, NetworkDataSourceValidationHelper {
+
+    override suspend fun getValidationInfo(url: Url): NetworkValidationInfo? {
+        return respectDb.getCompatibleAppEntityDao().getNetworkValidationInfo(
+            xxStringHasher.hash(url.toString())
+        )?.asNetworkValidationInfo()
+    }
 
     override suspend fun upsertCompatibleApps(apps: List<DataLoadState<RespectAppManifest>>) {
         val entities = apps.mapNotNull {

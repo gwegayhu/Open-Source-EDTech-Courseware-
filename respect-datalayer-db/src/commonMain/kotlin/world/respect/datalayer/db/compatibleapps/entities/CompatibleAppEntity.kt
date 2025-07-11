@@ -5,6 +5,10 @@ import androidx.room.PrimaryKey
 import com.eygraber.uri.Uri
 import io.ktor.http.Url
 
+/**
+ * @property caeUid the xxhash of the caeUrl
+ * @property caeUrl the URL of the manifest
+ */
 @Entity
 data class CompatibleAppEntity(
     @PrimaryKey
