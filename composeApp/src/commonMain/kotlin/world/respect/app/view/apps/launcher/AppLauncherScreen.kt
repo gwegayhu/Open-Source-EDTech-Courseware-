@@ -140,6 +140,7 @@ fun AppLauncherScreen(
         }
     }
 }
+
 @Composable
 fun AppGridItem(
     app: DataLoadState<RespectAppManifest>,
@@ -162,15 +163,16 @@ fun AppGridItem(
                 .fillMaxWidth()
                 .aspectRatio(1f)
         ) {
-            RespectAsyncImage(
-                uri = appData?.icon.toString(),
-                contentDescription = "",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            )
-
+            appData?.icon.also { icon ->
+                RespectAsyncImage(
+                    uri = icon.toString(),
+                    contentDescription = "",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                )
+            }
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)

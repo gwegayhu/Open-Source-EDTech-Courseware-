@@ -35,6 +35,7 @@ import world.respect.app.viewmodel.apps.list.AppListViewModel.Companion.EMPTY_LI
 import world.respect.datasource.DataLoadState
 import world.respect.datasource.compatibleapps.model.RespectAppManifest
 import world.respect.datasource.repository.ext.dataOrNull
+import world.respect.libutil.ext.resolve
 
 @Composable
 fun AppListScreen(
@@ -91,16 +92,22 @@ fun AppListScreen(
                         onClickApp(app)
                     },
                 leadingContent = {
-                    RespectAsyncImage(
-                        uri = appData?.icon.toString(),
-                        contentDescription = appData?.name?.getTitle() ?: "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
-                            .background(MaterialTheme.colorScheme.background)
-                    )
+                    appData?.icon.also { icon ->
+                        val appIcon = app.metaInfo.url?.resolve(
+                            icon.toString()
+                        ).toString()
+
+                        RespectAsyncImage(
+                            uri = appIcon,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                                .background(MaterialTheme.colorScheme.background)
+                        )
+                    }
                 },
                 headlineContent = {
                     Text(
@@ -117,7 +124,7 @@ fun AppListScreen(
                     }
                 },
 
-            )
+                )
         }
     }
 }

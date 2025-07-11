@@ -45,6 +45,7 @@ import respect.composeapp.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.appstate.getTitle
 import world.respect.app.appstate.toDisplayString
+import world.respect.app.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.app.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datasource.opds.model.OpdsPublication
@@ -220,23 +221,26 @@ fun NavigationListItem(
             },
 
         leadingContent = {
+
             val iconUrl = navigation.alternate?.find {
                 it.rel?.contains("icon") == true
             }?.href
 
-            RespectAsyncImage(
-                uri = iconUrl ?: "",
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                        CircleShape
-                    )
-            )
+            iconUrl.also { icon ->
+                RespectAsyncImage(
+                    uri = icon,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.outline,
+                            CircleShape
+                        )
+                )
+            }
         },
 
         headlineContent = {
@@ -287,19 +291,24 @@ fun PublicationListItem(
             .clickable { onClickPublication(publication) },
 
         leadingContent = {
-            RespectAsyncImage(
-                uri = publication.images?.firstOrNull()?.href.toString(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                        CircleShape
-                    )
-            )
+            val iconUrl = publication.images?.find {
+                it.type?.contains(IMAGE) == true
+            }?.href
+            iconUrl.also { icon ->
+                RespectAsyncImage(
+                    uri = icon,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.outline,
+                            CircleShape
+                        )
+                )
+            }
         },
 
         headlineContent = {

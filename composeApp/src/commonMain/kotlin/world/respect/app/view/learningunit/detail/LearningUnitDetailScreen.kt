@@ -82,19 +82,22 @@ fun LearningUnitDetailScreen(
                     val iconUrl = uiState.lessonDetail?.images?.find {
                         it.type?.contains(IMAGE) == true
                     }?.href
-                    RespectAsyncImage(
-                        uri = iconUrl ?: "",
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                            .border(
-                                1.dp,
-                                MaterialTheme.colorScheme.outline,
-                                CircleShape
-                            )
-                    )
+
+                    iconUrl.also { icon ->
+                        RespectAsyncImage(
+                            uri = icon,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outline,
+                                    CircleShape
+                                )
+                        )
+                    }
                 },
                 headlineContent = {
                     Text(
