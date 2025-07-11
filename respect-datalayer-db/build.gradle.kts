@@ -19,7 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.respectDatasource)
+            api(projects.respectDatalayer)
             implementation(projects.respectLibPrimarykeygen)
             implementation(projects.respectLibXxhash)
             implementation(libs.kotlinx.serialization.json)
