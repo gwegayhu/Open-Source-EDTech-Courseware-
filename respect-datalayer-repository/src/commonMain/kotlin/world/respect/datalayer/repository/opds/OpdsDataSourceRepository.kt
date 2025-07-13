@@ -11,7 +11,7 @@ import world.respect.datalayer.opds.OpdsDataSource
 import world.respect.datalayer.opds.OpdsDataSourceLocal
 import world.respect.datalayer.opds.model.OpdsFeed
 import world.respect.datalayer.opds.model.OpdsPublication
-import world.respect.datalayer.repository.ext.combineWithRemote
+import world.respect.datalayer.ext.combineWithRemote
 
 class OpdsDataSourceRepository(
     private val local: OpdsDataSourceLocal,

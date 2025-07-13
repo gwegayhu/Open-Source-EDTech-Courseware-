@@ -54,9 +54,9 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
-
 dependencies {
-    ksp(libs.androidx.room.compiler)
+    add("kspJvm", libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
 }
 
 android {

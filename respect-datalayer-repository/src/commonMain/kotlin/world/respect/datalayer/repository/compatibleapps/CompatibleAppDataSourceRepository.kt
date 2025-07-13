@@ -11,7 +11,7 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.compatibleapps.CompatibleAppsDataSource
 import world.respect.datalayer.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
-import world.respect.datalayer.repository.ext.combineWithRemote
+import world.respect.datalayer.ext.combineWithRemote
 
 class CompatibleAppDataSourceRepository(
     private val local: CompatibleAppsDataSourceLocal,
