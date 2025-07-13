@@ -1,4 +1,4 @@
-package world.respect.domain.opds.validator
+package world.respect.shared.domain.opds.validator
 
 import io.ktor.http.Url
 import io.ktor.util.toMap
@@ -7,7 +7,7 @@ import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.datalayer.opds.model.toStringMap
 import world.respect.domain.validator.HttpLinkHeader
-import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
+import world.respect.shared.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
 import world.respect.domain.validator.ValidatorReporter
 import java.net.URI

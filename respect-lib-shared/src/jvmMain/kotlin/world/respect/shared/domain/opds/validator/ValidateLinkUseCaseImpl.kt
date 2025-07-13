@@ -1,9 +1,12 @@
-package world.respect.domain.opds.validator
+package world.respect.shared.domain.opds.validator
 
 import io.ktor.http.isSuccess
-import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidator
+import world.respect.shared.domain.respectappmanifest.validator.RespectAppManifestValidator
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
-import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
+import world.respect.datalayer.opds.model.OpdsFeed
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorMessage
 import world.respect.domain.validator.ValidatorReporter
@@ -17,13 +20,13 @@ class ValidateLinkUseCaseImpl(
 ) : ValidateLinkUseCase {
 
     override suspend operator fun invoke(
-        link: world.respect.datalayer.opds.model.ReadiumLink,
+        link: ReadiumLink,
         refererUrl: String,
         options: ValidateLinkUseCase.ValidatorOptions,
         reporter: ValidatorReporter,
         visitedUrls: MutableList<String>,
     ) {
-        val linkType = link.type ?: world.respect.datalayer.opds.model.OpdsFeed.MEDIA_TYPE
+        val linkType = link.type ?: OpdsFeed.MEDIA_TYPE
 
         val baseUrlUri = URI(refererUrl)
         val linkUrl = baseUrlUri.resolve(link.href).toURL().toString()
@@ -67,10 +70,10 @@ class ValidateLinkUseCaseImpl(
         }
 
         val validatorToRun = when(linkType) {
-            world.respect.datalayer.opds.model.OpdsFeed.MEDIA_TYPE -> {
+            OpdsFeed.MEDIA_TYPE -> {
                 opdsFeedValidator
             }
-            world.respect.datalayer.opds.model.OpdsPublication.MEDIA_TYPE, world.respect.datalayer.opds.model.OpdsPublication.MEDIA_TYPE_READIUM_MANIFEST -> {
+            OpdsPublication.MEDIA_TYPE, OpdsPublication.MEDIA_TYPE_READIUM_MANIFEST -> {
                 opdsPublicationValidator
             }
             RespectAppManifest.MIME_TYPE -> {

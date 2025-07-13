@@ -1,4 +1,4 @@
-package world.respect.di
+package world.respect.shared.di
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -9,13 +9,13 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import world.respect.domain.getfavicons.GetFavIconUseCase
-import world.respect.domain.getfavicons.GetFavIconsUseCaseImpl
-import world.respect.domain.opds.validator.OpdsFeedValidator
-import world.respect.domain.opds.validator.OpdsPublicationValidator
-import world.respect.domain.opds.validator.ValidateLinkUseCaseImpl
-import world.respect.domain.opds.validator.ValidateOpdsPublicationUseCase
-import world.respect.domain.respectappmanifest.validator.RespectAppManifestValidator
-import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
+import world.respect.shared.domain.getfavicons.GetFavIconsUseCaseImpl
+import world.respect.shared.domain.opds.validator.OpdsFeedValidator
+import world.respect.shared.domain.opds.validator.OpdsPublicationValidator
+import world.respect.shared.domain.opds.validator.ValidateLinkUseCaseImpl
+import world.respect.shared.domain.opds.validator.ValidateOpdsPublicationUseCase
+import world.respect.shared.domain.respectappmanifest.validator.RespectAppManifestValidator
+import world.respect.shared.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidateLinkUseCase
 
 val jvmKoinAppModule = module {

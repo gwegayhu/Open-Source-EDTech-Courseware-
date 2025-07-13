@@ -14,7 +14,7 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
-import world.respect.di.jvmKoinAppModule
+import world.respect.shared.di.jvmKoinAppModule
 import world.respect.testutil.copyResourcesToTempDir
 import world.respect.libutil.findFreePort
 import world.respect.testutil.recursiveFindAndReplace

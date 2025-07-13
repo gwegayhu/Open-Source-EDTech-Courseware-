@@ -1,4 +1,4 @@
-package world.respect.domain.validator
+package world.respect.shared.domain.validator
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.expectSuccess
@@ -7,6 +7,8 @@ import io.ktor.client.request.prepareGet
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import world.respect.domain.validator.ValidatorMessage
+import world.respect.domain.validator.ValidatorReporter
 
 /**
  * Validate an HTTP response for a given URL. Can be used to check that the URL:
@@ -145,7 +147,7 @@ class ValidateHttpResponseForUrlUseCase(
                 }
             }
         }catch(e: Throwable) {
-            validatorMessages += reporter.addMessage(ValidatorMessage.fromException(url, e))
+            validatorMessages += reporter.addMessage(ValidatorMessage.Companion.fromException(url, e))
         }
 
         return ValidateHttpResponseForUrlResult(

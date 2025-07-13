@@ -1,4 +1,4 @@
-package world.respect.domain.validator
+package world.respect.shared.domain.validator
 
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse

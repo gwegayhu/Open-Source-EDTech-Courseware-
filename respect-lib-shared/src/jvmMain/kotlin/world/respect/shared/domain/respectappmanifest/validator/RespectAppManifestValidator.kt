@@ -1,4 +1,4 @@
-package world.respect.domain.respectappmanifest.validator
+package world.respect.shared.domain.respectappmanifest.validator
 
 import io.ktor.client.HttpClient
 import io.ktor.http.Url
@@ -9,7 +9,9 @@ import world.respect.datalayer.opds.model.toStringMap
 import world.respect.domain.opds.validator.verifyMimeTypeAndGetBodyAsText
 import world.respect.domain.validator.Validator
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
-import world.respect.domain.validator.ValidateHttpResponseForUrlUseCase
+import world.respect.datalayer.opds.model.OpdsFeed
+import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
 import world.respect.domain.validator.ValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
@@ -130,7 +132,7 @@ class RespectAppManifestValidator(
                 referer = url,
                 reporter = reporter,
                 options = ValidateHttpResponseForUrlUseCase.ValidationOptions(
-                    acceptableMimeTypes = listOf("application/json", world.respect.datalayer.opds.model.OpdsFeed.MEDIA_TYPE)
+                    acceptableMimeTypes = listOf("application/json", OpdsFeed.MEDIA_TYPE)
                 )
             )
 
@@ -147,9 +149,9 @@ class RespectAppManifestValidator(
             }
 
             linkValidator?.takeIf { options.followLinks }?.invoke(
-                link = world.respect.datalayer.opds.model.ReadiumLink(
+                link = ReadiumLink(
                     href = respectAppManifest.learningUnits.toString(),
-                    type = world.respect.datalayer.opds.model.OpdsFeed.MEDIA_TYPE,
+                    type = OpdsFeed.MEDIA_TYPE,
                 ),
                 refererUrl = absoluteUrl.toString(),
                 options = options,

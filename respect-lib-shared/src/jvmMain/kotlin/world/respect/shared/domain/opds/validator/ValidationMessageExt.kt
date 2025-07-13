@@ -1,4 +1,4 @@
-package world.respect.domain.opds.validator
+package world.respect.shared.domain.opds.validator
 
 import com.networknt.schema.ValidationMessage as SchemaValidatorMessage
 import world.respect.domain.validator.ValidatorMessage
