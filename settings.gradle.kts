@@ -30,9 +30,9 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
-include(":server")
-include(":shared")
+include(":respect-app")
+include(":respect-server")
+include(":respect-lib-shared")
 include(":respect-cli")
 include(":respect-datalayer")
 include(":respect-datalayer-http")

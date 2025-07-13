@@ -19,6 +19,7 @@ import io.ktor.http.Url
 import kotlinx.coroutines.flow.combine
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.compatibleapps.adapters.CompatibleAppEntities
+import world.respect.datalayer.db.shared.adapters.asNetworkValidationInfo
 import world.respect.datalayer.db.shared.entities.LangMapEntity
 import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
 import world.respect.datalayer.networkvalidation.NetworkValidationInfo

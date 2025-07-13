@@ -16,6 +16,7 @@ import world.respect.datalayer.db.opds.adapters.OpdsFeedEntities
 import world.respect.datalayer.db.opds.adapters.OpdsPublicationEntities
 import world.respect.datalayer.db.opds.adapters.asEntities
 import world.respect.datalayer.db.opds.adapters.asModel
+import world.respect.datalayer.db.shared.adapters.asNetworkValidationInfo
 import world.respect.datalayer.db.shared.entities.LangMapEntity
 import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
 import world.respect.datalayer.networkvalidation.NetworkValidationInfo
