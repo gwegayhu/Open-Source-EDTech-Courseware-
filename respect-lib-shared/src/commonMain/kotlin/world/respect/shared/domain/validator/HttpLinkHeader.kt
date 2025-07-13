@@ -22,18 +22,18 @@ class HttpLinkHeader(
                     Link(
                         uriRef = linkStr.substringAfter("<").substringBefore(">"),
                         params = linkStr.substringAfter(">").substringAfter(";")
-                            .split(";").map { paramPart ->
+                            .split(";").associate { paramPart ->
                                 val paramName = paramPart.substringBefore("=").trim()
                                 val paramValuePart = paramPart.substringAfter("=")
-                                val paramValue = if(paramValuePart.startsWith("\"")) {
+                                val paramValue = if (paramValuePart.startsWith("\"")) {
                                     //Quoted
                                     paramValuePart.trim().removeSurrounding("\"")
-                                }else {
+                                } else {
                                     paramValuePart.trim()
                                 }
 
                                 paramName to paramValue
-                            }.toMap()
+                            }
                     )
                 }
             )
