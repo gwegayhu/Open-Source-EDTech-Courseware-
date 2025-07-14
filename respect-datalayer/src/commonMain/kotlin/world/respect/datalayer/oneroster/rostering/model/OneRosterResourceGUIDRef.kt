@@ -12,8 +12,12 @@ import world.respect.datalayer.shared.serialization.UriStringSerializer
  */
 @Serializable
 data class OneRosterResourceGUIDRef(
-    val type: String,
+    val type: ResourceGUIDRefTypeEnum = ResourceGUIDRefTypeEnum.RESOURCE,
     @Serializable(with = UriStringSerializer::class)
     val href: Uri,
     val sourcedId: String,
-)
+) {
+    enum class ResourceGUIDRefTypeEnum(val value: String) {
+        RESOURCE("resource")
+    }
+}
