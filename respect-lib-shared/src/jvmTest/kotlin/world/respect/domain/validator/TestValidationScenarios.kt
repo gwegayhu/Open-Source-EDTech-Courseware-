@@ -106,8 +106,7 @@ class TestValidationScenarios: KoinTest {
         }
     }
 
-    //Temporarily disabled due to https://github.com/readium/webpub-manifest/issues/118
-    //@Test
+    @Test
     fun givenValidManifest_whenValidated_thenWillReturnNoErrors() {
         testValidationScenario(
             caseName = "case_valid",
@@ -117,8 +116,7 @@ class TestValidationScenarios: KoinTest {
         }
     }
 
-    //Temporarily disabled due to https://github.com/readium/webpub-manifest/issues/118
-    //@Test
+    @Test
     fun givenManifestNotDiscoverable_whenValidated_thenWillReturnError() {
         testValidationScenario(
             caseName = "case_manifest_not_discoverable",
@@ -139,8 +137,7 @@ class TestValidationScenarios: KoinTest {
         }
     }
 
-    //Temporarily disabled due to https://github.com/readium/webpub-manifest/issues/118
-    //@Test
+    @Test
     fun givenManifestDoesNotListResources_whenValidated_thenWillReturnError() {
         testValidationScenario(
             caseName = "case_no_resources_in_manifest"
@@ -156,8 +153,7 @@ class TestValidationScenarios: KoinTest {
         }
     }
 
-    //Temporarily disabled due to https://github.com/readium/webpub-manifest/issues/118
-    //@Test
+    @Test
     fun givenManifestResourcesDoNotExist_whenValidated_thenWillReturnErrors() {
         testValidationScenario(
             caseName = "case_manifest_resources_do_not_exist",
