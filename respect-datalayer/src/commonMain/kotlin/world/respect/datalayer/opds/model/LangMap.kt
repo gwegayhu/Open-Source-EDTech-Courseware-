@@ -7,9 +7,9 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import world.respect.datalayer.opds.serialization.StringOrObjectSerializer
-import world.respect.datalayer.opds.serialization.StringValue
-import world.respect.datalayer.opds.serialization.StringValueSerializer
+import world.respect.datalayer.shared.serialization.StringOrObjectSerializer
+import world.respect.datalayer.shared.serialization.StringValue
+import world.respect.datalayer.shared.serialization.StringValueSerializer
 
 /**
  * Schema https://readium.org/webpub-manifest/schema/language-map.schema.json

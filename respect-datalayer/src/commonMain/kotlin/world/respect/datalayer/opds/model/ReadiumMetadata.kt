@@ -3,8 +3,8 @@ package world.respect.datalayer.opds.model
 import com.eygraber.uri.Uri
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-import world.respect.datalayer.opds.serialization.StringListSerializer
-import world.respect.datalayer.opds.serialization.UriStringSerializer
+import world.respect.datalayer.shared.serialization.StringListSerializer
+import world.respect.datalayer.shared.serialization.UriStringSerializer
 
 /**
  * Represents metadata for a Publication.

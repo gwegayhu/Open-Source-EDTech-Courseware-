@@ -1,7 +1,7 @@
 package world.respect.datalayer.opds.model
 
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.opds.serialization.StringListSerializer
+import world.respect.datalayer.shared.serialization.StringListSerializer
 
 /**
  * Represents a Link Object in OPDS 2.0.

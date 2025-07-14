@@ -16,6 +16,7 @@ import world.respect.shared.di.jvmKoinAppModule
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorMessage
+import kotlin.system.exitProcess
 
 
 @Suppress("unused")
@@ -107,9 +108,9 @@ class RespectCLI : KoinComponent {
                     println("Errors: $numErrors")
 
                     if(numErrors > 0) {
-                        System.exit(1)
+                        exitProcess(1)
                     }else {
-                        System.exit(0)
+                        exitProcess(0)
                     }
                 }
             }

@@ -4,7 +4,7 @@ import com.eygraber.uri.Uri
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.opds.serialization.UriStringSerializer
+import world.respect.datalayer.shared.serialization.UriStringSerializer
 
 /**
  * OPDS Feed Metadata.

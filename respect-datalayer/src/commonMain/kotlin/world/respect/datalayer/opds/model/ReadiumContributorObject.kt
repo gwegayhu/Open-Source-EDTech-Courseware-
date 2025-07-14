@@ -1,10 +1,10 @@
 package world.respect.datalayer.opds.model
 
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.opds.serialization.SingleItemToListTransformer
-import world.respect.datalayer.opds.serialization.StringOrObjectSerializer
-import world.respect.datalayer.opds.serialization.StringValue
-import world.respect.datalayer.opds.serialization.StringValueSerializer
+import world.respect.datalayer.shared.serialization.SingleItemToListTransformer
+import world.respect.datalayer.shared.serialization.StringOrObjectSerializer
+import world.respect.datalayer.shared.serialization.StringValue
+import world.respect.datalayer.shared.serialization.StringValueSerializer
 
 /**
  * Represents a contributor (author, translator, etc.). As per the schema, this can be an object,

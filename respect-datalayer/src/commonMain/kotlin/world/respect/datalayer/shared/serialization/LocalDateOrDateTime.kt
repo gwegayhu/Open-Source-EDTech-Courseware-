@@ -1,4 +1,4 @@
-package world.respect.datalayer.opds.serialization
+package world.respect.datalayer.shared.serialization
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime

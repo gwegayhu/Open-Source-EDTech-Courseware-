@@ -4,7 +4,7 @@ import com.eygraber.uri.Uri
 import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import world.respect.datalayer.opds.model.LangMap
-import world.respect.datalayer.opds.serialization.UriStringSerializer
+import world.respect.datalayer.shared.serialization.UriStringSerializer
 
 /**
  * Represents the RESPECT manifest as described in the RESPECT Launcher App Integration Guide.

@@ -1,4 +1,4 @@
-package world.respect.datalayer.opds.serialization
+package world.respect.datalayer.shared.serialization
 
 import com.eygraber.uri.Uri
 import kotlinx.serialization.KSerializer

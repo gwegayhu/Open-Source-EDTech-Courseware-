@@ -2,11 +2,11 @@ package world.respect.datalayer.opds.model
 
 import com.eygraber.uri.Uri
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.opds.serialization.SingleItemToListTransformer
-import world.respect.datalayer.opds.serialization.StringOrObjectSerializer
-import world.respect.datalayer.opds.serialization.StringValue
-import world.respect.datalayer.opds.serialization.StringValueSerializer
-import world.respect.datalayer.opds.serialization.UriStringSerializer
+import world.respect.datalayer.shared.serialization.SingleItemToListTransformer
+import world.respect.datalayer.shared.serialization.StringOrObjectSerializer
+import world.respect.datalayer.shared.serialization.StringValue
+import world.respect.datalayer.shared.serialization.StringValueSerializer
+import world.respect.datalayer.shared.serialization.UriStringSerializer
 
 /**
  * Schema: https://readium.org/webpub-manifest/schema/subject.schema.json

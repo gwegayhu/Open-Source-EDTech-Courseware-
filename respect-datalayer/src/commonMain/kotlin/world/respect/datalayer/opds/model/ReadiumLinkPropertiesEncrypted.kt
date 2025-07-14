@@ -2,7 +2,7 @@ package world.respect.datalayer.opds.model
 
 import com.eygraber.uri.Uri
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.opds.serialization.UriStringSerializer
+import world.respect.datalayer.shared.serialization.UriStringSerializer
 
 /**
  * As per https://readium.org/webpub-manifest/schema/extensions/encryption/properties.schema.json
