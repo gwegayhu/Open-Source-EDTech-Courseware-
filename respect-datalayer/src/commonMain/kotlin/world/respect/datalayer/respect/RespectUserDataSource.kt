@@ -3,7 +3,7 @@ package world.respect.datalayer.respect
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
-import world.respect.datalayer.respect.model.invite.RespectRedeemInviteRequest
+import world.respect.datalayer.respect.model.invite.RespectPendingInviteState
 
 interface RespectUserDataSource {
 
@@ -22,8 +22,8 @@ interface RespectUserDataSource {
     suspend fun getInviteInfo(code: String): Flow<DataLoadState<RespectInviteInfo>>
 
     /**
-     * @param redeemRequest
+     * Gets the state of an invitation as a flow.
      */
-    suspend fun redeemInvite(redeemRequest: RespectRedeemInviteRequest)
+    suspend fun getInviteStateAsFlow(uid: String): Flow<DataLoadState<RespectPendingInviteState>>
 
 }
