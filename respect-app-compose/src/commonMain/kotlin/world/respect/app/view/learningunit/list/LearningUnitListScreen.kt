@@ -64,7 +64,6 @@ fun LearningUnitListScreen(
         onClickNavigation = { viewModel.onClickNavigation(it) }
     )
 }
-
 @Composable
 fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
