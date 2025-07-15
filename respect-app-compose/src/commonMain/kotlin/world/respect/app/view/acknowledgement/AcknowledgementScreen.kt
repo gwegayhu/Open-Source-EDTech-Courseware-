@@ -18,14 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import respect.composeapp.generated.resources.Res
-import respect.composeapp.generated.resources.network_powered_by
-import respect.composeapp.generated.resources.supported_by
 import world.respect.app.app.AppIcon
-import world.respect.app.viewmodel.acknowledgement.AcknowledgementUiState
-import world.respect.app.viewmodel.acknowledgement.AcknowledgementViewModel
+import world.respect.shared.viewmodel.acknowledgement.AcknowledgementUiState
+import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.images.RespectImage
 import world.respect.images.respectImagePainter
+import world.respect.shared.generated.resources.*
 
 @Composable
 fun AcknowledgementScreen(

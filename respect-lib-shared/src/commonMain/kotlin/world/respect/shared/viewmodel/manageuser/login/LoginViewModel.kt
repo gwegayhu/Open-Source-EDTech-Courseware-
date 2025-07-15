@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.manageuser.login
+package world.respect.shared.viewmodel.manageuser.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -7,13 +7,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import respect.composeapp.generated.resources.Res
-import respect.composeapp.generated.resources.email_required
-import respect.composeapp.generated.resources.login
-import respect.composeapp.generated.resources.password_required
-import world.respect.app.app.AppLauncher
-import world.respect.app.viewmodel.RespectViewModel
-import world.respect.navigation.NavCommand
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.*
+import world.respect.shared.viewmodel.RespectViewModel
 
 data class LoginUiState(
     val email: String = "",
@@ -75,7 +71,6 @@ class LoginViewModel(
                 return@launch
             }
 
-            _navCommandFlow.tryEmit(NavCommand.Navigate(AppLauncher))
         }
     }
 }

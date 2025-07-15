@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 
+
 val nameMap = mapOf(
     RespectImage.SPIX_LOGO to "/img/spix_logo.png",
 )

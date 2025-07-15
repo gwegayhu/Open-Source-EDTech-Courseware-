@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import world.respect.app.R
 
+
 private val nameMap = mapOf(
     RespectImage.SPIX_LOGO to R.drawable.spix_logo,
 )

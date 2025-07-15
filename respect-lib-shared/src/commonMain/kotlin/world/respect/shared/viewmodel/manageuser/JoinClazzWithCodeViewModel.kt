@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel.manageuser
+package world.respect.shared.viewmodel.manageuser
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import respect.composeapp.generated.resources.Res
-import respect.composeapp.generated.resources.enter_code_label
-import respect.composeapp.generated.resources.invalid_invite_code
-import world.respect.app.app.LoginScreen
-import world.respect.app.components.StringResourceUiText
-import world.respect.app.viewmodel.RespectViewModel
-import world.respect.navigation.NavCommand
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.enter_code_label
+import world.respect.shared.generated.resources.invalid_invite_code
+import world.respect.shared.navigation.LoginScreen
+import world.respect.shared.navigation.NavCommand
+import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.viewmodel.RespectViewModel
 
 data class JoinClazzWithCodeUiState(
     val inviteCode: String = "",
