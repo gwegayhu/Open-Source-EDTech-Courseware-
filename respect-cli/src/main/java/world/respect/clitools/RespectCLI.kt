@@ -8,14 +8,15 @@ import net.sourceforge.argparse4j.inf.Namespace
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
-import world.respect.datasource.compatibleapps.model.RespectAppManifest
-import world.respect.datasource.opds.model.OpdsFeed
-import world.respect.datasource.opds.model.OpdsPublication
-import world.respect.datasource.opds.model.ReadiumLink
-import world.respect.di.jvmKoinAppModule
+import world.respect.datalayer.compatibleapps.model.RespectAppManifest
+import world.respect.datalayer.opds.model.OpdsFeed
+import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.di.jvmKoinAppModule
 import world.respect.domain.validator.ListAndPrintlnValidatorReporter
 import world.respect.domain.validator.ValidateLinkUseCase
 import world.respect.domain.validator.ValidatorMessage
+import kotlin.system.exitProcess
 
 
 @Suppress("unused")
@@ -107,9 +108,9 @@ class RespectCLI : KoinComponent {
                     println("Errors: $numErrors")
 
                     if(numErrors > 0) {
-                        System.exit(1)
+                        exitProcess(1)
                     }else {
-                        System.exit(0)
+                        exitProcess(0)
                     }
                 }
             }

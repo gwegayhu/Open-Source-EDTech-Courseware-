@@ -55,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "world.respect.datasource.repository"
+    namespace = "world.respect.datalayer.repository"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
