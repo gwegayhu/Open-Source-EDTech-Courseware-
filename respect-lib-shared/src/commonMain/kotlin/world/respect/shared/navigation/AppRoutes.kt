@@ -43,7 +43,7 @@ object EnterLink : RespectAppRoute
 @Serializable
 class AppsDetail private constructor(
     private val manifestUrlStr: String
-): RespectAppRoute {
+) : RespectAppRoute {
 
     @Transient
     val manifestUrl = Url(manifestUrlStr)
@@ -64,7 +64,8 @@ class AppsDetail private constructor(
  */
 @Serializable
 class LearningUnitList(
-    private val opdsFeedUrlStr: String
+    private val opdsFeedUrlStr: String,
+    val title: String? = null
 ) : RespectAppRoute {
 
     @Transient
@@ -72,8 +73,11 @@ class LearningUnitList(
 
     companion object {
 
-        fun create(opdsFeedUrl: Url): LearningUnitList {
-            return LearningUnitList(opdsFeedUrl.toString())
+        fun create(opdsFeedUrl: Url, title: String?): LearningUnitList {
+            return LearningUnitList(
+                opdsFeedUrlStr = opdsFeedUrl.toString(),
+                title = title
+            )
         }
 
     }

@@ -108,7 +108,8 @@ class AppsDetailViewModel(
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitList.create(
-                        opdsFeedUrl = route.manifestUrl.resolve(uri)
+                        opdsFeedUrl = route.manifestUrl.resolve(uri),
+                        title = null
                     )
                 )
             )
@@ -141,7 +142,11 @@ class AppsDetailViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList.create(
-                    opdsFeedUrl = route.manifestUrl.resolve(navigationHref)
+                    opdsFeedUrl = route.manifestUrl.resolve(
+                        navigationHref,
+                    ),
+                    title = navigation.title
+
                 )
             )
         )

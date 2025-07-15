@@ -51,7 +51,7 @@ class LearningUnitListViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(resource = Res.string.lesson_list),
+                    title = route.title ?: getString(resource = Res.string.lesson_list),
                     searchState = AppBarSearchUiState(
                         visible = true
                     )
@@ -114,7 +114,8 @@ class LearningUnitListViewModel(
                 LearningUnitList.create(
                     opdsFeedUrl = route.opdsFeedUrl.resolve(
                         navigationHref
-                    )
+                    ),
+                    title=navigation.title
                 )
             )
         )
