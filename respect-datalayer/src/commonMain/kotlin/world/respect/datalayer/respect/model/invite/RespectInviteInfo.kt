@@ -2,11 +2,11 @@ package world.respect.datalayer.respect.model.invite
 
 import kotlinx.serialization.Serializable
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClassGUIDRef
-import world.respect.datalayer.respect.model.RespectServerUrls
+import world.respect.datalayer.respect.model.RespectRealm
 
 /**
  * @property code the invite code (as provided by the user)
- * @property serverUrls The server URL config that the user is invited to access
+ * @property realm The realm that the user is invited to
  * @property classGUIDRef The class to which the user is being invited
  * @property className The name of the class to which the user is being invited
  * @property userInviteType type of invite as per the enum
@@ -14,7 +14,7 @@ import world.respect.datalayer.respect.model.RespectServerUrls
 @Serializable
 class RespectInviteInfo(
     val code: String,
-    val serverUrls: RespectServerUrls,
+    val realm: RespectRealm,
     val classGUIDRef: OneRosterClassGUIDRef?,
     val className: String?,
     val userInviteType: UserInviteType,
