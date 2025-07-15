@@ -20,13 +20,13 @@ import kotlinx.serialization.Transient
 sealed interface AppDestination
 
 @Serializable
-object Splash : AppDestination
-
-@Serializable
 object Acknowledgement : AppDestination
 
 @Serializable
 object JoinClazzWithCode : AppDestination
+
+@Serializable
+object LoginScreen : AppDestination
 
 @Serializable
 object AppLauncher : AppDestination

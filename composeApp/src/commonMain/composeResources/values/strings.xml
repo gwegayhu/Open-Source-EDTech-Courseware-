@@ -42,5 +42,11 @@
     <string name="invalid_invite_code">Please enter a valid code</string>
     <string name="already_have_account">I already have an account</string>
     <string name="add_my_school">Add my school</string>
-
+    <string name="email_required">Email is required</string>
+    <string name="password_required">Password is required</string>
+    <string name="login">Login</string>
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">user@school.example.org</string>
+    <string name="password_label">Password</string>
+    <string name="password_placeholder">Enter your password</string>
 </resources>

@@ -10,7 +10,7 @@ import org.jetbrains.compose.resources.getString
 import respect.composeapp.generated.resources.Res
 import respect.composeapp.generated.resources.enter_code_label
 import respect.composeapp.generated.resources.invalid_invite_code
-import world.respect.app.app.AppLauncher
+import world.respect.app.app.LoginScreen
 import world.respect.app.components.StringResourceUiText
 import world.respect.app.viewmodel.RespectViewModel
 import world.respect.navigation.NavCommand
@@ -58,25 +58,19 @@ class JoinClazzWithCodeViewModel(
                 }
                 return@launch
             }
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(AppLauncher)
-            )
+
         }
     }
 
     fun onClickAlreadyHaveAccount() {
         viewModelScope.launch {
             _navCommandFlow.tryEmit(
-                NavCommand.Navigate(AppLauncher)
+                NavCommand.Navigate(LoginScreen)
             )
         }
     }
 
     fun onClickAddMySchool() {
-        viewModelScope.launch {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(AppLauncher)
-            )
-        }
+
     }
 }
