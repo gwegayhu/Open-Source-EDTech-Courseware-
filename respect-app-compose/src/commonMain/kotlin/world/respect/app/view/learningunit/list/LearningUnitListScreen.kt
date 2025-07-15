@@ -44,12 +44,12 @@ import world.respect.shared.generated.resources.clazz
 import world.respect.shared.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
 import world.respect.shared.viewmodel.app.appstate.getTitle
-import world.respect.shared.viewmodel.app.appstate.toDisplayString
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel.Companion.ICON
 
 @Composable
 fun LearningUnitListScreen(
@@ -64,6 +64,7 @@ fun LearningUnitListScreen(
         onClickNavigation = { viewModel.onClickNavigation(it) }
     )
 }
+
 @Composable
 fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
@@ -222,7 +223,7 @@ fun NavigationListItem(
         leadingContent = {
 
             val iconUrl = navigation.alternate?.find {
-                it.rel?.contains("icon") == true
+                it.rel?.contains(ICON) == true
             }?.href
 
             iconUrl.also { icon ->
@@ -258,13 +259,20 @@ fun NavigationListItem(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = navigation.type.toString()
-                    )
-                    Text(
-                        text = "${stringResource(Res.string.duration)} -" +
-                                " ${navigation.duration}"
-                    )
+
+                    navigation.language
+                        ?.let { language ->
+                            Text(
+                                text = language.joinToString(", ")
+                            )
+                        }
+
+                    navigation.duration
+                        ?.let { duration ->
+                            Text(
+                                text = "${stringResource(Res.string.duration)} - $duration"
+                            )
+                        }
                 }
             }
         },
@@ -326,15 +334,18 @@ fun PublicationListItem(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = publication.metadata.subject
-                            ?.joinToString(", ") { it.toDisplayString() }
-                            ?: " ",
-                    )
-                    Text(
-                        text = "${stringResource(Res.string.duration)} - " +
-                                "${publication.metadata.duration}",
-                    )
+
+                    publication.metadata.language
+                        ?.let { language ->
+                            Text(
+                                text = language.joinToString(", ")
+                            )
+                        }
+
+                    publication.metadata.duration
+                        ?.let { duration ->
+                            Text(text = "${stringResource(Res.string.duration)} - $duration")
+                        }
                 }
             }
         },

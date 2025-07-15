@@ -122,6 +122,8 @@ class LearningUnitListViewModel(
 
     companion object {
         const val SELF = "self"
+        const val ICON = "icon"
+
 
     }
 }
