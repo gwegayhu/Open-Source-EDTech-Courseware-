@@ -36,8 +36,17 @@ import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
+import world.respect.app.view.apps.AppsByCurriculumScreen
+import world.respect.app.view.curriculum.CurriculumEditScreen
+import kotlinx.serialization.Serializable
+import androidx.compose.runtime.LaunchedEffect
 
 
+@Serializable
+object CurriculumList
+
+@Serializable
+object CurriculumEdit
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -61,7 +70,10 @@ fun AppNavHost(
             )
 
             AppLauncherScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onNavigateToCurriculum = {
+                    navController.navigate(CurriculumList)
+                }
             )
         }
 
@@ -135,8 +147,41 @@ fun AppNavHost(
 
                 viewModel = viewModel)
         }
-    }
+        composable<CurriculumList> {
+            LaunchedEffect(Unit) {
+                onSetAppUiState(
+                    AppUiState(
+                        hideAppBar = true,
+                        navigationVisible = true
+                    )
+                )
+            }
+            AppsByCurriculumScreen(
+                onAddCurriculumClick = {
+                    navController.navigate(CurriculumEdit)
+                },
+                onBackClick = { navController.popBackStack() }
+            )
+        }
 
+        composable<CurriculumEdit> {
+            LaunchedEffect(Unit) {
+                onSetAppUiState(
+                    AppUiState(
+                        hideAppBar = true,
+                        navigationVisible = true
+                    )
+                )
+            }
+
+            CurriculumEditScreen(
+                isEditMode = false,
+                onBackClick = { navController.popBackStack() },
+                onSaveClick = { navController.popBackStack() }
+            )
+        }
+
+    }
 }
 
 

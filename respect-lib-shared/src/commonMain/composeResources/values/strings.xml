@@ -34,4 +34,15 @@
     <string name="more_info">More Info</string>
     <string name="remove">Remove</string>
     <string name="invalid_url">Invalid app Url</string>
+    <string name="for_you">For You</string>
+    <string name="by_curriculum">By Curriculum</string>
+    <string name="curriculum">Curriculum</string>
+    <string name="edit_curriculum">Edit Curriculum</string>
+    <string name="add_curriculum">Add Curriculum</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="id">ID</string>
+    <string name="description">Description</string>
+    <string name="manage_curriculum">Manage Curriculum</string>
+
 </resources>
