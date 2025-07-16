@@ -8,6 +8,8 @@ const val MAX_VALID_DATE = 7258118400000
 
 const val MS_PER_HOUR = (60 * 60 * 1000)
 
+const val MS_PER_MIN = (60 * 1000)
+
 /**
  * Unix timestamp 24hours beyond the maximum date that we will recognize. We must not use Long.MAX_VALUE,
  * because adding anything (e.g. timezone offset) to MAX_VALUE will wrap to the most negative possible

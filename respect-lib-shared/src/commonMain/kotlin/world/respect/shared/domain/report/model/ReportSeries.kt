@@ -1,4 +1,4 @@
-package world.respect.shared.domain.report
+package world.respect.shared.domain.report.model
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.serialization.Serializable
@@ -21,7 +21,7 @@ data class ReportSeries(
 
     val reportSeriesFilters: List<ReportFilter>? = null,
 
-)
+    )
 
 enum class YAxisTypes(
     override val label: StringResource,

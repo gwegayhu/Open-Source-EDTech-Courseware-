@@ -104,5 +104,11 @@
     <string name="last_week">Last week</string>
     <string name="bar_chart">Bar Chart</string>
     <string name="line_chart">Line Chart</string>
+    <string name="hour_unit">hr</string>
+    <string name="minute_unit">min</string>
+    <string name="second_unit">sec</string>
+    <string name="No_data_available">No data available </string>
+    <string name="delete">Delete</string>
+
 
 </resources>
