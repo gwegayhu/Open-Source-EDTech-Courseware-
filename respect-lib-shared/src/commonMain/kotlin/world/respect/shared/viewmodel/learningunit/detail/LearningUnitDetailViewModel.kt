@@ -61,6 +61,11 @@ class LearningUnitDetailViewModel(
             }
         }
     }
+    fun onClickOpen(){
+        /*
+        Open button click
+        */
+    }
     companion object{
         const val IMAGE="image/png"
     }
