@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
@@ -213,7 +214,6 @@ fun AppsDetailScreen(
         item(key = LEARNING_UNIT_LIST) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
                 itemsIndexed(
                     items = uiState.navigation,
@@ -302,7 +302,6 @@ fun NavigationList(
                 modifier = Modifier
                     .size(90.dp)
                     .clip(RoundedCornerShape(8.dp))
-
             )
         }
 
@@ -310,7 +309,7 @@ fun NavigationList(
         Text(
             text = navigation.title.toString(),
             maxLines = 3,
-            modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            textAlign = TextAlign.Center,
         )
     }
 }
