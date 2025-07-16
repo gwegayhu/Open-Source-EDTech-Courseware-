@@ -23,6 +23,6 @@ appId: world.respect.app
 - tapOn: "Grade 1"
 - tapOn: "Lesson 001"
 - assertVisible: "Lesson 001"
-- assertVisible: "Play"
+- assertVisible: "Open"
 - assertVisible: "App name"
 
