@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +40,6 @@ import world.respect.shared.generated.resources.score_or_progress
 import world.respect.shared.generated.resources.app_name
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.graphics.vector.ImageVector
 import world.respect.shared.generated.resources.assign
 import world.respect.shared.generated.resources.download
@@ -151,7 +151,7 @@ fun LearningUnitDetailScreen(
         }
 
         item {
-            OutlinedButton(
+            Button(
                 onClick = { /* Play */ },
                 modifier = Modifier
                     .fillMaxWidth()
