@@ -1,4 +1,4 @@
-package world.respect.app.view.apps
+package world.respect.app.view.curriculum
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,7 +11,7 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 object TabConstants {
     const val FOR_YOU = 0
@@ -92,6 +92,7 @@ fun AppsByCurriculumScreen(
                 TabConstants.FOR_YOU -> {
                     Text("For You Content")
                 }
+
                 TabConstants.BY_CURRICULUM -> {
                     Text("By Curriculum Content")
                 }
@@ -100,7 +101,9 @@ fun AppsByCurriculumScreen(
 
         if (currentTab == TabConstants.BY_CURRICULUM) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
@@ -116,6 +119,7 @@ fun AppsByCurriculumScreen(
                             imageVector = Icons.Default.Add,
                             contentDescription = null
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(stringResource(Res.string.curriculum))
                     }
                 }

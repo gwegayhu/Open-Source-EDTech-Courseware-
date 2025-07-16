@@ -44,5 +44,12 @@
     <string name="id">ID</string>
     <string name="description">Description</string>
     <string name="manage_curriculum">Manage Curriculum</string>
+    <string name="new_curriculum">New Curriculum</string>
+    <string name="name_required_error">Name is required</string>
+    <string name="id_required_error">ID is required</string>
+    <string name="description_required_error">Description is required</string>
+    <string name="empty_name"></string>
+    <string name="empty_id"></string>
+    <string name="empty_description"></string>
 
 </resources>

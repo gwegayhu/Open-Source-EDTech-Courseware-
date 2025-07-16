@@ -36,10 +36,11 @@ import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
-import world.respect.app.view.apps.AppsByCurriculumScreen
+import world.respect.app.view.curriculum.AppsByCurriculumScreen
 import world.respect.app.view.curriculum.CurriculumEditScreen
 import kotlinx.serialization.Serializable
 import androidx.compose.runtime.LaunchedEffect
+import world.respect.app.view.curriculum.CurriculumEditUiState
 
 
 @Serializable
@@ -175,7 +176,10 @@ fun AppNavHost(
             }
 
             CurriculumEditScreen(
-                isEditMode = false,
+                uiState = CurriculumEditUiState(isEditMode = false),
+                onNameChange = { },
+                onIdChange = { },
+                onDescriptionChange = { },
                 onBackClick = { navController.popBackStack() },
                 onSaveClick = { navController.popBackStack() }
             )
