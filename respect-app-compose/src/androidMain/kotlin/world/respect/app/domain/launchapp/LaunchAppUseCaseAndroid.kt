@@ -1,14 +1,19 @@
-package world.respect.shared.domain.launchapp
+package world.respect.app.domain.launchapp
 
 import android.content.Context
 import android.content.Intent
+import androidx.core.net.toUri
 import io.ktor.http.Url
+import world.respect.WebViewActivity
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.shared.domain.account.RespectAccount
-import world.respect.shared.navigation.LearningUnitViewer
+import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.navigation.NavCommand
-import androidx.core.net.toUri
 
+/**
+ * Implementation of LaunchAppUseCase for Android. This use case is in respect-app-compose because
+ * it needs access to the WebViewActivity class.
+ */
 class LaunchAppUseCaseAndroid(
     private val appContext: Context,
 ): LaunchAppUseCase {
@@ -33,15 +38,14 @@ class LaunchAppUseCaseAndroid(
                 return
             }catch(e: Throwable) {
                 e.printStackTrace()
-                //In future - apps will need an action we can query.
+                //In future - apps will need an action we can query to check if it is installed.
                 //didn't work - maybe wasn't installed.
             }
         }
 
-        navigateFn(
-            NavCommand.Navigate(
-                LearningUnitViewer.create(learningUnitId = launchUrl)
-            )
-        )
+        val intent = Intent(appContext, WebViewActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.putExtra(WebViewActivity.Companion.EXTRA_URL, launchUrl.toString())
+        appContext.startActivity(intent)
     }
 }

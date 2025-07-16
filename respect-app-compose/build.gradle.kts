@@ -43,6 +43,8 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.androidx.webkit)
+            implementation(libs.material)
+            implementation(libs.androidx.appcompat)
         }
 
         commonMain.dependencies {
@@ -114,6 +116,11 @@ android {
 }
 
 dependencies {
+//    implementation(libs.material)
+//    implementation(libs.androidx.appcompat)
+//    implementation(libs.androidx.constraintlayout)
+//    implementation(libs.androidx.navigation.fragment.ktx)
+//    implementation(libs.androidx.navigation.ui.ktx)
     debugImplementation(compose.uiTooling)
 }
 
