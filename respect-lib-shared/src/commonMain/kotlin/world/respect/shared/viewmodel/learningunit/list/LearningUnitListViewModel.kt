@@ -98,6 +98,7 @@ class LearningUnitListViewModel(
                     learningUnitManifestUrl = route.opdsFeedUrl.resolve(
                         publicationHref
                     ),
+                    appManifestUrl = route.appManifestUrl,
                     refererUrl = Url(
                         refererUrl
                     ),
@@ -114,7 +115,8 @@ class LearningUnitListViewModel(
                 LearningUnitList.create(
                     opdsFeedUrl = route.opdsFeedUrl.resolve(
                         navigationHref
-                    )
+                    ),
+                    appManifestUrl = route.appManifestUrl,
                 )
             )
         )

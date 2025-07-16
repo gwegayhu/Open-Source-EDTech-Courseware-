@@ -16,6 +16,7 @@ import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
+import world.respect.app.view.learningunit.viewer.LearningUnitViewerScreen
 import world.respect.shared.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
@@ -34,6 +35,7 @@ import world.respect.shared.navigation.Clazz
 import world.respect.shared.navigation.EnterLink
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
+import world.respect.shared.navigation.LearningUnitViewer
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
 
@@ -131,9 +133,13 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LearningUnitDetailScreen(
+            LearningUnitDetailScreen(viewModel = viewModel)
+        }
 
-                viewModel = viewModel)
+        composable<LearningUnitViewer> {
+            LearningUnitViewerScreen(
+                respectViewModel(onSetAppUiState, respectNavController)
+            )
         }
     }
 

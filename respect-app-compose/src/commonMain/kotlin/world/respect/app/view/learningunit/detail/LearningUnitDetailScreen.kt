@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowCircleDown
@@ -60,13 +59,15 @@ fun LearningUnitDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LearningUnitDetailScreen(
-        uiState = uiState
+        uiState = uiState,
+        onClickOpen = viewModel::onClickOpen,
     )
 }
 
 @Composable
 fun LearningUnitDetailScreen(
     uiState: LearningUnitDetailUiState,
+    onClickOpen: () -> Unit,
 ) {
 
     LazyColumn(
@@ -157,11 +158,8 @@ fun LearningUnitDetailScreen(
 
         item {
             OutlinedButton(
-                onClick = { /* Play */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(35.dp),
-                shape = RoundedCornerShape(6.dp)
+                onClick = onClickOpen,
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(Res.string.play))
             }

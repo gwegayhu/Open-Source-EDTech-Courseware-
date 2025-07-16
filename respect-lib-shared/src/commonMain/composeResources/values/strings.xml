@@ -34,4 +34,6 @@
     <string name="more_info">More Info</string>
     <string name="remove">Remove</string>
     <string name="invalid_url">Invalid app Url</string>
+    <string name="loading">Loading</string>
+
 </resources>
