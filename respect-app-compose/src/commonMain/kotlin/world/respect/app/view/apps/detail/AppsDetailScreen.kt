@@ -1,6 +1,5 @@
 package world.respect.app.view.apps.detail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -103,7 +101,6 @@ fun AppsDetailScreen(
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .size(80.dp)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
 
                         )
                     }
@@ -305,7 +302,6 @@ fun NavigationList(
                 modifier = Modifier
                     .size(90.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
 
             )
         }
@@ -341,7 +337,6 @@ fun PublicationList(
                 modifier = Modifier
                     .size(90.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
 
             )
         }

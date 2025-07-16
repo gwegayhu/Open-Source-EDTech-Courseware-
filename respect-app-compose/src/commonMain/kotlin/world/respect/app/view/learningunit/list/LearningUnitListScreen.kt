@@ -232,13 +232,7 @@ fun NavigationListItem(
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline,
-                            CircleShape
-                        )
+                        .size(36.dp),
                 )
             }
         },
@@ -307,13 +301,7 @@ fun PublicationListItem(
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline,
-                            CircleShape
-                        )
+                        .size(36.dp),
                 )
             }
         },

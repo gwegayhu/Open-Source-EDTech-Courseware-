@@ -90,12 +90,7 @@ fun LearningUnitDetailScreen(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(120.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outline,
-                                    CircleShape
-                                )
+
                         )
                     }
                 },
