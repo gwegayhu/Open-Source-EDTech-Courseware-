@@ -1,4 +1,4 @@
-package world.respect.shared.domain.report
+package world.respect.shared.domain.report.model
 
 import kotlinx.serialization.Serializable
 
@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReportOptions(
     val title: String = "",
-    val xAxis:ReportXAxis = ReportXAxis.DAY,
+    val xAxis: ReportXAxis = ReportXAxis.DAY,
     val period: ReportPeriod = ReportPeriodOption.LAST_WEEK.period,
     val series: List<ReportSeries> = emptyList(),
 )

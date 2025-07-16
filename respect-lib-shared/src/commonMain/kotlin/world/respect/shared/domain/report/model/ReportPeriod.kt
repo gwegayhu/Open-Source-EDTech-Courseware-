@@ -1,4 +1,4 @@
-package world.respect.shared.domain.report
+package world.respect.shared.domain.report.model
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.DateTimeUnit
@@ -24,7 +24,7 @@ import world.respect.shared.generated.resources.*
 enum class ReportTimeRangeUnit(
     override val label: StringResource,
     val unit: DateTimeUnit.DateBased
-):OptionWithLabelStringResource {
+): OptionWithLabelStringResource {
     DAY(Res.string.day, DateTimeUnit.DAY),
     WEEK(Res.string.weeks, DateTimeUnit.WEEK),
     MONTH(Res.string.months, DateTimeUnit.MONTH),

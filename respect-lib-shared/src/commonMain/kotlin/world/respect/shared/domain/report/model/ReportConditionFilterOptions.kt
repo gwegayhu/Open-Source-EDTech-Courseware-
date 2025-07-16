@@ -1,4 +1,4 @@
-package world.respect.shared.domain.report
+package world.respect.shared.domain.report.model
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
