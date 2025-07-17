@@ -1,6 +1,5 @@
 package world.respect.app.view.apps.detail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
@@ -103,7 +102,6 @@ fun AppsDetailScreen(
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .size(80.dp)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
 
                         )
                     }
@@ -216,7 +214,6 @@ fun AppsDetailScreen(
         item(key = LEARNING_UNIT_LIST) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
                 itemsIndexed(
                     items = uiState.navigation,
@@ -305,8 +302,6 @@ fun NavigationList(
                 modifier = Modifier
                     .size(90.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-
             )
         }
 
@@ -314,7 +309,7 @@ fun NavigationList(
         Text(
             text = navigation.title.toString(),
             maxLines = 3,
-            modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -341,7 +336,6 @@ fun PublicationList(
                 modifier = Modifier
                     .size(90.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
 
             )
         }

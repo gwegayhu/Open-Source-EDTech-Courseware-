@@ -43,7 +43,7 @@ object EnterLink : RespectAppRoute
 @Serializable
 class AppsDetail private constructor(
     private val manifestUrlStr: String
-): RespectAppRoute {
+) : RespectAppRoute {
 
     @Transient
     val manifestUrl = Url(manifestUrlStr)
@@ -64,16 +64,25 @@ class AppsDetail private constructor(
  */
 @Serializable
 class LearningUnitList(
-    private val opdsFeedUrlStr: String
+    private val opdsFeedUrlStr: String,
+    private val appManifestUrlStr: String,
 ) : RespectAppRoute {
 
     @Transient
     val opdsFeedUrl = Url(opdsFeedUrlStr)
 
+    @Transient
+    val appManifestUrl = Url(appManifestUrlStr)
+
     companion object {
 
-        fun create(opdsFeedUrl: Url): LearningUnitList {
-            return LearningUnitList(opdsFeedUrl.toString())
+        fun create(
+            opdsFeedUrl: Url,
+            appManifestUrl: Url,
+        ): LearningUnitList {
+            return LearningUnitList(
+                opdsFeedUrl.toString(), appManifestUrl.toString()
+            )
         }
 
     }
@@ -95,6 +104,7 @@ class LearningUnitList(
 @Serializable
 class LearningUnitDetail(
     private val learningUnitManifestUrlStr: String,
+    private val appManifestUrlStr: String,
     private val refererUrlStr: String? = null,
     val expectedIdentifier: String? = null
 ) : RespectAppRoute {
@@ -105,18 +115,41 @@ class LearningUnitDetail(
     @Transient
     val refererUrl = refererUrlStr?.let { Url(it) }
 
+    @Transient
+    val appManifestUrl = Url(appManifestUrlStr)
+
     companion object {
 
         fun create(
             learningUnitManifestUrl: Url,
+            appManifestUrl: Url,
             refererUrl: Url? = null,
             expectedIdentifier: String? = null
         ) = LearningUnitDetail(
             learningUnitManifestUrlStr = learningUnitManifestUrl.toString(),
+            appManifestUrlStr = appManifestUrl.toString(),
             refererUrlStr = refererUrl?.toString(),
-            expectedIdentifier = expectedIdentifier
+            expectedIdentifier = expectedIdentifier,
         )
 
+    }
+
+}
+
+@Serializable
+class LearningUnitViewer(
+    private val learningUnitIdStr: String,
+): RespectAppRoute {
+
+    @Transient
+    val learningUnitId = Url(learningUnitIdStr)
+
+    companion object {
+        fun create(learningUnitId: Url): LearningUnitViewer {
+            return LearningUnitViewer(
+                learningUnitIdStr = learningUnitId.toString()
+            )
+        }
     }
 
 }

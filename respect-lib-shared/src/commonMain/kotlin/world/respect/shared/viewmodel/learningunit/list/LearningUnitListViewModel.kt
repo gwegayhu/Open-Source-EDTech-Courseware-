@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
-
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.viewmodel.app.appstate.AppBarSearchUiState
@@ -22,8 +20,6 @@ import world.respect.datalayer.opds.model.OpdsGroup
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.libutil.ext.resolve
-import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.lesson_list
 import world.respect.shared.navigation.NavCommand
 
 data class LearningUnitListUiState(
@@ -51,7 +47,6 @@ class LearningUnitListViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(resource = Res.string.lesson_list),
                     searchState = AppBarSearchUiState(
                         visible = true
                     )
@@ -64,6 +59,16 @@ class LearningUnitListViewModel(
             ).collect { result ->
                 when (result) {
                     is DataReadyState -> {
+
+                        val appBarTitle = result.data.metadata.title
+
+                        _appUiState.update {
+                            it.copy(
+                                title = appBarTitle,
+                                searchState = AppBarSearchUiState(visible = true)
+                            )
+                        }
+
                         _uiState.update {
                             it.copy(
                                 navigation = result.data.navigation ?: emptyList(),
@@ -98,6 +103,7 @@ class LearningUnitListViewModel(
                     learningUnitManifestUrl = route.opdsFeedUrl.resolve(
                         publicationHref
                     ),
+                    appManifestUrl = route.appManifestUrl,
                     refererUrl = Url(
                         refererUrl
                     ),
@@ -108,13 +114,16 @@ class LearningUnitListViewModel(
     }
 
     fun onClickNavigation(navigation: ReadiumLink) {
+
         val navigationHref = navigation.href
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList.create(
                     opdsFeedUrl = route.opdsFeedUrl.resolve(
                         navigationHref
-                    )
+                    ),
+                    appManifestUrl = route.appManifestUrl,
                 )
             )
         )
@@ -122,6 +131,8 @@ class LearningUnitListViewModel(
 
     companion object {
         const val SELF = "self"
+        const val ICON = "icon"
+
 
     }
 }

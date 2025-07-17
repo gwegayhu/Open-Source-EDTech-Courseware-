@@ -32,6 +32,8 @@ import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 
 
 @Suppress("unused")
@@ -70,6 +72,12 @@ val appKoinModule = module {
         }
     }
 
+    single<LaunchAppUseCase> {
+        LaunchAppUseCaseAndroid(
+            appContext = androidContext().applicationContext
+        )
+    }
+
     viewModelOf(::AppsDetailViewModel)
     viewModelOf(::AppLauncherViewModel)
     viewModelOf(::EnterLinkViewModel)
@@ -80,14 +88,6 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
 
-
-    // Uncomment this to switch to using fake data source provider for development purposes
-//     single<RespectAppDataSourceProvider> {
-//         FakeRespectAppDataSourceProvider()
-//    }
-     //*/
-
-    //Uncomment to switch to using real datasource
 
     single<RespectAppDataSourceProvider> {
         val appContext = androidContext().applicationContext
