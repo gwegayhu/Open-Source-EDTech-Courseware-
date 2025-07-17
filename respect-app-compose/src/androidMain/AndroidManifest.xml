@@ -13,9 +13,21 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity
-            android:exported="true"
+            android:name="world.respect.WebViewActivity"
+            android:exported="false"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
-            android:name="world.respect.MainActivity">
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+
+            <intent-filter>
+                <action android:name="world.respect.WebViewOpen" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name="world.respect.MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowCircleDown
@@ -61,7 +60,7 @@ fun LearningUnitDetailScreen(
 
     LearningUnitDetailScreen(
         uiState = uiState,
-        onClickOpen = { viewModel.onClickOpen() },
+        onClickOpen = viewModel::onClickOpen,
     )
 }
 
@@ -157,10 +156,7 @@ fun LearningUnitDetailScreen(
                 onClick = {
                     onClickOpen()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(35.dp),
-                shape = RoundedCornerShape(6.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(Res.string.open))
             }
