@@ -51,7 +51,7 @@ class LearningUnitListViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = route.title ?: getString(resource = Res.string.lesson_list),
+                    title = getString(resource = Res.string.lesson_list),
                     searchState = AppBarSearchUiState(
                         visible = true
                     )
@@ -64,6 +64,16 @@ class LearningUnitListViewModel(
             ).collect { result ->
                 when (result) {
                     is DataReadyState -> {
+
+                        val appBarTitle = result.data.metadata?.title
+                            ?: getString(resource = Res.string.lesson_list)
+                        _appUiState.update {
+                            it.copy(
+                                title = appBarTitle,
+                                searchState = AppBarSearchUiState(visible = true)
+                            )
+                        }
+
                         _uiState.update {
                             it.copy(
                                 navigation = result.data.navigation ?: emptyList(),
@@ -108,14 +118,15 @@ class LearningUnitListViewModel(
     }
 
     fun onClickNavigation(navigation: ReadiumLink) {
+
         val navigationHref = navigation.href
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList.create(
                     opdsFeedUrl = route.opdsFeedUrl.resolve(
                         navigationHref
-                    ),
-                    title=navigation.title
+                    )
                 )
             )
         )

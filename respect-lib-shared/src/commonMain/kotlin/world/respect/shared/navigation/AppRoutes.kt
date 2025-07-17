@@ -64,8 +64,7 @@ class AppsDetail private constructor(
  */
 @Serializable
 class LearningUnitList(
-    private val opdsFeedUrlStr: String,
-    val title: String? = null
+    private val opdsFeedUrlStr: String
 ) : RespectAppRoute {
 
     @Transient
@@ -73,10 +72,9 @@ class LearningUnitList(
 
     companion object {
 
-        fun create(opdsFeedUrl: Url, title: String?): LearningUnitList {
+        fun create(opdsFeedUrl: Url): LearningUnitList {
             return LearningUnitList(
-                opdsFeedUrlStr = opdsFeedUrl.toString(),
-                title = title
+                opdsFeedUrlStr = opdsFeedUrl.toString()
             )
         }
 
