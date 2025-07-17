@@ -101,9 +101,11 @@ class AppLauncherViewModel(
         }
     }
 
-    fun clearSnackBar() {
+    fun onClearSnackBar() {
         _uiState.update {
-            it.copy(snackBarMessage = null)
+            it.copy(
+                snackBarMessage = null
+            )
         }
     }
 }

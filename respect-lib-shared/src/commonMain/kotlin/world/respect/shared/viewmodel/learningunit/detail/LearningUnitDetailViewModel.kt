@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import world.respect.datalayer.DataErrorResult
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
@@ -25,6 +26,8 @@ import world.respect.shared.viewmodel.app.appstate.getTitle
 data class LearningUnitDetailUiState(
     val lessonDetail: OpdsPublication? = null,
     val app: DataLoadState<RespectAppManifest> = DataLoadingState(),
+    val isLoading: Boolean = true,
+    val snackBarMessage: String? = null
 )
 
 class LearningUnitDetailViewModel(
@@ -50,10 +53,20 @@ class LearningUnitDetailViewModel(
                 expectedPublicationId = route.expectedIdentifier
             ).collect { result ->
                 when (result) {
+
+                    is DataLoadingState -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = true
+                            )
+                        }
+                    }
+
                     is DataReadyState -> {
                         _uiState.update {
                             it.copy(
                                 lessonDetail = result.data,
+                                isLoading = false
                             )
                         }
                         _appUiState.update {
@@ -62,18 +75,37 @@ class LearningUnitDetailViewModel(
                             )
                         }
                     }
+
+                    is DataErrorResult -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                snackBarMessage = result.error.message
+                            )
+                        }
+                    }
+
                     else -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false
+                            )
+                        }
                     }
                 }
             }
         }
-
         viewModelScope.launch {
             dataSource.compatibleAppsDataSource.getAppAsFlow(
                 manifestUrl = route.appManifestUrl,
                 loadParams = DataLoadParams()
             ).collect { app ->
-                _uiState.update { it.copy(app = app) }
+                _uiState.update {
+                    it.copy(
+                        app = app,
+                        isLoading = false
+                    )
+                }
             }
         }
     }
@@ -98,7 +130,15 @@ class LearningUnitDetailViewModel(
         )
     }
 
-    companion object{
-        const val IMAGE="image/png"
+    fun onClearSnackBar() {
+        _uiState.update {
+            it.copy(
+                snackBarMessage = null
+            )
+        }
+    }
+
+    companion object {
+        const val IMAGE = "image/png"
     }
 }

@@ -70,7 +70,7 @@ fun LearningUnitListScreen(
         onClickFilter = { viewModel.onClickFilter(it) },
         onClickPublication = { viewModel.onClickPublication(it) },
         onClickNavigation = { viewModel.onClickNavigation(it) },
-        onClearSnackBar = { viewModel.clearSnackBar() }
+        onClearSnackBar = { viewModel.onClearSnackBar() }
     )
 }
 

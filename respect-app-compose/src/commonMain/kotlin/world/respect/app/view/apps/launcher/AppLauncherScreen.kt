@@ -54,7 +54,7 @@ fun AppLauncherScreen(
         uiState = uiState,
         onClickApp = { viewModel.onClickApp(it) },
         onClickRemove = { viewModel.onClickRemove(it) },
-        onClearSnackBar = { viewModel.clearSnackBar() }
+        onClearSnackBar = { viewModel.onClearSnackBar() }
     )
 }
 

@@ -32,7 +32,7 @@ data class LearningUnitListUiState(
     val selectedFilterTitle: String? = null,
     val isLoading: Boolean = true,
     val snackBarMessage: String? = null
-    )
+)
 
 class LearningUnitListViewModel(
     savedStateHandle: SavedStateHandle,
@@ -63,13 +63,14 @@ class LearningUnitListViewModel(
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
-                    is DataLoadingState->{
+                    is DataLoadingState -> {
                         _uiState.update {
                             it.copy(
                                 isLoading = true
                             )
                         }
                     }
+
                     is DataReadyState -> {
 
                         val appBarTitle = result.data.metadata.title
@@ -92,7 +93,7 @@ class LearningUnitListViewModel(
                         }
                     }
 
-                    is DataErrorResult->{
+                    is DataErrorResult -> {
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
@@ -100,7 +101,14 @@ class LearningUnitListViewModel(
                             )
                         }
                     }
-                    else -> {}
+
+                    else -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -150,8 +158,12 @@ class LearningUnitListViewModel(
         )
     }
 
-    fun clearSnackBar() {
-        _uiState.update { it.copy(snackBarMessage = null) }
+    fun onClearSnackBar() {
+        _uiState.update {
+            it.copy(
+                snackBarMessage = null
+            )
+        }
     }
 
     companion object {
