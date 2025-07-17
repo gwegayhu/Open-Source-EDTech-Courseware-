@@ -51,7 +51,6 @@ class LearningUnitListViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(resource = Res.string.lesson_list),
                     searchState = AppBarSearchUiState(
                         visible = true
                     )
@@ -65,8 +64,8 @@ class LearningUnitListViewModel(
                 when (result) {
                     is DataReadyState -> {
 
-                        val appBarTitle = result.data.metadata?.title
-                            ?: getString(resource = Res.string.lesson_list)
+                        val appBarTitle = result.data.metadata.title
+
                         _appUiState.update {
                             it.copy(
                                 title = appBarTitle,
