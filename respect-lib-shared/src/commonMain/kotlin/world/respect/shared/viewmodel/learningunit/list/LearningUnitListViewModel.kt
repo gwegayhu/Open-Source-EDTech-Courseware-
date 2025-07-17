@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import world.respect.datalayer.DataErrorResult
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.viewmodel.app.appstate.AppBarSearchUiState
 import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.opds.model.OpdsFacet
 import world.respect.datalayer.opds.model.OpdsGroup
@@ -28,7 +30,8 @@ data class LearningUnitListUiState(
     val group: List<OpdsGroup> = emptyList(),
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null,
-)
+    val isLoading: Boolean = true,
+    )
 
 class LearningUnitListViewModel(
     savedStateHandle: SavedStateHandle,
@@ -42,6 +45,7 @@ class LearningUnitListViewModel(
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     private val route: LearningUnitList = savedStateHandle.toRoute()
+
 
     init {
         viewModelScope.launch {
@@ -58,6 +62,13 @@ class LearningUnitListViewModel(
                 params = DataLoadParams()
             ).collect { result ->
                 when (result) {
+                    is DataLoadingState->{
+                        _uiState.update {
+                            it.copy(
+                                isLoading = true
+                            )
+                        }
+                    }
                     is DataReadyState -> {
 
                         val appBarTitle = result.data.metadata.title
@@ -75,10 +86,18 @@ class LearningUnitListViewModel(
                                 publications = result.data.publications ?: emptyList(),
                                 group = result.data.groups ?: emptyList(),
                                 lessonFilter = result.data.facets ?: emptyList(),
+                                isLoading = false
                             )
                         }
                     }
 
+                    is DataErrorResult->{
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false
+                            )
+                        }
+                    }
                     else -> {}
                 }
             }

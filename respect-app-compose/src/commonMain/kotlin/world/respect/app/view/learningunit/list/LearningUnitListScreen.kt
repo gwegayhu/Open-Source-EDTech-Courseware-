@@ -23,6 +23,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -79,107 +80,76 @@ fun LearningUnitListScreen(
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        uiState.lessonFilter.firstOrNull()?.let { facet ->
-            var expanded by remember { mutableStateOf(false) }
-
-            Column(
-                modifier = Modifier.fillMaxWidth()
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .border(1.dp, black, shape = RoundedCornerShape(6.dp))
-                        .clip(CircleShape)
-                        .clickable { expanded = true }
-                        .padding(horizontal = 4.dp)
+                CircularProgressIndicator()
+            }
+        } else {
+            uiState.lessonFilter.firstOrNull()?.let { facet ->
+                var expanded by remember { mutableStateOf(false) }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Box(
+                        modifier = Modifier
+                            .border(1.dp, black, shape = RoundedCornerShape(6.dp))
+                            .clip(CircleShape)
+                            .clickable { expanded = true }
+                            .padding(horizontal = 4.dp)
                     ) {
-                        Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
-                        Icon(
-                            imageVector = Icons.Filled.ArrowDropDown,
-                            modifier = Modifier.padding(6.dp),
-                            contentDescription = null
-                        )
-                    }
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = facet.metadata.title,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {},
-                        enabled = false
-                    )
-
-                    facet.links.forEach { link ->
-                        DropdownMenuItem(
-                            text = { Text(link.title ?: "") },
-                            onClick = {
-                                onClickFilter(link.title ?: "")
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            itemsIndexed(
-                items = uiState.navigation,
-                key = { index, navigation ->
-                    navigation.href
-                }
-            ) { index, navigation ->
-                NavigationListItem(
-                    navigation,
-                    onClickNavigation = {
-                        onClickNavigation(navigation)
-                    }
-                )
-            }
-
-            itemsIndexed(
-                items = uiState.publications,
-                key = { index, publications ->
-                    publications.metadata.identifier.toString()
-                }
-            ) { index, publication ->
-                PublicationListItem(
-                    publication,
-                    onClickPublication = {
-                        onClickPublication(publication)
-                    }
-                )
-            }
-
-            uiState.group.forEach { group ->
-                item {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = group.metadata.title,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
+                            Icon(
+                                imageVector = Icons.Filled.ArrowDropDown,
+                                modifier = Modifier.padding(6.dp),
+                                contentDescription = null
                             )
                         }
-                    )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = facet.metadata.title,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            onClick = {},
+                            enabled = false
+                        )
+
+                        facet.links.forEach { link ->
+                            DropdownMenuItem(
+                                text = { Text(link.title ?: "") },
+                                onClick = {
+                                    onClickFilter(link.title ?: "")
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
 
                 itemsIndexed(
-                    items = group.navigation ?: emptyList(),
+                    items = uiState.navigation,
                     key = { index, navigation ->
                         navigation.href
                     }
@@ -191,10 +161,11 @@ fun LearningUnitListScreen(
                         }
                     )
                 }
+
                 itemsIndexed(
-                    items = group.publications ?: emptyList(),
-                    key = { index, publication ->
-                        publication.metadata.identifier.toString()
+                    items = uiState.publications,
+                    key = { index, publications ->
+                        publications.metadata.identifier.toString()
                     }
                 ) { index, publication ->
                     PublicationListItem(
@@ -205,6 +176,45 @@ fun LearningUnitListScreen(
                     )
                 }
 
+                uiState.group.forEach { group ->
+                    item {
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = group.metadata.title,
+                                )
+                            }
+                        )
+                    }
+
+                    itemsIndexed(
+                        items = group.navigation ?: emptyList(),
+                        key = { index, navigation ->
+                            navigation.href
+                        }
+                    ) { index, navigation ->
+                        NavigationListItem(
+                            navigation,
+                            onClickNavigation = {
+                                onClickNavigation(navigation)
+                            }
+                        )
+                    }
+                    itemsIndexed(
+                        items = group.publications ?: emptyList(),
+                        key = { index, publication ->
+                            publication.metadata.identifier.toString()
+                        }
+                    ) { index, publication ->
+                        PublicationListItem(
+                            publication,
+                            onClickPublication = {
+                                onClickPublication(publication)
+                            }
+                        )
+                    }
+
+                }
             }
         }
     }
