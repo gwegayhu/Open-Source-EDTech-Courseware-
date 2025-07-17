@@ -33,7 +33,7 @@ import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
-import world.respect.app.domain.launchapp.LaunchAppUseCaseAndroid
+import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 
 
 @Suppress("unused")

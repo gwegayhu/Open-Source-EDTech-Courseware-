@@ -15,7 +15,15 @@
         <activity
             android:name="world.respect.WebViewActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+
+            <intent-filter>
+                <action android:name="world.respect.WebViewOpen" />
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name="world.respect.MainActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"

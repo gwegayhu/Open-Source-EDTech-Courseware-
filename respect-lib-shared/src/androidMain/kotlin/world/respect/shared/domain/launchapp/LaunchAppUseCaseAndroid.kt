@@ -1,18 +1,15 @@
-package world.respect.app.domain.launchapp
+package world.respect.shared.domain.launchapp
 
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import io.ktor.http.Url
-import world.respect.WebViewActivity
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.shared.domain.account.RespectAccount
-import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.navigation.NavCommand
 
 /**
- * Implementation of LaunchAppUseCase for Android. This use case is in respect-app-compose because
- * it needs access to the WebViewActivity class.
+ * Implementation of LaunchAppUseCase for Android.
  */
 class LaunchAppUseCaseAndroid(
     private val appContext: Context,
@@ -43,9 +40,26 @@ class LaunchAppUseCaseAndroid(
             }
         }
 
-        val intent = Intent(appContext, WebViewActivity::class.java)
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.putExtra(WebViewActivity.Companion.EXTRA_URL, launchUrl.toString())
+        /*
+         * The ActivityClass, because it's UI, is contained within the respect-app-compose module,
+         * and is referenced using reflection. Activity names are not obfuscated by R8, so this is
+         * safe.
+         */
+        val intent = Intent(
+            appContext,
+            Class.forName(WEBVIEW_ACTIVITY_NAME)
+        )
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(EXTRA_URL, launchUrl.toString())
         appContext.startActivity(intent)
+    }
+
+
+    companion object {
+
+        private const val WEBVIEW_ACTIVITY_NAME = "world.respect.WebViewActivity"
+
+        const val EXTRA_URL = "url"
+
     }
 }

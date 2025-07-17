@@ -6,9 +6,10 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import world.respect.app.R
+import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 
 /**
- * A separate activity to show a WebView to view a LearningUnit .
+ * A separate activity that only shows a WebView (e.g. to view a LearningUnit) .
  *
  * This can't be done as normal Jetpack Compose using the AndroidView as normal because the vh css
  * unit doesn't work; content that uses 100vh etc comes out as zero height or a small percentage of
@@ -36,16 +37,11 @@ class WebViewActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = false
-        val url = intent.getStringExtra(EXTRA_URL) ?:
+        val url = intent.getStringExtra(LaunchAppUseCaseAndroid.EXTRA_URL) ?:
             throw IllegalStateException("No url specified")
 
         webView.loadUrl(url)
     }
 
-    companion object {
-
-        const val EXTRA_URL = "url"
-
-    }
 
 }
