@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.DataErrorResult
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.datasource.RespectAppDataSourceProvider
@@ -21,6 +22,8 @@ import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.respect.model.LEARNING_UNIT_MIME_TYPES
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.something_went_wrong
 import world.respect.shared.viewmodel.app.appstate.getTitle
 
 data class LearningUnitDetailUiState(
@@ -80,7 +83,7 @@ class LearningUnitDetailViewModel(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                snackBarMessage = result.error.message
+                                snackBarMessage = getString(resource = Res.string.something_went_wrong)
                             )
                         }
                     }
