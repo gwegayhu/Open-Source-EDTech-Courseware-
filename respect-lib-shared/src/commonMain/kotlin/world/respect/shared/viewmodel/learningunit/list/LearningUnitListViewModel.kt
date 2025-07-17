@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
-
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.viewmodel.app.appstate.AppBarSearchUiState
@@ -22,8 +20,6 @@ import world.respect.datalayer.opds.model.OpdsGroup
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.libutil.ext.resolve
-import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.lesson_list
 import world.respect.shared.navigation.NavCommand
 
 data class LearningUnitListUiState(
