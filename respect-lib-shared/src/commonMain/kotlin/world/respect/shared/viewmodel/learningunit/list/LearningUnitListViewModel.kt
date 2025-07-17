@@ -17,6 +17,7 @@ import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.opds.model.OpdsFacet
 import world.respect.datalayer.opds.model.OpdsGroup
 import world.respect.datalayer.opds.model.OpdsPublication
@@ -31,6 +32,7 @@ data class LearningUnitListUiState(
     val lessonFilter: List<OpdsFacet> = emptyList(),
     val selectedFilterTitle: String? = null,
     val isLoading: Boolean = true,
+    val snackBarMessage: String? = null
     )
 
 class LearningUnitListViewModel(
@@ -94,7 +96,8 @@ class LearningUnitListViewModel(
                     is DataErrorResult->{
                         _uiState.update {
                             it.copy(
-                                isLoading = false
+                                isLoading = false,
+                                snackBarMessage = result.error.message ?: "Something went wrong"
                             )
                         }
                     }
@@ -146,6 +149,10 @@ class LearningUnitListViewModel(
                 )
             )
         )
+    }
+
+    fun clearSnackBar() {
+        _uiState.update { it.copy(snackBarMessage = null) }
     }
 
     companion object {

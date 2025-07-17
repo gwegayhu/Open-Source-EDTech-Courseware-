@@ -28,8 +28,12 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,7 +69,8 @@ fun LearningUnitListScreen(
         uiState = uiState,
         onClickFilter = { viewModel.onClickFilter(it) },
         onClickPublication = { viewModel.onClickPublication(it) },
-        onClickNavigation = { viewModel.onClickNavigation(it) }
+        onClickNavigation = { viewModel.onClickNavigation(it) },
+        onClearSnackBar = { viewModel.clearSnackBar() }
     )
 }
 
@@ -74,121 +79,100 @@ fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
     onClickFilter: (String) -> Unit,
     onClickPublication: (OpdsPublication) -> Unit,
-    onClickNavigation: (ReadiumLink) -> Unit
-
+    onClickNavigation: (ReadiumLink) -> Unit,
+    onClearSnackBar: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
-    ) {
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else {
-            uiState.lessonFilter.firstOrNull()?.let { facet ->
-                var expanded by remember { mutableStateOf(false) }
 
-                Column(
-                    modifier = Modifier.fillMaxWidth()
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+
+    uiState.snackBarMessage?.let { message ->
+        LaunchedEffect(message) {
+            snackBarHostState.showSnackbar(message)
+            onClearSnackBar()
+        }
+    }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        }
+    ) { padding ->
+
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp)
+        ) {
+
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .border(1.dp, black, shape = RoundedCornerShape(6.dp))
-                            .clip(CircleShape)
-                            .clickable { expanded = true }
-                            .padding(horizontal = 4.dp)
+                    CircularProgressIndicator()
+                }
+            } else {
+                uiState.lessonFilter.firstOrNull()?.let { facet ->
+                    var expanded by remember { mutableStateOf(false) }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                        Box(
+                            modifier = Modifier
+                                .border(1.dp, black, shape = RoundedCornerShape(6.dp))
+                                .clip(CircleShape)
+                                .clickable { expanded = true }
+                                .padding(horizontal = 4.dp)
                         ) {
-                            Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
-                            Icon(
-                                imageVector = Icons.Filled.ArrowDropDown,
-                                modifier = Modifier.padding(6.dp),
-                                contentDescription = null
-                            )
-                        }
-                    }
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = facet.metadata.title,
-                                    fontSize = 14.sp
-                                )
-                            },
-                            onClick = {},
-                            enabled = false
-                        )
-
-                        facet.links.forEach { link ->
-                            DropdownMenuItem(
-                                text = { Text(link.title ?: "") },
-                                onClick = {
-                                    onClickFilter(link.title ?: "")
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-
-                itemsIndexed(
-                    items = uiState.navigation,
-                    key = { index, navigation ->
-                        navigation.href
-                    }
-                ) { index, navigation ->
-                    NavigationListItem(
-                        navigation,
-                        onClickNavigation = {
-                            onClickNavigation(navigation)
-                        }
-                    )
-                }
-
-                itemsIndexed(
-                    items = uiState.publications,
-                    key = { index, publications ->
-                        publications.metadata.identifier.toString()
-                    }
-                ) { index, publication ->
-                    PublicationListItem(
-                        publication,
-                        onClickPublication = {
-                            onClickPublication(publication)
-                        }
-                    )
-                }
-
-                uiState.group.forEach { group ->
-                    item {
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = group.metadata.title,
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowDropDown,
+                                    modifier = Modifier.padding(6.dp),
+                                    contentDescription = null
                                 )
                             }
-                        )
+                        }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = facet.metadata.title,
+                                        fontSize = 14.sp
+                                    )
+                                },
+                                onClick = {},
+                                enabled = false
+                            )
+
+                            facet.links.forEach { link ->
+                                DropdownMenuItem(
+                                    text = { Text(link.title ?: "") },
+                                    onClick = {
+                                        onClickFilter(link.title ?: "")
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
+                }
+
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
 
                     itemsIndexed(
-                        items = group.navigation ?: emptyList(),
+                        items = uiState.navigation,
                         key = { index, navigation ->
                             navigation.href
                         }
@@ -200,10 +184,11 @@ fun LearningUnitListScreen(
                             }
                         )
                     }
+
                     itemsIndexed(
-                        items = group.publications ?: emptyList(),
-                        key = { index, publication ->
-                            publication.metadata.identifier.toString()
+                        items = uiState.publications,
+                        key = { index, publications ->
+                            publications.metadata.identifier.toString()
                         }
                     ) { index, publication ->
                         PublicationListItem(
@@ -214,11 +199,50 @@ fun LearningUnitListScreen(
                         )
                     }
 
+                    uiState.group.forEach { group ->
+                        item {
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = group.metadata.title,
+                                    )
+                                }
+                            )
+                        }
+
+                        itemsIndexed(
+                            items = group.navigation ?: emptyList(),
+                            key = { index, navigation ->
+                                navigation.href
+                            }
+                        ) { index, navigation ->
+                            NavigationListItem(
+                                navigation,
+                                onClickNavigation = {
+                                    onClickNavigation(navigation)
+                                }
+                            )
+                        }
+                        itemsIndexed(
+                            items = group.publications ?: emptyList(),
+                            key = { index, publication ->
+                                publication.metadata.identifier.toString()
+                            }
+                        ) { index, publication ->
+                            PublicationListItem(
+                                publication,
+                                onClickPublication = {
+                                    onClickPublication(publication)
+                                }
+                            )
+                        }
+
+                    }
                 }
             }
         }
-    }
 
+    }
 }
 
 @Composable
