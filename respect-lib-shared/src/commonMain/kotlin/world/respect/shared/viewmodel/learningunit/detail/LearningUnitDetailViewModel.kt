@@ -20,6 +20,7 @@ import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.respect.model.LEARNING_UNIT_MIME_TYPES
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.viewmodel.app.appstate.getTitle
 
 data class LearningUnitDetailUiState(
     val lessonDetail: OpdsPublication? = null,
@@ -41,10 +42,6 @@ class LearningUnitDetailViewModel(
     private val route: LearningUnitDetail = savedStateHandle.toRoute()
 
     init {
-        _appUiState.update {
-            it.copy(title = "")
-        }
-
         viewModelScope.launch {
             dataSource.opdsDataSource.loadOpdsPublication(
                 url = route.learningUnitManifestUrl,
@@ -57,6 +54,11 @@ class LearningUnitDetailViewModel(
                         _uiState.update {
                             it.copy(
                                 lessonDetail = result.data,
+                            )
+                        }
+                        _appUiState.update {
+                            it.copy(
+                                title = result.data.metadata.title.getTitle()
                             )
                         }
                     }

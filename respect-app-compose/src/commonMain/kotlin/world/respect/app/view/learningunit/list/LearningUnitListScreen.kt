@@ -5,13 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -44,12 +47,12 @@ import world.respect.shared.generated.resources.clazz
 import world.respect.shared.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
 import world.respect.shared.viewmodel.app.appstate.getTitle
-import world.respect.shared.viewmodel.app.appstate.toDisplayString
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel.Companion.ICON
 
 @Composable
 fun LearningUnitListScreen(
@@ -216,6 +219,7 @@ fun NavigationListItem(
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Max)
             .clickable {
                 onClickNavigation(navigation)
             },
@@ -223,23 +227,24 @@ fun NavigationListItem(
         leadingContent = {
 
             val iconUrl = navigation.alternate?.find {
-                it.rel?.contains("icon") == true
+                it.rel?.contains(ICON) == true
             }?.href
 
-            iconUrl.also { icon ->
-                RespectAsyncImage(
-                    uri = icon,
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline,
-                            CircleShape
-                        )
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                iconUrl.also { icon ->
+                    RespectAsyncImage(
+                        uri = icon,
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(36.dp)
+                    )
+                }
             }
         },
 
@@ -259,13 +264,20 @@ fun NavigationListItem(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = navigation.type.toString()
-                    )
-                    Text(
-                        text = "${stringResource(Res.string.duration)} -" +
-                                " ${navigation.duration}"
-                    )
+
+                    navigation.language
+                        ?.let { language ->
+                            Text(
+                                text = language.joinToString(", ")
+                            )
+                        }
+
+                    navigation.duration
+                        ?.let { duration ->
+                            Text(
+                                text = "${stringResource(Res.string.duration)} - $duration"
+                            )
+                        }
                 }
             }
         },
@@ -288,54 +300,63 @@ fun PublicationListItem(
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClickPublication(publication) },
+            .height(IntrinsicSize.Max)
+            .clickable {
+                onClickPublication(publication)
+            },
 
         leadingContent = {
             val iconUrl = publication.images?.find {
                 it.type?.contains(IMAGE) == true
             }?.href
-            iconUrl.also { icon ->
-                RespectAsyncImage(
-                    uri = icon,
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline,
-                            CircleShape
-                        )
-                )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                iconUrl.also { icon ->
+                    RespectAsyncImage(
+                        uri = icon,
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(36.dp)
+                    )
+                }
             }
         },
 
         headlineContent = {
             Text(
-                text = publication.metadata.title.getTitle(),
+                text = publication.metadata.title.getTitle()
             )
         },
 
         supportingContent = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+                verticalArrangement =
+                    Arrangement.spacedBy(2.dp)
             ) {
                 Text(
                     text = stringResource(Res.string.clazz),
                 )
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement =
+                        Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = publication.metadata.subject
-                            ?.joinToString(", ") { it.toDisplayString() }
-                            ?: " ",
-                    )
-                    Text(
-                        text = "${stringResource(Res.string.duration)} - " +
-                                "${publication.metadata.duration}",
-                    )
+                    publication.metadata.language
+                        ?.let { language ->
+                            Text(
+                                text = language.joinToString(", ")
+                            )
+                        }
+
+                    publication.metadata.duration
+                        ?.let { duration ->
+                            Text(text = "${stringResource(Res.string.duration)} - $duration")
+                        }
                 }
             }
         },

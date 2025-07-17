@@ -43,7 +43,7 @@ object EnterLink : RespectAppRoute
 @Serializable
 class AppsDetail private constructor(
     private val manifestUrlStr: String
-): RespectAppRoute {
+) : RespectAppRoute {
 
     @Transient
     val manifestUrl = Url(manifestUrlStr)
