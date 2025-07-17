@@ -2,8 +2,13 @@ package world.respect
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import world.respect.app.R
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
@@ -26,6 +31,22 @@ class WebViewActivity : AppCompatActivity() {
 
     }
 
+    private val webViewClient = object: WebViewClient() {
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
+            url: String?
+        ): Boolean {
+            return false
+        }
+
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
+            request: WebResourceRequest?
+        ): Boolean {
+            return false
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +55,7 @@ class WebViewActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
         val webView: WebView = findViewById(R.id.web_view)
         webView.webChromeClient = webChromeClient
+        webView.webViewClient = webViewClient
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = false
@@ -41,7 +63,35 @@ class WebViewActivity : AppCompatActivity() {
             throw IllegalStateException("No url specified")
 
         webView.loadUrl(url)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val webView: WebView = findViewById(R.id.web_view)
+        if(webView.canGoBack()) {
+            webView.goBack()
+            return true
+        }else {
+            finish()
+            return true
+        }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_webview, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.webview_close -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
