@@ -34,7 +34,10 @@ import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
-
+import world.respect.app.viewmodel.CurriculumListViewModel
+import world.respect.app.viewmodel.CurriculumDetailViewModel
+import world.respect.app.viewmodel.CurriculumEditViewModel
+import world.respect.app.viewmodel.StrandEditViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -87,6 +90,10 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
+    viewModelOf(::CurriculumListViewModel)
+    viewModelOf(::CurriculumDetailViewModel)
+    viewModelOf(::CurriculumEditViewModel)
+    viewModelOf(::StrandEditViewModel)
 
 
     single<RespectAppDataSourceProvider> {

@@ -9,9 +9,14 @@ sealed class NavCommand(
 ) {
     @OptIn(ExperimentalTime::class)
     class Navigate(
-        val destination: RespectAppRoute,
-        timestamp: Long= Clock.System.now().toEpochMilliseconds(),
+        val destination: Any,  // CHANGED: Use Any instead of RespectAppRoute
+        timestamp: Long = Clock.System.now().toEpochMilliseconds(),
     ): NavCommand(timestamp)
 
+    @OptIn(ExperimentalTime::class)
+    class NavigateAndClearBackStack(  // ADDED: Missing class
+        val destination: Any,
+        timestamp: Long = Clock.System.now().toEpochMilliseconds(),
+    ): NavCommand(timestamp)
 }
 

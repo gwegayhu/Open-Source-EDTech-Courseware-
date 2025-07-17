@@ -48,8 +48,17 @@
     <string name="name_required_error">Name is required</string>
     <string name="id_required_error">ID is required</string>
     <string name="description_required_error">Description is required</string>
-    <string name="empty_name"></string>
-    <string name="empty_id"></string>
-    <string name="empty_description"></string>
+    <string name="empty_name">Empty name</string>
+    <string name="empty_id">Empty Id</string>
+    <string name="empty_description">Empty Description</string>
+    <string name="no_curricula_yet">No curricula yet </string>
+    <string name="curriculum_name">Curriculum Name</string>
+    <string name="no_strands_yet">No Strands Yet</string>
+    <string name="add_strands_description">Add Strands</string>
+    <string name="strand">Strand</string>
+    <string name="edit_strand">Edit Strand</string>
+    <string name="learning_objectives">Learing Objectives</string>
+    <string name="outcomes">Outcomes</string>
+    <string name="open">Open</string>
 
 </resources>
