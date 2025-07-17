@@ -17,4 +17,13 @@ interface LaunchAppUseCase {
         navigateFn: (NavCommand) -> Unit,
     )
 
+    companion object {
+
+        //As per integration guide
+        const val RESPECT_LAUNCH_VERSION_PARAM_NAME = "respectLaunchVersion"
+
+        const val RESPECT_LAUNCH_VERSION_VALUE = "1"
+
+    }
+
 }
