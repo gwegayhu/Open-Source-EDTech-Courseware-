@@ -17,7 +17,6 @@ import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
-import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.opds.model.OpdsFacet
 import world.respect.datalayer.opds.model.OpdsGroup
 import world.respect.datalayer.opds.model.OpdsPublication
@@ -97,7 +96,7 @@ class LearningUnitListViewModel(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                snackBarMessage = result.error.message ?: "Something went wrong"
+                                snackBarMessage = result.error.message
                             )
                         }
                     }
