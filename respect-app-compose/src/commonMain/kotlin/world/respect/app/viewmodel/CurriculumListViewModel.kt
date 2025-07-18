@@ -1,4 +1,3 @@
-
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
@@ -89,7 +88,6 @@ class CurriculumListViewModel(
     fun onRefresh() {
         loadCurricula()
     }
-
     private fun loadCurricula() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -118,7 +116,6 @@ class CurriculumListViewModel(
             }
         }
     }
-
     companion object {
         private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }

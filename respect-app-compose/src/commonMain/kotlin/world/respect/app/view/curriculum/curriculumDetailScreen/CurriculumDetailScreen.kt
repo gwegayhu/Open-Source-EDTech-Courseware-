@@ -34,7 +34,6 @@ fun CurriculumDetailScreenWrapper(
         onRefresh = viewModel::onRefresh
     )
 }
-
 @Composable
 fun CurriculumDetailScreen(
     uiState: CurriculumDetailUiState,

@@ -1,4 +1,3 @@
-
 package world.respect.app.domain.usecase.curriculum
 
 import world.respect.app.domain.usecase.strand.StrandStorage
@@ -15,7 +14,6 @@ class DeleteCurriculumUseCase {
 
             if (removed) {
                 CurriculumStorage.curricula.value = currentList
-                // Also remove associated strands
                 StrandStorage.removeStrandsByCurriculumId(curriculumId)
             }
 

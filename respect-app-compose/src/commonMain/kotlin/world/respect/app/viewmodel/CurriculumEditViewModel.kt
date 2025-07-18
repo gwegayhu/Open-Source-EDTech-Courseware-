@@ -121,7 +121,6 @@ class CurriculumEditViewModel(
 
         return isValid
     }
-
     private fun saveCurriculum() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -167,7 +166,6 @@ class CurriculumEditViewModel(
             }
         }
     }
-
     private fun loadCurriculum(id: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -199,7 +197,6 @@ class CurriculumEditViewModel(
             }
         }
     }
-
     companion object {
         private const val VALIDATION_NAME_REQUIRED = "name_required"
         private const val VALIDATION_ID_REQUIRED = "id_required"

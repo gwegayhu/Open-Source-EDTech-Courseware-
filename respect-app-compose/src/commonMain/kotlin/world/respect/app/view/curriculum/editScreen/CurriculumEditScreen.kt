@@ -31,7 +31,6 @@ fun CurriculumEditScreenWrapper(
         onSaveClick = viewModel::onSaveClick
     )
 }
-
 @Composable
 fun CurriculumEditScreen(
     uiState: CurriculumEditViewModel.CurriculumEditUiState = CurriculumEditViewModel.CurriculumEditUiState(),

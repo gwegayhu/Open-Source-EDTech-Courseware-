@@ -19,14 +19,12 @@ data class CurriculumDetailUiState(
     val isLoading: Boolean = false,
     val error: String? = null
 )
-
 data class CurriculumStrand(
     val id: String,
     val name: String,
     val description: String = "",
     val isActive: Boolean = true
 )
-
 class CurriculumDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val getStrandsByCurriculumIdUseCase: GetStrandsByCurriculumIdUseCase
@@ -57,7 +55,6 @@ class CurriculumDetailViewModel(
         )
         loadCurriculumDetails()
     }
-
     fun onBackClick() {
         viewModelScope.launch {
             _navCommandFlow.emit(NavCommand.Navigate(CurriculumList))
@@ -76,7 +73,6 @@ class CurriculumDetailViewModel(
             )
         }
     }
-
     fun onStrandClick(strand: CurriculumStrand) {
         viewModelScope.launch {
             _navCommandFlow.emit(
