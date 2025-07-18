@@ -177,23 +177,21 @@ class DistributedCacheHashtable(
 
                     //If not yet discovered - eg. our neighbor discovered us, but we didn't discover
                     //them yet, then insert (fallback)
-                    fun insertNeighborIfNeeded() {
-                        runBlocking {
-                            cacheDb.useWriterConnection { con ->
-                                con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                                    cacheDb.neighborCacheDao.insertOrIgnore(
-                                        NeighborCache(
-                                            neighborUid = neighborUid,
-                                            neighborIp = packet.address.hostAddress,
-                                            neighborUdpPort = packet.port,
-                                            neighborHttpPort = dCachePacket.httpPort,
-                                        )
-                                    )
-                                    cacheDb.neighborCacheDao.updateHttpPort(
+                    suspend fun insertNeighborIfNeeded() {
+                        cacheDb.useWriterConnection { con ->
+                            con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                                cacheDb.neighborCacheDao.insertOrIgnore(
+                                    NeighborCache(
                                         neighborUid = neighborUid,
-                                        httpPort = dCachePacket.httpPort
+                                        neighborIp = packet.address.hostAddress,
+                                        neighborUdpPort = packet.port,
+                                        neighborHttpPort = dCachePacket.httpPort,
                                     )
-                                }
+                                )
+                                cacheDb.neighborCacheDao.updateHttpPort(
+                                    neighborUid = neighborUid,
+                                    httpPort = dCachePacket.httpPort
+                                )
                             }
                         }
                     }

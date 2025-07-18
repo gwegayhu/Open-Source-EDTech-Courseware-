@@ -16,6 +16,7 @@ import com.ustadmobile.libcache.db.UstadCacheDb
 import com.ustadmobile.libcache.db.entities.NeighborCache
 import com.ustadmobile.libcache.distributed.http.DistributedCacheHttpEndpoint
 import com.ustadmobile.libcache.logging.NapierLoggingAdapter
+import com.ustadmobile.libcache.util.initNapierLog
 import com.ustadmobile.libcache.util.newFileFromResource
 import com.ustadmobile.libcache.util.storeFileAsUrl
 import fi.iki.elonen.NanoHTTPD
@@ -103,6 +104,7 @@ class DistributedCacheHashtableIntegrationTest {
     private fun testDistributedCacheWithTwoNeighbors(
         block: DistributedCacheHashtableTestContext.() -> Unit
     ) {
+        initNapierLog()
         val (cacheDb1, cacheDb2) = (1..2).map {
             Room.databaseBuilder<UstadCacheDb>(
                 tempDir.newFile("testcache_$it.db").absolutePath
