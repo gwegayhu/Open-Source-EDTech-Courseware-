@@ -1,0 +1,326 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 15,
+    "identityHash": "91e0b1ee86ebf503079a196ed9753894",
+    "entities": [
+      {
+        "tableName": "CacheEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `url` TEXT NOT NULL, `message` TEXT NOT NULL, `statusCode` INTEGER NOT NULL, `cacheFlags` INTEGER NOT NULL, `method` INTEGER NOT NULL, `lastAccessed` INTEGER NOT NULL, `lastValidated` INTEGER NOT NULL, `integrity` TEXT, `responseHeaders` TEXT NOT NULL, `storageUri` TEXT NOT NULL, `storageSize` INTEGER NOT NULL, `uncompressedSize` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`key`))",
+        "fields": [
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statusCode",
+            "columnName": "statusCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cacheFlags",
+            "columnName": "cacheFlags",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "method",
+            "columnName": "method",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastAccessed",
+            "columnName": "lastAccessed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastValidated",
+            "columnName": "lastValidated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "integrity",
+            "columnName": "integrity",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "responseHeaders",
+            "columnName": "responseHeaders",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storageUri",
+            "columnName": "storageUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storageSize",
+            "columnName": "storageSize",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uncompressedSize",
+            "columnName": "uncompressedSize",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "key"
+          ]
+        },
+        "indices": [
+          {
+            "name": "idx_lastAccessed",
+            "unique": false,
+            "columnNames": [
+              "lastAccessed"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_lastAccessed` ON `${TABLE_NAME}` (`lastAccessed`)"
+          },
+          {
+            "name": "index_CacheEntry_integrity",
+            "unique": false,
+            "columnNames": [
+              "integrity"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CacheEntry_integrity` ON `${TABLE_NAME}` (`integrity`)"
+          }
+        ]
+      },
+      {
+        "tableName": "RequestedEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `requestSha256` TEXT NOT NULL, `requestedKey` TEXT NOT NULL, `batchId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "requestSha256",
+            "columnName": "requestSha256",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "requestedKey",
+            "columnName": "requestedKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "batchId",
+            "columnName": "batchId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RequestedEntry_batchId",
+            "unique": false,
+            "columnNames": [
+              "batchId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RequestedEntry_batchId` ON `${TABLE_NAME}` (`batchId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "RetentionLock",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lockId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lockKey` TEXT NOT NULL, `lockRemark` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "lockId",
+            "columnName": "lockId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lockKey",
+            "columnName": "lockKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lockRemark",
+            "columnName": "lockRemark",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "lockId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "idx_lockKey",
+            "unique": false,
+            "columnNames": [
+              "lockKey"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_lockKey` ON `${TABLE_NAME}` (`lockKey`)"
+          }
+        ]
+      },
+      {
+        "tableName": "NeighborCache",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`neighborUid` INTEGER NOT NULL, `neighborDeviceName` TEXT NOT NULL, `neighborIp` TEXT NOT NULL, `neighborUdpPort` INTEGER NOT NULL, `neighborHttpPort` INTEGER NOT NULL, `neighborDiscovered` INTEGER NOT NULL, `neighborPingTime` INTEGER NOT NULL, `neighborLastSeen` INTEGER NOT NULL, `neighborStatus` INTEGER NOT NULL, PRIMARY KEY(`neighborUid`))",
+        "fields": [
+          {
+            "fieldPath": "neighborUid",
+            "columnName": "neighborUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborDeviceName",
+            "columnName": "neighborDeviceName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborIp",
+            "columnName": "neighborIp",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborUdpPort",
+            "columnName": "neighborUdpPort",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborHttpPort",
+            "columnName": "neighborHttpPort",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborDiscovered",
+            "columnName": "neighborDiscovered",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborPingTime",
+            "columnName": "neighborPingTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborLastSeen",
+            "columnName": "neighborLastSeen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "neighborStatus",
+            "columnName": "neighborStatus",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "neighborUid"
+          ]
+        }
+      },
+      {
+        "tableName": "NeighborCacheEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nceNeighborUid` INTEGER NOT NULL, `nceUrlHash` INTEGER NOT NULL, PRIMARY KEY(`nceNeighborUid`, `nceUrlHash`))",
+        "fields": [
+          {
+            "fieldPath": "nceNeighborUid",
+            "columnName": "nceNeighborUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nceUrlHash",
+            "columnName": "nceUrlHash",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "nceNeighborUid",
+            "nceUrlHash"
+          ]
+        }
+      },
+      {
+        "tableName": "NewCacheEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cacheEntryKey` TEXT NOT NULL, `nceUrl` TEXT NOT NULL, PRIMARY KEY(`cacheEntryKey`))",
+        "fields": [
+          {
+            "fieldPath": "cacheEntryKey",
+            "columnName": "cacheEntryKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nceUrl",
+            "columnName": "nceUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "cacheEntryKey"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '91e0b1ee86ebf503079a196ed9753894')"
+    ]
+  }
+}
