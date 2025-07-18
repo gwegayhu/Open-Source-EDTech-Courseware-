@@ -12,7 +12,8 @@ class CreateGraphFormatterUseCase() {
 
     data class FormatterOptions<T : Any>(
         val paramType: KClass<T>,
-        val axis: Axis
+        val axis: Axis,
+        val forSubgroup: Boolean = false
     ) {
         enum class Axis {
             Y_AXIS_VALUES, X_AXIS_VALUES
@@ -46,15 +47,23 @@ class CreateGraphFormatterUseCase() {
             }
 
             options.axis == FormatterOptions.Axis.X_AXIS_VALUES && options.paramType == String::class -> {
-                when (reportResult.request.reportOptions.xAxis) {
+                // Use subgroup axis type if formatting for subgroup
+                val axisType = if (options.forSubgroup) {
+                    reportResult.request.reportOptions.series.first().reportSeriesSubGroup
+                        ?: reportResult.request.reportOptions.xAxis
+                } else {
+                    reportResult.request.reportOptions.xAxis
+                }
+
+                when (axisType) {
                     ReportXAxis.DAY,
                     ReportXAxis.WEEK,
                     ReportXAxis.MONTH,
-                    ReportXAxis.YEAR -> DateGraphFormatter(reportResult.request.reportOptions.xAxis)
+                    ReportXAxis.YEAR -> DateGraphFormatter(axisType)
 
                     ReportXAxis.GENDER -> GenderGraphFormatter()
 
-                    ReportXAxis.CLASS -> NoOpGraphFormatter() // No formatting for class names
+                    ReportXAxis.CLASS -> NoOpGraphFormatter()
 
                     else -> throw IllegalArgumentException("Unsupported X-axis type")
                 }

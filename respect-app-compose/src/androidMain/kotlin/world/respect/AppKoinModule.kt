@@ -32,6 +32,9 @@ import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
+import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
+import world.respect.shared.viewmodel.report.list.ReportListViewModel
 
 
 @Suppress("unused")
@@ -79,6 +82,9 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
+    viewModelOf(::ReportDetailViewModel)
+    viewModelOf(::ReportEditViewModel)
+    viewModelOf(::ReportListViewModel)
 
 
     // Uncomment this to switch to using fake data source provider for development purposes

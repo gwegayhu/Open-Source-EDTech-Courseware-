@@ -31,6 +31,12 @@ object Clazz : RespectAppRoute
 object Report : RespectAppRoute
 
 @Serializable
+object ReportEdit : RespectAppRoute
+
+@Serializable
+object ReportDetail : RespectAppRoute
+
+@Serializable
 object RespectAppList : RespectAppRoute
 
 @Serializable
