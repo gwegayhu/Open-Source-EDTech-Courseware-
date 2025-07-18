@@ -1,4 +1,4 @@
-// File: app/src/main/java/world/respect/app/viewmodel/CurriculumListViewModel.kt
+
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle

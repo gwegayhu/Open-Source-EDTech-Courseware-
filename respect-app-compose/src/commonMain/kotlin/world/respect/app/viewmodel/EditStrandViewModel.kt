@@ -1,4 +1,4 @@
-// File: app/src/main/java/world/respect/app/viewmodel/StrandEditViewModel.kt
+
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
@@ -80,14 +80,12 @@ class StrandEditViewModel(
             nameError = null
         )
     }
-
     fun onLearningObjectivesChange(learningObjectives: String) {
         _uiState.value = _uiState.value.copy(
             learningObjectives = learningObjectives,
             learningObjectivesError = null
         )
     }
-
     fun onOutcomesChange(outcomes: String) {
         _uiState.value = _uiState.value.copy(
             outcomes = outcomes,
@@ -147,7 +145,6 @@ class StrandEditViewModel(
 
         return isValid
     }
-
     private fun saveStrand() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)

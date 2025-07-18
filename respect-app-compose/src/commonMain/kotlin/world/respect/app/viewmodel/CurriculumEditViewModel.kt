@@ -1,4 +1,4 @@
-// File: app/src/main/java/world/respect/app/viewmodel/CurriculumEditViewModel.kt
+
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
@@ -63,14 +63,12 @@ class CurriculumEditViewModel(
             loadCurriculum(curriculumIdValue)
         }
     }
-
     fun onNameChange(name: String) {
         _uiState.value = _uiState.value.copy(
             name = name,
             nameError = null
         )
     }
-
     fun onIdChange(id: String) {
         _uiState.value = _uiState.value.copy(
             id = id,
