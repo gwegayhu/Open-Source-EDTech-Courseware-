@@ -15,6 +15,8 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ProfileScreen
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.WaitingForApproval
+import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
@@ -67,39 +69,32 @@ class ProfileViewModel(
 
 
     fun onFullNameChanged(value: String) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    fullName = value,
-                    fullNameError = if (value.isNotBlank()) null else getString(Res.string.full_name_required)
-                )
-            }
+        _uiState.update {
+            it.copy(
+                fullName = value,
+                fullNameError = if (value.isNotBlank()) null else StringResourceUiText(Res.string.full_name_required)
+            )
         }
-
     }
 
     fun onGenderChanged(value: OneRosterGenderEnum) {
-        viewModelScope.launch {
-            _uiState.update { prev ->
-                prev.copy(
-                    gender = value,
-                    genderError = if (value != OneRosterGenderEnum.UNSPECIFIED) null else getString(
-                        Res.string.gender_required
-                    )
+
+        _uiState.update { prev ->
+            prev.copy(
+                gender = value,
+                genderError = if (value != OneRosterGenderEnum.UNSPECIFIED) null else StringResourceUiText(
+                    Res.string.gender_required
                 )
-            }
+            )
         }
     }
 
     fun onDateOfBirthChanged(value: LocalDate?) {
-
-        viewModelScope.launch {
-            _uiState.update { prev ->
-                prev.copy(
-                    dateOfBirth = value,
-                    dateOfBirthError = if (value != null) null else getString(Res.string.dob_required)
-                )
-            }
+        _uiState.update { prev ->
+            prev.copy(
+                dateOfBirth = value,
+                dateOfBirthError = if (value != null) null else StringResourceUiText(Res.string.dob_required)
+            )
         }
     }
 
@@ -109,11 +104,11 @@ class ProfileViewModel(
             val current = _uiState.value
             _uiState.update { prev ->
                 prev.copy(
-                    fullNameError = if (current.fullName.isBlank()) getString(Res.string.full_name_required) else null,
-                    genderError = if (current.gender == OneRosterGenderEnum.UNSPECIFIED) getString(
+                    fullNameError = if (current.fullName.isBlank()) StringResourceUiText(Res.string.full_name_required) else null,
+                    genderError = if (current.gender == OneRosterGenderEnum.UNSPECIFIED) StringResourceUiText(
                         Res.string.gender_required
                     ) else null,
-                    dateOfBirthError = if (current.dateOfBirth == null) getString(Res.string.dob_required) else null
+                    dateOfBirthError = if (current.dateOfBirth == null) StringResourceUiText(Res.string.dob_required) else null
                 )
             }
 
@@ -123,11 +118,11 @@ class ProfileViewModel(
                 current.dateOfBirth == null
             ).any { it }
 
-            if (hasError){
+            if (hasError) {
                 return@launch
-            }else{
+            } else {
                 when (route.type) {
-                    ProfileType.PARENT ,ProfileType.Student->{
+                    ProfileType.PARENT, ProfileType.Student -> {
                         viewModelScope.launch {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(SignupScreen.create(route.type))
@@ -159,7 +154,7 @@ data class ProfileUiState(
     val gender: OneRosterGenderEnum = OneRosterGenderEnum.UNSPECIFIED,
     val dateOfBirth: LocalDate? = null,
 
-    val fullNameError: String? = null,
-    val genderError: String? = null,
-    val dateOfBirthError: String? = null
+    val fullNameError: UiText? = null,
+    val genderError: UiText? = null,
+    val dateOfBirthError: UiText? = null
 )

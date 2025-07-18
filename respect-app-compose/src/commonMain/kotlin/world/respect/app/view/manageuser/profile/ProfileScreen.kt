@@ -13,6 +13,7 @@ import kotlinx.datetime.LocalDate
 import world.respect.app.app.dateofbirth.DateOfBirthSelector
 import world.respect.app.components.RespectExposedDropDownMenuField
 import world.respect.app.components.defaultItemPadding
+import world.respect.app.components.uiTextStringResource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterGenderEnum
 import world.respect.shared.viewmodel.manageuser.profile.ProfileUiState
 import world.respect.shared.viewmodel.manageuser.profile.ProfileViewModel
@@ -52,8 +53,8 @@ fun ProfileScreen(
                 isError = uiState.fullNameError != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
-                    if (uiState.fullNameError != null) {
-                        Text(uiState.fullNameError ?: "")
+                    uiState.fullNameError?.let{
+                        Text(uiTextStringResource(it) )
                     }
                 }
             )
@@ -70,7 +71,7 @@ fun ProfileScreen(
                 },
                 isError = uiState.genderError != null,
                 supportingText = {
-                    uiState.genderError?.let { Text(it) }
+                    uiState.genderError?.let { Text(uiTextStringResource(it)) }
                 },
                 modifier = Modifier.fillMaxWidth()
             )

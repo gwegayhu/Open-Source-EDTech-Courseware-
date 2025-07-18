@@ -31,7 +31,7 @@ class AcknowledgementViewModel(
             }
             delay(2000)
             _navCommandFlow.tryEmit(
-                NavCommand.NavigateAndClearBackStack(JoinClazzWithCode)
+                NavCommand.Navigate(JoinClazzWithCode,clearBackStack = true)
             )
         }
     }

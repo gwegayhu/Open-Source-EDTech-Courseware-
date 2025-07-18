@@ -24,11 +24,12 @@ class RespectComposeNavController(
         when (navCommand) {
             is NavCommand.Navigate -> {
                 lastNavCommandTime = navCommand.timestamp
-                navHostController.navigate(navCommand.destination)
-            }
-            is NavCommand.NavigateAndClearBackStack -> {
-                navHostController.navigate(navCommand.destination) {
-                    popUpTo(0) { inclusive = true }
+                if (navCommand.clearBackStack) {
+                    navHostController.navigate(navCommand.destination) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                } else {
+                    navHostController.navigate(navCommand.destination)
                 }
             }
         }

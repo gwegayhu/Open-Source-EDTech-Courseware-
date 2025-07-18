@@ -90,6 +90,10 @@
     <string name="please_wait">Please wait</string>
     <string name="waiting_for_approval_to_join">Waiting for approval to join</string>
     <string name="refresh">Refresh</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+    <string name="gender">Gender</string>
 
 
 </resources>

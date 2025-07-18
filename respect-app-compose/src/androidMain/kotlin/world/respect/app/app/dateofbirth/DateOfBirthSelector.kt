@@ -17,9 +17,11 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toKotlinLocalDate
 import org.jetbrains.compose.resources.stringResource
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.cancel
 import world.respect.shared.generated.resources.ok
+import world.respect.shared.resources.UiText
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -31,7 +33,7 @@ actual fun DateOfBirthSelector(
     date: LocalDate?,
     onDateChanged: (LocalDate) -> Unit,
     label: String,
-    error: String?
+    error: UiText?
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -79,7 +81,7 @@ actual fun DateOfBirthSelector(
 
     if (error != null) {
         Text(
-            text = error,
+            text = uiTextStringResource(error),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp)
