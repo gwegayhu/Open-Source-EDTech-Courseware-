@@ -1,6 +1,8 @@
 package world.respect.shared.navigation
 
 import androidx.navigation.NavHostController
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Wrapper that avoids accidental 'replay' of navigation commands.
@@ -8,43 +10,23 @@ import androidx.navigation.NavHostController
 class RespectComposeNavController(
     private val navHostController: NavHostController,
 ) {
+
+    @OptIn(ExperimentalTime::class)
     @Volatile
-    private var lastNavCommandTime = System.currentTimeMillis()
+    private var lastNavCommandTime = Clock.System.now().toEpochMilliseconds()
 
     fun onCollectNavCommand(
         navCommand: NavCommand,
     ) {
-        if (navCommand.timestamp <= lastNavCommandTime) return
+        if(navCommand.timestamp <= lastNavCommandTime)
+            return
 
         when (navCommand) {
             is NavCommand.Navigate -> {
                 lastNavCommandTime = navCommand.timestamp
-                when (navCommand.destination) {
-                    "back" -> navHostController.popBackStack()
-                    else -> navHostController.navigate(navCommand.destination)
-                }
-            }
-            is NavCommand.NavigateAndClearBackStack -> {
-                lastNavCommandTime = navCommand.timestamp
-                when (navCommand.destination) {
-                    "back" -> navHostController.popBackStack()
-                    else -> navHostController.navigate(navCommand.destination) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
+                navHostController.navigate(navCommand.destination)
             }
         }
     }
 
-    fun navigate(destination: Any) {
-        navHostController.navigate(destination)
-    }
-
-    fun popBackStack() {
-        navHostController.popBackStack()
-    }
-
-    fun navigateUp() {
-        navHostController.navigateUp()
-    }
 }

@@ -1,17 +1,16 @@
+// File: app/src/main/java/world/respect/app/viewmodel/CurriculumDetailViewModel.kt
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import world.respect.shared.viewmodel.RespectViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import world.respect.app.app.EditStrand
+import world.respect.shared.navigation.EditStrand
+import world.respect.shared.navigation.CurriculumList
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.AppUiState
+import world.respect.app.domain.usecase.strand.GetStrandsByCurriculumIdUseCase
 
 data class CurriculumDetailUiState(
     val curriculumId: String = "",
@@ -29,7 +28,8 @@ data class CurriculumStrand(
 )
 
 class CurriculumDetailViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val getStrandsByCurriculumIdUseCase: GetStrandsByCurriculumIdUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private var curriculumId: String = ""
@@ -38,7 +38,6 @@ class CurriculumDetailViewModel(
     private val _uiState = MutableStateFlow(CurriculumDetailUiState())
     val uiState: StateFlow<CurriculumDetailUiState> = _uiState.asStateFlow()
 
-    // These are required by RespectViewModel
     override val _navCommandFlow = MutableSharedFlow<NavCommand>()
     override val navCommandFlow = _navCommandFlow.asSharedFlow()
 
@@ -61,7 +60,7 @@ class CurriculumDetailViewModel(
 
     fun onBackClick() {
         viewModelScope.launch {
-            _navCommandFlow.emit(NavCommand.Navigate("back"))
+            _navCommandFlow.emit(NavCommand.Navigate(CurriculumList))
         }
     }
 
@@ -100,19 +99,30 @@ class CurriculumDetailViewModel(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             try {
-
-                val strands = emptyList<CurriculumStrand>()
-
-                _uiState.value = _uiState.value.copy(
-                    strands = strands,
-                    isLoading = false
-                )
+                getStrandsByCurriculumIdUseCase(curriculumId)
+                    .catch { exception ->
+                        val errorMessage = exception.message ?: UNKNOWN_ERROR_MESSAGE
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = errorMessage
+                        )
+                    }
+                    .collect { strands ->
+                        _uiState.value = _uiState.value.copy(
+                            strands = strands,
+                            isLoading = false
+                        )
+                    }
             } catch (e: Exception) {
+                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = errorMessage
                 )
             }
         }
+    }
+    companion object {
+        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }

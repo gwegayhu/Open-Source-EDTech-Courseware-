@@ -1,19 +1,18 @@
+// File: app/src/main/java/world/respect/app/viewmodel/CurriculumListViewModel.kt
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.navigation.NavCommand
-import world.respect.app.app.CurriculumEdit
-import world.respect.app.app.CurriculumDetail
+import world.respect.shared.navigation.CurriculumEdit
+import world.respect.shared.navigation.CurriculumDetail
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.app.domain.models.Curriculum
+import world.respect.app.domain.usecase.curriculum.GetCurriculaUseCase
+import world.respect.shared.navigation.RespectAppRoute
 
 data class CurriculumListUiState(
     val curricula: List<Curriculum> = emptyList(),
@@ -28,7 +27,8 @@ object TabConstants {
 }
 
 class CurriculumListViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val getCurriculaUseCase: GetCurriculaUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(CurriculumListUiState())
@@ -54,23 +54,22 @@ class CurriculumListViewModel(
 
     fun onAddCurriculumClick() {
         viewModelScope.launch {
-            _navCommandFlow.emit(NavCommand.Navigate(CurriculumEdit))
+            _navCommandFlow.emit(NavCommand.Navigate(CurriculumEdit()))
         }
     }
 
     fun onProfileClick() {
-
     }
 
     fun onBottomNavClick(destination: Any) {
         viewModelScope.launch {
-            _navCommandFlow.emit(NavCommand.Navigate(destination))
+            _navCommandFlow.emit(NavCommand.Navigate(destination as RespectAppRoute))
         }
     }
 
     fun onBackClick() {
         viewModelScope.launch {
-            _navCommandFlow.emit(NavCommand.Navigate("back"))
+            _navCommandFlow.emit(NavCommand.Navigate(world.respect.shared.navigation.RespectAppLauncher))
         }
     }
 
@@ -96,18 +95,31 @@ class CurriculumListViewModel(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             try {
-                val curricula = emptyList<Curriculum>()
-
-                _uiState.value = _uiState.value.copy(
-                    curricula = curricula,
-                    isLoading = false
-                )
+                getCurriculaUseCase()
+                    .catch { exception ->
+                        val errorMessage = exception.message ?: UNKNOWN_ERROR_MESSAGE
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = errorMessage
+                        )
+                    }
+                    .collect { curricula ->
+                        _uiState.value = _uiState.value.copy(
+                            curricula = curricula,
+                            isLoading = false
+                        )
+                    }
             } catch (e: Exception) {
+                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = errorMessage
                 )
             }
         }
+    }
+
+    companion object {
+        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }

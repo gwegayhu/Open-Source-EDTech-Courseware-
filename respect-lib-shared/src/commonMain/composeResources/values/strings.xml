@@ -60,5 +60,20 @@
     <string name="learning_objectives">Learing Objectives</string>
     <string name="outcomes">Outcomes</string>
     <string name="open">Open</string>
+    <string name="learning_objectives_required_error">Learning objectives are required</string>
+    <string name="outcomes_required_error">Outcomes are required</string>
+    <string name="unknown_error">Unknown error occurred</string>
+    <string name="save_failed">Failed to save</string>
+    <string name="load_failed">Failed to load</string>
+    <string name="curriculum_not_found">Curriculum not found</string>
+    <string name="strand_not_found">Strand not found</string>
+    <string name="curriculum_saved_successfully">Curriculum saved successfully</string>
+    <string name="strand_saved_successfully">Strand saved successfully</string>
+    <string name="curriculum_deleted_successfully">Curriculum deleted successfully</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
 
 </resources>

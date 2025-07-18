@@ -45,27 +45,13 @@ import world.respect.app.viewmodel.CurriculumEditViewModel
 import world.respect.app.viewmodel.CurriculumListViewModel
 import world.respect.app.viewmodel.CurriculumDetailViewModel
 import world.respect.app.viewmodel.StrandEditViewModel
-import kotlinx.serialization.Serializable
 import world.respect.app.view.curriculum.AppByCurriculum.AppsByCurriculumScreen
+import world.respect.shared.navigation.CurriculumList
+import world.respect.shared.navigation.CurriculumEdit
+import world.respect.shared.navigation.CurriculumDetail
+import world.respect.shared.navigation.EditStrand
 
 
-@Serializable
-object CurriculumList
-
-@Serializable
-object CurriculumEdit
-
-@Serializable
-data class CurriculumDetail(
-    val curriculumId: String,
-    val curriculumName: String
-)
-
-@Serializable
-data class EditStrand(
-    val curriculumId: String,
-    val strandId: String? = null
-)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -177,11 +163,19 @@ fun AppNavHost(
             )
         }
 
-        composable<CurriculumEdit> {
+        composable<CurriculumEdit> { backStackEntry ->
+            val args = backStackEntry.toRoute<CurriculumEdit>()
+
             val viewModel: CurriculumEditViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
+
+            LaunchedEffect(args) {
+                if (args.curriculumId != null) {
+                    // viewModel.setCurriculumId(args.curriculumId)
+                }
+            }
 
             CurriculumEditScreenWrapper(
                 viewModel = viewModel
@@ -223,6 +217,5 @@ fun AppNavHost(
         }
     }
 }
-
 
 

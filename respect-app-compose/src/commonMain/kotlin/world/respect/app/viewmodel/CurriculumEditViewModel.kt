@@ -1,21 +1,23 @@
+// File: app/src/main/java/world/respect/app/viewmodel/CurriculumEditViewModel.kt
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.app.domain.models.Curriculum
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.AppUiState
-import world.respect.app.app.CurriculumDetail
+import world.respect.shared.navigation.CurriculumDetail
+import world.respect.shared.navigation.CurriculumList
+import world.respect.app.domain.usecase.curriculum.GetCurriculumByIdUseCase
+import world.respect.app.domain.usecase.curriculum.SaveCurriculumUseCase
 
 class CurriculumEditViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val getCurriculumByIdUseCase: GetCurriculumByIdUseCase,
+    private val saveCurriculumUseCase: SaveCurriculumUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private val curriculumId: String? = savedStateHandle.get<String>("curriculumId")
@@ -33,8 +35,11 @@ class CurriculumEditViewModel(
         val error: String? = null
     ) {
         val isValid: Boolean
-            get() = name.isNotBlank() && id.isNotBlank() &&
-                    nameError == null && idError == null && descriptionError == null
+            get() = name.isNotBlank() &&
+                    id.isNotBlank() &&
+                    nameError == null &&
+                    idError == null &&
+                    descriptionError == null
     }
 
     private val _uiState = MutableStateFlow(
@@ -53,7 +58,10 @@ class CurriculumEditViewModel(
     ).asStateFlow()
 
     init {
-        curriculumId?.let { loadCurriculum(it) }
+        val curriculumIdValue = curriculumId
+        if (curriculumIdValue != null) {
+            loadCurriculum(curriculumIdValue)
+        }
     }
 
     fun onNameChange(name: String) {
@@ -79,13 +87,11 @@ class CurriculumEditViewModel(
 
     fun onBackClick() {
         viewModelScope.launch {
-            _navCommandFlow.emit(NavCommand.Navigate("back"))
+            _navCommandFlow.emit(NavCommand.Navigate(CurriculumList))
         }
     }
 
     fun onSaveClick() {
-        val currentState = _uiState.value
-
         if (validateForm()) {
             saveCurriculum()
         }
@@ -95,19 +101,18 @@ class CurriculumEditViewModel(
         val currentState = _uiState.value
         var isValid = true
 
-        val nameError = when {
-            currentState.name.isBlank() -> {
-                isValid = false
-                "Name is required"
-            }
-            else -> null
+        val nameError = if (currentState.name.isBlank()) {
+            isValid = false
+            VALIDATION_NAME_REQUIRED
+        } else {
+            null
         }
-        val idError = when {
-            currentState.id.isBlank() -> {
-                isValid = false
-                "ID is required"
-            }
-            else -> null
+
+        val idError = if (currentState.id.isBlank()) {
+            isValid = false
+            VALIDATION_ID_REQUIRED
+        } else {
+            null
         }
 
         _uiState.value = currentState.copy(
@@ -125,22 +130,41 @@ class CurriculumEditViewModel(
 
             try {
                 val currentState = _uiState.value
+                val curriculum = Curriculum(
+                    id = currentState.id,
+                    name = currentState.name,
+                    description = currentState.description,
+                    isActive = true
+                )
 
-                _uiState.value = _uiState.value.copy(isLoading = false)
+                val result = saveCurriculumUseCase(curriculum)
 
-                _navCommandFlow.emit(
-                    NavCommand.Navigate(
-                        CurriculumDetail(
-                            curriculumId = currentState.id,
-                            curriculumName = currentState.name
+                result.fold(
+                    onSuccess = { savedCurriculum ->
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        _navCommandFlow.emit(
+                            NavCommand.Navigate(
+                                CurriculumDetail(
+                                    curriculumId = savedCurriculum.id,
+                                    curriculumName = savedCurriculum.name
+                                )
+                            )
                         )
-                    )
+                    },
+                    onFailure = { exception ->
+                        val errorMessage = exception.message ?: SAVE_FAILED_ERROR
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = errorMessage
+                        )
+                    }
                 )
 
             } catch (e: Exception) {
+                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = errorMessage
                 )
             }
         }
@@ -151,29 +175,39 @@ class CurriculumEditViewModel(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             try {
-                // TODO: Load curriculum from repository
-                // For now, just create empty curriculum for editing
-                val curriculum = Curriculum(
-                    id = id,
-                    name = "",
-                    description = "",
-                    isActive = true
-                )
+                val curriculum = getCurriculumByIdUseCase(id)
 
-                _uiState.value = _uiState.value.copy(
-                    curriculum = curriculum,
-                    name = curriculum.name,
-                    id = curriculum.id,
-                    description = curriculum.description,
-                    isLoading = false
-                )
+                if (curriculum != null) {
+                    _uiState.value = _uiState.value.copy(
+                        curriculum = curriculum,
+                        name = curriculum.name,
+                        id = curriculum.id,
+                        description = curriculum.description,
+                        isLoading = false
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = CURRICULUM_NOT_FOUND_ERROR
+                    )
+                }
 
             } catch (e: Exception) {
+                val errorMessage = e.message ?: LOAD_FAILED_ERROR
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = errorMessage
                 )
             }
         }
+    }
+
+    companion object {
+        private const val VALIDATION_NAME_REQUIRED = "name_required"
+        private const val VALIDATION_ID_REQUIRED = "id_required"
+        private const val SAVE_FAILED_ERROR = "Failed to save curriculum"
+        private const val LOAD_FAILED_ERROR = "Failed to load curriculum"
+        private const val CURRICULUM_NOT_FOUND_ERROR = "Curriculum not found"
+        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }

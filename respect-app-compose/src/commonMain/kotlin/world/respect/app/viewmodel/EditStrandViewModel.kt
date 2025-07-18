@@ -1,3 +1,4 @@
+// File: app/src/main/java/world/respect/app/viewmodel/StrandEditViewModel.kt
 package world.respect.app.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
@@ -11,9 +12,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.AppUiState
+import world.respect.shared.navigation.CurriculumDetail
+import world.respect.app.domain.usecase.strand.SaveStrandUseCase
+import world.respect.app.domain.usecase.strand.GetStrandByIdUseCase
 
 class StrandEditViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val saveStrandUseCase: SaveStrandUseCase,
+    private val getStrandByIdUseCase: GetStrandByIdUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private var curriculumId: String = ""
@@ -62,7 +68,10 @@ class StrandEditViewModel(
         this.curriculumId = curriculumId
         this.strandId = strandId
         _uiState.value = _uiState.value.copy(isEditMode = strandId != null)
-        strandId?.let { loadStrand(it) }
+        val strandIdValue = strandId
+        if (strandIdValue != null) {
+            loadStrand(strandIdValue)
+        }
     }
 
     fun onNameChange(name: String) {
@@ -88,7 +97,14 @@ class StrandEditViewModel(
 
     fun onBackClick() {
         viewModelScope.launch {
-            _navCommandFlow.emit(NavCommand.Navigate("back"))
+            _navCommandFlow.emit(
+                NavCommand.Navigate(
+                    CurriculumDetail(
+                        curriculumId = curriculumId,
+                        curriculumName = ""
+                    )
+                )
+            )
         }
     }
 
@@ -102,28 +118,25 @@ class StrandEditViewModel(
         val currentState = _uiState.value
         var isValid = true
 
-        val nameError = when {
-            currentState.name.isBlank() -> {
-                isValid = false
-                "Name is required"
-            }
-            else -> null
+        val nameError = if (currentState.name.isBlank()) {
+            isValid = false
+            VALIDATION_NAME_REQUIRED
+        } else {
+            null
         }
 
-        val learningObjectivesError = when {
-            currentState.learningObjectives.isBlank() -> {
-                isValid = false
-                "Learning objectives are required"
-            }
-            else -> null
+        val learningObjectivesError = if (currentState.learningObjectives.isBlank()) {
+            isValid = false
+            VALIDATION_LEARNING_OBJECTIVES_REQUIRED
+        } else {
+            null
         }
 
-        val outcomesError = when {
-            currentState.outcomes.isBlank() -> {
-                isValid = false
-                "Outcomes are required"
-            }
-            else -> null
+        val outcomesError = if (currentState.outcomes.isBlank()) {
+            isValid = false
+            VALIDATION_OUTCOMES_REQUIRED
+        } else {
+            null
         }
 
         _uiState.value = currentState.copy(
@@ -141,19 +154,42 @@ class StrandEditViewModel(
 
             try {
                 val currentState = _uiState.value
+                val params = SaveStrandUseCase.SaveStrandParams(
+                    curriculumId = curriculumId,
+                    strandId = strandId,
+                    name = currentState.name,
+                    learningObjectives = currentState.learningObjectives,
+                    outcomes = currentState.outcomes
+                )
 
-                // TODO: Save strand to repository
-                // Simulate successful save
-                println("Strand saved: ${currentState.name} for curriculum: $curriculumId")
+                val result = saveStrandUseCase(params)
 
-                _uiState.value = _uiState.value.copy(isLoading = false)
-                // Navigate back to curriculum detail screen
-                _navCommandFlow.emit(NavCommand.Navigate("back"))
+                result.fold(
+                    onSuccess = { savedStrand ->
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        _navCommandFlow.emit(
+                            NavCommand.Navigate(
+                                CurriculumDetail(
+                                    curriculumId = curriculumId,
+                                    curriculumName = ""
+                                )
+                            )
+                        )
+                    },
+                    onFailure = { exception ->
+                        val errorMessage = exception.message ?: SAVE_FAILED_ERROR
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = errorMessage
+                        )
+                    }
+                )
 
             } catch (e: Exception) {
+                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = errorMessage
                 )
             }
         }
@@ -164,28 +200,52 @@ class StrandEditViewModel(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             try {
-                val strand = Strand(
-                    id = id,
-                    name = "",
-                    learningObjectives = "",
-                    outcomes = "",
-                    isActive = true
-                )
+                val curriculumStrand = getStrandByIdUseCase(id)
 
-                _uiState.value = _uiState.value.copy(
-                    strand = strand,
-                    name = strand.name,
-                    learningObjectives = strand.learningObjectives,
-                    outcomes = strand.outcomes,
-                    isLoading = false
-                )
+                if (curriculumStrand != null) {
+                    val parts = curriculumStrand.description.split("\n\nExpected Outcomes: ")
+                    val learningObjectives = parts[0].removePrefix("Learning Objectives: ")
+                    val outcomes = if (parts.size > 1) parts[1] else ""
+
+                    val strand = Strand(
+                        id = curriculumStrand.id,
+                        name = curriculumStrand.name,
+                        learningObjectives = learningObjectives,
+                        outcomes = outcomes,
+                        isActive = curriculumStrand.isActive
+                    )
+
+                    _uiState.value = _uiState.value.copy(
+                        strand = strand,
+                        name = strand.name,
+                        learningObjectives = strand.learningObjectives,
+                        outcomes = strand.outcomes,
+                        isLoading = false
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = STRAND_NOT_FOUND_ERROR
+                    )
+                }
 
             } catch (e: Exception) {
+                val errorMessage = e.message ?: LOAD_FAILED_ERROR
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = errorMessage
                 )
             }
         }
+    }
+
+    companion object {
+        private const val VALIDATION_NAME_REQUIRED = "name_required"
+        private const val VALIDATION_LEARNING_OBJECTIVES_REQUIRED = "learning_objectives_required"
+        private const val VALIDATION_OUTCOMES_REQUIRED = "outcomes_required"
+        private const val SAVE_FAILED_ERROR = "Failed to save strand"
+        private const val LOAD_FAILED_ERROR = "Failed to load strand"
+        private const val STRAND_NOT_FOUND_ERROR = "Strand not found"
+        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }
