@@ -41,6 +41,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.io.asSink
 import kotlinx.io.buffered
 import kotlinx.io.files.FileSystem
@@ -113,6 +115,8 @@ class UstadCacheImpl(
      * especially helpful when many small items are being loaded.
      */
     private val lruMap = LruMap<String, CacheEntryAndLocks>(concurrentSafeMapOf())
+
+    private val lruMutex = Mutex()
 
     /**
      * Data class that is used to track the status of a CacheEntryToStore as it is processed.
@@ -244,19 +248,23 @@ class UstadCacheImpl(
     }
 
 
-    private fun loadEntry(urlKey: String): CacheEntry? {
+    private suspend fun loadEntry(urlKey: String): CacheEntry? {
         return loadEntryAndLocks(urlKey).entry
     }
 
-    private fun loadEntryAndLocks(urlKey: String): CacheEntryAndLocks {
-        return lruMap.computeIfAbsent(urlKey) { key ->
-            val entryInDb = runBlocking { db.cacheEntryDao.findEntryAndBodyByKey(urlKey) }
-            val entryLocks = runBlocking { db.retentionLockDao.findByKey(urlKey) }
+    private suspend fun loadEntryAndLocks(urlKey: String): CacheEntryAndLocks {
+        val entryAndLocks = lruMap[urlKey]
+
+        return entryAndLocks ?: lruMutex.withLock {
+            val entryInDb =  db.cacheEntryDao.findEntryAndBodyByKey(urlKey)
+            val entryLocks = db.retentionLockDao.findByKey(urlKey)
             CacheEntryAndLocks(
-                urlKey = key,
+                urlKey = urlKey,
                 entry = entryInDb,
                 locks = entryLocks
-            )
+            ).also {
+                lruMap[urlKey] = it
+            }
         }
     }
 
@@ -280,8 +288,7 @@ class UstadCacheImpl(
         }
     }
 
-
-    override fun store(
+    override suspend fun store(
         storeRequest: List<CacheEntryToStore>,
         progressListener: StoreProgressListener?
     ): List<StoreResult> {
@@ -401,9 +408,8 @@ class UstadCacheImpl(
                 )
             }
 
-            val loadedEntriesLruResult = runBlocking {
-                loadEntries(requestEntries, loadFromDb = false)
-            }
+            val loadedEntriesLruResult = loadEntries(requestEntries, loadFromDb = false)
+
 
             val processEntriesFn: suspend () -> List<CacheEntryInProgress> = {
                 val loadedEntries = loadEntries(
@@ -533,15 +539,13 @@ class UstadCacheImpl(
             val dbProcessedEntries = if(
                 loadedEntriesLruResult.pending.isNotEmpty()
             ) {
-                runBlocking {
-                    db.useWriterConnection { con ->
-                        con.withTransaction(SQLiteTransactionType.IMMEDIATE) {
-                            processEntriesFn()
-                        }
+                db.useWriterConnection { con ->
+                    con.withTransaction(SQLiteTransactionType.IMMEDIATE) {
+                        processEntriesFn()
                     }
                 }
             }else {
-                runBlocking { processEntriesFn() }
+                processEntriesFn()
             }
 
             val tmpFilesToDelete = dbProcessedEntries.filter {
@@ -584,7 +588,7 @@ class UstadCacheImpl(
      * a statusCheckCache to avoid running 100s-1000+ SQL queries for tiny jsons etc.
      *
      */
-    override fun retrieve(request: IHttpRequest): IHttpResponse? {
+    override suspend fun retrieve(request: IHttpRequest): IHttpResponse? {
         logger?.i(LOG_TAG, "$logPrefix Retrieve ${request.url}")
 
         val key = Md5Digest().urlKey(request.url)
@@ -638,7 +642,7 @@ class UstadCacheImpl(
         return null
     }
 
-    override fun updateLastValidated(validatedEntry: ValidatedEntry) {
+    override suspend fun updateLastValidated(validatedEntry: ValidatedEntry) {
         val md5 = Md5Digest()
         val timeNow = Clock.System.now().toEpochMilliseconds()
         val urlKey = md5.urlKey(validatedEntry.url)
@@ -675,30 +679,29 @@ class UstadCacheImpl(
         }
     }
 
-    override fun getCacheEntry(url: String): CacheEntry? {
+    override suspend fun getCacheEntry(url: String): CacheEntry? {
         return loadEntry(Md5Digest().urlKey(url))?.copy()
     }
 
-    override fun getLocks(url: String): List<RetentionLock> {
+    override suspend fun getLocks(url: String): List<RetentionLock> {
         val urlKey = Md5Digest().urlKey(url)
         loadEntry(urlKey)
         return lruMap[urlKey]?.locks ?: emptyList()
     }
 
-    override fun getEntries(urls: Set<String>): Map<String, CacheEntry> {
+    override suspend fun getEntries(urls: Set<String>): Map<String, CacheEntry> {
         val batchId = batchIdAtomic.incrementAndGet()
         val md5Digest = Md5Digest()
 
-        val entryLoadResult = runBlocking {
-            loadEntries(
-                requestEntries = urls.map {  url ->
-                    RequestedEntry(
-                        batchId = batchId,
-                        requestedKey =  md5Digest.urlKey(url)
-                    )
-                },
-            )
-        }
+        val entryLoadResult = loadEntries(
+            requestEntries = urls.map {  url ->
+                RequestedEntry(
+                    batchId = batchId,
+                    requestedKey =  md5Digest.urlKey(url)
+                )
+            },
+        )
+
 
         return entryLoadResult.entries.mapNotNull { entryAndLocks ->
             entryAndLocks.entry?.let {
@@ -707,26 +710,25 @@ class UstadCacheImpl(
         }.toMap()
     }
 
-    override fun getEntriesLocallyAvailable(urls: Set<String>): Map<String, Boolean> {
+    override suspend fun getEntriesLocallyAvailable(urls: Set<String>): Map<String, Boolean> {
         val hashesToUrl = urls.associateBy {
             xxStringHasher.hash(it)
         }
 
         val availableEntryMap = mutableMapOf<String, Boolean>()
 
-        runBlocking {
-            urls.chunked(100).forEach { chunkedList ->
-                val availableHashes = db.neighborCacheEntryDao.findAvailableEntries(
-                    chunkedList.map { xxStringHasher.hash(it) }
-                )
 
-                availableHashes.forEach { availableHash ->
-                    val availableUrl = hashesToUrl[availableHash]
-                    if(availableUrl != null) {
-                        availableEntryMap[availableUrl] = true
-                    }else {
-                        logger?.w(LOG_TAG, "Strangely could not find url in getEntriesAvailable")
-                    }
+        urls.chunked(100).forEach { chunkedList ->
+            val availableHashes = db.neighborCacheEntryDao.findAvailableEntries(
+                chunkedList.map { xxStringHasher.hash(it) }
+            )
+
+            availableHashes.forEach { availableHash ->
+                val availableUrl = hashesToUrl[availableHash]
+                if(availableUrl != null) {
+                    availableEntryMap[availableUrl] = true
+                }else {
+                    logger?.w(LOG_TAG, "Strangely could not find url in getEntriesAvailable")
                 }
             }
         }
@@ -784,18 +786,18 @@ class UstadCacheImpl(
         } ?: throw IllegalStateException("Can't happen")
     }
 
-    override fun addRetentionLocks(
+    override suspend fun addRetentionLocks(
         locks: List<EntryLockRequest>
     ): List<Pair<EntryLockRequest, RetentionLock>> {
         logger?.v(LOG_TAG) {
             "$logPrefix add retention locks for ${locks.joinToString { it.url } }"
         }
         val md5Digest = Md5Digest()
-        runBlocking {
-            loadEntries(
-                requestEntries = locks.map { RequestedEntry(requestedKey = md5Digest.urlKey(it.url)) },
-            )
-        }
+
+        loadEntries(
+            requestEntries = locks.map { RequestedEntry(requestedKey = md5Digest.urlKey(it.url)) },
+        )
+
 
         return locks.map { lockRequest ->
             val key = md5Digest.urlKey(lockRequest.url)
@@ -827,7 +829,7 @@ class UstadCacheImpl(
      * Lock removal is done by adding it to the pending list. This isn't urgent. This avoids a large
      * number of database transactions running when lots of small files are being uploaded
      */
-    override fun removeRetentionLocks(locksToRemove: List<RemoveLockRequest>) {
+    override suspend fun removeRetentionLocks(locksToRemove: List<RemoveLockRequest>) {
         logger?.v(LOG_TAG) {
             "$logPrefix remove retention locks for ${locksToRemove.joinToString { "#${it.lockId}${it.url}" } }"
         }
@@ -860,7 +862,7 @@ class UstadCacheImpl(
         }
     }
 
-    fun commit() {
+    suspend fun commit() {
         val lastAccessUpdates = pendingLastAccessedUpdates.getAndUpdate {
             emptyList()
         }
@@ -890,27 +892,29 @@ class UstadCacheImpl(
             updatesMap[it.key] = it.accessTime
         }
 
-        runBlocking {
-            db.useWriterConnection { con ->
-                con.withTransaction(SQLiteTransactionType.IMMEDIATE) {
-                    db.cacheEntryDao.delete(cacheEntryDeletes)
-                    db.cacheEntryDao.takeIf { cacheEntryUpserts.isNotEmpty() }
-                        ?.upsertList(cacheEntryUpserts)
 
-                    updatesMap.forEach {
-                        db.cacheEntryDao.updateLastAccessedTime(it.key, it.value)
-                    }
+        db.useWriterConnection { con ->
+            con.withTransaction(SQLiteTransactionType.IMMEDIATE) {
+                db.cacheEntryDao.delete(cacheEntryDeletes)
+                db.cacheEntryDao.takeIf { cacheEntryUpserts.isNotEmpty() }
+                    ?.upsertList(cacheEntryUpserts)
 
-                    db.retentionLockDao.upsertList(lockUpsertsPending)
-                    db.retentionLockDao.delete(lockRemovalsPending.map { RetentionLock(lockId = it) } )
+                updatesMap.forEach {
+                    db.cacheEntryDao.updateLastAccessedTime(it.key, it.value)
                 }
+
+                db.retentionLockDao.upsertList(lockUpsertsPending)
+                db.retentionLockDao.delete(lockRemovalsPending.map { RetentionLock(lockId = it) } )
             }
         }
+
     }
 
     override fun close() {
         scope.cancel()
-        commit()
+        runBlocking {
+            commit()
+        }
     }
 
     companion object {

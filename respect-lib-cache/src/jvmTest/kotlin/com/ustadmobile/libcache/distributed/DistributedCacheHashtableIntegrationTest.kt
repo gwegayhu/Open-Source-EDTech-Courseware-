@@ -1,6 +1,7 @@
 package com.ustadmobile.libcache.distributed
 
 import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import app.cash.turbine.test
 import com.ustadmobile.ihttp.nanohttpd.asIHttpRequest
 import com.ustadmobile.ihttp.nanohttpd.toNanoHttpdResponse
@@ -104,14 +105,14 @@ class DistributedCacheHashtableIntegrationTest {
     ) {
         val (cacheDb1, cacheDb2) = (1..2).map {
             Room.databaseBuilder<UstadCacheDb>(
-                tempDir.newFile("testcache.db").absolutePath
+                tempDir.newFile("testcache_$it.db").absolutePath
             ).addCallback(AddNewEntryTriggerCallback())
+            .setDriver(BundledSQLiteDriver())
             .build()
         }.zipWithNext().first()
 
         val rootDir1 = Path(tempDir.newFolder("cache1").absolutePath)
         val rootDir2 = Path(tempDir.newFolder("cache2").absolutePath)
-
 
         val cache1 = UstadCacheImpl(
             pathsProvider = TestCachePathProvider(rootDir1),
@@ -186,11 +187,13 @@ class DistributedCacheHashtableIntegrationTest {
     fun givenTwoNeighborCaches_whenDiscovered_thenShouldExchangeAvailabilityInfo() {
         testDistributedCacheWithTwoNeighbors {
             //Add entry to cache1
-            cache1.storeFileAsUrl(
-                testFile = tempDir.newFileFromResource(this::class.java, "/testfile1.png"),
-                testUrl = exampleUrls.first(),
-                mimeType = "image/png"
-            )
+            runBlocking {
+                cache1.storeFileAsUrl(
+                    testFile = tempDir.newFileFromResource(this::class.java, "/testfile1.png"),
+                    testUrl = exampleUrls.first(),
+                    mimeType = "image/png"
+                )
+            }
 
             discover()
 
@@ -210,11 +213,14 @@ class DistributedCacheHashtableIntegrationTest {
     @Test
     fun givenTwoNeighborCachesDiscovered_whenNewEntryAdded_thenOtherNodeWillAddToDistributedHash() {
         testDistributedCacheWithTwoNeighbors {
-            cache1.storeFileAsUrl(
-                testFile = tempDir.newFileFromResource(this::class.java, "/testfile1.png"),
-                testUrl = exampleUrls.first(),
-                mimeType = "image/png"
-            )
+            runBlocking {
+                cache1.storeFileAsUrl(
+                    testFile = tempDir.newFileFromResource(this::class.java, "/testfile1.png"),
+                    testUrl = exampleUrls.first(),
+                    mimeType = "image/png"
+                )
+            }
+
 
             discover()
 
@@ -264,11 +270,13 @@ class DistributedCacheHashtableIntegrationTest {
     fun givenTwoNeighborCaches_whenDiscovered_thenCanDownloadFromOther(){
         testDistributedCacheWithTwoNeighbors {
             val tmpTestFile = tempDir.newFileFromResource(this::class.java, "/testfile1.png")
-            cache1.storeFileAsUrl(
-                testFile = tmpTestFile,
-                testUrl = exampleUrls.first(),
-                mimeType = "image/png"
-            )
+            runBlocking {
+                cache1.storeFileAsUrl(
+                    testFile = tmpTestFile,
+                    testUrl = exampleUrls.first(),
+                    mimeType = "image/png"
+                )
+            }
 
             discover()
 

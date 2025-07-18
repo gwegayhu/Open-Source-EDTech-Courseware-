@@ -22,6 +22,7 @@ import com.ustadmobile.libcache.headers.CouponHeader.Companion.HEADER_X_INTERCEP
 import com.ustadmobile.libcache.integrity.sha256Integrity
 import com.ustadmobile.libcache.logging.UstadCacheLogger
 import com.ustadmobile.libcache.response.HttpPathResponse
+import kotlinx.coroutines.runBlocking
 import kotlinx.io.files.FileSystem
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -142,53 +143,56 @@ class UstadCacheInterceptor(
                     val cacheRequest = call.request().asIHttpRequest()
 
                     if(!call.isCanceled()) {
-                        cache.store(listOf(
-                            CacheEntryToStore(
-                                request = cacheRequest,
-                                response = HttpPathResponse(
-                                    path = Path(responseBodyFile.absolutePath),
-                                    fileSystem = fileSystem,
-                                    mimeType = response.header("content-type")
-                                        ?: "application/octet-stream",
+                        runBlocking {
+                            cache.store(listOf(
+                                CacheEntryToStore(
                                     request = cacheRequest,
-                                    extraHeaders = iHeadersBuilder {
-                                        takeFrom(response.headers.newBuilder()
-                                            .removeAll("range")
-                                            .build()
-                                            .asIHttpHeaders())
+                                    response = HttpPathResponse(
+                                        path = Path(responseBodyFile.absolutePath),
+                                        fileSystem = fileSystem,
+                                        mimeType = response.header("content-type")
+                                            ?: "application/octet-stream",
+                                        request = cacheRequest,
+                                        extraHeaders = iHeadersBuilder {
+                                            takeFrom(response.headers.newBuilder()
+                                                .removeAll("range")
+                                                .build()
+                                                .asIHttpHeaders())
 
-                                        val etagIsIntegrity = response
-                                            .header(HEADER_ETAG_IS_INTEGRITY)?.toBooleanStrictOrNull()
-                                            ?: false
-                                        when {
-                                            responseCompression == CompressionType.NONE && etagIsIntegrity -> {
-                                                //Set the etag with the integrity that we know
-                                                header("etag", sha256Integrity(digest.digest()))
-                                            }
-                                            etagIsIntegrity -> {
-                                                //The etag should be integrity, but because the response was compressed,
-                                                // we don't have the SHA-256 sum for the data ne, so remove it and let the
-                                                // cache check the real integrity
-                                                removeHeader("etag")
-                                                removeHeader(HEADER_ETAG_IS_INTEGRITY)
-                                            }
-                                            responseCompression == CompressionType.NONE -> {
-                                                //The etag is not the integrity header, so set X-Integrity
-                                                header(HEADER_X_INTEGRITY, sha256Integrity(digest.digest()))
-                                            }
-                                            else -> {
-                                                //The etag is not the integrity header, but because
-                                                //the response was compressed, we don't have the SHA-256
-                                                //sum for the data, so remove X-Integrity if present
-                                                removeHeader(HEADER_X_INTEGRITY)
+                                            val etagIsIntegrity = response
+                                                .header(HEADER_ETAG_IS_INTEGRITY)?.toBooleanStrictOrNull()
+                                                ?: false
+                                            when {
+                                                responseCompression == CompressionType.NONE && etagIsIntegrity -> {
+                                                    //Set the etag with the integrity that we know
+                                                    header("etag", sha256Integrity(digest.digest()))
+                                                }
+                                                etagIsIntegrity -> {
+                                                    //The etag should be integrity, but because the response was compressed,
+                                                    // we don't have the SHA-256 sum for the data ne, so remove it and let the
+                                                    // cache check the real integrity
+                                                    removeHeader("etag")
+                                                    removeHeader(HEADER_ETAG_IS_INTEGRITY)
+                                                }
+                                                responseCompression == CompressionType.NONE -> {
+                                                    //The etag is not the integrity header, so set X-Integrity
+                                                    header(HEADER_X_INTEGRITY, sha256Integrity(digest.digest()))
+                                                }
+                                                else -> {
+                                                    //The etag is not the integrity header, but because
+                                                    //the response was compressed, we don't have the SHA-256
+                                                    //sum for the data, so remove X-Integrity if present
+                                                    removeHeader(HEADER_X_INTEGRITY)
+                                                }
                                             }
                                         }
-                                    }
-                                ),
-                                responseBodyTmpLocalPath = Path(responseBodyFile.absolutePath),
-                                skipChecksumIfProvided = true,
-                            )
-                        ))
+                                    ),
+                                    responseBodyTmpLocalPath = Path(responseBodyFile.absolutePath),
+                                    skipChecksumIfProvided = true,
+                                )
+                            ))
+                        }
+
                         partialFileMetadataFile?.takeIf { it.exists() }?.delete()
                     }
 
@@ -274,7 +278,7 @@ class UstadCacheInterceptor(
         }
 
         val cacheRequest = request.asIHttpRequest()
-        val cacheResponse = cache.retrieve(cacheRequest)
+        val cacheResponse = runBlocking { cache.retrieve(cacheRequest) }
 
         val cachedResponseStatus = cacheResponse?.let {
             cacheControlFreshnessChecker(
@@ -334,9 +338,12 @@ class UstadCacheInterceptor(
                 val validationResponse = chain.proceed(validateRequestBuilder.build())
                 if(validationResponse.code == 304) {
                     validationResponse.close()
-                    cache.updateLastValidated(
-                        ValidatedEntry(url, validationResponse.headers.asIHttpHeaders())
-                    )
+                    runBlocking {
+                        cache.updateLastValidated(
+                            ValidatedEntry(url, validationResponse.headers.asIHttpHeaders())
+                        )
+                    }
+
                     cacheResponse.asOkHttpResponse().also {
                         logger?.d(LOG_TAG, "$logPrefix HIT(validated) $url ${it.logSummary()}")
                     }

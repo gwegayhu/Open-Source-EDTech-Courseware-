@@ -42,6 +42,7 @@ import org.mockito.kotlin.spy
 import org.mockito.kotlin.timeout
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.verifyNoInteractions
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import java.io.File
@@ -126,12 +127,14 @@ class UstadCacheInterceptorTest {
     }
 
     private fun UstadCache.verifyUrlStored(requestUrl: String) {
-        verify(this, timeout(5000)).store(
-            argWhere { storedEntries ->
-                storedEntries.any { it.request.url ==  requestUrl }
-            },
-            anyOrNull()
-        )
+        verifyBlocking(this, timeout(5000)) {
+            store(
+                argWhere { storedEntries ->
+                    storedEntries.any { it.request.url ==  requestUrl }
+                },
+                anyOrNull()
+            )
+        }
     }
 
     @Test
@@ -155,7 +158,7 @@ class UstadCacheInterceptorTest {
         Assert.assertArrayEquals(resourceBytes, responseBytes)
         ustadCache.verifyUrlStored(requestUrl)
 
-        val cacheResponse = ustadCache.retrieve(iRequestBuilder(requestUrl))
+        val cacheResponse = runBlocking { ustadCache.retrieve(iRequestBuilder(requestUrl)) }
         assertEquals(CompressionType.NONE,
             CompressionType.byHeaderVal(cacheResponse!!.headers["content-encoding"]),
             "Non-compressable mime type should not be encoded"
@@ -184,11 +187,13 @@ class UstadCacheInterceptorTest {
         Assert.assertArrayEquals(resourceBytes, responseBytes)
 
         //Now check the cached response is compressed
-        val cacheResponse = ustadCache.retrieve(
-            iRequestBuilder(requestUrl) {
-                header("accept-encoding", "gzip, br, deflate")
-            }
-        )
+        val cacheResponse = runBlocking {
+            ustadCache.retrieve(
+                iRequestBuilder(requestUrl) {
+                    header("accept-encoding", "gzip, br, deflate")
+                }
+            )
+        }
         assertNotEquals(CompressionType.NONE, CompressionType.byHeaderVal(
             cacheResponse!!.headers["content-encoding"]),
             "compression type should not be none - e.g. should be compressed")
@@ -217,11 +222,13 @@ class UstadCacheInterceptorTest {
         Assert.assertArrayEquals(resourceBytes, responseBytes)
 
         //Now check the cached response is compressed
-        val cacheResponse = ustadCache.retrieve(
-            iRequestBuilder(requestUrl) {
-                header("accept-encoding", "gzip, deflate, br")
-            }
-        )
+        val cacheResponse = runBlocking {
+            ustadCache.retrieve(
+                iRequestBuilder(requestUrl) {
+                    header("accept-encoding", "gzip, deflate, br")
+                }
+            )
+        }
         assertNotEquals(CompressionType.NONE, CompressionType.byHeaderVal(
             cacheResponse!!.headers["content-encoding"]),
             "compression type should not be none - e.g. should be compressed")
@@ -304,7 +311,7 @@ class UstadCacheInterceptorTest {
             argWhere { entries -> entries.any { it.request.url == requestUrl } }
         )
 
-        ustadCache.commit()
+        runBlocking { ustadCache.commit() }
         val storedEntryAfterRequest = runBlocking {
             cacheDb.cacheEntryDao.findEntryAndBodyByKey(
                 Md5Digest().urlKey(requestUrl))
@@ -326,7 +333,7 @@ class UstadCacheInterceptorTest {
         val validationRequest = mockWebServer.takeRequest()
         assertEquals(etagVal, validationRequest.getHeader("if-none-match"))
 
-        ustadCache.commit()
+        runBlocking { ustadCache.commit() }
         val storedEntryAfterValidation = runBlocking {
             cacheDb.cacheEntryDao.findEntryAndBodyByKey(Md5Digest().urlKey(requestUrl))
         }
@@ -388,7 +395,10 @@ class UstadCacheInterceptorTest {
         val responseBytes = okHttpClient.newCall(request).execute().use {
             it.body!!.bytes()
         }
-        verify(ustadCache, times(0)).store(anyOrNull(), anyOrNull())
+        verifyBlocking(ustadCache, times(0)) {
+            store(anyOrNull(), anyOrNull())
+        }
+
         Assert.assertArrayEquals(
             javaClass.getResourceAsStream("/testfile1.png")!!.readAllBytes(),
             responseBytes
@@ -435,11 +445,13 @@ class UstadCacheInterceptorTest {
         response.body?.bytes() //Read body
 
 
-        val cacheResponse = ustadCache.retrieve(
-            iRequestBuilder(requestUrl) {
-                header("accept-encoding", "gzip, br, deflate")
-            }
-        )
+        val cacheResponse = runBlocking {
+            ustadCache.retrieve(
+                iRequestBuilder(requestUrl) {
+                    header("accept-encoding", "gzip, br, deflate")
+                }
+            )
+        }
         assertNotNull(cacheResponse)
 
         val cacheResponseBytes = cacheResponse

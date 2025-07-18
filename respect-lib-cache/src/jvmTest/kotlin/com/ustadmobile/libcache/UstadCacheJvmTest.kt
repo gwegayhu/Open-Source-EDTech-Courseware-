@@ -71,16 +71,18 @@ class UstadCacheJvmTest {
         expectedContentEncoding: String? = null,
         requestHeaders: List<IHttpHeader> = emptyList(),
     ) {
-        val request = storeFileAsUrl(
-            testFile = testFile,
-            testUrl = testUrl,
-            mimeType = mimeType,
-            requestHeaders = requestHeaders
-        ).request
+        val request = runBlocking {
+            storeFileAsUrl(
+                testFile = testFile,
+                testUrl = testUrl,
+                mimeType = mimeType,
+                requestHeaders = requestHeaders
+            ).request
+        }
 
 
         //Check response body content matches
-        val cacheResponse = retrieve(request)
+        val cacheResponse = runBlocking { retrieve(request) }
         assertNotNull(cacheResponse, "cache response for $testUrl is not null")
         val bodyBytesRaw = cacheResponse.bodyAsSource()!!.readByteArray()
 
@@ -143,7 +145,7 @@ class UstadCacheJvmTest {
         )
 
         val createdLocks = if(createLock) {
-            ustadCache.addRetentionLocks(listOf(EntryLockRequest(testUrl)))
+            runBlocking { ustadCache.addRetentionLocks(listOf(EntryLockRequest(testUrl))) }
         }else {
             emptyList()
         }
@@ -156,7 +158,7 @@ class UstadCacheJvmTest {
             requestHeaders = requestHeaders,
         )
 
-        ustadCache.commit()
+        runBlocking { ustadCache.commit() }
 
 
         val cacheEntryInDb = runBlocking {
@@ -206,8 +208,8 @@ class UstadCacheJvmTest {
             mimeType = "image/png",
             expectContentEncoding = "identity"
         ) {
-            cache.addRetentionLocks(listOf(EntryLockRequest(url)))
-            val entry = cache.getCacheEntry(url)
+            runBlocking { cache.addRetentionLocks(listOf(EntryLockRequest(url))) }
+            val entry = runBlocking { cache.getCacheEntry(url) }
             assertTrue(entry?.storageUri?.startsWith(cachePaths.persistentPath.toString()) == true,
                 "After adding lock, entry should be in persistent path")
         }
@@ -223,15 +225,17 @@ class UstadCacheJvmTest {
             expectContentEncoding = "identity",
             createLock = true,
         ) {
-            cache.removeRetentionLocks(
-                createdLocks.map {
-                    RemoveLockRequest(url, it.second.lockId)
-                }
-            )
+            runBlocking {
+                cache.removeRetentionLocks(
+                    createdLocks.map {
+                        RemoveLockRequest(url, it.second.lockId)
+                    }
+                )
 
-            val entry = cache.getCacheEntry(url)
-            assertTrue(entry?.storageUri?.startsWith(cachePaths.cachePath.toString()) == true,
-                "After adding lock, entry should be in persistent path")
+                val entry = cache.getCacheEntry(url)
+                assertTrue(entry?.storageUri?.startsWith(cachePaths.cachePath.toString()) == true,
+                    "After adding lock, entry should be in persistent path")
+            }
         }
     }
 
@@ -278,26 +282,29 @@ class UstadCacheJvmTest {
 
         val url = "http://server.com/file.css"
         val payloads = listOf("font-weight: bold", "font-weight: bold !important")
-        payloads.forEachIndexed { index, payload ->
-            ustadCache.store(listOf(
-                iRequestBuilder(url).let {
-                    CacheEntryToStore(
-                        request = it,
-                        response = StringResponse(
+        runBlocking {
+            payloads.forEachIndexed { index, payload ->
+                ustadCache.store(listOf(
+                    iRequestBuilder(url).let {
+                        CacheEntryToStore(
                             request = it,
-                            mimeType = "text/css",
-                            body = payload,
+                            response = StringResponse(
+                                request = it,
+                                mimeType = "text/css",
+                                body = payload,
+                            )
                         )
-                    )
-                }
-            ))
+                    }
+                ))
+            }
+
+            val response = ustadCache.retrieve(iRequestBuilder(url))
+            val responseBytes = response?.bodyAsUncompressedSourceIfContentEncoded()
+                ?.asInputStream()?.readAllBytes()
+            val responseStr = responseBytes?.let { String(it) }
+            assertEquals(payloads.last(), responseStr)
         }
 
-        val response = ustadCache.retrieve(iRequestBuilder(url))
-        val responseBytes = response?.bodyAsUncompressedSourceIfContentEncoded()
-            ?.asInputStream()?.readAllBytes()
-        val responseStr = responseBytes?.let { String(it) }
-        assertEquals(payloads.last(), responseStr)
     }
 
 
@@ -313,7 +320,7 @@ class UstadCacheJvmTest {
         )
 
         val url = "http://server.com/file.css"
-        assertNull(ustadCache.retrieve(iRequestBuilder(url)))
+        assertNull(runBlocking { ustadCache.retrieve(iRequestBuilder(url)) } )
     }
 
     @Test
@@ -339,8 +346,9 @@ class UstadCacheJvmTest {
                 testUrl = url,
                 mimeType = "text/css"
             )
-            ustadCache.commit()
+
             runBlocking {
+                ustadCache.commit()
                 cacheDb.cacheEntryDao.findEntryAndBodyByKey(md5Digest.urlKey(url))
             }
         }
@@ -367,13 +375,17 @@ class UstadCacheJvmTest {
         ) {
             val resourceBytes = this::class.java.getResourceAsStream(
                 "/testfile1.png")!!.readAllBytes()
-            val etag = cache.retrieve(iRequestBuilder(testUrl))?.headers?.get("etag")
+            val etag = runBlocking {
+                cache.retrieve(iRequestBuilder(testUrl))?.headers?.get("etag")
+            }
             assertNotNull(etag)
 
-            val partialResponse = cache.retrieve(iRequestBuilder(testUrl) {
-                header("Range", "bytes=1000-")
-                header("If-Range", etag)
-            })
+            val partialResponse = runBlocking {
+                cache.retrieve(iRequestBuilder(testUrl) {
+                    header("Range", "bytes=1000-")
+                    header("If-Range", etag)
+                })
+            }
             assertNotNull(partialResponse)
             assertEquals(206, partialResponse.responseCode)
 
@@ -400,10 +412,12 @@ class UstadCacheJvmTest {
         ) {
             val resourceBytes = this::class.java.getResourceAsStream(
                 "/testfile1.png")!!.readAllBytes()
-            val fullResponse = cache.retrieve(iRequestBuilder(testUrl) {
-                header("Range", "bytes=1000-")
-                header("If-Range", "something-else")
-            })
+            val fullResponse = runBlocking {
+                cache.retrieve(iRequestBuilder(testUrl) {
+                    header("Range", "bytes=1000-")
+                    header("If-Range", "something-else")
+                })
+            }
             assertNotNull(fullResponse)
             assertEquals(200, fullResponse.responseCode,
                 "When if-range did not match etag, full response should be returned")

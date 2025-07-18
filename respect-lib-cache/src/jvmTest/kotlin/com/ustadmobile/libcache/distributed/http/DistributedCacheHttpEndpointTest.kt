@@ -4,7 +4,7 @@ import com.ustadmobile.ihttp.request.iRequestBuilder
 import com.ustadmobile.libcache.UstadCache
 import org.mockito.kotlin.argWhere
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyBlocking
 import java.net.URLEncoder
 import kotlin.test.Test
 
@@ -18,7 +18,9 @@ class DistributedCacheHttpEndpointTest {
 
         val dCacheEndpoint = DistributedCacheHttpEndpoint(cache)
         dCacheEndpoint(request)
-        verify(cache).retrieve( argWhere { it.url == originalUrl } )
+        verifyBlocking(cache) {
+            retrieve( argWhere { it.url == originalUrl } )
+        }
     }
 
 }

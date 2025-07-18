@@ -1,6 +1,7 @@
 package com.ustadmobile.libcache
 
 import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import app.cash.turbine.test
 import com.ustadmobile.libcache.db.UstadCacheDb
 import com.ustadmobile.libcache.db.entities.CacheEntry
@@ -26,7 +27,7 @@ class UstadCacheTrimmerTest {
     fun givenEntriesExceedSize_whenTrimRun_thenWillEvictRequiredEntries() {
         val cacheDb = Room.databaseBuilder<UstadCacheDb>(
             tempDir.newFile("testcache.db").absolutePath
-        ).build()
+        ).setDriver(BundledSQLiteDriver()).build()
         val md5Digest = Md5Digest()
 
         val urlPrefix = "http://server.com/file"

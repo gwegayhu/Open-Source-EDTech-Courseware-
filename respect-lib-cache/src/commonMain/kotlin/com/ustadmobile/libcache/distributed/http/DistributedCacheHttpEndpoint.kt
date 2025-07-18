@@ -5,6 +5,7 @@ import com.ustadmobile.ihttp.request.IHttpRequest
 import com.ustadmobile.ihttp.response.IHttpResponse
 import com.ustadmobile.ihttp.response.StringResponse
 import com.ustadmobile.libcache.UstadCache
+import kotlinx.coroutines.runBlocking
 import java.net.URLDecoder
 
 /**
@@ -25,7 +26,7 @@ class DistributedCacheHttpEndpoint(
             get() = originalRequest.method
 
         private val queryParamMap: Map<String, String> by lazy {
-            url.substringAfter("?", "").split("&").map {
+            url.substringAfter("?", "").split("&").associate {
                 val split = it.split("=", limit = 2)
                 val paramName = URLDecoder.decode(split.first(), "UTF-8")
                 val paramVal = split.getOrNull(1)?.let {
@@ -33,7 +34,7 @@ class DistributedCacheHttpEndpoint(
                 } ?: ""
 
                 Pair(paramName, paramVal)
-            }.toMap()
+            }
         }
 
         override fun queryParam(name: String): String? {
@@ -47,8 +48,10 @@ class DistributedCacheHttpEndpoint(
                 request, "text/plain", responseCode = 405, body = "Method not allowed"
             )
 
-        return cache.retrieve(DCacheRequest(request))
-            ?: StringResponse(request, "text/plain", responseCode = 404, body = "not found")
+        return runBlocking {
+            cache.retrieve(DCacheRequest(request))
+                ?: StringResponse(request, "text/plain", responseCode = 404, body = "not found")
+        }
     }
 
 }

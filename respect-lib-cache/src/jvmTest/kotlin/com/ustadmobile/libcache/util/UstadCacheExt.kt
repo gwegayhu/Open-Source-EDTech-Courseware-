@@ -19,7 +19,7 @@ data class FileStoredAsUrl(
     val file: File,
 )
 
-fun UstadCache.storeFileAsUrl(
+suspend fun UstadCache.storeFileAsUrl(
     testFile: File,
     testUrl: String,
     mimeType: String,

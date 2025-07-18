@@ -46,7 +46,7 @@ interface UstadCache {
     /**
      * Store a set of requests with their corresponding response.
      */
-    fun store(
+    suspend fun store(
         storeRequest: List<CacheEntryToStore>,
         progressListener: StoreProgressListener? = null,
     ): List<StoreResult>
@@ -70,7 +70,7 @@ interface UstadCache {
      * The headers stored in the cache will be updated from the validated entry, with any invalid
      * headers (as outlined above) filtered out.
      */
-    fun updateLastValidated(validatedEntry: ValidatedEntry)
+    suspend fun updateLastValidated(validatedEntry: ValidatedEntry)
 
     /**
      * Retrieve a response for the given entry.
@@ -78,16 +78,16 @@ interface UstadCache {
      * @param request HttpRequest
      * @return HttpResponse if the entry is in the cache, null otherwise
      */
-    fun retrieve(
+    suspend fun retrieve(
         request: IHttpRequest,
     ): IHttpResponse?
 
-    fun getCacheEntry(url: String): CacheEntry?
+    suspend fun getCacheEntry(url: String): CacheEntry?
 
     /**
      * Get a list of the locks that exist for a given entry
      */
-    fun getLocks(url: String): List<RetentionLock>
+    suspend fun getLocks(url: String): List<RetentionLock>
 
     /**
      * Run a bulk query to check if the given urls are available in the cache.
@@ -95,14 +95,14 @@ interface UstadCache {
      * @param urls a set of URLs to check to see if they are available in the cache
      * @return A map of the which URLs are cached (url to boolean)
      */
-    fun getEntries(
+    suspend fun getEntries(
         urls: Set<String>
     ): Map<String, CacheEntry?>
 
     /**
      * Run a bulk query to see if the given urls are available from neighbor caches.
      */
-    fun getEntriesLocallyAvailable(
+    suspend fun getEntriesLocallyAvailable(
         urls: Set<String>
     ): Map<String, Boolean>
 
@@ -116,7 +116,7 @@ interface UstadCache {
      * Entries that have a retention lock will be stored in the PersistentPath (see CachePaths) to
      * ensure the OS does not delete them.
      */
-    fun addRetentionLocks(locks: List<EntryLockRequest>): List<Pair<EntryLockRequest, RetentionLock>>
+    suspend fun addRetentionLocks(locks: List<EntryLockRequest>): List<Pair<EntryLockRequest, RetentionLock>>
 
     /**
      * Remove the given retention locks. If all locks are removed, then the entry becomes eligible
@@ -125,7 +125,7 @@ interface UstadCache {
      * When an entry has no remaining locks, then it will be moved into the cachePath (see CachePaths)
      * to allow the OS to delete it if desired.
      */
-    fun removeRetentionLocks(locksToRemove: List<RemoveLockRequest>)
+    suspend fun removeRetentionLocks(locksToRemove: List<RemoveLockRequest>)
 
     fun close()
 
