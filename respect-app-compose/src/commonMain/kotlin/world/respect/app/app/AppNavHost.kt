@@ -176,9 +176,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LearningUnitDetailScreen(
-
-                viewModel = viewModel)
+            LearningUnitDetailScreen(viewModel = viewModel)
         }
 
 

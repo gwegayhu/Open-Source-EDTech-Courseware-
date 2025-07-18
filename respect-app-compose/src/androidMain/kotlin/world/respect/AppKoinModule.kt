@@ -44,6 +44,8 @@ import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.mock.MockGetInviteInfoUseCase
 import world.respect.shared.domain.mock.MockSubmitRedeemInviteRequestUseCase
+import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 
 
 @Suppress("unused")
@@ -80,6 +82,12 @@ val appKoinModule = module {
                 preconfigured = get()
             }
         }
+    }
+
+    single<LaunchAppUseCase> {
+        LaunchAppUseCaseAndroid(
+            appContext = androidContext().applicationContext
+        )
     }
 
     viewModelOf(::AppsDetailViewModel)

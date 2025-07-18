@@ -1,6 +1,24 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+import java.util.Properties
+import java.io.FileInputStream
+
+//As per: https://developer.android.com/studio/publish/app-signing.html#kts
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+val keystorePropertiesFile = System.getenv("KEYSTORE")?.let {
+    File(it)
+} ?: rootProject.file("keystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+val keystoreProperties = Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.takeIf { keystorePropertiesFile.exists() }
+    ?.load(FileInputStream(keystorePropertiesFile))
+
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -42,6 +60,9 @@ kotlin {
             implementation(projects.respectDatalayerDb)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.androidx.webkit)
+            implementation(libs.material)
+            implementation(libs.androidx.appcompat)
         }
 
         commonMain.dependencies {
@@ -86,6 +107,19 @@ kotlin {
 }
 
 android {
+    signingConfigs {
+        println("Keystore exists: ${keystorePropertiesFile.exists()}")
+        //See https://developer.android.com/build/building-cmdline#gradle_signing
+        if(keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
+
     namespace = "world.respect.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
@@ -96,14 +130,29 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            if(keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+
+
+            proguardFiles(
+                // Default file with automatically generated optimization rules.
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                project.file("proguard-rules.pro")
+            )
+
         }
     }
     compileOptions {
