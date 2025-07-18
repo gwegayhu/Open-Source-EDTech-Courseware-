@@ -9,6 +9,9 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
+import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.ProfileScreen
+import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class LoginUiState(
@@ -70,7 +73,11 @@ class LoginViewModel(
             if (uiState.value.userIdError!=null || uiState.value.passwordError!=null) {
                 return@launch
             }
-
+            viewModelScope.launch {
+                _navCommandFlow.tryEmit(
+                    NavCommand.Navigate(RespectAppLauncher)
+                )
+            }
         }
     }
 }
