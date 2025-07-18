@@ -1,4 +1,4 @@
-package world.respect.app.view.manageuser
+package world.respect.app.view.manageuser.joinclazzwithcode
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +25,8 @@ import world.respect.shared.generated.resources.already_have_account
 import world.respect.shared.generated.resources.enter_invite_code_message
 import world.respect.shared.generated.resources.invite_code_label
 import world.respect.shared.generated.resources.next
-import world.respect.shared.viewmodel.manageuser.JoinClazzWithCodeUiState
-import world.respect.shared.viewmodel.manageuser.JoinClazzWithCodeViewModel
+import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeUiState
+import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 
 @Composable
 fun JoinClazzWithCodeScreen(

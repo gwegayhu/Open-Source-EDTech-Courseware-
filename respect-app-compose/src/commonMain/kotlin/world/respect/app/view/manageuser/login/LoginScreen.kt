@@ -18,10 +18,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
+import world.respect.app.components.defaultScreenPadding
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.email_label
 import world.respect.shared.generated.resources.login
 import world.respect.shared.generated.resources.password_label
+import world.respect.shared.generated.resources.userId_label
 import world.respect.shared.viewmodel.manageuser.login.LoginUiState
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
 
@@ -33,7 +34,7 @@ fun LoginScreen(
 
     LoginScreen(
         uiState = uiState,
-        onEmailChanged = viewModel::onEmailChanged,
+        onUserIdChanged = viewModel::onUserIdChanged,
         onPasswordChanged = viewModel::onPasswordChanged,
         onClickLogin = viewModel::onClickLogin
     )
@@ -42,27 +43,26 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     uiState: LoginUiState,
-    onEmailChanged: (String) -> Unit,
+    onUserIdChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onClickLogin: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .defaultItemPadding()
+            .defaultScreenPadding()
     ) {
         OutlinedTextField(
-            value = uiState.email,
-            onValueChange = onEmailChanged,
-            label = { Text(stringResource(Res.string.email_label)) },
-            placeholder = { Text(stringResource(Res.string.email_label)) },
+            value = uiState.userId,
+            onValueChange = onUserIdChanged,
+            label = { Text(stringResource(Res.string.userId_label)) },
+            placeholder = { Text(stringResource(Res.string.userId_label)) },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            isError = uiState.emailError != null,
-            supportingText = uiState.emailError?.let {
+            isError = uiState.userIdError != null,
+            supportingText = uiState.userIdError?.let {
                 { Text(it) }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -79,7 +79,7 @@ fun LoginScreen(
             supportingText = uiState.passwordError?.let {
                 { Text(it) }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -87,8 +87,7 @@ fun LoginScreen(
         Button(
             onClick = onClickLogin,
             modifier = Modifier
-                .fillMaxWidth()
-                .defaultItemPadding()
+                .fillMaxWidth().defaultItemPadding()
         ) {
             Text(text = stringResource(Res.string.login))
         }

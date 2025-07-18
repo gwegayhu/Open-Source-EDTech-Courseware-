@@ -51,8 +51,7 @@ fun AcknowledgementScreen(
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = stringResource(Res.string.supported_by),
-                style = MaterialTheme.typography.bodyMedium
+                text = stringResource(Res.string.supported_by)
             )
             Spacer(Modifier.height(8.dp))
             Image(
@@ -67,9 +66,7 @@ fun AcknowledgementScreen(
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text =  stringResource(Res.string.network_powered_by),
-                style = MaterialTheme.typography.bodyMedium
-            )
+                text =  stringResource(Res.string.network_powered_by))
             Spacer(Modifier.height(8.dp))
 
         }

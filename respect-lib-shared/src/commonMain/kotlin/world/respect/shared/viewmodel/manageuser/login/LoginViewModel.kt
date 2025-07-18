@@ -12,9 +12,9 @@ import world.respect.shared.generated.resources.*
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class LoginUiState(
-    val email: String = "",
+    val userId: String = "",
     val password: String = "",
-    val emailError: String? = null,
+    val userIdError: String? = null,
     val passwordError: String? = null,
 )
 
@@ -37,11 +37,11 @@ class LoginViewModel(
         }
     }
 
-    fun onEmailChanged(email: String) {
+    fun onUserIdChanged(userId: String) {
         _uiState.update {
             it.copy(
-                email = email,
-                emailError = null
+                userId = userId,
+                userIdError = null
             )
         }
     }
@@ -57,17 +57,17 @@ class LoginViewModel(
 
     fun onClickLogin() {
         viewModelScope.launch {
-            val email = uiState.value.email
+            val userID = uiState.value.userId
             val password = uiState.value.password
 
             _uiState.update {
                 it.copy(
-                    emailError = if (email.isEmpty()) getString(Res.string.email_required) else null,
+                    userIdError = if (userID.isEmpty()) getString(Res.string.userid_required) else null,
                     passwordError = if (password.isEmpty()) getString(Res.string.password_required) else null
                 )
             }
 
-            if (uiState.value.emailError!=null || uiState.value.passwordError!=null) {
+            if (uiState.value.userIdError!=null || uiState.value.passwordError!=null) {
                 return@launch
             }
 

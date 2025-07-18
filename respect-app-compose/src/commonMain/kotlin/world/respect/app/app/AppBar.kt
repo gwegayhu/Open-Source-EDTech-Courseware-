@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -132,6 +133,15 @@ fun RespectAppBar(
                             stringResource(Res.string.search)
                         )
                     }
+                }
+            }
+            if(appUiState.actionBarButtonState.visible) {
+                Button(
+                    onClick = appUiState.actionBarButtonState.onClick,
+                    enabled = appUiState.actionBarButtonState.enabled,
+                    modifier = Modifier.testTag("action_bar_button"),
+                ) {
+                    Text(appUiState.actionBarButtonState.text ?: "")
                 }
             }
             if(appUiState.userAccountIconVisible) {
