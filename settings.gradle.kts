@@ -44,3 +44,5 @@ include(":respect-lib-primarykeygen")
 
 include(":respect-lib-ihttp-core")
 include(":respect-lib-ihttp-iostreams")
+include(":respect-lib-ihttp-okhttp")
+include(":respect-lib-ihttp-nanohttpd")
