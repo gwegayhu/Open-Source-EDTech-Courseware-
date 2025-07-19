@@ -72,6 +72,8 @@ kotlin {
             implementation(projects.respectDatalayerRepository)
             implementation(projects.respectDatalayerHttp)
             implementation(projects.respectLibPrimarykeygen)
+            implementation(projects.respectLibCache)
+
             implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
@@ -97,6 +99,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.date.time)
+            implementation(libs.kotlinx.io.core)
         }
 
         desktopMain.dependencies {
