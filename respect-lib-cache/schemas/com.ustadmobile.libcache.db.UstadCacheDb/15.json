@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 15,
-    "identityHash": "2413a8393dca89da9be3b807a2df9949",
+    "identityHash": "cbf18466ed6f3f744f006b79a6c543fe",
     "entities": [
       {
         "tableName": "CacheEntry",
@@ -325,46 +325,46 @@
       },
       {
         "tableName": "DownloadJob",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tjUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tjType` INTEGER NOT NULL, `tjStatus` INTEGER NOT NULL, `tjName` TEXT, `tjPubManifestUrl` TEXT, `tjTimeCreated` INTEGER NOT NULL DEFAULT 0, `tjCreationType` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`djUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `djType` INTEGER NOT NULL, `djStatus` INTEGER NOT NULL, `djName` TEXT, `djPubManifestUrl` TEXT, `djTimeCreated` INTEGER NOT NULL DEFAULT 0, `djCreationType` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
-            "fieldPath": "tjUid",
-            "columnName": "tjUid",
+            "fieldPath": "djUid",
+            "columnName": "djUid",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "tjType",
-            "columnName": "tjType",
+            "fieldPath": "djType",
+            "columnName": "djType",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "tjStatus",
-            "columnName": "tjStatus",
+            "fieldPath": "djStatus",
+            "columnName": "djStatus",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "tjName",
-            "columnName": "tjName",
+            "fieldPath": "djName",
+            "columnName": "djName",
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "tjPubManifestUrl",
-            "columnName": "tjPubManifestUrl",
+            "fieldPath": "djPubManifestUrl",
+            "columnName": "djPubManifestUrl",
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "tjTimeCreated",
-            "columnName": "tjTimeCreated",
+            "fieldPath": "djTimeCreated",
+            "columnName": "djTimeCreated",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
           },
           {
-            "fieldPath": "tjCreationType",
-            "columnName": "tjCreationType",
+            "fieldPath": "djCreationType",
+            "columnName": "djCreationType",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
@@ -373,23 +373,23 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "tjUid"
+            "djUid"
           ]
         }
       },
       {
         "tableName": "DownloadJobItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tjiUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tjiTjUid` INTEGER NOT NULL, `tjTotalSize` INTEGER NOT NULL, `tjTransferred` INTEGER NOT NULL, `tjAttemptCount` INTEGER NOT NULL, `tjiUrl` TEXT NOT NULL, `tjiDest` TEXT, `tjiType` INTEGER NOT NULL, `tjiStatus` INTEGER NOT NULL, `tjiEntityEtag` INTEGER NOT NULL DEFAULT 0, `tjiLockIdToRelease` INTEGER NOT NULL DEFAULT 0, `tjiPartialTmpFile` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`djiUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `djiDjUid` INTEGER NOT NULL, `tjTotalSize` INTEGER NOT NULL, `tjTransferred` INTEGER NOT NULL, `tjAttemptCount` INTEGER NOT NULL, `djiUrl` TEXT NOT NULL, `djiDest` TEXT, `djiType` INTEGER NOT NULL, `djiStatus` INTEGER NOT NULL, `djiEntityEtag` INTEGER NOT NULL DEFAULT 0, `djiLockIdToRelease` INTEGER NOT NULL DEFAULT 0, `djiPartialTmpFile` TEXT)",
         "fields": [
           {
-            "fieldPath": "tjiUid",
-            "columnName": "tjiUid",
+            "fieldPath": "djiUid",
+            "columnName": "djiUid",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "tjiTjUid",
-            "columnName": "tjiTjUid",
+            "fieldPath": "djiDjUid",
+            "columnName": "djiDjUid",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -412,70 +412,70 @@
             "notNull": true
           },
           {
-            "fieldPath": "tjiUrl",
-            "columnName": "tjiUrl",
+            "fieldPath": "djiUrl",
+            "columnName": "djiUrl",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "tjiDest",
-            "columnName": "tjiDest",
+            "fieldPath": "djiDest",
+            "columnName": "djiDest",
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "tjiType",
-            "columnName": "tjiType",
+            "fieldPath": "djiType",
+            "columnName": "djiType",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "tjiStatus",
-            "columnName": "tjiStatus",
+            "fieldPath": "djiStatus",
+            "columnName": "djiStatus",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "tjiEntityEtag",
-            "columnName": "tjiEntityEtag",
+            "fieldPath": "djiEntityEtag",
+            "columnName": "djiEntityEtag",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
           },
           {
-            "fieldPath": "tjiLockIdToRelease",
-            "columnName": "tjiLockIdToRelease",
+            "fieldPath": "djiLockIdToRelease",
+            "columnName": "djiLockIdToRelease",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
           },
           {
-            "fieldPath": "tjiPartialTmpFile",
-            "columnName": "tjiPartialTmpFile",
+            "fieldPath": "djiPartialTmpFile",
+            "columnName": "djiPartialTmpFile",
             "affinity": "TEXT"
           }
         ],
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "tjiUid"
+            "djiUid"
           ]
         },
         "indices": [
           {
-            "name": "transferjob_tjuid",
+            "name": "transferjob_djuid",
             "unique": false,
             "columnNames": [
-              "tjiTjUid"
+              "djiDjUid"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `transferjob_tjuid` ON `${TABLE_NAME}` (`tjiTjUid`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `transferjob_djuid` ON `${TABLE_NAME}` (`djiDjUid`)"
           }
         ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2413a8393dca89da9be3b807a2df9949')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cbf18466ed6f3f744f006b79a6c543fe')"
     ]
   }
 }

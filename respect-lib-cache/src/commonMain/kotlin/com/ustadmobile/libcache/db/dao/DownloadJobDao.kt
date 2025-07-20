@@ -15,7 +15,7 @@ abstract class DownloadJobDao {
         """
         SELECT * 
           FROM DownloadJob 
-         WHERE tjUid = :uid
+         WHERE djUid = :uid
     """
     )
     abstract suspend fun findByUid(uid: Int): DownloadJob?

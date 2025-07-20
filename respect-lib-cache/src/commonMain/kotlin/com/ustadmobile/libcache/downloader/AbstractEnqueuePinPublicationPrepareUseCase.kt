@@ -25,23 +25,23 @@ abstract class AbstractEnqueuePinPublicationPrepareUseCase(
     ): DownloadJob {
         return db.withWriterTransaction {
             val downloadJob = DownloadJob(
-                tjType = DownloadJob.TYPE_DOWNLOAD,
-                tjStatus = TransferJobItemStatus.STATUS_QUEUED_INT,
-                tjTimeCreated = Clock.System.now().toEpochMilliseconds(),
-                tjPubManifestUrl = manifestUrl,
+                djType = DownloadJob.TYPE_DOWNLOAD,
+                djStatus = TransferJobItemStatus.STATUS_QUEUED_INT,
+                djTimeCreated = Clock.System.now().toEpochMilliseconds(),
+                djPubManifestUrl = manifestUrl,
             )
 
             val jobUid = db.downloadJobDao.insert(downloadJob).toInt()
 
             val manifestDownloadJobItem = DownloadJobItem(
-                tjiTjUid = jobUid,
-                tjiUrl = manifestUrl,
+                djiDjUid = jobUid,
+                djiUrl = manifestUrl,
             )
 
             db.downloadJobItemDao.insertList(listOf(manifestDownloadJobItem))
 
             downloadJob.copy(
-                tjUid = jobUid
+                djUid = jobUid
             )
         }
     }

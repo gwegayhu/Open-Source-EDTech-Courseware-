@@ -22,7 +22,7 @@ class EnqueuePinPublicationPrepareUseCaseAndroid(
         val transferJob = createTransferJob(manifestUrl)
 
         val jobData = Data.Builder()
-            .putInt(JOB_UID, transferJob.tjUid)
+            .putInt(JOB_UID, transferJob.djUid)
             .build()
 
         val workRequest = OneTimeWorkRequestBuilder<PinPublicationGetManifestInfoWorker>()

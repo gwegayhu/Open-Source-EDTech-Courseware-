@@ -14,42 +14,30 @@ import kotlinx.serialization.Serializable
  *
  * A TransferJob has one or more TransferJobItem(s).
  *
- * @param tjStatus Status int as per TransferJobItemStatus
- * @param tjTableId Where this transfer job is associated with one specific entity, the tableId (optional)
- * @param tjEntityUid Where this transfer job is associated with one specific entity, the entity uid field (optional)
+ * @param djStatus Status int as per TransferJobItemStatus
  *
- * @param tjPubManifestUrl Where this TransferJob is being used to pin a publication, the manifest url,
+ * @param djPubManifestUrl Where this TransferJob is being used to pin a publication, the manifest url,
  *        otherwise, null.
  */
 @Entity
 /**
- * @param tjOiUid Id of the related OfflineItem (if any)
  */
 @Serializable
 data class DownloadJob(
     @PrimaryKey(autoGenerate = true)
-    val tjUid: Int = 0,
-    val tjType: Int = 0,
-    val tjStatus: Int = 0,
-    val tjName: String? = null,
-    val tjPubManifestUrl: Url? = null,
+    val djUid: Int = 0,
+    val djType: Int = 0,
+    val djStatus: Int = 0,
+    val djName: String? = null,
+    val djPubManifestUrl: Url? = null,
     @ColumnInfo(defaultValue = "0")
-    val tjTimeCreated: Long = 0,
+    val djTimeCreated: Long = 0,
     @ColumnInfo(defaultValue = "0")
-    val tjCreationType: Int = 0,
+    val djCreationType: Int = 0,
 ) {
     companion object {
-        //This entity is not replicated, however, this can be used as part of the key in lists
-        const val TABLE_ID = 1081
-
-        const val TYPE_BLOB_UPLOAD = 1
 
         const val TYPE_DOWNLOAD = 2
 
-
-        const val CREATION_TYPE_USER = 1
-
-        const val CREATION_TYPE_UPDATE = 2
     }
-
 }

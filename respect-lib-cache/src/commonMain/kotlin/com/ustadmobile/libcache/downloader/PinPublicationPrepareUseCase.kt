@@ -26,19 +26,19 @@ class PinPublicationPrepareUseCase(
      *
      */
     suspend operator fun invoke(
-        transferJobUid: Int
+        downloadJobUid: Int
     ) {
-        val transferJob = db.downloadJobDao.findByUid(transferJobUid)
-            ?: throw IllegalArgumentException("No transfer job with uid $transferJobUid")
-        val manifestUrl = transferJob.tjPubManifestUrl
+        val transferJob = db.downloadJobDao.findByUid(downloadJobUid)
+            ?: throw IllegalArgumentException("No transfer job with uid $downloadJobUid")
+        val manifestUrl = transferJob.djPubManifestUrl
             ?: throw IllegalArgumentException("no manifest url")
 
         val publication: OpdsPublication = httpClient.get(manifestUrl).body()
         val downloadJobItems = publication.resources?.map { resource ->
             DownloadJobItem(
-                tjiTjUid = transferJobUid,
-                tjiUrl = manifestUrl.resolve(resource.href),
-                tjTotalSize = (resource.size ?: 0).toLong()
+                djiDjUid = downloadJobUid,
+                djiUrl = manifestUrl.resolve(resource.href),
+                djiTotalSize = (resource.size ?: 0).toLong()
             )
         } ?: emptyList()
         //Create the locks
