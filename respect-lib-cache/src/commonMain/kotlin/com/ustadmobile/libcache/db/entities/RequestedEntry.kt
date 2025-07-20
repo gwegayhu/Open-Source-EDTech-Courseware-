@@ -10,9 +10,9 @@ import androidx.room.PrimaryKey
 @Entity
 data class RequestedEntry(
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
-    var requestSha256: String = "",
-    var requestedKey: String = "",
+    val id: Int = 0,
+    val requestSha256: String = "",
+    val requestedKey: String = "",
     @ColumnInfo(index = true)
-    var batchId: Int = 0,
+    val batchId: Int = 0,
 )

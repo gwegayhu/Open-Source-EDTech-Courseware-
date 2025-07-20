@@ -12,6 +12,6 @@ import androidx.room.Entity
     primaryKeys = arrayOf("nceNeighborUid", "nceUrlHash")
 )
 data class NeighborCacheEntry(
-    var nceNeighborUid: Long = 0L,
-    var nceUrlHash: Long = 0L,
+    val nceNeighborUid: Long = 0L,
+    val nceUrlHash: Long = 0L,
 )

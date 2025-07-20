@@ -14,15 +14,15 @@ import androidx.room.PrimaryKey
 @Entity
 data class NeighborCache(
     @PrimaryKey
-    var neighborUid: Long = 0L,
-    var neighborDeviceName: String = "",
-    var neighborIp: String = "",
-    var neighborUdpPort: Int = 0,
-    var neighborHttpPort: Int = 0,
-    var neighborDiscovered: Long = 0L,
-    var neighborPingTime: Int = 0,
-    var neighborLastSeen: Long = 0L,
-    var neighborStatus: Int = 1,
+    val neighborUid: Long = 0L,
+    val neighborDeviceName: String = "",
+    val neighborIp: String = "",
+    val neighborUdpPort: Int = 0,
+    val neighborHttpPort: Int = 0,
+    val neighborDiscovered: Long = 0L,
+    val neighborPingTime: Int = 0,
+    val neighborLastSeen: Long = 0L,
+    val neighborStatus: Int = 1,
 ) {
 
     companion object {

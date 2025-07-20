@@ -13,22 +13,20 @@ import androidx.room.PrimaryKey
  * otherwise be evicted based on last access time).
  */
 @Entity(
-    indices = arrayOf(
-        Index("lockKey", name = "idx_lockKey")
-    )
+    indices = [Index("lockKey", name = "idx_lockKey")]
 )
 data class RetentionLock(
     @PrimaryKey(autoGenerate = true)
-    var lockId: Long = 0,
+    val lockId: Long = 0,
 
     /**
      * The key as per CacheEntry.key
      */
-    var lockKey: String = "",
+    val lockKey: String = "",
 
     /**
      * A remark that can be added at the time of creating the lock e.g. a note on why the entry
      * is to be retained
      */
-    var lockRemark: String = "",
+    val lockRemark: String = "",
 )

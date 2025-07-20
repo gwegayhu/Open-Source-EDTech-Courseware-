@@ -22,38 +22,38 @@ import androidx.room.PrimaryKey
 )
 data class CacheEntry(
     @PrimaryKey
-    var key: String = "",
+    val key: String = "",
 
-    var url: String = "",
+    val url: String = "",
 
-    var message: String = "",
+    val message: String = "",
 
-    var statusCode: Int = 0,
+    val statusCode: Int = 0,
 
-    var cacheFlags: Int = 0,
+    val cacheFlags: Int = 0,
 
-    var method: Int = 0,
+    val method: Int = 0,
 
-    var lastAccessed: Long = 0,
+    val lastAccessed: Long = 0,
 
-    var lastValidated: Long = -1,
+    val lastValidated: Long = -1,
 
     @ColumnInfo(index = true)
-    var integrity: String? = null,
+    val integrity: String? = null,
 
-    var responseHeaders: String = "",
+    val responseHeaders: String = "",
 
     /**
      * The path where the body of the request is stored as kotlinx.io.Path.toString
      */
-    var storageUri: String = "",
+    val storageUri: String = "",
 
-    var storageSize: Long = 0,
+    val storageSize: Long = 0,
 
     /**
      * The size of the entry, uncompressed. This might be different to storageSize if the entry is
      * stored using content-encoding Gzip etc.
      */
     @ColumnInfo(defaultValue = "0")
-    var uncompressedSize: Long = 0,
+    val uncompressedSize: Long = 0,
 )

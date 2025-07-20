@@ -9,6 +9,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class NewCacheEntry(
     @PrimaryKey
-    var cacheEntryKey: String = "",
-    var nceUrl: String = "",
+    val cacheEntryKey: String = "",
+    val nceUrl: String = "",
 )
