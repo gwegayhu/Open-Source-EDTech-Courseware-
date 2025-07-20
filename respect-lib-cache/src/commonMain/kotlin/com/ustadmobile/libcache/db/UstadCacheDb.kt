@@ -9,12 +9,16 @@ import com.ustadmobile.libcache.db.dao.RetentionLockDao
 import com.ustadmobile.libcache.db.dao.NeighborCacheDao
 import com.ustadmobile.libcache.db.dao.NeighborCacheEntryDao
 import com.ustadmobile.libcache.db.dao.NewCacheEntryDao
+import com.ustadmobile.libcache.db.dao.TransferJobDao
+import com.ustadmobile.libcache.db.dao.TransferJobItemDao
 import com.ustadmobile.libcache.db.entities.CacheEntry
 import com.ustadmobile.libcache.db.entities.NeighborCache
 import com.ustadmobile.libcache.db.entities.NeighborCacheEntry
 import com.ustadmobile.libcache.db.entities.NewCacheEntry
 import com.ustadmobile.libcache.db.entities.RequestedEntry
 import com.ustadmobile.libcache.db.entities.RetentionLock
+import com.ustadmobile.libcache.db.entities.TransferJob
+import com.ustadmobile.libcache.db.entities.TransferJobItem
 
 /**
  * CacheEntry
@@ -36,7 +40,9 @@ import com.ustadmobile.libcache.db.entities.RetentionLock
         RetentionLock::class,
         NeighborCache::class,
         NeighborCacheEntry::class,
-        NewCacheEntry::class
+        NewCacheEntry::class,
+        TransferJob::class,
+        TransferJobItem::class,
     ],
 )
 abstract class UstadCacheDb : RoomDatabase() {
@@ -52,6 +58,10 @@ abstract class UstadCacheDb : RoomDatabase() {
     abstract val neighborCacheEntryDao: NeighborCacheEntryDao
 
     abstract val newCacheEntryDao: NewCacheEntryDao
+
+    abstract val transferJobDao: TransferJobDao
+
+    abstract val transferJobItemDao: TransferJobItemDao
 
 }
 

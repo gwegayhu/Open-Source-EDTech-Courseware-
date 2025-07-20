@@ -24,6 +24,7 @@ kotlin {
         commonMain.dependencies  {
             implementation(kotlin("stdlib-common"))
             api(projects.respectLibIhttpCore)
+            implementation(projects.respectLibOpdsModel)
             implementation(projects.respectLibIhttpIostreams)
             implementation(projects.respectLibXxhash)
             implementation(libs.kotlinx.coroutines.core)

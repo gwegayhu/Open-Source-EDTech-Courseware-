@@ -16,7 +16,7 @@ import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.opds.model.OpdsPublication
+import world.respect.lib.opds.model.OpdsPublication
 import world.respect.datalayer.respect.model.LEARNING_UNIT_MIME_TYPES
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
