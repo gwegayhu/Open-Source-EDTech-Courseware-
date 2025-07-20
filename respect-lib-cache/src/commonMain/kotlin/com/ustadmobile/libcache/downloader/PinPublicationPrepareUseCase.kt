@@ -20,11 +20,13 @@ import world.respect.libutil.ext.resolve
  *  b) Add a RetentionLock
  *  c) If the resource does not have a size provided in the ReadiumLink, then make an HTTP HEAD request
  *     to get the size and update the TransferJobItem accordingly.
+ *  d) Enqueue RunDownloadJob to run the actual download.
  */
 class PinPublicationPrepareUseCase(
     private val httpClient: HttpClient,
     private val db: UstadCacheDb,
     private val cache: UstadCache,
+    private val enqueueRunDownloadJobUseCase: EnqueueRunDownloadJobUseCase,
 ) {
 
     /**
@@ -70,6 +72,7 @@ class PinPublicationPrepareUseCase(
             )
         }
 
+        enqueueRunDownloadJobUseCase(downloadJobUid)
     }
 
 }
