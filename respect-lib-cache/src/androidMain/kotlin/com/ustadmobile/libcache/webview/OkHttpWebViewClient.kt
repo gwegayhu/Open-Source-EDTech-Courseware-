@@ -50,57 +50,74 @@ class OkHttpWebViewClient(
         request: WebResourceRequest?
     ): WebResourceResponse? {
         if(request != null && shouldInterceptRequestFilter.shouldIntercept(request)) {
-            //pending: use try/catch, in case of exception, return 500 response
-            val response = okHttpClient.newCall(
-                Request.Builder()
-                    .url(request.url.toString())
-                    .apply {
-                        method(request.method, null)
-                        request.requestHeaders.forEach { headerName, headerVal ->
-                            header(headerName, headerVal)
+            return try {
+                val response = okHttpClient.newCall(
+                    Request.Builder()
+                        .url(request.url.toString())
+                        .apply {
+                            method(request.method, null)
+                            request.requestHeaders.forEach { headerName, headerVal ->
+                                header(headerName, headerVal)
+                            }
                         }
+                        .build()
+                ).execute()
+
+                val httpStatusCode = HttpStatusCode.fromValue(response.code)
+                val contentLength = response.headersContentLength()
+
+                val contentType = ContentType.parse(
+                    response.header("content-type") ?: "application/octet-stream"
+                )
+                val mimeType = "${contentType.contentType}/${contentType.contentSubtype}"
+
+                Log.d("UstadCacheWebViewClient", "Intercept ${request.url} " +
+                        "(${response.code} ${httpStatusCode.description}) " +
+                        "$mimeType (charset=${contentType.charset()}) $contentLength bytes"
+                )
+
+                val responseBody = response.takeIf { it.promisesBody() }?.body
+
+                val responseHeaders2 = response.headers.names().associate { headerName ->
+                    val modHeaderName = RESERVED_HEADERS.firstOrNull {
+                        it.equals(headerName, ignoreCase = true)
                     }
-                    .build()
-            ).execute()
 
-            val httpStatusCode = HttpStatusCode.fromValue(response.code)
-            val contentLength = response.headersContentLength()
-
-            val contentType = ContentType.parse(
-                response.header("content-type") ?: "application/octet-stream"
-            )
-            val mimeType = "${contentType.contentType}/${contentType.contentSubtype}"
-
-            Log.d("UstadCacheWebViewClient", "Intercept ${request.url} " +
-                    "(${response.code} ${httpStatusCode.description}) " +
-                    "$mimeType (charset=${contentType.charset()}) $contentLength bytes"
-            )
-
-            val responseBody = response.takeIf { it.promisesBody() }?.body
-
-            val responseHeaders2 = response.headers.names().associate { headerName ->
-                val modHeaderName = RESERVED_HEADERS.firstOrNull {
-                    it.equals(headerName, ignoreCase = true)
+                    (modHeaderName ?: headerName) to response.header(headerName)!!
                 }
 
-                (modHeaderName ?: headerName) to response.header(headerName)!!
-            }
+                /*
+                 * As per:
+                 * https://developer.android.com/reference/android/webkit/WebResourceResponse#WebResourceResponse(java.lang.String,%20java.lang.String,%20java.io.InputStream)
+                 * The mimeType must be the mimetype ONLY (without the charset, parameters, etc)
+                 * The encoding is the charset (if provided), otherwise null (as expected for non-text
+                 * responses such as images).
+                 */
+                return WebResourceResponse(
+                    mimeType,
+                    contentType.charset()?.name(),
+                    response.code,
+                    HttpStatusCode.fromValue(response.code).description,
+                    responseHeaders2,
+                    responseBody?.byteStream() ?: ByteArrayInputStream(byteArrayOf()),
+                )
+            }catch(e: Throwable) {
+                Log.w("UstadWebViewClient", "Error intercepting request", e)
+                val responseBytes = "OkHttpWebViewClient error: ${e.message}".toByteArray()
 
-            /*
-             * As per:
-             * https://developer.android.com/reference/android/webkit/WebResourceResponse#WebResourceResponse(java.lang.String,%20java.lang.String,%20java.io.InputStream)
-             * The mimeType must be the mimetype ONLY (without the charset, parameters, etc)
-             * The encoding is the charset (if provided), otherwise null (as expected for non-text
-             * responses such as images).
-             */
-            return WebResourceResponse(
-                mimeType,
-                contentType.charset()?.name(),
-                response.code,
-                HttpStatusCode.fromValue(response.code).description,
-                responseHeaders2,
-                responseBody?.byteStream() ?: ByteArrayInputStream(byteArrayOf()),
-            )
+                WebResourceResponse(
+                    "text/plain",
+                    "UTF-8",
+                    503,
+                    "Service Unavailable",
+                    buildMap {
+                        put("Content-Type", "text/plain")
+                        put("Content-Length", responseBytes.size.toString())
+                        put("Cache-Control", "no-cache, no-store, must-revalidate")
+                    },
+                    ByteArrayInputStream(responseBytes)
+                )
+            }
         }else {
             return null
         }
