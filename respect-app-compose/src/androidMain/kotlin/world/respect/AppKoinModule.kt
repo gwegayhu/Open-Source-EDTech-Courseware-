@@ -15,6 +15,7 @@ import com.ustadmobile.libcache.db.ClearNeighborsCallback
 import com.ustadmobile.libcache.db.UstadCacheDb
 import com.ustadmobile.libcache.logging.NapierLoggingAdapter
 import com.ustadmobile.libcache.okhttp.UstadCacheInterceptor
+import com.ustadmobile.libcache.webview.OkHttpWebViewClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -171,6 +172,12 @@ val appKoinModule = module {
             sizeLimit = { 100_000_000L },
             db = get(),
         ).build()
+    }
+
+    single<OkHttpWebViewClient> {
+        OkHttpWebViewClient(
+            okHttpClient = get()
+        )
     }
 
     single<RespectAppDataSourceProvider> {
