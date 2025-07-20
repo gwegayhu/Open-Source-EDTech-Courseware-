@@ -13,6 +13,7 @@ import com.ustadmobile.libcache.db.dao.NeighborCacheEntryDao
 import com.ustadmobile.libcache.db.dao.NewCacheEntryDao
 import com.ustadmobile.libcache.db.dao.DownloadJobDao
 import com.ustadmobile.libcache.db.dao.DownloadJobItemDao
+import com.ustadmobile.libcache.db.dao.PinnedPublicationDao
 import com.ustadmobile.libcache.db.entities.CacheEntry
 import com.ustadmobile.libcache.db.entities.NeighborCache
 import com.ustadmobile.libcache.db.entities.NeighborCacheEntry
@@ -21,6 +22,7 @@ import com.ustadmobile.libcache.db.entities.RequestedEntry
 import com.ustadmobile.libcache.db.entities.RetentionLock
 import com.ustadmobile.libcache.db.entities.DownloadJob
 import com.ustadmobile.libcache.db.entities.DownloadJobItem
+import com.ustadmobile.libcache.db.entities.PinnedPublication
 
 /**
  * CacheEntry
@@ -45,6 +47,7 @@ import com.ustadmobile.libcache.db.entities.DownloadJobItem
         NewCacheEntry::class,
         DownloadJob::class,
         DownloadJobItem::class,
+        PinnedPublication::class,
     ],
 )
 @TypeConverters(DbTypeConverters::class)
@@ -66,6 +69,8 @@ abstract class UstadCacheDb : RoomDatabase() {
     abstract val downloadJobDao: DownloadJobDao
 
     abstract val downloadJobItemDao: DownloadJobItemDao
+
+    abstract val pinnedPublicationDao: PinnedPublicationDao
 
 }
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 data class EntryLockRequest(
     val url: String,
     val remark: String = "",
+    val publicationUid: Long = 0,
 )
 
 data class RemoveLockRequest(
@@ -118,7 +119,9 @@ interface UstadCache {
      * Entries that have a retention lock will be stored in the PersistentPath (see CachePaths) to
      * ensure the OS does not delete them.
      */
-    suspend fun addRetentionLocks(locks: List<EntryLockRequest>): List<Pair<EntryLockRequest, RetentionLock>>
+    suspend fun addRetentionLocks(
+        locks: List<EntryLockRequest>
+    ): List<Pair<EntryLockRequest, RetentionLock>>
 
     /**
      * Remove the given retention locks. If all locks are removed, then the entry becomes eligible

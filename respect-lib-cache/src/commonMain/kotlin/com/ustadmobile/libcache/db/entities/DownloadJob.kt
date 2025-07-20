@@ -30,6 +30,7 @@ data class DownloadJob(
     val djStatus: Int = 0,
     val djName: String? = null,
     val djPubManifestUrl: Url? = null,
+    val djPubManifestHash: Long = 0,
     @ColumnInfo(defaultValue = "0")
     val djTimeCreated: Long = 0,
     @ColumnInfo(defaultValue = "0")

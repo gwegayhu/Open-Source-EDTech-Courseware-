@@ -1,7 +1,11 @@
 package com.ustadmobile.libcache.downloader
 
+import com.ustadmobile.libcache.EntryLockRequest
+import com.ustadmobile.libcache.UstadCache
 import com.ustadmobile.libcache.db.UstadCacheDb
 import com.ustadmobile.libcache.db.entities.DownloadJobItem
+import com.ustadmobile.libcache.db.entities.PinnedPublication
+import com.ustadmobile.libcache.util.withWriterTransaction
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -20,6 +24,7 @@ import world.respect.libutil.ext.resolve
 class PinPublicationPrepareUseCase(
     private val httpClient: HttpClient,
     private val db: UstadCacheDb,
+    private val cache: UstadCache,
 ) {
 
     /**
@@ -28,12 +33,16 @@ class PinPublicationPrepareUseCase(
     suspend operator fun invoke(
         downloadJobUid: Int
     ) {
-        val transferJob = db.downloadJobDao.findByUid(downloadJobUid)
+        val downloadJob = db.downloadJobDao.findByUid(downloadJobUid)
             ?: throw IllegalArgumentException("No transfer job with uid $downloadJobUid")
-        val manifestUrl = transferJob.djPubManifestUrl
+        val manifestUrl = downloadJob.djPubManifestUrl
             ?: throw IllegalArgumentException("no manifest url")
 
         val publication: OpdsPublication = httpClient.get(manifestUrl).body()
+
+        //Pending: use http HEAD request to get
+        //Could use https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/limited-parallelism.html#
+
         val downloadJobItems = publication.resources?.map { resource ->
             DownloadJobItem(
                 djiDjUid = downloadJobUid,
@@ -41,7 +50,26 @@ class PinPublicationPrepareUseCase(
                 djiTotalSize = (resource.size ?: 0).toLong()
             )
         } ?: emptyList()
-        //Create the locks
+
+        cache.addRetentionLocks(
+            downloadJobItems.map {
+                EntryLockRequest(
+                    url = it.djiUrl.toString(),
+                    publicationUid = downloadJob.djPubManifestHash,
+                )
+            }
+        )
+
+        db.withWriterTransaction {
+            db.downloadJobItemDao.insertList(downloadJobItems)
+            db.pinnedPublicationDao.insert(
+                PinnedPublication(
+                    ppUrlHash = downloadJob.djPubManifestHash,
+                    title = downloadJob.djName ?: ""
+                )
+            )
+        }
+
     }
 
 }
