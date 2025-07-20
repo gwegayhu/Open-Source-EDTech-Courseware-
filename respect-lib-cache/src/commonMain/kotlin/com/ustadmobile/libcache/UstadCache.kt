@@ -4,6 +4,8 @@ import com.ustadmobile.libcache.db.entities.CacheEntry
 import com.ustadmobile.libcache.db.entities.RetentionLock
 import com.ustadmobile.ihttp.request.IHttpRequest
 import com.ustadmobile.ihttp.response.IHttpResponse
+import io.ktor.http.Url
+import kotlinx.coroutines.flow.Flow
 
 data class EntryLockRequest(
     val url: String,
@@ -126,6 +128,44 @@ interface UstadCache {
      * to allow the OS to delete it if desired.
      */
     suspend fun removeRetentionLocks(locksToRemove: List<RemoveLockRequest>)
+
+    /**
+     * To pin a given publication
+     * a) Create a PinnedPublication Entity
+     * b) Create DownloadJobItem entities and RetentionLocks for each resource in the publication
+     * c) Run the DownloadJob
+     *
+     * Use case flow:
+     * a) EnqueuePinPublicationPrepareUseCase: create job using WorkManager/Quartz
+     * b) PinPublicationPrepareUseCase: get publication manifest, create DownloadJobItem entities and
+     *    add RetentionLocks
+     * c) EnqueueDownloadJobUseCase: create job using WorkManager/Quartz
+     * d) RunDownloadJobUseCase: download all required urls as per DownloadJobItem entities
+     *
+     */
+    suspend fun pinPublication(manifestUrl: Url)
+
+    /**
+     * Deleted the PinnedPublication entity and all associated locks
+     */
+    suspend fun unpinPublication(manifestUrl: Url)
+
+    /**
+     * The state of the publication is:
+     *
+     * Pinned/Ready: if there is a PinnedPublication entity, the pinned publication has locks, and
+     * there are no active transfer job for the publication.
+     *
+     * Pinned/In-progress: if there is a PinnedPublication and the most recent transfer job for the
+     * manifestUrl is pending
+     *
+     * Pinned/failed: if there is a PinnedPublication and the most recent transfer job for the the
+     * manifestUrl has a failed status
+     *
+     * Otherwise: not pinned
+     *
+     */
+    fun publicationPinState(manifestUrl: Url): Flow<Int>
 
     fun close()
 

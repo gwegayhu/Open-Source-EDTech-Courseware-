@@ -27,6 +27,7 @@ kotlin {
             implementation(projects.respectLibOpdsModel)
             implementation(projects.respectLibIhttpIostreams)
             implementation(projects.respectLibXxhash)
+            implementation(projects.respectLibUtil)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.atomicfu)
             implementation(libs.kotlinx.io.core)
@@ -61,6 +62,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.room.ktx)
             implementation(libs.androidx.lifecycle.common.java8)
+            implementation(libs.androidx.work.runtime)
         }
     }
 }

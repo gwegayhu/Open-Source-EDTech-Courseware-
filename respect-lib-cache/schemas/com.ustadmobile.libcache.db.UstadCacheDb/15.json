@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 15,
-    "identityHash": "91e0b1ee86ebf503079a196ed9753894",
+    "identityHash": "2413a8393dca89da9be3b807a2df9949",
     "entities": [
       {
         "tableName": "CacheEntry",
@@ -163,7 +163,7 @@
       },
       {
         "tableName": "RetentionLock",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lockId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lockKey` TEXT NOT NULL, `lockRemark` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lockId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lockKey` TEXT NOT NULL, `lockRemark` TEXT NOT NULL, `lockPublicationUid` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "lockId",
@@ -181,6 +181,12 @@
             "fieldPath": "lockRemark",
             "columnName": "lockRemark",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lockPublicationUid",
+            "columnName": "lockPublicationUid",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -316,11 +322,160 @@
             "cacheEntryKey"
           ]
         }
+      },
+      {
+        "tableName": "DownloadJob",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tjUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tjType` INTEGER NOT NULL, `tjStatus` INTEGER NOT NULL, `tjName` TEXT, `tjPubManifestUrl` TEXT, `tjTimeCreated` INTEGER NOT NULL DEFAULT 0, `tjCreationType` INTEGER NOT NULL DEFAULT 0)",
+        "fields": [
+          {
+            "fieldPath": "tjUid",
+            "columnName": "tjUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjType",
+            "columnName": "tjType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjStatus",
+            "columnName": "tjStatus",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjName",
+            "columnName": "tjName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "tjPubManifestUrl",
+            "columnName": "tjPubManifestUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "tjTimeCreated",
+            "columnName": "tjTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "tjCreationType",
+            "columnName": "tjCreationType",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "tjUid"
+          ]
+        }
+      },
+      {
+        "tableName": "DownloadJobItem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tjiUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tjiTjUid` INTEGER NOT NULL, `tjTotalSize` INTEGER NOT NULL, `tjTransferred` INTEGER NOT NULL, `tjAttemptCount` INTEGER NOT NULL, `tjiUrl` TEXT NOT NULL, `tjiDest` TEXT, `tjiType` INTEGER NOT NULL, `tjiStatus` INTEGER NOT NULL, `tjiEntityEtag` INTEGER NOT NULL DEFAULT 0, `tjiLockIdToRelease` INTEGER NOT NULL DEFAULT 0, `tjiPartialTmpFile` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "tjiUid",
+            "columnName": "tjiUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjiTjUid",
+            "columnName": "tjiTjUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjTotalSize",
+            "columnName": "tjTotalSize",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjTransferred",
+            "columnName": "tjTransferred",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjAttemptCount",
+            "columnName": "tjAttemptCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjiUrl",
+            "columnName": "tjiUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjiDest",
+            "columnName": "tjiDest",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "tjiType",
+            "columnName": "tjiType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjiStatus",
+            "columnName": "tjiStatus",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tjiEntityEtag",
+            "columnName": "tjiEntityEtag",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "tjiLockIdToRelease",
+            "columnName": "tjiLockIdToRelease",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "tjiPartialTmpFile",
+            "columnName": "tjiPartialTmpFile",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "tjiUid"
+          ]
+        },
+        "indices": [
+          {
+            "name": "transferjob_tjuid",
+            "unique": false,
+            "columnNames": [
+              "tjiTjUid"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `transferjob_tjuid` ON `${TABLE_NAME}` (`tjiTjUid`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '91e0b1ee86ebf503079a196ed9753894')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2413a8393dca89da9be3b807a2df9949')"
     ]
   }
 }

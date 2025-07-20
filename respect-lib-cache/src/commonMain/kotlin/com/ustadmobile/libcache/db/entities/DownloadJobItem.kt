@@ -4,11 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 
 
 /**
- * @param tjiSrc: the source of the TransferJobItem - the value of the string depends on the type
+ * @param tjiUrl: the source of the TransferJobItem - the value of the string depends on the type
  * @param tjiDest: the destination of the TransferJobItem - the value of the string depends on the type
  * @param tjiTableId if not zero, BlobUploadClientUseCase will insert an OutgoingReplication when the
  *        TransferJobItem is complete. This can be useful when handling the upload of blobs that
@@ -27,12 +28,11 @@ import kotlinx.serialization.Serializable
  */
 @Entity(
     indices = [
-        Index("tjiTableId", "tjiEntityUid", "tjiEntityEtag", name = "tji_table_entity_etag"),
         Index("tjiTjUid", name="transferjob_tjuid"),
     ]
 )
 @Serializable
-data class TransferJobItem(
+data class DownloadJobItem(
     @PrimaryKey(autoGenerate = true)
     val tjiUid: Int = 0,
 
@@ -44,17 +44,13 @@ data class TransferJobItem(
 
     val tjAttemptCount: Int = 0,
 
-    val tjiSrc: String,
+    val tjiUrl: Url,
 
     val tjiDest: String? = null,
 
     val tjiType: Int = 0,
 
     val tjiStatus: Int = 0,
-
-    val tjiTableId: Int = 0,
-
-    val tjiEntityUid: Long = 0,
 
     //This should be set when the transferjobitem is created - by query.
     @ColumnInfo(defaultValue = "0")

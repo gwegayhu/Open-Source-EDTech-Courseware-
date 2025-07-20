@@ -30,6 +30,7 @@ import com.ustadmobile.ihttp.response.IHttpResponse
 import com.ustadmobile.libcache.headers.integrity
 import com.ustadmobile.libcache.util.LruMap
 import com.ustadmobile.libcache.util.concurrentSafeMapOf
+import io.ktor.http.Url
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
 import kotlinx.atomicfu.update
@@ -38,6 +39,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -860,6 +863,19 @@ class UstadCacheImpl(
         pendingCacheEntryUpdates.update { prev ->
             prev +  entriesWithLostLock
         }
+    }
+
+    override suspend fun pinPublication(manifestUrl: Url) {
+        //Do nothing yet
+    }
+
+    override suspend fun unpinPublication(manifestUrl: Url) {
+        //Do nothing yet
+    }
+
+    override fun publicationPinState(manifestUrl: Url): Flow<Int> {
+        //nothing yet
+        return emptyFlow()
     }
 
     suspend fun commit() {
