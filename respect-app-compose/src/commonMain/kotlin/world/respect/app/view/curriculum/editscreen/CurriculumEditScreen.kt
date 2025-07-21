@@ -1,4 +1,4 @@
-package world.respect.app.view.curriculum.editScreen
+package world.respect.app.view.curriculum.editscreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -14,7 +14,8 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import world.respect.app.viewmodel.CurriculumEditViewModel
+import world.respect.shared.viewmodel.curriculum.edit.CurriculumEditViewModel
+import world.respect.shared.viewmodel.curriculum.edit.CurriculumEditUiState
 
 @Composable
 fun CurriculumEditScreenWrapper(
@@ -31,9 +32,10 @@ fun CurriculumEditScreenWrapper(
         onSaveClick = viewModel::onSaveClick
     )
 }
+
 @Composable
 fun CurriculumEditScreen(
-    uiState: CurriculumEditViewModel.CurriculumEditUiState = CurriculumEditViewModel.CurriculumEditUiState(),
+    uiState: CurriculumEditUiState = CurriculumEditUiState(),
     onNameChange: (String) -> Unit = {},
     onIdChange: (String) -> Unit = {},
     onDescriptionChange: (String) -> Unit = {},
@@ -94,61 +96,68 @@ fun CurriculumEditScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedTextField(
-                value = uiState.name,
-                onValueChange = onNameChange,
-                label = { Text(stringResource(Res.string.name)) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                singleLine = true,
-                isError = uiState.nameError != null,
-                enabled = !uiState.isLoading
-            )
-            uiState.nameError?.let { nameError ->
-                Text(
-                    text = stringResource(Res.string.name_required_error),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
+            Column {
+                OutlinedTextField(
+                    value = uiState.name,
+                    onValueChange = onNameChange,
+                    label = { Text(stringResource(Res.string.name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    isError = uiState.nameError != null,
+                    enabled = !uiState.isLoading
                 )
+                uiState.nameError?.let { errorResource ->
+                    Text(
+                        text = stringResource(errorResource),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
             }
-            OutlinedTextField(
-                value = uiState.id,
-                onValueChange = onIdChange,
-                label = { Text(stringResource(Res.string.id)) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                isError = uiState.idError != null,
-                enabled = !uiState.isLoading
-            )
-            uiState.idError?.let { idError ->
-                Text(
-                    text = stringResource(Res.string.id_required_error),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
+
+            Column {
+                OutlinedTextField(
+                    value = uiState.id,
+                    onValueChange = onIdChange,
+                    label = { Text(stringResource(Res.string.id)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    isError = uiState.idError != null,
+                    enabled = !uiState.isLoading && !uiState.isEditMode
                 )
+                uiState.idError?.let { errorResource ->
+                    Text(
+                        text = stringResource(errorResource),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
             }
-            OutlinedTextField(
-                value = uiState.description,
-                onValueChange = onDescriptionChange,
-                label = { Text(stringResource(Res.string.description)) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                isError = uiState.descriptionError != null,
-                enabled = !uiState.isLoading
-            )
-            uiState.descriptionError?.let { descriptionError ->
-                Text(
-                    text = stringResource(Res.string.description_required_error),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
+
+            Column {
+                OutlinedTextField(
+                    value = uiState.description,
+                    onValueChange = onDescriptionChange,
+                    label = { Text(stringResource(Res.string.description)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = uiState.descriptionError != null,
+                    enabled = !uiState.isLoading
                 )
+                uiState.descriptionError?.let { errorResource ->
+                    Text(
+                        text = stringResource(errorResource),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
             }
         }
+
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -157,7 +166,8 @@ fun CurriculumEditScreen(
                 CircularProgressIndicator()
             }
         }
-        uiState.error?.let { errorMessage ->
+
+        uiState.error?.let { errorResource ->
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer
@@ -165,7 +175,7 @@ fun CurriculumEditScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = errorMessage,
+                    text = stringResource(errorResource),
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.padding(16.dp)
                 )

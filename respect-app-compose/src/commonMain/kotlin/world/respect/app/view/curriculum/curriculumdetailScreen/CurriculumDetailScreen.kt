@@ -1,4 +1,4 @@
-package world.respect.app.view.curriculum.curriculumDetailScreen
+package world.respect.app.view.curriculum.curriculumdetailScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,9 +16,9 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import world.respect.app.viewmodel.CurriculumDetailViewModel
-import world.respect.app.viewmodel.CurriculumDetailUiState
-import world.respect.app.viewmodel.CurriculumStrand
+import world.respect.shared.domain.curriculum.models.CurriculumStrand
+import world.respect.shared.viewmodel.curriculum.detail.CurriculumDetailViewModel
+import world.respect.shared.viewmodel.curriculum.detail.CurriculumDetailUiState
 
 @Composable
 fun CurriculumDetailScreenWrapper(
@@ -140,7 +140,7 @@ fun CurriculumDetailScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = error,
+                    text = stringResource(error),
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.padding(16.dp)
                 )

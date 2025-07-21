@@ -59,12 +59,13 @@
     <string name="edit_strand">Edit Strand</string>
     <string name="learning_objectives">Learing Objectives</string>
     <string name="outcomes">Outcomes</string>
+    <string name="learning_objectives_prefix">Learning Objectives: </string>
+    <string name="expected_outcomes_prefix">Expected Outcomes: </string>
+    <string name="expected_outcomes">Expected Outcomes</string>
     <string name="open">Open</string>
     <string name="learning_objectives_required_error">Learning objectives are required</string>
     <string name="outcomes_required_error">Outcomes are required</string>
     <string name="unknown_error">Unknown error occurred</string>
-    <string name="save_failed">Failed to save</string>
-    <string name="load_failed">Failed to load</string>
     <string name="curriculum_not_found">Curriculum not found</string>
     <string name="strand_not_found">Strand not found</string>
     <string name="curriculum_saved_successfully">Curriculum saved successfully</string>
@@ -74,6 +75,11 @@
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="error_occured">An error occurred. Please try again.</string>
+    <string name="save_failed">Failed to save. Please try again.</string>
+    <string name="load_failed">Failed to load. Please try again.</string>
+    <string name="error_not_found">Item not found.</string>
+    <string name="field_required">This field is required</string>
 
 
 </resources>

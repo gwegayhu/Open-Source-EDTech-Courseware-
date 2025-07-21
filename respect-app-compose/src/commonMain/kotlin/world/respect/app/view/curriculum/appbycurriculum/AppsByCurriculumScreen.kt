@@ -1,4 +1,4 @@
-package world.respect.app.view.curriculum.AppByCurriculum
+package world.respect.app.view.curriculum.appbycurriculum
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,12 +17,10 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import org.jetbrains.compose.resources.StringResource
-import world.respect.app.viewmodel.CurriculumListViewModel
-import world.respect.app.viewmodel.TabConstants
-import world.respect.app.viewmodel.CurriculumListUiState
-import world.respect.app.domain.models.Curriculum
-
+import world.respect.shared.viewmodel.curriculum.list.CurriculumListViewModel
+import world.respect.shared.viewmodel.curriculum.list.CurriculumListUiState
+import world.respect.shared.viewmodel.curriculum.list.TabConstants
+import world.respect.shared.domain.curriculum.models.Curriculum
 
 
 @Composable
@@ -178,7 +176,7 @@ private fun AppsByCurriculumScreenContent(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = error,
+                    text = stringResource(error),
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.padding(16.dp)
                 )

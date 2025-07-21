@@ -1,23 +1,27 @@
-package world.respect.app.viewmodel
+
+package world.respect.shared.viewmodel.curriculum.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.CurriculumEdit
 import world.respect.shared.navigation.CurriculumDetail
 import world.respect.shared.viewmodel.app.appstate.AppUiState
-import world.respect.app.domain.models.Curriculum
-import world.respect.app.domain.usecase.curriculum.GetCurriculaUseCase
+import world.respect.shared.domain.curriculum.models.Curriculum
+import world.respect.shared.domain.curriculum.GetCurriculaUseCase
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.error_occured
 import world.respect.shared.navigation.RespectAppRoute
 
 data class CurriculumListUiState(
     val curricula: List<Curriculum> = emptyList(),
     val selectedTab: Int = TabConstants.BY_CURRICULUM,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: StringResource? = null
 )
 
 object TabConstants {
@@ -58,6 +62,7 @@ class CurriculumListViewModel(
     }
 
     fun onProfileClick() {
+        // TODO: Implement profile navigation
     }
 
     fun onBottomNavClick(destination: Any) {
@@ -88,6 +93,7 @@ class CurriculumListViewModel(
     fun onRefresh() {
         loadCurricula()
     }
+
     private fun loadCurricula() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -95,10 +101,9 @@ class CurriculumListViewModel(
             try {
                 getCurriculaUseCase()
                     .catch { exception ->
-                        val errorMessage = exception.message ?: UNKNOWN_ERROR_MESSAGE
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            error = errorMessage
+                            error = Res.string.error_occured
                         )
                     }
                     .collect { curricula ->
@@ -108,15 +113,11 @@ class CurriculumListViewModel(
                         )
                     }
             } catch (e: Exception) {
-                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = errorMessage
+                    error = Res.string.error_occured
                 )
             }
         }
-    }
-    companion object {
-        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }

@@ -1,4 +1,4 @@
-package world.respect.app.view.curriculum.editStrand
+package world.respect.app.view.curriculum.editstrand
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -14,7 +14,8 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import world.respect.app.viewmodel.StrandEditViewModel
+import world.respect.shared.viewmodel.strand.edit.StrandEditUiState
+import world.respect.shared.viewmodel.strand.edit.StrandEditViewModel
 
 @Composable
 fun EditStrandScreenWrapper(
@@ -31,9 +32,10 @@ fun EditStrandScreenWrapper(
         onSaveClick = viewModel::onSaveClick
     )
 }
+
 @Composable
 fun EditStrandScreen(
-    uiState: StrandEditViewModel.StrandEditUiState = StrandEditViewModel.StrandEditUiState(),
+    uiState: StrandEditUiState = StrandEditUiState(),
     onNameChange: (String) -> Unit = {},
     onLearningObjectivesChange: (String) -> Unit = {},
     onOutcomesChange: (String) -> Unit = {},
@@ -76,9 +78,10 @@ fun EditStrandScreen(
                 onClick = onSaveClick,
                 enabled = !uiState.isLoading,
                 colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface
                 ),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier.height(32.dp)
             ) {
                 Text(
@@ -88,65 +91,69 @@ fun EditStrandScreen(
                 )
             }
         }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedTextField(
-                value = uiState.name,
-                onValueChange = onNameChange,
-                label = { Text(stringResource(Res.string.name)) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                singleLine = true,
-                isError = uiState.nameError != null,
-                enabled = !uiState.isLoading
-            )
-
-            uiState.nameError?.let { nameErrorText ->
-                Text(
-                    text = nameErrorText,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
+            Column {
+                OutlinedTextField(
+                    value = uiState.strand?.name ?: "",
+                    onValueChange = onNameChange,
+                    label = { Text("Strand") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    isError = uiState.nameError != null,
+                    enabled = !uiState.isLoading
                 )
+                uiState.nameError?.let { errorRes ->
+                    Text(
+                        text = stringResource(errorRes),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
             }
-            OutlinedTextField(
-                value = uiState.learningObjectives,
-                onValueChange = onLearningObjectivesChange,
-                label = { Text(stringResource(Res.string.learning_objectives)) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                isError = uiState.learningObjectivesError != null,
-                enabled = !uiState.isLoading
-            )
-            uiState.learningObjectivesError?.let { learningObjectivesErrorText ->
-                Text(
-                    text = learningObjectivesErrorText,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
-            OutlinedTextField(
-                value = uiState.outcomes,
-                onValueChange = onOutcomesChange,
-                label = { Text(stringResource(Res.string.outcomes)) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                isError = uiState.outcomesError != null,
-                enabled = !uiState.isLoading
-            )
 
-            uiState.outcomesError?.let { outcomesErrorText ->
-                Text(
-                    text = outcomesErrorText,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
+            Column {
+                OutlinedTextField(
+                    value = uiState.learningObjectives,
+                    onValueChange = onLearningObjectivesChange,
+                    label = { Text("Learning Objectives") },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = uiState.learningObjectivesError != null,
+                    enabled = !uiState.isLoading
                 )
+                uiState.learningObjectivesError?.let { errorRes ->
+                    Text(
+                        text = stringResource(errorRes),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
+            }
+
+            Column {
+                OutlinedTextField(
+                    value = uiState.outcomes,
+                    onValueChange = onOutcomesChange,
+                    label = { Text("Outcomes") },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = uiState.outcomesError != null,
+                    enabled = !uiState.isLoading
+                )
+                uiState.outcomesError?.let { errorRes ->
+                    Text(
+                        text = stringResource(errorRes),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
             }
         }
 
@@ -159,7 +166,7 @@ fun EditStrandScreen(
             }
         }
 
-        uiState.error?.let { errorMessage ->
+        uiState.error?.let { errorRes ->
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer
@@ -167,7 +174,7 @@ fun EditStrandScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = errorMessage,
+                    text = stringResource(errorRes),
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.padding(16.dp)
                 )

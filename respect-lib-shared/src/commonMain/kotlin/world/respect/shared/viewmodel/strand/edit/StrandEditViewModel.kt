@@ -1,4 +1,4 @@
-package world.respect.app.viewmodel
+package world.respect.shared.viewmodel.strand.edit
 
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +12,36 @@ import kotlinx.coroutines.flow.asSharedFlow
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.navigation.CurriculumDetail
-import world.respect.app.domain.usecase.strand.SaveStrandUseCase
-import world.respect.app.domain.usecase.strand.GetStrandByIdUseCase
+import world.respect.shared.domain.strand.SaveStrandUseCase
+import world.respect.shared.domain.strand.GetStrandByIdUseCase
+import world.respect.shared.domain.curriculum.models.CurriculumStrand
+import world.respect.shared.domain.curriculum.models.SaveStrandParams
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.field_required
+import world.respect.shared.generated.resources.save_failed
+import world.respect.shared.generated.resources.error_occured
+import org.jetbrains.compose.resources.StringResource
+import world.respect.shared.generated.resources.load_failed
+import world.respect.shared.generated.resources.error_not_found
+
+data class StrandEditUiState(
+    val strand: CurriculumStrand? = null,
+    val learningObjectives: String = "",
+    val outcomes: String = "",
+    val isLoading: Boolean = false,
+    val isEditMode: Boolean = false,
+    val nameError: StringResource? = null,
+    val learningObjectivesError: StringResource? = null,
+    val outcomesError: StringResource? = null,
+    val error: StringResource? = null
+) {
+    val name: String get() = strand?.name ?: ""
+
+    val isValid: Boolean
+        get() = name.isNotBlank() && learningObjectives.isNotBlank() &&
+                outcomes.isNotBlank() && nameError == null &&
+                learningObjectivesError == null && outcomesError == null
+}
 
 class StrandEditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -23,32 +51,6 @@ class StrandEditViewModel(
 
     private var curriculumId: String = ""
     private var strandId: String? = null
-
-    data class StrandEditUiState(
-        val strand: Strand? = null,
-        val name: String = "",
-        val learningObjectives: String = "",
-        val outcomes: String = "",
-        val isLoading: Boolean = false,
-        val isEditMode: Boolean = false,
-        val nameError: String? = null,
-        val learningObjectivesError: String? = null,
-        val outcomesError: String? = null,
-        val error: String? = null
-    ) {
-        val isValid: Boolean
-            get() = name.isNotBlank() && learningObjectives.isNotBlank() &&
-                    outcomes.isNotBlank() && nameError == null &&
-                    learningObjectivesError == null && outcomesError == null
-    }
-
-    data class Strand(
-        val id: String,
-        val name: String,
-        val learningObjectives: String,
-        val outcomes: String,
-        val isActive: Boolean
-    )
 
     private val _uiState = MutableStateFlow(StrandEditUiState())
     val uiState: StateFlow<StrandEditUiState> = _uiState.asStateFlow()
@@ -70,21 +72,28 @@ class StrandEditViewModel(
         val strandIdValue = strandId
         if (strandIdValue != null) {
             loadStrand(strandIdValue)
+        } else {
+            _uiState.value = _uiState.value.copy(
+                strand = CurriculumStrand("", "", "", true)
+            )
         }
     }
 
     fun onNameChange(name: String) {
+        val currentStrand = _uiState.value.strand ?: CurriculumStrand("", "", "", true)
         _uiState.value = _uiState.value.copy(
-            name = name,
+            strand = currentStrand.copy(name = name),
             nameError = null
         )
     }
+
     fun onLearningObjectivesChange(learningObjectives: String) {
         _uiState.value = _uiState.value.copy(
             learningObjectives = learningObjectives,
             learningObjectivesError = null
         )
     }
+
     fun onOutcomesChange(outcomes: String) {
         _uiState.value = _uiState.value.copy(
             outcomes = outcomes,
@@ -117,21 +126,21 @@ class StrandEditViewModel(
 
         val nameError = if (currentState.name.isBlank()) {
             isValid = false
-            VALIDATION_NAME_REQUIRED
+            Res.string.field_required
         } else {
             null
         }
 
         val learningObjectivesError = if (currentState.learningObjectives.isBlank()) {
             isValid = false
-            VALIDATION_LEARNING_OBJECTIVES_REQUIRED
+            Res.string.field_required
         } else {
             null
         }
 
         val outcomesError = if (currentState.outcomes.isBlank()) {
             isValid = false
-            VALIDATION_OUTCOMES_REQUIRED
+            Res.string.field_required
         } else {
             null
         }
@@ -144,13 +153,14 @@ class StrandEditViewModel(
 
         return isValid
     }
+
     private fun saveStrand() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             try {
                 val currentState = _uiState.value
-                val params = SaveStrandUseCase.SaveStrandParams(
+                val params = SaveStrandParams(
                     curriculumId = curriculumId,
                     strandId = strandId,
                     name = currentState.name,
@@ -173,19 +183,17 @@ class StrandEditViewModel(
                         )
                     },
                     onFailure = { exception ->
-                        val errorMessage = exception.message ?: SAVE_FAILED_ERROR
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            error = errorMessage
+                            error = Res.string.save_failed
                         )
                     }
                 )
 
             } catch (e: Exception) {
-                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = errorMessage
+                    error = Res.string.error_occured
                 )
             }
         }
@@ -203,45 +211,25 @@ class StrandEditViewModel(
                     val learningObjectives = parts[0].removePrefix("Learning Objectives: ")
                     val outcomes = if (parts.size > 1) parts[1] else ""
 
-                    val strand = Strand(
-                        id = curriculumStrand.id,
-                        name = curriculumStrand.name,
+                    _uiState.value = _uiState.value.copy(
+                        strand = curriculumStrand,
                         learningObjectives = learningObjectives,
                         outcomes = outcomes,
-                        isActive = curriculumStrand.isActive
-                    )
-
-                    _uiState.value = _uiState.value.copy(
-                        strand = strand,
-                        name = strand.name,
-                        learningObjectives = strand.learningObjectives,
-                        outcomes = strand.outcomes,
                         isLoading = false
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        error = STRAND_NOT_FOUND_ERROR
+                        error = Res.string.error_not_found
                     )
                 }
 
             } catch (e: Exception) {
-                val errorMessage = e.message ?: LOAD_FAILED_ERROR
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = errorMessage
+                    error = Res.string.load_failed
                 )
             }
         }
-    }
-
-    companion object {
-        private const val VALIDATION_NAME_REQUIRED = "name_required"
-        private const val VALIDATION_LEARNING_OBJECTIVES_REQUIRED = "learning_objectives_required"
-        private const val VALIDATION_OUTCOMES_REQUIRED = "outcomes_required"
-        private const val SAVE_FAILED_ERROR = "Failed to save strand"
-        private const val LOAD_FAILED_ERROR = "Failed to load strand"
-        private const val STRAND_NOT_FOUND_ERROR = "Strand not found"
-        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }

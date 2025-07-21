@@ -38,18 +38,18 @@ import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.toRoute
-import world.respect.app.view.curriculum.curriculumDetailScreen.CurriculumDetailScreenWrapper
-import world.respect.app.view.curriculum.editScreen.CurriculumEditScreenWrapper
-import world.respect.app.view.curriculum.editStrand.EditStrandScreenWrapper
-import world.respect.app.viewmodel.CurriculumEditViewModel
-import world.respect.app.viewmodel.CurriculumListViewModel
-import world.respect.app.viewmodel.CurriculumDetailViewModel
-import world.respect.app.viewmodel.StrandEditViewModel
-import world.respect.app.view.curriculum.AppByCurriculum.AppsByCurriculumScreen
+import world.respect.app.view.curriculum.curriculumdetailScreen.CurriculumDetailScreenWrapper
+import world.respect.app.view.curriculum.editscreen.CurriculumEditScreenWrapper
+import world.respect.app.view.curriculum.editstrand.EditStrandScreenWrapper
+import world.respect.app.view.curriculum.appbycurriculum.AppsByCurriculumScreen
 import world.respect.shared.navigation.CurriculumList
 import world.respect.shared.navigation.CurriculumEdit
 import world.respect.shared.navigation.CurriculumDetail
 import world.respect.shared.navigation.EditStrand
+import world.respect.shared.viewmodel.curriculum.list.CurriculumListViewModel
+import world.respect.shared.viewmodel.curriculum.detail.CurriculumDetailViewModel
+import world.respect.shared.viewmodel.curriculum.edit.CurriculumEditViewModel
+import world.respect.shared.viewmodel.strand.edit.StrandEditViewModel
 
 
 @Composable

@@ -1,30 +1,28 @@
-
-package world.respect.app.viewmodel
+package world.respect.shared.viewmodel.curriculum.detail
 
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import world.respect.shared.viewmodel.RespectViewModel
 import androidx.lifecycle.viewModelScope
+import org.jetbrains.compose.resources.StringResource
 import world.respect.shared.navigation.EditStrand
 import world.respect.shared.navigation.CurriculumList
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.AppUiState
-import world.respect.app.domain.usecase.strand.GetStrandsByCurriculumIdUseCase
+import world.respect.shared.domain.strand.GetStrandsByCurriculumIdUseCase
+import world.respect.shared.domain.curriculum.models.CurriculumStrand
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.error_occured
 
 data class CurriculumDetailUiState(
     val curriculumId: String = "",
     val curriculumName: String = "",
     val strands: List<CurriculumStrand> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: StringResource? = null
 )
-data class CurriculumStrand(
-    val id: String,
-    val name: String,
-    val description: String = "",
-    val isActive: Boolean = true
-)
+
 class CurriculumDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val getStrandsByCurriculumIdUseCase: GetStrandsByCurriculumIdUseCase
@@ -55,6 +53,7 @@ class CurriculumDetailViewModel(
         )
         loadCurriculumDetails()
     }
+
     fun onBackClick() {
         viewModelScope.launch {
             _navCommandFlow.emit(NavCommand.Navigate(CurriculumList))
@@ -73,6 +72,7 @@ class CurriculumDetailViewModel(
             )
         }
     }
+
     fun onStrandClick(strand: CurriculumStrand) {
         viewModelScope.launch {
             _navCommandFlow.emit(
@@ -97,10 +97,9 @@ class CurriculumDetailViewModel(
             try {
                 getStrandsByCurriculumIdUseCase(curriculumId)
                     .catch { exception ->
-                        val errorMessage = exception.message ?: UNKNOWN_ERROR_MESSAGE
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            error = errorMessage
+                            error = Res.string.error_occured
                         )
                     }
                     .collect { strands ->
@@ -110,15 +109,11 @@ class CurriculumDetailViewModel(
                         )
                     }
             } catch (e: Exception) {
-                val errorMessage = e.message ?: UNKNOWN_ERROR_MESSAGE
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = errorMessage
+                    error = Res.string.error_occured
                 )
             }
         }
-    }
-    companion object {
-        private const val UNKNOWN_ERROR_MESSAGE = "Unknown error occurred"
     }
 }
