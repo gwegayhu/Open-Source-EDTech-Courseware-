@@ -67,7 +67,6 @@ fun ClazzListScreen(
     ) {
         var expanded by remember { mutableStateOf(false) }
 
-        uiState.clazzList.firstOrNull()?.let { filter ->
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
@@ -110,7 +109,6 @@ fun ClazzListScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-    }
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {

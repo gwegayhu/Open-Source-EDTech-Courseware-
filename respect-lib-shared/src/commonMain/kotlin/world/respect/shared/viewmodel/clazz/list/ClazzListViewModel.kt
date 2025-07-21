@@ -19,7 +19,7 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 
 data class ClazzListUiState(
-    val clazzList: List<FakeClazzList> = emptyList()
+    val clazzList: List<String> = emptyList(),
 )
 
 class ClazzListViewModel(
