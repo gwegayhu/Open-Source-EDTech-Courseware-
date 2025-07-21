@@ -54,12 +54,6 @@ class ClazzListViewModel(
                     )
                 )
             }
-            val fakeClazzList = world.respect.datalayer.clazz.model.ClazzDataSource().getClazzList()
-
-            _uiState.update {
-                it.copy(clazzList = fakeClazzList)
-            }
-
         }
     }
 

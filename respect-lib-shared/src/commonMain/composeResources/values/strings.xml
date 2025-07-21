@@ -38,5 +38,12 @@
     <string name="loading">Loading</string>
     <string name="close">Close</string>
     <string name="open">Open</string>
+    <string name="teachers">Teachers</string>
+    <string name="students">Students</string>
+    <string name="invite_teachers">Invite Teachers</string>">
+    <string name="invite_students">Invite Students</string>">
+    <string name="accept_invite">Accept Invite</string>">
+
+
 
 </resources>
