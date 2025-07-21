@@ -2,12 +2,11 @@ package world.respect.app.view.classes
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import world.respect.shared.viewmodel.clazz.ClazzViewModel
 
 @Composable
-fun ClassesScreen(
+fun ClazzListScreen(
     navController: NavHostController,
-    viewModel: ClazzViewModel
+    viewModel: ClazzListViewModel
 ) {
 
 }

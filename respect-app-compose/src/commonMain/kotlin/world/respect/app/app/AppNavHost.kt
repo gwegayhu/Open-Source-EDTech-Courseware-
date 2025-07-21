@@ -10,7 +10,7 @@ import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
 import world.respect.app.view.assignments.AssignmentScreen
-import world.respect.app.view.classes.ClassesScreen
+import world.respect.app.view.classes.ClazzListScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -21,7 +21,6 @@ import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.shared.viewmodel.apps.list.AppListViewModel
 import world.respect.shared.viewmodel.assignments.AssignmentViewModel
-import world.respect.shared.viewmodel.clazz.ClazzViewModel
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
@@ -87,11 +86,11 @@ fun AppNavHost(
         }
 
         composable<Clazz> {
-            val viewModel: ClazzViewModel = respectViewModel(
+            val viewModel: ClazzListViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            ClassesScreen(navController = navController, viewModel = viewModel)
+            ClazzListScreen(navController = navController, viewModel = viewModel)
         }
 
         composable<Report> {

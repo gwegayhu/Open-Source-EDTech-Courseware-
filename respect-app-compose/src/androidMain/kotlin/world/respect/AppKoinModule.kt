@@ -21,7 +21,6 @@ import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.shared.viewmodel.apps.list.AppListViewModel
 import world.respect.shared.viewmodel.assignments.AssignmentViewModel
-import world.respect.shared.viewmodel.clazz.ClazzViewModel
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
@@ -83,7 +82,7 @@ val appKoinModule = module {
     viewModelOf(::EnterLinkViewModel)
     viewModelOf(::AppListViewModel)
     viewModelOf(::AssignmentViewModel)
-    viewModelOf(::ClazzViewModel)
+    viewModelOf(::ClazzListViewModel)
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
