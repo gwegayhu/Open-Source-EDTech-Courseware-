@@ -31,10 +31,34 @@ object Clazz : RespectAppRoute
 object Report : RespectAppRoute
 
 @Serializable
-object ReportEdit : RespectAppRoute
+class ReportEdit private constructor(
+    private val reportUidStr: String
+) : RespectAppRoute {
+
+    @Transient
+    val reportUid = reportUidStr.toLong()
+
+    companion object {
+        fun create(reportUid: Long): ReportEdit {
+            return ReportEdit(reportUid.toString())
+        }
+    }
+}
 
 @Serializable
-object ReportDetail : RespectAppRoute
+class ReportDetail private constructor(
+    private val reportUidStr: String
+) : RespectAppRoute {
+
+    @Transient
+    val reportUid = reportUidStr.toLong()
+
+    companion object {
+        fun create(reportUid: Long): ReportDetail {
+            return ReportDetail(reportUid.toString())
+        }
+    }
+}
 
 @Serializable
 object RespectAppList : RespectAppRoute

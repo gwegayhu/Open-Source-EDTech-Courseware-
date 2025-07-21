@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.db.shared.entities.Report
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
@@ -23,8 +24,11 @@ import world.respect.shared.domain.report.model.ReportSeries
 import world.respect.shared.domain.report.model.ReportSeriesVisualType
 import world.respect.shared.domain.report.model.ReportSeriesYAxis
 import world.respect.shared.domain.report.model.ReportXAxis
+import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.report
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
@@ -44,12 +48,9 @@ data class ReportListUiState(
 
 class ReportListViewModel(
     savedStateHandle: SavedStateHandle,
+    private val runReportUseCase: RunReportUseCase,
+    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase
 ) : RespectViewModel(savedStateHandle) {
-
-    // TODO: Implement proper dependency injection for these use cases
-    // Currently unimplemented - will need to be initialized before use
-    private lateinit var runReportUseCase: RunReportUseCase
-    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase = CreateGraphFormatterUseCase()
 
     private val _uiState = MutableStateFlow(ReportListUiState())
     val uiState: Flow<ReportListUiState> = _uiState.asStateFlow()
@@ -57,79 +58,79 @@ class ReportListViewModel(
     private val pagingSourceFactory: () -> PagingSource<Int, Report> = { DummyReportPagingSource() }
 
     init {
-        _appUiState.update { prev ->
-            prev.copy(
-                navigationVisible = true,
-                title = "reports",
-                fabState = FabUiState(
-                    text = "reports",
-                    icon = FabUiState.FabIcon.ADD,
-                    onClick = this::onClickAdd,
-                )
-            )
-        }
-        _appUiState.update { prev ->
-            prev.copy(
-                fabState = prev.fabState.copy(
-                    visible = true
-                )
-            )
-        }
         viewModelScope.launch {
+            _appUiState.update { prev ->
+                prev.copy(
+                    navigationVisible = true,
+                    title = getString(resource = Res.string.report),
+                    fabState = FabUiState(
+                        text = getString(resource = Res.string.report),
+                        icon = FabUiState.FabIcon.ADD,
+                        onClick = { this@ReportListViewModel.onClickAdd() },
+                    )
+                )
+            }
+
+            _appUiState.update { prev ->
+                prev.copy(
+                    fabState = prev.fabState.copy(
+                        visible = true
+                    )
+                )
+            }
             _uiState.update { prev ->
                 prev.copy(
                     reportList = pagingSourceFactory,
                     activeUserPersonUid = activeUserPersonUid
                 )
             }
+
         }
     }
 
     @OptIn(ExperimentalTime::class)
-    fun runReport(report: Report): Flow<RunReportUseCase.RunReportResult> = flow {
+    fun runReport(report: Report): Flow<RunReportResultAndFormatters> = flow {
         try {
-            // TODO: Replace with actual report data fetching logic
-            // This is dummy implementation - generates random data for testing
-            val dummyResults = List(3) { dayIndex ->
-                List(3) { seriesIndex ->
+            val reportOptions = Json.decodeFromString<ReportOptions>(
+                ReportOptions.serializer(),
+                report.reportOptions ?: ""
+            )
+
+            // Generate realistic dummy data for the last 7 days
+            val daysOfWeek = listOf(
+                "15-06-2025",
+                "16-06-2025",
+                "17-06-2025",
+                "18-06-2025",
+                "19-06-2025",
+                "20-06-2025",
+                "21-06-2025"
+            )
+            val dummyResults = daysOfWeek.mapIndexed { dayIndex, dayName ->
+                reportOptions.series.map { series ->
                     StatementReportRow(
-                        xAxis = "Day ${dayIndex + 1}",
-                        subgroup = "Group ${seriesIndex + 1}",
-                        yAxis = (1..100).random().toDouble()
+                        xAxis = dayName,
+                        subgroup = series.reportSeriesTitle,
+                        yAxis = when (series.reportSeriesYAxis) {
+                            ReportSeriesYAxis.TOTAL_DURATION -> (4..12).random() * 3600.0 // 4-12 hours
+                            ReportSeriesYAxis.AVERAGE_DURATION -> (30..120).random() * 60.0 // 30-120 minutes
+                            ReportSeriesYAxis.NUMBER_SESSIONS -> (1..10).random()
+                                .toDouble() // 1-10 sessions
+                            else -> (1..100).random().toDouble()
+                        }
                     )
                 }
             }
-
-            // TODO: Replace with actual report options from database or user input
-            // This is dummy implementation - creates sample options for testing
-            val dummyReportOptions = ReportOptions(
-                title = "Sample Report",
-                xAxis = ReportXAxis.DAY,
-                period = ReportPeriodOption.LAST_WEEK.period,
-                series = List(3) { index ->
-                    ReportSeries(
-                        reportSeriesTitle = "Series ${index + 1}",
-                        reportSeriesUid = index + 1,
-                        reportSeriesYAxis = when (index % 3) {
-                            0 -> ReportSeriesYAxis.TOTAL_DURATION
-                            1 -> ReportSeriesYAxis.AVERAGE_DURATION
-                            else -> ReportSeriesYAxis.NUMBER_SESSIONS
-                        },
-                        reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
-                        reportSeriesSubGroup = ReportXAxis.DAY
-                    )
-                }
-            )
 
             val reportResult = RunReportUseCase.RunReportResult(
                 timestamp = Clock.System.now().toEpochMilliseconds(),
                 request = RunReportUseCase.RunReportRequest(
                     reportUid = report.reportUid,
-                    reportOptions = dummyReportOptions,
+                    reportOptions = reportOptions,
                     accountPersonUid = activeUserPersonUid,
                     timeZone = TimeZone.currentSystemDefault()
                 ),
-                results = dummyResults
+                results = dummyResults,
             )
 
             // Create formatters for the graph axes
@@ -149,18 +150,17 @@ class ReportListViewModel(
                 )
             )
 
-            // Update UI state with the formatters
-            _uiState.update { currentState ->
-                currentState.copy(
+            // Emit the combined result
+            emit(
+                RunReportResultAndFormatters(
+                    reportResult = reportResult,
                     xAxisFormatter = xAxisFormatter,
                     yAxisFormatter = yAxisFormatter
                 )
-            }
-
-            emit(reportResult)
+            )
 
         } catch (e: Exception) {
-            // TODO: Implement proper error handling and logging
+            // Handle errors and emit an empty result with error state
             val errorResult = RunReportUseCase.RunReportResult(
                 timestamp = Clock.System.now().toEpochMilliseconds(),
                 request = RunReportUseCase.RunReportRequest(
@@ -171,7 +171,14 @@ class ReportListViewModel(
                 ),
                 results = emptyList()
             )
-            emit(errorResult)
+
+            emit(
+                RunReportResultAndFormatters(
+                    reportResult = errorResult,
+                    xAxisFormatter = null,
+                    yAxisFormatter = null
+                )
+            )
             throw e
         } finally {
             _appUiState.update { it.copy(loadingState = NOT_LOADING) }
@@ -181,17 +188,16 @@ class ReportListViewModel(
     fun onClickAdd() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportEdit
+                ReportEdit.create(0L)
             )
         )
 
     }
 
     fun onClickEntry(entry: Report) {
-        // Implement entry click functionality
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportDetail
+                ReportDetail.create(entry.reportUid)
             )
         )
     }
@@ -204,8 +210,6 @@ class ReportListViewModel(
 
 class DummyReportPagingSource : PagingSource<Int, Report>() {
     override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Report> {
-        // TODO: Replace with actual database query for reports
-        // This is dummy implementation - creates sample reports for testing
         val dummyReports = List(3) { index ->
             Report(
                 reportUid = index.toLong(),
@@ -214,14 +218,21 @@ class DummyReportPagingSource : PagingSource<Int, Report>() {
                     ReportOptions.serializer(),
                     ReportOptions(
                         title = "Sample Report $index",
-                        series = listOf(
+                        xAxis = ReportXAxis.DAY,
+                        period = ReportPeriodOption.LAST_WEEK.period,
+                        series = List(3) { seriesIndex ->
                             ReportSeries(
-                                reportSeriesTitle = "Data Series",
-                                reportSeriesUid = 1,
-                                reportSeriesYAxis = ReportSeriesYAxis.TOTAL_DURATION,
-                                reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART
+                                reportSeriesTitle = "Series ${seriesIndex + 1}",
+                                reportSeriesUid = seriesIndex + 1,
+                                reportSeriesYAxis = when (seriesIndex % 3) {
+                                    0 -> ReportSeriesYAxis.TOTAL_DURATION
+                                    1 -> ReportSeriesYAxis.AVERAGE_DURATION
+                                    else -> ReportSeriesYAxis.NUMBER_SESSIONS
+                                },
+                                reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
+                                reportSeriesSubGroup = ReportXAxis.DAY
                             )
-                        )
+                        }
                     )
                 ),
                 reportIsTemplate = index % 3 == 0,

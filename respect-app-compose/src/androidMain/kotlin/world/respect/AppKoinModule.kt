@@ -32,6 +32,10 @@ import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
+import world.respect.shared.domain.report.query.RunReportUseCase
+import world.respect.shared.domain.report.query.RunReportUseCaseClientImpl
+import world.respect.shared.domain.report.query.RunReportUseCaseDatabaseImpl
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
@@ -114,5 +118,11 @@ val appKoinModule = module {
                 )
             )
         )
+    }
+    single<RunReportUseCase> {
+        RunReportUseCaseDatabaseImpl()
+    }
+    single<CreateGraphFormatterUseCase> {
+        CreateGraphFormatterUseCase()
     }
 }

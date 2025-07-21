@@ -2,12 +2,14 @@ package world.respect.shared.viewmodel.report.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
+import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.db.shared.entities.Report
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
@@ -18,11 +20,16 @@ import world.respect.shared.domain.report.model.ReportSeriesYAxis
 import world.respect.shared.domain.report.model.ReportXAxis
 import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.edit
+import world.respect.shared.generated.resources.invalid_report_config
+import world.respect.shared.generated.resources.invalid_report_format
+import world.respect.shared.generated.resources.unknown_error
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
-import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.INDETERMINATE
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
 
 data class ReportDetailUiState(
@@ -37,59 +44,37 @@ data class ReportDetailUiState(
 )
 
 class ReportDetailViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val runReportUseCase: RunReportUseCase,
+    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase
 ) : RespectViewModel(savedStateHandle) {
 
-    // TODO: Replace with actual report UID from navigation arguments
-    private val reportUid = 0
+    private val route: ReportDetail = savedStateHandle.toRoute()
 
-    // TODO: Initialize with proper dependency injection
-    private lateinit var runReportUseCase: RunReportUseCase
-
-    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase =
-        CreateGraphFormatterUseCase()
+    private val reportUid: Long = route.reportUid
 
     private val _uiState = MutableStateFlow(ReportDetailUiState())
     val uiState: Flow<ReportDetailUiState> = _uiState.asStateFlow()
 
     init {
-        // TODO: Consider moving FAB setup to a separate method
-        _appUiState.update { prev ->
-            prev.copy(
-                loadingState = INDETERMINATE,
-                fabState = FabUiState(
-                    visible = false,
-                    text = "Edit",
-                    icon = FabUiState.FabIcon.EDIT,
-                    onClick = {
-                        _navCommandFlow.tryEmit(
-                            NavCommand.Navigate(
-                                ReportEdit
-                            )
-                        )
-                    },
-                )
-            )
-        }
-
-        _appUiState.update { prev ->
-            prev.copy(
-                fabState = FabUiState(
-                    visible = true,
-                    text = "Edit",
-                    icon = FabUiState.FabIcon.EDIT,
-                    onClick = {
-                        _navCommandFlow.tryEmit(
-                            NavCommand.Navigate(
-                                ReportEdit
-                            )
-                        )
-                    }
-                )
-            )
-        }
-
         viewModelScope.launch {
+            _appUiState.update { prev ->
+                prev.copy(
+                    fabState = FabUiState(
+                        visible = true,
+                        text = getString(resource = Res.string.edit),
+                        icon = FabUiState.FabIcon.EDIT,
+                        onClick = {
+                            _navCommandFlow.tryEmit(
+                                NavCommand.Navigate(
+                                    ReportEdit.create(reportUid)
+                                )
+                            )
+                        },
+                    )
+                )
+            }
+
             try {
                 // TODO: Replace with actual report options from database
                 val mockOptions = ReportOptions(
@@ -103,7 +88,6 @@ class ReportDetailViewModel(
                             reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
                             reportSeriesSubGroup = ReportXAxis.GENDER
                         ),
-                        // TODO: Add more series as needed for testing
                         ReportSeries(
                             reportSeriesUid = 2,
                             reportSeriesTitle = "Average Duration",
@@ -193,11 +177,12 @@ class ReportDetailViewModel(
                 }
 
             } catch (e: Exception) {
-                // TODO: Add proper error handling and logging
                 val errorMsg = when (e) {
-                    is IllegalArgumentException -> "invalid_report_format"
-                    is IllegalStateException -> e.message ?: "invalid_report_config"
-                    else -> e.message ?: "unknown_error"
+                    is IllegalArgumentException -> getString(resource = Res.string.invalid_report_format)
+                    is IllegalStateException -> e.message
+                        ?: getString(resource = Res.string.invalid_report_config)
+
+                    else -> e.message ?: getString(resource = Res.string.unknown_error)
                 }
 
                 _uiState.update {

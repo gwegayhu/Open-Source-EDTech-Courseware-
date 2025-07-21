@@ -27,7 +27,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +38,13 @@ import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.view.report.graph.CombinedGraph
 import world.respect.datalayer.db.shared.entities.Report
-import world.respect.shared.domain.report.formatter.GraphFormatter
 import world.respect.shared.domain.report.model.ReportOptions
+import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.No_data_available
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.delete
+import world.respect.shared.generated.resources.untitled_report
 import world.respect.shared.viewmodel.report.list.ReportListUiState
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
 
@@ -109,9 +109,7 @@ fun ReportListScreen(
                     ReportGridCard(
                         report = report,
                         viewModel = viewModel,
-                        activeUserPersonUid = uiState.activeUserPersonUid,
-                        xAxisFormatter = uiState.xAxisFormatter,
-                        yAxisFormatter = uiState.yAxisFormatter
+                        activeUserPersonUid = uiState.activeUserPersonUid
                     )
                 }
             }
@@ -123,23 +121,25 @@ fun ReportListScreen(
 private fun ReportGridCard(
     report: Report,
     viewModel: ReportListViewModel,
-    activeUserPersonUid: Long,
-    xAxisFormatter: GraphFormatter<String>?,
-    yAxisFormatter: GraphFormatter<Double>?
+    activeUserPersonUid: Long
 ) {
     val reportDataFlow = remember(report.reportUid) {
         viewModel.runReport(report)
     }
-    val reportResult by reportDataFlow.collectAsState(
-        initial = RunReportUseCase.RunReportResult(
-            timestamp = 0,
-            request = RunReportUseCase.RunReportRequest(
-                reportUid = report.reportUid,
-                reportOptions = ReportOptions(),
-                accountPersonUid = activeUserPersonUid,
-                timeZone = TimeZone.currentSystemDefault()
+    val reportResultWithFormatters by reportDataFlow.collectAsState(
+        initial = RunReportResultAndFormatters(
+            reportResult = RunReportUseCase.RunReportResult(
+                timestamp = 0,
+                request = RunReportUseCase.RunReportRequest(
+                    reportUid = report.reportUid,
+                    reportOptions = ReportOptions(),
+                    accountPersonUid = activeUserPersonUid,
+                    timeZone = TimeZone.currentSystemDefault()
+                ),
+                results = emptyList()
             ),
-            results = emptyList()
+            xAxisFormatter = null,
+            yAxisFormatter = null
         )
     )
 
@@ -147,7 +147,8 @@ private fun ReportGridCard(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
-            .clickable { viewModel.onClickEntry(report) }
+            .clickable {
+                viewModel.onClickEntry(report) }
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.12f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -159,7 +160,7 @@ private fun ReportGridCard(
             ) {
                 // Title above the chart
                 Text(
-                    report.reportTitle ?: "Untitled Report",
+                    report.reportTitle ?:stringResource(Res.string.untitled_report),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -172,19 +173,20 @@ private fun ReportGridCard(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (reportResult.results.isEmpty() || reportResult.resultSeries.isEmpty()) {
+                    if (reportResultWithFormatters.reportResult.results.isEmpty() ||
+                        reportResultWithFormatters.reportResult.resultSeries.isEmpty()) {
                         Text(
                             stringResource(Res.string.No_data_available),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     } else {
                         CombinedGraph(
-                            reportResult = reportResult,
+                            reportResult = reportResultWithFormatters.reportResult,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(color = MaterialTheme.colorScheme.surface),
-                            xAxisFormatter = xAxisFormatter,
-                            yAxisFormatter = yAxisFormatter
+                            xAxisFormatter = reportResultWithFormatters.xAxisFormatter,
+                            yAxisFormatter = reportResultWithFormatters.yAxisFormatter
                         )
                     }
                 }

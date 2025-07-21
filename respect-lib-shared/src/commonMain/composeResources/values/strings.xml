@@ -46,6 +46,7 @@
     <string name="person_gender">Person gender</string>
     <string name="x_axis">X Axis</string>
     <string name="series_title">Series Title</string>
+    <string name="series">Series</string>
     <string name="title">Title</string>
     <string name="y_axis">Y Axis</string>
     <string name="subgroup_by">Subgroup by</string>
@@ -67,6 +68,9 @@
     <string name="to_">To</string>
     <string name="required">Required</string>
     <string name="at_least_one_series_required">At least one series required</string>
+    <string name="field_required_prompt">Field required prompt</string>
+    <string name="quantity_must_be_at_least_1">Quantity must be at least 1</string>
+    <string name="untitled_report">Untitled Report</string>
 
     <!-- Conditions -->
     <string name="equals">= Equals</string>
