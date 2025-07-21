@@ -30,6 +30,7 @@ kotlin {
             api(projects.respectDatalayerDb)
             api(projects.respectDatalayerHttp)
 
+            implementation(projects.respectLibCache)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.savedstate)
@@ -50,6 +51,7 @@ kotlin {
             api(libs.paging.multiplatform.compose)
             api(libs.paging.multiplatform.common)
 
+            implementation(libs.multiplatformsettings)
         }
 
         jvmMain.dependencies {
@@ -68,10 +70,8 @@ kotlin {
             implementation(libs.koin.test)
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }

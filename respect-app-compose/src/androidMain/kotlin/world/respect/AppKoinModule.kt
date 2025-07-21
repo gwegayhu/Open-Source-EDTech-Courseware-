@@ -2,8 +2,20 @@
 
 package world.respect
 
+import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.SharedPreferencesSettings
+import com.ustadmobile.core.domain.storage.GetOfflineStorageOptionsUseCase
+import com.ustadmobile.libcache.CachePathsProvider
+import com.ustadmobile.libcache.UstadCache
+import com.ustadmobile.libcache.UstadCacheBuilder
+import com.ustadmobile.libcache.db.ClearNeighborsCallback
+import com.ustadmobile.libcache.db.UstadCacheDb
+import com.ustadmobile.libcache.logging.NapierLoggingAdapter
+import com.ustadmobile.libcache.okhttp.UstadCacheInterceptor
+import com.ustadmobile.libcache.webview.OkHttpWebViewClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -32,6 +44,14 @@ import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
+import world.respect.shared.domain.storage.CachePathsProviderAndroid
+import world.respect.shared.domain.storage.GetAndroidSdCardDirUseCase
+import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroid
+import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
+import java.io.File
+import kotlinx.io.files.Path
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.domain.report.query.RunReportUseCaseClientImpl
@@ -43,6 +63,8 @@ import world.respect.shared.viewmodel.report.list.ReportListViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
+
+const val SHARED_PREF_SETTINGS_NAME = "respect_settings"
 
 val appKoinModule = module {
     single<Json> {
@@ -57,13 +79,24 @@ val appKoinModule = module {
     }
 
     single<OkHttpClient> {
+        val cachePathProvider: CachePathsProvider = get()
+
         OkHttpClient.Builder()
             .dispatcher(
                 Dispatcher().also {
                     it.maxRequests = 30
                     it.maxRequestsPerHost = 10
                 }
-            ).build()
+            )
+            .addInterceptor(
+                UstadCacheInterceptor(
+                    cache = get(),
+                    tmpDirProvider = { File(cachePathProvider().tmpWorkPath.toString()) },
+                    logger = NapierLoggingAdapter(),
+                    json = get(),
+                )
+            )
+            .build()
     }
 
     single<HttpClient> {
@@ -75,6 +108,12 @@ val appKoinModule = module {
                 preconfigured = get()
             }
         }
+    }
+
+    single<LaunchAppUseCase> {
+        LaunchAppUseCaseAndroid(
+            appContext = androidContext().applicationContext
+        )
     }
 
     viewModelOf(::AppsDetailViewModel)
@@ -90,14 +129,67 @@ val appKoinModule = module {
     viewModelOf(::ReportEditViewModel)
     viewModelOf(::ReportListViewModel)
 
+    single<GetOfflineStorageOptionsUseCase> {
+        GetOfflineStorageOptionsUseCaseAndroid(
+            getAndroidSdCardDirUseCase = get()
+        )
+    }
 
-    // Uncomment this to switch to using fake data source provider for development purposes
-//     single<RespectAppDataSourceProvider> {
-//         FakeRespectAppDataSourceProvider()
-//    }
-     //*/
+    single<GetAndroidSdCardDirUseCase> {
+        GetAndroidSdCardDirUseCase(
+            appContext = androidContext().applicationContext
+        )
+    }
 
-    //Uncomment to switch to using real datasource
+    single<GetOfflineStorageSettingUseCase> {
+        GetOfflineStorageSettingUseCase(
+            getOfflineStorageOptionsUseCase = get(),
+            settings = get(),
+        )
+    }
+
+    single<CachePathsProvider> {
+        CachePathsProviderAndroid(
+            appContext = androidContext().applicationContext,
+            getAndroidSdCardPathUseCase = get(),
+            getOfflineStorageSettingUseCase = get(),
+        )
+    }
+
+    single<Settings> {
+        SharedPreferencesSettings(
+            delegate = androidContext().getSharedPreferences(
+                SHARED_PREF_SETTINGS_NAME,
+                Context.MODE_PRIVATE
+            )
+        )
+    }
+
+    single<UstadCacheDb> {
+        Room.databaseBuilder(
+            androidContext().applicationContext,
+            UstadCacheDb::class.java,
+            UstadCacheBuilder.DEFAULT_DB_NAME
+        ).addCallback(ClearNeighborsCallback())
+            .build()
+    }
+
+    single<UstadCache> {
+        UstadCacheBuilder(
+            appContext = androidContext().applicationContext,
+            storagePath = Path(
+                File(androidContext().filesDir, "httpfiles").absolutePath
+            ),
+            sizeLimit = { 100_000_000L },
+            db = get(),
+        ).build()
+    }
+
+    single<OkHttpWebViewClient> {
+        OkHttpWebViewClient(
+            okHttpClient = get()
+        )
+    }
 
     single<RespectAppDataSourceProvider> {
         val appContext = androidContext().applicationContext

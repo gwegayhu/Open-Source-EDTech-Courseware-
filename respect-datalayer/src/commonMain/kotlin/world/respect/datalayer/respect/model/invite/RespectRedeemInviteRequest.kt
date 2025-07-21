@@ -9,9 +9,14 @@ class RespectRedeemInviteRequest(
     val inviteInfo: RespectInviteInfo,
     val student: PersonInfo,
     val parentOrGuardian: PersonInfo?,
-    val parentOrGuardianRole: String,
+    val parentOrGuardianRole: GuardianRole?,
     val account: Account,
 ) {
+
+    enum class GuardianRole {
+        FATHER, MOTHER, OTHER_GUARDIAN
+    }
+
     @Serializable
     class PersonInfo(
         val name: String,
@@ -24,4 +29,5 @@ class RespectRedeemInviteRequest(
         val username: String,
         val credential: String,//can be password or passkey
     )
+
 }

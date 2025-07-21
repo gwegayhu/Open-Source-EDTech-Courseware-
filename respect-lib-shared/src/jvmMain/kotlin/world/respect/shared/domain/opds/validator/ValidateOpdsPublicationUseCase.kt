@@ -6,6 +6,7 @@ import org.jsoup.Jsoup
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.datalayer.opds.model.toStringMap
+import world.respect.datalayer.respect.model.LEARNING_UNIT_MIME_TYPES
 import world.respect.domain.validator.HttpLinkHeader
 import world.respect.shared.domain.validator.ValidateHttpResponseForUrlUseCase
 import world.respect.domain.validator.ValidatorMessage
@@ -169,7 +170,7 @@ class ValidateOpdsPublicationUseCase(
                         level = ValidatorMessage.Level.ERROR,
                         sourceUri = url,
                         message = buildString {
-                            append("Could not load or parse learning resource ID: $learningResourceIdUrl")
+                            append("Could not load or parse learning resource ID: $learningResourceIdUrl: ${e.message}")
                             append(" URL MUST return an HTTP 200/OK response and MUST contain valid HTML or XHTML")
                         }
                     )
@@ -246,10 +247,6 @@ class ValidateOpdsPublicationUseCase(
     }
 
     companion object {
-        //Acceptable mime types for HTML as per
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types#texthtml
-        val LEARNING_UNIT_MIME_TYPES = listOf("text/html", "application/xml", "application/html+xml")
-
         val LEARNING_UNIT_RESERVED_PARAMS = listOf(
             "respectLaunchVersion", "auth", "given_name", "locale", "endpoint",
             "endpoint_oneroster", "actor", "registration", "activity_id"

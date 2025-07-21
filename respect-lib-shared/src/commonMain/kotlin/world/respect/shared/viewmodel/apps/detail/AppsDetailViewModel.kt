@@ -108,7 +108,8 @@ class AppsDetailViewModel(
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     LearningUnitList.create(
-                        opdsFeedUrl = route.manifestUrl.resolve(uri)
+                        opdsFeedUrl = route.manifestUrl.resolve(uri),
+                        appManifestUrl = route.manifestUrl,
                     )
                 )
             )
@@ -127,6 +128,7 @@ class AppsDetailViewModel(
             NavCommand.Navigate(
                 LearningUnitDetail.create(
                     learningUnitManifestUrl = route.manifestUrl.resolve(publicationHref),
+                    appManifestUrl = route.manifestUrl,
                     refererUrl = Url(refererUrl),
                     expectedIdentifier = publication.metadata.identifier.toString()
                 )
@@ -141,7 +143,8 @@ class AppsDetailViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LearningUnitList.create(
-                    opdsFeedUrl = route.manifestUrl.resolve(navigationHref)
+                    opdsFeedUrl = route.manifestUrl.resolve(navigationHref),
+                    appManifestUrl = route.manifestUrl,
                 )
             )
         )

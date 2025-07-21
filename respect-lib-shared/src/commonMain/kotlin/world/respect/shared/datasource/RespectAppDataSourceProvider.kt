@@ -1,7 +1,7 @@
 package world.respect.shared.datasource
 
 import world.respect.datalayer.RespectAppDataSource
-import world.respect.domain.account.RespectAccount
+import world.respect.shared.domain.account.RespectAccount
 
 
 /**

@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import io.ktor.http.Url
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import world.respect.domain.account.RespectAccount
+import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
@@ -31,7 +33,14 @@ abstract class RespectViewModel(
     val navCommandFlow: Flow<NavCommand> = _navCommandFlow.asSharedFlow()
 
     //Placeholder: will be provided via an AccountManager that will use multiplatform settings.
-    protected val activeAccount = RespectAccount("testacct")
+    protected val activeAccount = RespectAccount(
+        userSourcedId = "testacct",
+        serverUrls = RespectRealm(
+            xapi = Url("https://example.org/xapi"),
+            oneRoster = Url("https://example.org/oneroster"),
+            respectExt = Url("https://example.org/respect-ext"),
+        )
+    )
 
     /**
      * Shorthand to make it easier to update the loading state

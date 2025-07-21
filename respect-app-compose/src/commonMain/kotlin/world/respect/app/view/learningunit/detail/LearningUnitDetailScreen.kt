@@ -15,12 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,12 +39,11 @@ import world.respect.shared.generated.resources.score_or_progress
 import world.respect.shared.generated.resources.app_name
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.graphics.vector.ImageVector
 import world.respect.shared.generated.resources.assign
 import world.respect.shared.generated.resources.download
-import world.respect.shared.generated.resources.play
 import world.respect.shared.generated.resources.share
+import world.respect.shared.generated.resources.open
 import world.respect.shared.viewmodel.app.appstate.getTitle
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -60,13 +59,15 @@ fun LearningUnitDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LearningUnitDetailScreen(
-        uiState = uiState
+        uiState = uiState,
+        onClickOpen = viewModel::onClickOpen,
     )
 }
 
 @Composable
 fun LearningUnitDetailScreen(
     uiState: LearningUnitDetailUiState,
+    onClickOpen: () -> Unit,
 ) {
 
     LazyColumn(
@@ -90,12 +91,7 @@ fun LearningUnitDetailScreen(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(120.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outline,
-                                    CircleShape
-                                )
+
                         )
                     }
                 },
@@ -156,14 +152,13 @@ fun LearningUnitDetailScreen(
         }
 
         item {
-            OutlinedButton(
-                onClick = { /* Play */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(35.dp),
-                shape = RoundedCornerShape(6.dp)
+            Button(
+                onClick = {
+                    onClickOpen()
+                },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(Res.string.play))
+                Text(stringResource(Res.string.open))
             }
         }
 
