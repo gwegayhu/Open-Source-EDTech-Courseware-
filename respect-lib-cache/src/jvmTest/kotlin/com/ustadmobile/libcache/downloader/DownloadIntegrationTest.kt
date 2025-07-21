@@ -1,5 +1,6 @@
 package com.ustadmobile.libcache.downloader
 
+import com.ustadmobile.libcache.db.entities.TransferJobItemStatus
 import com.ustadmobile.libcache.okhttp.AbstractCacheInterceptorTest
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -8,6 +9,7 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.autohead.AutoHeadResponse
 import io.ktor.server.plugins.conditionalheaders.ConditionalHeaders
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
@@ -19,6 +21,7 @@ import world.respect.libutil.findFreePort
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class DownloadIntegrationTest : AbstractCacheInterceptorTest() {
 
@@ -34,6 +37,7 @@ class DownloadIntegrationTest : AbstractCacheInterceptorTest() {
 
         val server = embeddedServer(Netty, port = port) {
             install(ConditionalHeaders)
+            install(AutoHeadResponse)
 
             routing {
                 staticResources("/resources", "publication")
@@ -77,7 +81,6 @@ class DownloadIntegrationTest : AbstractCacheInterceptorTest() {
                     enqueueRunDownloadJobUseCase = mockEnqueueRunDownloadUseCase
                 )
 
-
                 val manifestUrl = baseUrl.resolve("lesson001/lesson001.json")
                 val publication: OpdsPublication = httpClient.get(manifestUrl).body()
 
@@ -97,6 +100,19 @@ class DownloadIntegrationTest : AbstractCacheInterceptorTest() {
                     val locks = ustadCache.getLocks(resourceUrl.toString())
                     assertEquals(1, locks.size)
                 }
+
+                val downloadJobFinished = cacheDb.downloadJobDao.findByUid(downloadJob.djUid)
+                val downloadJobItems = cacheDb.downloadJobItemDao.findAllByJobUid(downloadJob.djUid)
+                assertEquals(TransferJobItemStatus.STATUS_COMPLETE_INT,
+                    downloadJobFinished!!.djStatus,
+                    "Download job status should be complete")
+                assertTrue(
+                    downloadJobItems.all { item ->
+                        item.djiStatus == TransferJobItemStatus.STATUS_COMPLETE_INT &&
+                                item.djiTotalSize == item.djiTransferred
+                    },
+                    message = "All download job items status should be complete"
+                )
             }
         }
     }

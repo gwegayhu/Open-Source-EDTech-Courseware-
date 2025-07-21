@@ -38,7 +38,7 @@ abstract class AbstractEnqueuePinPublicationPrepareUseCase(
                 djiUrl = manifestUrl,
             )
 
-            db.downloadJobItemDao.insertList(listOf(manifestDownloadJobItem))
+            db.downloadJobItemDao.upsertList(listOf(manifestDownloadJobItem))
 
             downloadJob.copy(
                 djUid = jobUid

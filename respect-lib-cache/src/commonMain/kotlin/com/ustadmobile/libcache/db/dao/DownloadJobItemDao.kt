@@ -2,6 +2,7 @@ package com.ustadmobile.libcache.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ustadmobile.libcache.db.entities.DownloadJobItem
 import com.ustadmobile.libcache.db.entities.TransferJobItemStatus
@@ -9,8 +10,8 @@ import com.ustadmobile.libcache.db.entities.TransferJobItemStatus
 @Dao
 abstract class DownloadJobItemDao {
 
-    @Insert
-    abstract suspend fun insertList(items: List<DownloadJobItem>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun upsertList(items: List<DownloadJobItem>)
 
     @Query("""
         SELECT DownloadJobItem.*
@@ -19,6 +20,13 @@ abstract class DownloadJobItemDao {
            AND DownloadJobItem.djiStatus < ${TransferJobItemStatus.STATUS_COMPLETE_INT}
     """)
     abstract suspend fun findPendingByJobUid(jobUid: Int): List<DownloadJobItem>
+
+    @Query("""
+        SELECT DownloadJobItem.*
+          FROM DownloadJobItem
+         WHERE DownloadJobItem.djiDjUid = :jobUid
+    """)
+    abstract suspend fun findAllByJobUid(jobUid: Int): List<DownloadJobItem>
 
     @Query("""
        SELECT COUNT(*)

@@ -9,8 +9,19 @@ import com.ustadmobile.libcache.util.withWriterTransaction
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.head
+import io.ktor.client.request.header
+import io.ktor.http.contentLength
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.coroutineScope
 import world.respect.lib.opds.model.OpdsPublication
+import world.respect.lib.opds.model.findLearningUnitAcquisitionLinks
 import world.respect.libutil.ext.resolve
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Fetches the publication manifest (over http) and goes through all of the resource links.
@@ -22,6 +33,7 @@ import world.respect.libutil.ext.resolve
  *     to get the size and update the TransferJobItem accordingly.
  *  d) Enqueue RunDownloadJob to run the actual download.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class PinPublicationPrepareUseCase(
     private val httpClient: HttpClient,
     private val db: UstadCacheDb,
@@ -37,24 +49,64 @@ class PinPublicationPrepareUseCase(
     ) {
         val downloadJob = db.downloadJobDao.findByUid(downloadJobUid)
             ?: throw IllegalArgumentException("No transfer job with uid $downloadJobUid")
+        val manifestJobItem = db.downloadJobItemDao.findPendingByJobUid(downloadJobUid).first()
+
         val manifestUrl = downloadJob.djPubManifestUrl
             ?: throw IllegalArgumentException("no manifest url")
 
         val publication: OpdsPublication = httpClient.get(manifestUrl).body()
 
-        //Pending: use http HEAD request to get
-        //Could use https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/limited-parallelism.html#
+        val resourceAndAcquireJobItems = buildList {
+            val linksToDownload = (publication.resources ?: emptyList()) +
+                    publication.findLearningUnitAcquisitionLinks()
 
-        val downloadJobItems = publication.resources?.map { resource ->
-            DownloadJobItem(
-                djiDjUid = downloadJobUid,
-                djiUrl = manifestUrl.resolve(resource.href),
-                djiTotalSize = (resource.size ?: 0).toLong()
+            addAll(
+                linksToDownload.map { resource ->
+                    DownloadJobItem(
+                        djiDjUid = downloadJobUid,
+                        djiUrl = manifestUrl.resolve(resource.href),
+                        djiTotalSize = (resource.size ?: 0).toLong()
+                    )
+                }
             )
-        } ?: emptyList()
+
+            add(manifestJobItem)
+        }.distinctBy { item -> item.djiUrl }
+
+        val downloadJobItemWithSize: MutableList<DownloadJobItem> = CopyOnWriteArrayList()
+
+        coroutineScope {
+            val jobItemProducer = produce(
+                capacity = Channel.UNLIMITED
+            ) {
+                resourceAndAcquireJobItems.forEach { send(it) }
+                close()
+            }
+
+            val jobs = (1.. PARALLEL_SIZE_FETCH_LIMIT).map {
+                async {
+                    for (item in jobItemProducer) {
+                        val jobItemWithSize = if(item.djiTotalSize <= 0) {
+                            val contentLength = httpClient.head(item.djiUrl) {
+                                header("cache-control", "no-cache, no-store")
+                            }.contentLength()
+
+                            item.copy(
+                                djiTotalSize = contentLength ?: 0
+                            )
+                        }else {
+                            item
+                        }
+                        downloadJobItemWithSize.add(jobItemWithSize)
+                    }
+                }
+            }
+
+            jobs.awaitAll()
+        }
 
         cache.addRetentionLocks(
-            downloadJobItems.map {
+            downloadJobItemWithSize.map {
                 EntryLockRequest(
                     url = it.djiUrl.toString(),
                     publicationUid = downloadJob.djPubManifestHash,
@@ -63,7 +115,7 @@ class PinPublicationPrepareUseCase(
         )
 
         db.withWriterTransaction {
-            db.downloadJobItemDao.insertList(downloadJobItems)
+            db.downloadJobItemDao.upsertList(downloadJobItemWithSize)
             db.pinnedPublicationDao.insert(
                 PinnedPublication(
                     ppUrlHash = downloadJob.djPubManifestHash,
@@ -75,4 +127,10 @@ class PinPublicationPrepareUseCase(
         enqueueRunDownloadJobUseCase(downloadJobUid)
     }
 
+
+    companion object {
+
+        const val PARALLEL_SIZE_FETCH_LIMIT = 4
+
+    }
 }

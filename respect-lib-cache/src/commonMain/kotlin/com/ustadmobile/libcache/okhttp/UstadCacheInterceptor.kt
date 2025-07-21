@@ -350,6 +350,7 @@ class UstadCacheInterceptor(
                 }else {
                     logger?.d(LOG_TAG, "$logPrefix MISS(invalid) $url")
                     if(responseCacheabilityChecker.canStore(validationResponse)) {
+                        //TODO: If this is a HEAD request, handle it differently.
                         newCacheAndStoreResponse(validationResponse, call).also {
                             logger?.v(LOG_TAG, "$logPrefix $url MISS(invalid) can store/update ${it.logSummary()}")
                         }
