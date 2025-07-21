@@ -137,7 +137,7 @@ class ReportDetailViewModel(
                             StatementReportRow(023783.0, "2023-01-07", "2")
                         )
                     ),
-                    timestamp = System.currentTimeMillis(), // Using current time for demo
+                    timestamp = System.currentTimeMillis(),
                     request = request,
                     age = 0
                 )
