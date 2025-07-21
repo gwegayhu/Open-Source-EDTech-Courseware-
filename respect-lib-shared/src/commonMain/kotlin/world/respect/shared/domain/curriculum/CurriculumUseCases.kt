@@ -26,8 +26,7 @@ object CurriculumMockData {
     val curricula = MutableStateFlow<List<Curriculum>>(
         listOf(
             Curriculum("1", "Mathematics", "Basic mathematics curriculum", true),
-            Curriculum("2", "Science", "Basic science curriculum", true),
-            Curriculum("3", "English", "Basic english curriculum", true)
+            Curriculum("2", "English", "Basic english curriculum", true)
         )
     )
 }
@@ -47,8 +46,8 @@ class GetCurriculumByIdUseCaseMock : GetCurriculumByIdUseCase {
 class SaveCurriculumUseCaseMock : SaveCurriculumUseCase {
     override suspend operator fun invoke(curriculum: Curriculum): Result<Curriculum> {
         return try {
-            require(curriculum.name.isNotBlank()) { "Curriculum name cannot be blank" }
-            require(curriculum.id.isNotBlank()) { "Curriculum ID cannot be blank" }
+            require(curriculum.name.isNotBlank()) { "" }
+            require(curriculum.id.isNotBlank()) { "" }
 
             delay(500L)
 
@@ -72,7 +71,7 @@ class SaveCurriculumUseCaseMock : SaveCurriculumUseCase {
 class DeleteCurriculumUseCaseMock : DeleteCurriculumUseCase {
     override suspend operator fun invoke(curriculumId: String): Result<Unit> {
         return try {
-            require(curriculumId.isNotBlank()) { "Curriculum ID cannot be blank" }
+            require(curriculumId.isNotBlank()) { "" }
 
             delay(300L)
 

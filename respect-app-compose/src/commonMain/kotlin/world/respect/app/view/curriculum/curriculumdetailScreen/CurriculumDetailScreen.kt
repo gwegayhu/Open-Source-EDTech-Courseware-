@@ -2,6 +2,7 @@ package world.respect.app.view.curriculum.curriculumdetailScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -83,6 +84,7 @@ fun CurriculumDetailScreen(
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
+
                     ) {
                         CircularProgressIndicator()
                     }
@@ -150,7 +152,7 @@ fun CurriculumDetailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.End
         ) {
             OutlinedButton(
                 onClick = onAddStrandClick,

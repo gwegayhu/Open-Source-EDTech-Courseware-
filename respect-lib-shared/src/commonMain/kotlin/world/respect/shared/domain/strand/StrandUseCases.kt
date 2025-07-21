@@ -25,8 +25,6 @@ object StrandMockData {
     val strands = MutableStateFlow<List<StrandEntity>>(
         listOf(
             StrandEntity("s1", "1", "Algebra", "Learning Objectives: Basic algebra\n\nExpected Outcomes: Solve equations", true),
-            StrandEntity("s2", "1", "Geometry", "Learning Objectives: Basic geometry\n\nExpected Outcomes: Calculate areas", true),
-            StrandEntity("s3", "2", "Physics", "Learning Objectives: Basic physics\n\nExpected Outcomes: Understand motion", true)
         )
     )
 
@@ -70,10 +68,10 @@ class GetStrandByIdUseCaseMock : GetStrandByIdUseCase {
 class SaveStrandUseCaseMock : SaveStrandUseCase {
     override suspend operator fun invoke(params: SaveStrandParams): Result<CurriculumStrand> {
         return try {
-            require(params.curriculumId.isNotBlank()) { "Curriculum ID cannot be blank" }
-            require(params.name.isNotBlank()) { "Strand name cannot be blank" }
-            require(params.learningObjectives.isNotBlank()) { "Learning objectives cannot be blank" }
-            require(params.outcomes.isNotBlank()) { "Outcomes cannot be blank" }
+            require(params.curriculumId.isNotBlank()) { "" }
+            require(params.name.isNotBlank()) { "" }
+            require(params.learningObjectives.isNotBlank()) { "" }
+            require(params.outcomes.isNotBlank()) { "" }
 
             delay(500L)
 
