@@ -52,61 +52,71 @@ fun ClazzListScreen(
 
     ClazzListScreen(
         uiState = uiState,
-        onClickClazz = { viewModel.onClickClazz() }
+        onClickClazz = { viewModel.onClickClazz() },
+        onClickFilter = { viewModel.onClickFilter(it) },
     )
 }
 
 @Composable
 fun ClazzListScreen(
     uiState: ClazzListUiState,
-    onClickClazz: () -> Unit
+    onClickClazz: () -> Unit,
+    onClickFilter: (String) -> Unit,
 ) {
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        var expanded by remember { mutableStateOf(false) }
+        val filterList = uiState.clazzFilter
+        val selectedFilter = uiState.selectedFilterTitle ?: filterList.firstOrNull().orEmpty()
 
+        if (filterList.isNotEmpty()) {
+            var expanded by remember { mutableStateOf(false) }
 
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .border(1.dp, black, shape = RoundedCornerShape(6.dp))
-                    .clip(CircleShape)
-                    .clickable { expanded = true }
-                    .padding(horizontal = 4.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Box(
+                    modifier = Modifier
+                        .border(1.dp, black, shape = RoundedCornerShape(6.dp))
+                        .clip(CircleShape)
+                        .clickable { expanded = true }
+                        .padding(horizontal = 4.dp)
                 ) {
-                    Text(text = "Name")
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        modifier = Modifier.padding(6.dp),
-                        contentDescription = null
-                    )
-                }
-            }
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = "first",
-                            fontSize = 14.sp
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = selectedFilter)
+                        Icon(
+                            imageVector = Icons.Filled.ArrowDropDown,
+                            modifier = Modifier.padding(6.dp),
+                            contentDescription = null
                         )
-                    },
-                    onClick = {},
-                    enabled = false
-                )
-            }
+                    }
+                }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    filterList.forEach { filterItem ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = filterItem,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            onClick = {
+                                expanded = false
+                                onClickFilter(filterItem)
+                            }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
 
         LazyColumn(

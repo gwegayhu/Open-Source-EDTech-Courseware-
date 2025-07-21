@@ -90,7 +90,7 @@ fun ClazzDetailScreen(
         itemsIndexed(
             //dummy list
             listOf("Micky", "Mouse", "Bunny"),
-            key = { index, name -> index }
+            key = { index, name -> "teacher_$index" }
         ) { _, name ->
             ListItem(
                 modifier = Modifier
@@ -153,7 +153,7 @@ fun ClazzDetailScreen(
         itemsIndexed(
             //dummy list
             listOf("Micky", "Mouse"),
-            key = { index, name -> index }
+            key = { index, name -> "student_$index" }
         ) { _, name ->
             ListItem(
                 modifier = Modifier

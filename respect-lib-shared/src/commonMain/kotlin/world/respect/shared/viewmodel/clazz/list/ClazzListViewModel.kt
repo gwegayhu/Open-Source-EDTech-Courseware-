@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.clazz.model.FakeClazzList
 import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
@@ -20,7 +19,10 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 data class ClazzListUiState(
     val clazzList: List<String> = listOf("Class 1","Class 2","Class 3"),
-)
+    val clazzFilter: List<String> = listOf("First","Last"),
+    val selectedFilterTitle: String? = null,
+
+    )
 
 class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
@@ -57,6 +59,9 @@ class ClazzListViewModel(
         }
     }
 
+    fun onClickFilter(title: String) {
+        _uiState.update { it.copy(selectedFilterTitle = title) }
+    }
     fun onClickClazz() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
