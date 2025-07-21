@@ -43,7 +43,6 @@
     <string name="invite_teachers">Invite Teachers</string>">
     <string name="invite_students">Invite Students</string>">
     <string name="accept_invite">Accept Invite</string>">
-
-
-
+    <string name="phone_memory">Phone memory</string>
+    <string name="memory_card">Memory card</string>
 </resources>

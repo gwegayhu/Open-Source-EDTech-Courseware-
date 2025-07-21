@@ -6,10 +6,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import com.ustadmobile.libcache.webview.OkHttpWebViewClient
+import org.koin.android.ext.android.inject
 import world.respect.app.R
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 
@@ -31,21 +31,7 @@ class WebViewActivity : AppCompatActivity() {
 
     }
 
-    private val webViewClient = object: WebViewClient() {
-        override fun shouldOverrideUrlLoading(
-            view: WebView?,
-            url: String?
-        ): Boolean {
-            return false
-        }
-
-        override fun shouldOverrideUrlLoading(
-            view: WebView?,
-            request: WebResourceRequest?
-        ): Boolean {
-            return false
-        }
-    }
+    private val webViewClient: OkHttpWebViewClient by inject()
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
