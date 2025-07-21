@@ -42,3 +42,10 @@ include(":respect-lib-util")
 include(":respect-lib-xxhash")
 include(":respect-lib-primarykeygen")
 include(":respect-credentials")
+
+include(":respect-lib-ihttp-core")
+include(":respect-lib-ihttp-iostreams")
+include(":respect-lib-ihttp-okhttp")
+include(":respect-lib-ihttp-nanohttpd")
+include(":respect-lib-cache")
+

@@ -96,4 +96,6 @@
     <string name="gender">Gender</string>
 
 
+    <string name="phone_memory">Phone memory</string>
+    <string name="memory_card">Memory card</string>
 </resources>

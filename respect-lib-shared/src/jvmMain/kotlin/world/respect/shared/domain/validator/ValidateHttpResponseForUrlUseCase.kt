@@ -138,7 +138,15 @@ class ValidateHttpResponseForUrlUseCase(
                             ValidatorMessage(
                                 level = ValidatorMessage.Level.ERROR,
                                 sourceUri = referer,
-                                message = "$linkToStr: Did not return 304 not modified when provided with if-none-match/if-modified-since."
+                                message = buildString {
+                                    append("$linkToStr: Did not return 304 not modified when using validation headers: ")
+                                    etag?.also {
+                                        append("if-none-match=$etag ")
+                                    }
+                                    lastModified?.also {
+                                        append("If-Modified-Since=$lastModified")
+                                    }
+                                }
                             )
                         )
                     }

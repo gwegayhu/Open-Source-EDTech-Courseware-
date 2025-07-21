@@ -27,6 +27,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.respectDatalayer)
             api(projects.respectLibUtil)
+            implementation(projects.respectLibCache)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.savedstate)
@@ -62,10 +63,8 @@ kotlin {
             implementation(libs.koin.test)
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }
