@@ -28,6 +28,9 @@ object Assignment : RespectAppRoute
 object Clazz : RespectAppRoute
 
 @Serializable
+object ClazzDetail : RespectAppRoute
+
+@Serializable
 object Report : RespectAppRoute
 
 @Serializable
@@ -153,4 +156,8 @@ class LearningUnitViewer(
     }
 
 }
+
+
+
+
 

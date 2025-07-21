@@ -10,8 +10,9 @@ import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
 import world.respect.app.view.assignments.AssignmentScreen
-import world.respect.app.view.classes.ClazzListScreen
+import world.respect.app.view.classes.list.ClazzListScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
+import world.respect.app.view.classes.detail.ClazzDetailScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
@@ -30,11 +31,14 @@ import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.AppsDetail
 import world.respect.shared.navigation.Assignment
 import world.respect.shared.navigation.Clazz
+import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.EnterLink
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
+import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
+import world.respect.shared.viewmodel.clazz.list.detail.ClazzDetailViewModel
 
 
 @Composable
@@ -90,7 +94,19 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            ClazzListScreen(navController = navController, viewModel = viewModel)
+            ClazzListScreen(
+                viewModel = viewModel
+            )
+        }
+
+        composable<ClazzDetail> {
+            val viewModel: ClazzDetailViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            ClazzDetailScreen(
+                viewModel = viewModel
+            )
         }
 
         composable<Report> {
@@ -106,7 +122,9 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            AppListScreen(viewModel = viewModel)
+            AppListScreen(
+                viewModel = viewModel
+            )
         }
 
         composable<EnterLink> {
@@ -114,7 +132,9 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            EnterLinkScreen(viewModel = viewModel)
+            EnterLinkScreen(
+                viewModel = viewModel
+            )
         }
 
         composable<LearningUnitList> {
@@ -122,7 +142,9 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LearningUnitListScreen( viewModel = viewModel)
+            LearningUnitListScreen(
+                viewModel = viewModel
+            )
         }
 
         composable<LearningUnitDetail> {
@@ -130,7 +152,9 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            LearningUnitDetailScreen(viewModel = viewModel)
+            LearningUnitDetailScreen(
+                viewModel = viewModel
+            )
         }
     }
 

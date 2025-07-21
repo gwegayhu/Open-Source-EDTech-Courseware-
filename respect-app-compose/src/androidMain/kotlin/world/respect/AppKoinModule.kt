@@ -33,6 +33,8 @@ import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
+import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
+import world.respect.shared.viewmodel.clazz.list.detail.ClazzDetailViewModel
 
 
 @Suppress("unused")
@@ -83,6 +85,7 @@ val appKoinModule = module {
     viewModelOf(::AppListViewModel)
     viewModelOf(::AssignmentViewModel)
     viewModelOf(::ClazzListViewModel)
+    viewModelOf(::ClazzDetailViewModel)
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
