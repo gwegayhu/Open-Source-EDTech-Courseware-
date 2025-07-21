@@ -115,7 +115,7 @@ fun ClazzListScreen(
 
             itemsIndexed(
                 //dummy list
-                listOf("Class 1", "Class 2", "Class 3"),
+                uiState.clazzList,
                 key = { index, name -> index }
             ) { index, name ->
                 ListItem(

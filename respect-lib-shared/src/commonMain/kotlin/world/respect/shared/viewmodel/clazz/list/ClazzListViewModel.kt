@@ -19,7 +19,7 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 
 data class ClazzListUiState(
-    val clazzList: List<String> = emptyList(),
+    val clazzList: List<String> = listOf("Class 1","Class 2","Class 3"),
 )
 
 class ClazzListViewModel(
@@ -58,7 +58,11 @@ class ClazzListViewModel(
     }
 
     fun onClickClazz() {
-
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                ClazzDetail
+            )
+        )
     }
 
     companion object {
