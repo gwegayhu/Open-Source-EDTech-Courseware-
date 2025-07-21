@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3a1fa6465d90661a408ac8c659ac3aa4",
+    "identityHash": "8c8bde93fcb37baa5f8add1ddf6f72d7",
     "entities": [
       {
         "tableName": "CompatibleAppEntity",
@@ -591,11 +591,35 @@
             "ofmeUid"
           ]
         }
+      },
+      {
+        "tableName": "CompatibleAppAddJoin",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appCaeUid` INTEGER NOT NULL, `added` INTEGER NOT NULL, PRIMARY KEY(`appCaeUid`))",
+        "fields": [
+          {
+            "fieldPath": "appCaeUid",
+            "columnName": "appCaeUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "added",
+            "columnName": "added",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "appCaeUid"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3a1fa6465d90661a408ac8c659ac3aa4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c8bde93fcb37baa5f8add1ddf6f72d7')"
     ]
   }
 }
