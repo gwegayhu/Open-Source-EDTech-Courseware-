@@ -10,29 +10,29 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.oneroster.rostering.model.OneRosterGenderEnum
+import world.respect.datalayer.respect.model.invite.RespectRedeemInviteRequest
 import world.respect.shared.generated.resources.*
 import world.respect.shared.navigation.NavCommand
-import world.respect.shared.navigation.ProfileScreen
 import world.respect.shared.navigation.SignupScreen
-import world.respect.shared.navigation.WaitingForApproval
+import world.respect.shared.navigation.CreateAccount
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
-class ProfileViewModel(
+class SignupViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val route: ProfileScreen = savedStateHandle.toRoute()
+    private val route: SignupScreen = savedStateHandle.toRoute()
 
-    private val _uiState = MutableStateFlow(ProfileUiState())
+    private val _uiState = MutableStateFlow(SignupUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             _uiState.value = when (route.type) {
-                ProfileType.PARENT, ProfileType.Student -> ProfileUiState(
+                ProfileType.PARENT, ProfileType.STUDENT -> SignupUiState(
                     screenTitle = getString(Res.string.your_profile_title),
                     actionBarButtonName = getString(Res.string.next),
                     nameLabel = getString(Res.string.your_name_label),
@@ -41,7 +41,7 @@ class ProfileViewModel(
                     note = getString(Res.string.your_note)
                 )
 
-                ProfileType.CHILD -> ProfileUiState(
+                ProfileType.CHILD -> SignupUiState(
                     screenTitle = getString(Res.string.child_profile_title),
                     actionBarButtonName = getString(Res.string.done),
                     nameLabel = getString(Res.string.child_name_label),
@@ -66,33 +66,31 @@ class ProfileViewModel(
         }
 
     }
-
-
     fun onFullNameChanged(value: String) {
-        _uiState.update {
-            it.copy(
-                fullName = value,
+        _uiState.update { prev ->
+            val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
+            prev.copy(
+                personInfo = currentPerson.copy(name = value),
                 fullNameError = if (value.isNotBlank()) null else StringResourceUiText(Res.string.full_name_required)
             )
         }
     }
 
     fun onGenderChanged(value: OneRosterGenderEnum) {
-
         _uiState.update { prev ->
+            val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
             prev.copy(
-                gender = value,
-                genderError = if (value != OneRosterGenderEnum.UNSPECIFIED) null else StringResourceUiText(
-                    Res.string.gender_required
-                )
+                personInfo = currentPerson.copy(gender = value),
+                genderError = if (value != OneRosterGenderEnum.UNSPECIFIED) null else StringResourceUiText(Res.string.gender_required)
             )
         }
     }
 
     fun onDateOfBirthChanged(value: LocalDate?) {
         _uiState.update { prev ->
+            val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
             prev.copy(
-                dateOfBirth = value,
+                personInfo = currentPerson.copy(dateOfBirth = value),
                 dateOfBirthError = if (value != null) null else StringResourceUiText(Res.string.dob_required)
             )
         }
@@ -101,40 +99,41 @@ class ProfileViewModel(
     fun onClickSave() {
 
         viewModelScope.launch {
-            val current = _uiState.value
+            val personInfo = _uiState.value.personInfo
             _uiState.update { prev ->
                 prev.copy(
-                    fullNameError = if (current.fullName.isBlank()) StringResourceUiText(Res.string.full_name_required) else null,
-                    genderError = if (current.gender == OneRosterGenderEnum.UNSPECIFIED) StringResourceUiText(
+                    fullNameError = if (personInfo?.name.isNullOrEmpty()) StringResourceUiText(Res.string.full_name_required) else null,
+                    genderError = if (personInfo?.gender?.value.isNullOrEmpty()) StringResourceUiText(
                         Res.string.gender_required
                     ) else null,
-                    dateOfBirthError = if (current.dateOfBirth == null) StringResourceUiText(Res.string.dob_required) else null
+                    dateOfBirthError = if (personInfo?.dateOfBirth == null) StringResourceUiText(Res.string.dob_required) else null
                 )
             }
 
             val hasError = listOf(
-                current.fullName.isBlank(),
-                current.gender == OneRosterGenderEnum.UNSPECIFIED,
-                current.dateOfBirth == null
-            ).any { it }
+                personInfo?.name?.isBlank(),
+                personInfo?.gender == OneRosterGenderEnum.UNSPECIFIED,
+                personInfo?.dateOfBirth == null
+            ).any { it == true }
 
             if (hasError) {
                 return@launch
             } else {
                 when (route.type) {
-                    ProfileType.PARENT, ProfileType.Student -> {
+                    ProfileType.PARENT, ProfileType.STUDENT -> {
                         viewModelScope.launch {
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(SignupScreen.create(route.type))
+                                NavCommand.Navigate(CreateAccount.create(route.type,route.inviteInfo))
                             )
                         }
                     }
                     ProfileType.CHILD ->{
-                        viewModelScope.launch {
-                            _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(WaitingForApproval)
-                            )
-                        }
+                        // not cleared where to navigate
+//                        viewModelScope.launch {
+//                            _navCommandFlow.tryEmit(
+//                                NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,))
+//                            )
+//                        }
                     }
                 }
             }
@@ -142,7 +141,7 @@ class ProfileViewModel(
     }
 }
 
-data class ProfileUiState(
+data class SignupUiState(
     val screenTitle: String = "",
     val actionBarButtonName: String = "",
     val nameLabel: String = "",
@@ -150,9 +149,8 @@ data class ProfileUiState(
     val dateOfBirthLabel: String = "",
     val note: String = "",
 
-    val fullName: String = "",
-    val gender: OneRosterGenderEnum = OneRosterGenderEnum.UNSPECIFIED,
-    val dateOfBirth: LocalDate? = null,
+    val personInfo: RespectRedeemInviteRequest.PersonInfo? = null,
+
 
     val fullNameError: UiText? = null,
     val genderError: UiText? = null,

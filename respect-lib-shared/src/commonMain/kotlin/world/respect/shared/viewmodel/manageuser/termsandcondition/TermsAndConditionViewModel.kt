@@ -11,7 +11,7 @@ import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.terms_and_conditions
 import world.respect.shared.navigation.NavCommand
-import world.respect.shared.navigation.ProfileScreen
+import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.viewmodel.RespectViewModel
 
@@ -49,7 +49,7 @@ class TermsAndConditionViewModel(
     fun onAcceptClicked() {
         viewModelScope.launch {
             _navCommandFlow.tryEmit(
-                NavCommand.Navigate(ProfileScreen.create(route.type))
+                NavCommand.Navigate(SignupScreen.create(route.type,route.inviteInfo))
             )
         }
     }

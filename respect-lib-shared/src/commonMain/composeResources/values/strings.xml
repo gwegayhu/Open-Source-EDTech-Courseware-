@@ -77,7 +77,7 @@
     <string name="dob_required">Date of birth is required</string>
 
 
-    <string name="create_account">Create an account</string>
+    <string name="create_account">Create account</string>
     <string name="username_label">Username</string>
     <string name="username_required">Username is required</string>
     <string name="signup_with_passkey">Sign-up with passkey</string>
@@ -88,7 +88,7 @@
 
     <string name="waiting_title">Waiting for approval</string>
     <string name="please_wait">Please wait</string>
-    <string name="waiting_for_approval_to_join">Waiting for approval to join</string>
+    <string name="waiting_for_approval_to_join">Waiting for approval to join %1$s</string>
     <string name="refresh">Refresh</string>
     <string name="male">Male</string>
     <string name="female">Female</string>

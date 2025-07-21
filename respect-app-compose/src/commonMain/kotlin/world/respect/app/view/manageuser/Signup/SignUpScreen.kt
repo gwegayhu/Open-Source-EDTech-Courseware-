@@ -1,4 +1,4 @@
-package world.respect.app.view.manageuser.profile
+package world.respect.app.view.manageuser.Signup
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,15 +15,15 @@ import world.respect.app.components.RespectExposedDropDownMenuField
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.uiTextStringResource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterGenderEnum
-import world.respect.shared.viewmodel.manageuser.profile.ProfileUiState
-import world.respect.shared.viewmodel.manageuser.profile.ProfileViewModel
+import world.respect.shared.viewmodel.manageuser.profile.SignupUiState
+import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel
+fun SignupScreen(
+    viewModel: SignupViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ProfileScreen(
+    SignupScreen(
         uiState = uiState,
         onFullNameChanged = viewModel::onFullNameChanged,
         onGenderChanged = viewModel::onGenderChanged,
@@ -32,8 +32,8 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileScreen(
-    uiState: ProfileUiState,
+fun SignupScreen(
+    uiState: SignupUiState,
     onFullNameChanged: (String) -> Unit,
     onGenderChanged: (OneRosterGenderEnum) -> Unit,
     onDateOfBirthChanged: (LocalDate?) -> Unit,
@@ -47,7 +47,7 @@ fun ProfileScreen(
 
         item {
             OutlinedTextField(
-                value = uiState.fullName,
+                value = uiState.personInfo?.name?:"",
                 onValueChange = onFullNameChanged,
                 label = { Text(uiState.nameLabel) },
                 isError = uiState.fullNameError != null,
@@ -62,7 +62,7 @@ fun ProfileScreen(
 
         item {
             RespectExposedDropDownMenuField(
-                value = uiState.gender,
+                value = uiState.personInfo?.gender,
                 label = uiState.genderLabel,
                 options = OneRosterGenderEnum.entries.filterNot { it==OneRosterGenderEnum.UNSPECIFIED },
                 onOptionSelected = { onGenderChanged(it) },
@@ -81,7 +81,7 @@ fun ProfileScreen(
         item {
 
             DateOfBirthSelector(
-                date = uiState.dateOfBirth,
+                date = uiState.personInfo?.dateOfBirth,
                 onDateChanged = {onDateOfBirthChanged(it) },
                 label = uiState.dateOfBirthLabel,
                 error = uiState.dateOfBirthError

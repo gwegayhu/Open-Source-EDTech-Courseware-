@@ -6,6 +6,8 @@ package world.respect.shared.navigation
 import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.Json
+import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
 /**
@@ -46,9 +48,6 @@ object RespectAppList : RespectAppRoute
 
 @Serializable
 object EnterLink : RespectAppRoute
-
-@Serializable
-object WaitingForApproval : RespectAppRoute
 
 /**
  * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app
@@ -116,42 +115,88 @@ class ConfirmationScreen(
 }
 
 @Serializable
-class ProfileScreen(
-    private val profileType: ProfileType
-) : RespectAppRoute {
+class WaitingForApproval(
+    private val profileType: ProfileType,
+    private val inviteInfoJson: String,
+    private val pendingInviteStateUid: String,
+
+    ) : RespectAppRoute {
 
     @Transient
     val type = profileType
+    @Transient
+    val uid = pendingInviteStateUid
+    @Transient
+    val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
 
     companion object {
-        fun create(profileType: ProfileType) = ProfileScreen(profileType)
+        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo,pendingInviteStateUid:String): WaitingForApproval {
+            val inviteJson = Json.encodeToString(inviteInfo)
+            return WaitingForApproval(profileType, inviteJson,pendingInviteStateUid)
+        }
+    }
+}
+
+@Serializable
+class SignupScreen(
+    private val profileType: ProfileType,
+    private val inviteInfoJson: String,
+
+    ) : RespectAppRoute {
+
+    @Transient
+    val type = profileType
+    @Transient
+    val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
+
+    companion object {
+        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo): SignupScreen {
+            val inviteJson = Json.encodeToString(inviteInfo)
+            return SignupScreen(profileType, inviteJson)
+        }
     }
 }
 
 @Serializable
 class TermsAndCondition(
-    private val profileType: ProfileType
+    private val profileType: ProfileType,
+    private val inviteInfoJson: String,
 ) : RespectAppRoute {
 
     @Transient
     val type = profileType
 
+    @Transient
+    val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
+
     companion object {
-        fun create(profileType: ProfileType) = TermsAndCondition(profileType)
+        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo): TermsAndCondition {
+            val inviteJson = Json.encodeToString(inviteInfo)
+            return TermsAndCondition(profileType, inviteJson)
+        }
     }
 }
+
 @Serializable
-class SignupScreen(
-    private val profileType: ProfileType
+class CreateAccount(
+    private val profileType: ProfileType,
+    private val inviteInfoJson: String,
 ) : RespectAppRoute {
 
     @Transient
     val type = profileType
 
+    @Transient
+    val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
+
     companion object {
-        fun create(profileType: ProfileType) = SignupScreen(profileType)
+        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo): CreateAccount {
+            val inviteJson = Json.encodeToString(inviteInfo)
+            return CreateAccount(profileType, inviteJson)
+        }
     }
 }
+
 /**
  * @property learningUnitManifestUrl the URL of the OPDS Publication (Readium Manifest) for the
  *           learning unit as per RESPECT integration guide:

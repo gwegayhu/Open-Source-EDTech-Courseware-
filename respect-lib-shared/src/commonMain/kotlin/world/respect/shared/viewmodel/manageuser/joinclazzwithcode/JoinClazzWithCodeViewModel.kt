@@ -61,13 +61,16 @@ class JoinClazzWithCodeViewModel(
                 }
                 return@launch
             }
-            val inviteInfo = getInviteInfoUseCase.invoke(uiState.value.inviteCode)
+            try {
+                val inviteInfo = getInviteInfoUseCase(uiState.value.inviteCode)
                 _navCommandFlow.tryEmit(
                     NavCommand.Navigate(
                         ConfirmationScreen.create(inviteInfo.code)
                     )
                 )
-
+            }catch (e:Exception){
+                println(e)
+            }
         }
     }
 

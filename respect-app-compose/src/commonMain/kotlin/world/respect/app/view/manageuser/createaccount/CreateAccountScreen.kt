@@ -1,4 +1,4 @@
-package world.respect.app.view.manageuser.signup
+package world.respect.app.view.manageuser.createaccount
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,18 +8,19 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.defaultScreenPadding
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.username_label
 import world.respect.shared.generated.resources.signup_with_passkey
 import world.respect.shared.generated.resources.other_options
-import world.respect.shared.viewmodel.manageuser.signup.SignupUiState
-import world.respect.shared.viewmodel.manageuser.signup.SignupViewModel
+import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModelUiState
+import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 
 @Composable
-fun SignupScreen(viewModel: SignupViewModel) {
+fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    SignupScreen(
+    CreateAccountScreen(
         uiState = uiState,
         onUsernameChanged = viewModel::onUsernameChanged,
         onClickSignupWithPasskey = viewModel::onClickSignupWithPasskey,
@@ -28,8 +29,8 @@ fun SignupScreen(viewModel: SignupViewModel) {
 }
 
 @Composable
-fun SignupScreen(
-    uiState: SignupUiState,
+fun CreateAccountScreen(
+    uiState: CreateAccountViewModelUiState,
     onUsernameChanged: (String) -> Unit,
     onClickSignupWithPasskey: () -> Unit,
     onClickOtherOptions: () -> Unit
@@ -46,7 +47,7 @@ fun SignupScreen(
             placeholder = { Text(stringResource(Res.string.username_label)) },
             singleLine = true,
             isError = uiState.usernameError != null,
-            supportingText = uiState.usernameError?.let { { Text(it) } },
+            supportingText = uiState.usernameError?.let {  { Text(uiTextStringResource(it)) }},
             modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )
 
@@ -70,10 +71,7 @@ fun SignupScreen(
 
         uiState.generalError?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-            )
+            Text(uiTextStringResource(it))
         }
     }
 }

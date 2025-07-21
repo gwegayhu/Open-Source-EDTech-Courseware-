@@ -10,15 +10,15 @@ import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import world.respect.shared.navigation.NavCommand
-import world.respect.shared.navigation.ProfileScreen
 import world.respect.shared.navigation.RespectAppLauncher
+import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class LoginUiState(
     val userId: String = "",
     val password: String = "",
-    val userIdError: String? = null,
-    val passwordError: String? = null,
+    val userIdError: StringResourceUiText? = null,
+    val passwordError: StringResourceUiText? = null,
 )
 
 class LoginViewModel(
@@ -65,8 +65,8 @@ class LoginViewModel(
 
             _uiState.update {
                 it.copy(
-                    userIdError = if (userID.isEmpty()) getString(Res.string.userid_required) else null,
-                    passwordError = if (password.isEmpty()) getString(Res.string.password_required) else null
+                    userIdError = if (userID.isEmpty()) StringResourceUiText(Res.string.userid_required) else null,
+                    passwordError = if (password.isEmpty()) StringResourceUiText(Res.string.password_required) else null
                 )
             }
 

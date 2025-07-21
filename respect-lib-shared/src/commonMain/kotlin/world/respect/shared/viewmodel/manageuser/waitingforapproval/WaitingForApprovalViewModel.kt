@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.manageuser.waitingforapproval
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.waiting_title
+import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.viewmodel.RespectViewModel
 
 
@@ -24,6 +26,7 @@ class WaitingForApprovalViewModel(
 
     private val _uiState = MutableStateFlow(WaitingForApprovalUiState())
     val uiState = _uiState.asStateFlow()
+    private val route: WaitingForApproval = savedStateHandle.toRoute()
 
     init {
         viewModelScope.launch {
@@ -35,8 +38,7 @@ class WaitingForApprovalViewModel(
                 )
             }
 
-            val className = savedStateHandle["className"] ?: "Class"
-            _uiState.update { it.copy(className = className) }
+            _uiState.update { it.copy(className = route.inviteInfo.className?:"") }
         }
     }
 

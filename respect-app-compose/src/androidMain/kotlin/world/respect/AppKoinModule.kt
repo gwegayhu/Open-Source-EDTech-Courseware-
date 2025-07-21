@@ -31,12 +31,12 @@ import world.respect.datalayer.http.RespectAppDataSourceHttp
 import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
-import world.respect.shared.viewmodel.manageuser.profile.ProfileViewModel
+import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
 import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
-import world.respect.shared.viewmodel.manageuser.signup.SignupViewModel
+import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
@@ -103,10 +103,10 @@ val appKoinModule = module {
     viewModelOf(::JoinClazzWithCodeViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::ConfirmationViewModel)
-    viewModelOf(::ProfileViewModel)
+    viewModelOf(::SignupViewModel)
     viewModelOf(::TermsAndConditionViewModel)
     viewModelOf(::WaitingForApprovalViewModel)
-    viewModelOf(::SignupViewModel)
+    viewModelOf(::CreateAccountViewModel)
 
     // Uncomment this to switch to using fake data source provider for development purposes
 //     single<RespectAppDataSourceProvider> {

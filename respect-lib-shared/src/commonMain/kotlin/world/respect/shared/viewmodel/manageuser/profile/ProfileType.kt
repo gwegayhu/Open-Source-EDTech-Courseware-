@@ -9,5 +9,5 @@ import kotlinx.serialization.Serializable
 enum class ProfileType {
     PARENT,
     CHILD,
-    Student
+    STUDENT
 }

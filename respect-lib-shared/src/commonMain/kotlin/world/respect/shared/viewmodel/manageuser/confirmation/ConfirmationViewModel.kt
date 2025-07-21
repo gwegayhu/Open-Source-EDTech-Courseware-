@@ -12,15 +12,18 @@ import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.invalid_invite_code
 import world.respect.shared.generated.resources.invitation
 import world.respect.shared.navigation.ConfirmationScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.TermsAndCondition
+import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
 data class ConfirmationUiState(
     val inviteInfo: RespectInviteInfo? = null,
+    val inviteInfoError: StringResourceUiText? = null,
     val isTeacherInvite: Boolean = false
 )
 
@@ -45,28 +48,38 @@ class ConfirmationViewModel(
             }
 
             val inviteInfo = getInviteInfoUseCase.invoke(route.code)
-
-            _uiState.update {
-                it.copy(
-                    inviteInfo = inviteInfo,
-                    isTeacherInvite = inviteInfo.userInviteType == RespectInviteInfo.UserInviteType.TEACHER
-                )
+            try {
+                _uiState.update {
+                    it.copy(
+                        inviteInfo = inviteInfo,
+                        isTeacherInvite = inviteInfo.userInviteType == RespectInviteInfo.UserInviteType.TEACHER
+                    )
+                }
+            } catch (e: Exception) {
+                println(e)
             }
         }
     }
 
     fun onClickStudent() {
-        viewModelScope.launch {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(TermsAndCondition.create(ProfileType.Student))
-            )
-        }
+        navigateToTermsAndCondition(ProfileType.STUDENT)
     }
 
     fun onClickParent() {
+        navigateToTermsAndCondition(ProfileType.PARENT)
+    }
+
+    private fun navigateToTermsAndCondition(profileType: ProfileType){
         viewModelScope.launch {
+            val inviteInfo= uiState.value.inviteInfo
+            if (inviteInfo==null) {
+                _uiState.update {
+                    it.copy(inviteInfoError = StringResourceUiText(Res.string.invalid_invite_code))
+                }
+                return@launch
+            }
             _navCommandFlow.tryEmit(
-                NavCommand.Navigate(TermsAndCondition.create(ProfileType.PARENT))
+                NavCommand.Navigate(TermsAndCondition.create(profileType,inviteInfo))
             )
         }
     }

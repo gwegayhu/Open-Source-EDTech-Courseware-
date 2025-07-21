@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.defaultScreenPadding
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.login
 import world.respect.shared.generated.resources.password_label
@@ -60,7 +61,7 @@ fun LoginScreen(
             singleLine = true,
             isError = uiState.userIdError != null,
             supportingText = uiState.userIdError?.let {
-                { Text(it) }
+                { Text(uiTextStringResource(it)) }
             },
             modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )
@@ -77,7 +78,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isError = uiState.passwordError != null,
             supportingText = uiState.passwordError?.let {
-                { Text(it) }
+                { Text(uiTextStringResource(it)) }
             },
             modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )

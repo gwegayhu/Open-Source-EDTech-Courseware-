@@ -15,12 +15,12 @@ import world.respect.app.view.assignments.AssignmentScreen
 import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
+import world.respect.app.view.manageuser.Signup.SignupScreen
 import world.respect.app.view.manageuser.confirmation.ConfirmationScreen
 import world.respect.app.view.manageuser.joinclazzwithcode.JoinClazzWithCodeScreen
 import world.respect.app.view.manageuser.login.LoginScreen
-import world.respect.app.view.manageuser.profile.ProfileScreen
 import world.respect.app.view.manageuser.waitingforapproval.WaitingForApprovalScreen
-import world.respect.app.view.manageuser.signup.SignupScreen
+import world.respect.app.view.manageuser.createaccount.CreateAccountScreen
 import world.respect.app.view.manageuser.termsandcondition.TermsAndConditionScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
@@ -35,12 +35,12 @@ import world.respect.shared.navigation.JoinClazzWithCode
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.navigation.LoginScreen
-import world.respect.shared.navigation.ProfileScreen
+import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.RespectComposeNavController
-import world.respect.shared.navigation.SignupScreen
+import world.respect.shared.navigation.CreateAccount
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -55,11 +55,11 @@ import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewMode
 import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
 import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
-import world.respect.shared.viewmodel.manageuser.profile.ProfileViewModel
+import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
-import world.respect.shared.viewmodel.manageuser.signup.SignupViewModel
+import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 
 
 @Composable
@@ -180,13 +180,12 @@ fun AppNavHost(
         }
 
 
-        composable<ProfileScreen> {
-            val viewModel: ProfileViewModel = respectViewModel(
+        composable<SignupScreen> {
+            val viewModel: SignupViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            ProfileScreen(
-
+            SignupScreen(
                 viewModel = viewModel)
         }
         composable<ConfirmationScreen> {
@@ -206,12 +205,12 @@ fun AppNavHost(
             TermsAndConditionScreen(
                 viewModel = viewModel)
         }
-        composable<SignupScreen> {
-            val viewModel: SignupViewModel = respectViewModel(
+        composable<CreateAccount> {
+            val viewModel: CreateAccountViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            SignupScreen(
+            CreateAccountScreen(
                 viewModel = viewModel)
         }
         composable<WaitingForApproval> {
