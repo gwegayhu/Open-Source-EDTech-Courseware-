@@ -93,10 +93,11 @@ class AppLauncherViewModel(
         )
     }
 
-    fun onClickRemove(app: RespectAppManifest) {
-        _uiState.update { state ->
-            state.copy(
-                appList = state.appList.filterNot { it == app }
+    fun onClickRemove(app: DataLoadState<RespectAppManifest>) {
+        val manifestUrl = app.metaInfo.url ?: return
+        viewModelScope.launch {
+            dataSource.compatibleAppsDataSource.removeAppFromLaunchpad(
+                manifestUrl
             )
         }
     }
