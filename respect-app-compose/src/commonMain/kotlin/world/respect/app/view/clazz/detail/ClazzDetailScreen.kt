@@ -41,12 +41,18 @@ fun ClazzDetailScreen(
     viewModel: ClazzDetailViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ClazzDetailScreen(uiState)
+
+    ClazzDetailScreen(
+        uiState=uiState,
+        onClickAcceptInvite = { viewModel.onClickAcceptInvite() },
+
+        )
 }
 
 @Composable
 fun ClazzDetailScreen(
-    uiState: ClazzDetailUiState
+    uiState: ClazzDetailUiState,
+    onClickAcceptInvite: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -75,6 +81,9 @@ fun ClazzDetailScreen(
 
         item {
             ListItem(
+                modifier = Modifier.clickable {
+                    onClickAcceptInvite()
+                },
                 leadingContent = {
                     Icon(imageVector = Icons.Filled.Check, contentDescription = null)
                 },
@@ -138,6 +147,9 @@ fun ClazzDetailScreen(
 
         item {
             ListItem(
+                modifier = Modifier.clickable {
+                    onClickAcceptInvite()
+                },
                 leadingContent = {
                     Icon(imageVector = Icons.Filled.Check, contentDescription = null)
                 },
