@@ -52,6 +52,7 @@ import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroi
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
+import world.respect.shared.domain.account.RespectAccountManager
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -177,6 +178,13 @@ val appKoinModule = module {
     single<OkHttpWebViewClient> {
         OkHttpWebViewClient(
             okHttpClient = get()
+        )
+    }
+
+    single<RespectAccountManager> {
+        RespectAccountManager(
+            settings = get(),
+            json = get(),
         )
     }
 
