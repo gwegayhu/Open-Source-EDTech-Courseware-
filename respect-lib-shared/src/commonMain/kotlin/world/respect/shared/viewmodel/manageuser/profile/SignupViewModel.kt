@@ -20,6 +20,23 @@ import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
+data class SignupUiState(
+    val screenTitle: String = "",
+    val actionBarButtonName: String = "",
+    val nameLabel: String = "",
+    val genderLabel: String = "",
+    val dateOfBirthLabel: String = "",
+    val personPicture: String?=null,
+
+    val personInfo: RespectRedeemInviteRequest.PersonInfo? = null,
+
+
+    val fullNameError: UiText? = null,
+    val genderError: UiText? = null,
+    val dateOfBirthError: UiText? = null
+)
+
+
 class SignupViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
@@ -89,10 +106,14 @@ class SignupViewModel(
             val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
             prev.copy(
                 personInfo = currentPerson.copy(dateOfBirth = value),
-                dateOfBirthError = if (value != null) null else StringResourceUiText(Res.string.dob_required)
+                dateOfBirthError = if (value != null)
+                    null
+                else
+                    StringResourceUiText(Res.string.dob_required)
             )
         }
     }
+
     fun onPersonPictureChanged(pictureUri: String?) {
         _uiState.update { prev ->
             prev.copy(
@@ -147,18 +168,3 @@ class SignupViewModel(
     }
 }
 
-data class SignupUiState(
-    val screenTitle: String = "",
-    val actionBarButtonName: String = "",
-    val nameLabel: String = "",
-    val genderLabel: String = "",
-    val dateOfBirthLabel: String = "",
-    val personPicture: String?=null,
-
-    val personInfo: RespectRedeemInviteRequest.PersonInfo? = null,
-
-
-    val fullNameError: UiText? = null,
-    val genderError: UiText? = null,
-    val dateOfBirthError: UiText? = null
-)
