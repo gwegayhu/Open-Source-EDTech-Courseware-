@@ -68,7 +68,7 @@ fun AppLauncherScreen(
 fun AppLauncherScreen(
     uiState: AppLauncherUiState,
     onClickApp: (DataLoadState<RespectAppManifest>) -> Unit,
-    onClickRemove: (RespectAppManifest) -> Unit,
+    onClickRemove: (DataLoadState<RespectAppManifest>) -> Unit,
     onSnackBarShown: () -> Unit,
     onNavigateToCurriculum: () -> Unit = {}
 ) {
@@ -143,7 +143,7 @@ fun AppLauncherScreen(
                                 app.dataOrNull()?.also { onClickApp(app) }
                             },
                             onClickRemove = {
-                                app.dataOrNull()?.also { onClickRemove(it) }
+                                app.dataOrNull()?.also { onClickRemove(app) }
                             }
                         )
                     }
