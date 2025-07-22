@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -46,67 +45,61 @@ fun ConfirmationScreen(
     onClickParent: () -> Unit,
     onClickNext: () -> Unit
 ) {
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .defaultScreenPadding()
     ) {
-        item {
-            Text(
-                text = stringResource(Res.string.invitation_for),
-                Modifier.defaultItemPadding()
-            )
-        }
-        item {
-            ListItem(
-                headlineContent = {
-                    Text(text = uiState.inviteInfo?.schoolName ?: "")
-                },
-                supportingContent = {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(text = uiState.inviteInfo?.className ?: "")
+        Text(
+            text = stringResource(Res.string.invitation_for),
+            Modifier.defaultItemPadding()
+        )
 
-                        Text(text = uiState.inviteInfo?.classGUIDRef?.sourcedId ?: "")
+        ListItem(
+            headlineContent = {
+                Text(text = uiState.inviteInfo?.schoolName ?: "")
+            },
+            supportingContent = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(text = uiState.inviteInfo?.className ?: "")
 
-                    }
+                    Text(text = uiState.inviteInfo?.classGUIDRef?.sourcedId ?: "")
+
                 }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        }
+
         if (!uiState.isTeacherInvite) {
-            item {
-                OutlinedButton(
-                    onClick = onClickStudent,
-                    modifier = Modifier.fillMaxWidth().defaultItemPadding()
+            OutlinedButton(
+                onClick = onClickStudent,
+                modifier = Modifier.fillMaxWidth().defaultItemPadding()
 
-                ) {
-                    Text(stringResource(Res.string.i_am_student))
-                }
+            ) {
+                Text(stringResource(Res.string.i_am_student))
             }
 
-            item {
-                OutlinedButton(
-                    onClick = onClickParent,
-                    modifier = Modifier.fillMaxWidth().defaultItemPadding()
+            OutlinedButton(
+                onClick = onClickParent,
+                modifier = Modifier.fillMaxWidth().defaultItemPadding()
 
-                ) {
-                    Text(stringResource(Res.string.i_am_parent))
-                }
+            ) {
+                Text(stringResource(Res.string.i_am_parent))
             }
         }
+
         if (uiState.isTeacherInvite) {
-            item {
-                OutlinedButton(
-                    onClick = onClickNext,
-                    modifier = Modifier.fillMaxWidth().defaultItemPadding()
-                ) {
-                    Text(stringResource(Res.string.next))
-                }
+
+            OutlinedButton(
+                onClick = onClickNext,
+                modifier = Modifier.fillMaxWidth().defaultItemPadding()
+            ) {
+                Text(stringResource(Res.string.next))
             }
         }
-
     }
+
 }
