@@ -1,6 +1,8 @@
 package world.respect
 
 import android.app.Application
+import android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE
+import android.webkit.WebView
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -13,8 +15,12 @@ import org.koin.core.context.startKoin
 
 class RespectApp : Application(), SingletonImageLoader.Factory {
 
+    //See https://stackoverflow.com/questions/23844667/how-do-i-detect-if-i-am-in-release-or-debug-mode
     override fun onCreate() {
         super.onCreate()
+        WebView.setWebContentsDebuggingEnabled(
+            applicationInfo.flags.and(FLAG_DEBUGGABLE) == FLAG_DEBUGGABLE
+        )
 
         startKoin {
             androidContext(this@RespectApp)
