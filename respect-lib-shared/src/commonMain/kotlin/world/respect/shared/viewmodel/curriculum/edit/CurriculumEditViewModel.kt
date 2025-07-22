@@ -29,17 +29,14 @@ data class CurriculumEditUiState(
     val descriptionError: StringResource? = null,
     val error: StringResource? = null
 ) {
-    val name: String get() = curriculum?.name ?: ""
-    val id: String get() = curriculum?.id ?: ""
-    val description: String get() = curriculum?.description ?: ""
-
     val isValid: Boolean
-        get() = name.isNotBlank() &&
-                id.isNotBlank() &&
+        get() = curriculum?.name?.isNotBlank() == true &&
+                curriculum?.id?.isNotBlank() == true &&
                 nameError == null &&
                 idError == null &&
                 descriptionError == null
 }
+
 
 class CurriculumEditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -116,14 +113,14 @@ class CurriculumEditViewModel(
         val currentState = _uiState.value
         var isValid = true
 
-        val nameError = if (currentState.name.isBlank()) {
+        val nameError = if (currentState.curriculum?.name?.isBlank() != false) {
             isValid = false
             Res.string.field_required
         } else {
             null
         }
 
-        val idError = if (currentState.id.isBlank()) {
+        val idError = if (currentState.curriculum?.id?.isBlank() != false) {
             isValid = false
             Res.string.field_required
         } else {

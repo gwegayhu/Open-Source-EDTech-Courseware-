@@ -35,13 +35,15 @@ data class StrandEditUiState(
     val outcomesError: StringResource? = null,
     val error: StringResource? = null
 ) {
-    val name: String get() = strand?.name ?: ""
-
     val isValid: Boolean
-        get() = name.isNotBlank() && learningObjectives.isNotBlank() &&
-                outcomes.isNotBlank() && nameError == null &&
-                learningObjectivesError == null && outcomesError == null
+        get() = strand?.name?.isNotBlank() == true &&
+                learningObjectives.isNotBlank() &&
+                outcomes.isNotBlank() &&
+                nameError == null &&
+                learningObjectivesError == null &&
+                outcomesError == null
 }
+
 
 class StrandEditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -124,7 +126,7 @@ class StrandEditViewModel(
         val currentState = _uiState.value
         var isValid = true
 
-        val nameError = if (currentState.name.isBlank()) {
+        val nameError = if (currentState.strand?.name?.isBlank() != false) {
             isValid = false
             Res.string.field_required
         } else {
@@ -163,7 +165,7 @@ class StrandEditViewModel(
                 val params = SaveStrandParams(
                     curriculumId = curriculumId,
                     strandId = strandId,
-                    name = currentState.name,
+                    name = currentState.strand?.name ?: "",
                     learningObjectives = currentState.learningObjectives,
                     outcomes = currentState.outcomes
                 )

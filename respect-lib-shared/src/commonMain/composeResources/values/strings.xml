@@ -80,6 +80,8 @@
     <string name="load_failed">Failed to load. Please try again.</string>
     <string name="error_not_found">Item not found.</string>
     <string name="field_required">This field is required</string>
+    <string name="learning_objectives_label">Learning Objectives:</string>
+    <string name="expected_outcomes_label">Expected Outcomes:</string>
 
 
 </resources>

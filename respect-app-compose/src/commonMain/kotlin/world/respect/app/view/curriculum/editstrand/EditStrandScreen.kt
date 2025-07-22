@@ -98,11 +98,12 @@ fun EditStrandScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
             Column {
                 OutlinedTextField(
                     value = uiState.strand?.name ?: "",
                     onValueChange = onNameChange,
-                    label = { Text("Strand") },
+                    label = { Text(stringResource(Res.string.strand)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     isError = uiState.nameError != null,
@@ -122,7 +123,7 @@ fun EditStrandScreen(
                 OutlinedTextField(
                     value = uiState.learningObjectives,
                     onValueChange = onLearningObjectivesChange,
-                    label = { Text("Learning Objectives") },
+                    label = { Text(stringResource(Res.string.learning_objectives)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = uiState.learningObjectivesError != null,
                     enabled = !uiState.isLoading
@@ -141,7 +142,7 @@ fun EditStrandScreen(
                 OutlinedTextField(
                     value = uiState.outcomes,
                     onValueChange = onOutcomesChange,
-                    label = { Text("Outcomes") },
+                    label = { Text(stringResource(Res.string.outcomes)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = uiState.outcomesError != null,
                     enabled = !uiState.isLoading
@@ -156,7 +157,6 @@ fun EditStrandScreen(
                 }
             }
         }
-
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),

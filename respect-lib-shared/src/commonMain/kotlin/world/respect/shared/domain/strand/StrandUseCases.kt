@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.delay
 
-
 interface GetStrandsByCurriculumIdUseCase {
     suspend operator fun invoke(curriculumId: String): Flow<List<CurriculumStrand>>
 }
@@ -20,11 +19,16 @@ interface GetStrandByIdUseCase {
 interface SaveStrandUseCase {
     suspend operator fun invoke(params: SaveStrandParams): Result<CurriculumStrand>
 }
-
 object StrandMockData {
     val strands = MutableStateFlow<List<StrandEntity>>(
         listOf(
-            StrandEntity("s1", "1", "Algebra", "Learning Objectives: Basic algebra\n\nExpected Outcomes: Solve equations", true),
+            StrandEntity(
+                DEFAULT_STRAND_ID,
+                DEFAULT_CURRICULUM_ID,
+                DEFAULT_STRAND_NAME,
+                DEFAULT_STRAND_DESCRIPTION,
+                true
+            ),
         )
     )
 
@@ -33,6 +37,11 @@ object StrandMockData {
         currentList.removeAll { it.curriculumId == curriculumId }
         strands.value = currentList
     }
+
+    private const val DEFAULT_STRAND_ID = "s1"
+    private const val DEFAULT_CURRICULUM_ID = "1"
+    private const val DEFAULT_STRAND_NAME = "Algebra"
+    private const val DEFAULT_STRAND_DESCRIPTION = "Learning Objectives: Basic algebra\n\nExpected Outcomes: Solve equations"
 }
 
 class GetStrandsByCurriculumIdUseCaseMock : GetStrandsByCurriculumIdUseCase {
@@ -68,12 +77,12 @@ class GetStrandByIdUseCaseMock : GetStrandByIdUseCase {
 class SaveStrandUseCaseMock : SaveStrandUseCase {
     override suspend operator fun invoke(params: SaveStrandParams): Result<CurriculumStrand> {
         return try {
-            require(params.curriculumId.isNotBlank()) { "" }
-            require(params.name.isNotBlank()) { "" }
-            require(params.learningObjectives.isNotBlank()) { "" }
-            require(params.outcomes.isNotBlank()) { "" }
+            require(params.curriculumId.isNotBlank()) { "field_required" }
+            require(params.name.isNotBlank()) { "field_required" }
+            require(params.learningObjectives.isNotBlank()) { "field_required" }
+            require(params.outcomes.isNotBlank()) { "field_required"}
 
-            delay(500L)
+            delay(MOCK_SAVE_DELAY_MS)
 
             val strandId = params.strandId ?: generateStrandId()
             val description = buildStrandDescription(params.learningObjectives, params.outcomes)
@@ -111,10 +120,16 @@ class SaveStrandUseCaseMock : SaveStrandUseCase {
     }
 
     private fun generateStrandId(): String {
-        return "strand_${System.currentTimeMillis()}"
+        return "${STRAND_ID_PREFIX}${System.currentTimeMillis()}"
     }
+
 
     private fun buildStrandDescription(learningObjectives: String, outcomes: String): String {
         return "Learning Objectives: $learningObjectives\n\nExpected Outcomes: $outcomes"
+    }
+    companion object {
+        private const val MOCK_SAVE_DELAY_MS = 500L
+        private const val STRAND_ID_PREFIX = "strand_"
+
     }
 }

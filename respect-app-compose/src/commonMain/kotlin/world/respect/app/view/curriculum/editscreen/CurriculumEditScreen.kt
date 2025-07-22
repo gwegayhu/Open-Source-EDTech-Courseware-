@@ -100,7 +100,7 @@ fun CurriculumEditScreen(
         ) {
             Column {
                 OutlinedTextField(
-                    value = uiState.name,
+                    value = uiState.curriculum?.name ?: "",
                     onValueChange = onNameChange,
                     label = { Text(stringResource(Res.string.name)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -120,7 +120,7 @@ fun CurriculumEditScreen(
 
             Column {
                 OutlinedTextField(
-                    value = uiState.id,
+                    value = uiState.curriculum?.id ?: "",
                     onValueChange = onIdChange,
                     label = { Text(stringResource(Res.string.id)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -140,7 +140,7 @@ fun CurriculumEditScreen(
 
             Column {
                 OutlinedTextField(
-                    value = uiState.description,
+                    value = uiState.curriculum?.description ?: "",
                     onValueChange = onDescriptionChange,
                     label = { Text(stringResource(Res.string.description)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -156,29 +156,28 @@ fun CurriculumEditScreen(
                     )
                 }
             }
-        }
-
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        }
 
-        uiState.error?.let { errorResource ->
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                ),
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = stringResource(errorResource),
-                    color = MaterialTheme.colorScheme.onErrorContainer,
+            uiState.error?.let { errorResource ->
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    ),
                     modifier = Modifier.padding(16.dp)
-                )
+                ) {
+                    Text(
+                        text = stringResource(errorResource),
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }

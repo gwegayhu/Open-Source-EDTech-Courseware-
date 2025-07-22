@@ -46,10 +46,8 @@ class GetCurriculumByIdUseCaseMock : GetCurriculumByIdUseCase {
 class SaveCurriculumUseCaseMock : SaveCurriculumUseCase {
     override suspend operator fun invoke(curriculum: Curriculum): Result<Curriculum> {
         return try {
-            require(curriculum.name.isNotBlank()) { "" }
-            require(curriculum.id.isNotBlank()) { "" }
-
-            delay(500L)
+            require(curriculum.name.isNotBlank()) { "field_required" }
+            require(curriculum.id.isNotBlank()) { "field_required" }
 
             val currentList = CurriculumMockData.curricula.value.toMutableList()
             val existingIndex = currentList.indexOfFirst { it.id == curriculum.id }
@@ -71,21 +69,27 @@ class SaveCurriculumUseCaseMock : SaveCurriculumUseCase {
 class DeleteCurriculumUseCaseMock : DeleteCurriculumUseCase {
     override suspend operator fun invoke(curriculumId: String): Result<Unit> {
         return try {
-            require(curriculumId.isNotBlank()) { "" }
+            require(curriculumId.isNotBlank()) { "field_required" }
 
-            delay(300L)
+            delay(MOCK_SAVE_DELAY_MS )
 
             val currentList = CurriculumMockData.curricula.value.toMutableList()
             val removed = currentList.removeAll { it.id == curriculumId }
 
             if (removed) {
                 CurriculumMockData.curricula.value = currentList
-                world.respect.shared.domain.strand.StrandMockData.removeStrandsByCurriculumId(curriculumId)
+                world.respect.shared.domain.strand.StrandMockData.removeStrandsByCurriculumId(
+                    curriculumId
+                )
             }
 
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    companion object {
+        private const val MOCK_SAVE_DELAY_MS = 500L
     }
 }
