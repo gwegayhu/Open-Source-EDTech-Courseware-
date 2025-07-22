@@ -1,9 +1,7 @@
 package world.respect.datalayer.db.compatibleapps
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.json.Json
-import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.DataLoadState
@@ -17,8 +15,10 @@ import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import world.respect.datalayer.NoDataLoadedState
-import world.respect.datalayer.db.compatibleapps.adapters.CompatibleAppEntities
+import world.respect.datalayer.db.compatibleapps.adapters.combineWithLangMaps
+import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppAddJoin
 import world.respect.datalayer.db.shared.adapters.asNetworkValidationInfo
 import world.respect.datalayer.db.shared.entities.LangMapEntity
 import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
@@ -101,39 +101,43 @@ class CompatibleAppDataSourceDb(
         val langmaps = respectDb.getLangMapEntityDao().selectAllByTopParentType(
             LangMapEntity.TopParentType.RESPECT_MANIFEST.id
         )
-
-        return appEntities.combine(langmaps) { appEntities, langmaps ->
-            DataReadyState(
-                data = appEntities.map { appEntity ->
-                    appEntity.asModel(
-                        langMapEntities = langmaps.filter { it.lmeTopParentUid1 == appEntity.caeUid },
-                        json = json
-                    )
-                    CompatibleAppEntities(
-                        compatibleAppEntity = appEntity,
-                        langMapEntities = langmaps.filter { it.lmeTopParentUid1 == appEntity.caeUid }
-                    ).asModel(json)
-                },
-                metaInfo = DataLoadMetaInfo(
-                    lastModified = appEntities.maxOfOrNull { it.caeLastModified } ?: 0,
-                    etag = null,
-                    url = null,
-                )
-            )
-        }
+        return appEntities.combineWithLangMaps(langmaps, json)
     }
 
     override fun getLaunchpadApps(
         loadParams: DataLoadParams
     ): Flow<DataLoadState<List<DataLoadState<RespectAppManifest>>>> {
-        return emptyFlow()
+        val appEntities = respectDb.getCompatibleAppEntityDao().selectAddedAppsAsFlow()
+        val langMaps = respectDb.getLangMapEntityDao().selectAllByTopParentType(
+            LangMapEntity.TopParentType.RESPECT_MANIFEST.id
+        )
+        return appEntities.combineWithLangMaps(langMaps, json)
     }
 
     override suspend fun addAppToLaunchpad(manifestUrl: Url) {
-        //Do nothing yet
+        respectDb.getCompatibleAppAddJoinDao().upsert(
+            CompatibleAppAddJoin(
+                appCaeUid = xxStringHasher.hash(manifestUrl.toString()),
+                added = true,
+            )
+        )
     }
 
     override suspend fun removeAppFromLaunchpad(manifestUrl: Url) {
-        //Do nothing yet
+        respectDb.getCompatibleAppAddJoinDao().upsert(
+            CompatibleAppAddJoin(
+                appCaeUid = xxStringHasher.hash(manifestUrl.toString()),
+                added = false,
+            )
+        )
     }
+
+    override fun appIsAddedToLaunchpadAsFlow(manifestUrl: Url): Flow<Boolean> {
+        return respectDb.getCompatibleAppAddJoinDao().getCompatibleAppAddJoinAsFlow(
+            xxStringHasher.hash(manifestUrl.toString())
+        ).map {
+            it?.added == true
+        }
+    }
+
 }

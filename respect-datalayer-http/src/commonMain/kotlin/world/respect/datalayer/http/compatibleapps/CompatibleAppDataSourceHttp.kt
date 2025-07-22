@@ -7,6 +7,7 @@ import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadParams
@@ -87,4 +88,8 @@ class CompatibleAppDataSourceHttp(
         //do nothing - does not run remotely
     }
 
+    override fun appIsAddedToLaunchpadAsFlow(manifestUrl: Url): Flow<Boolean> {
+        //currently does nothing
+        return flowOf(false)
+    }
 }
