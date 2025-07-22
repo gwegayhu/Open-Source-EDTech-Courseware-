@@ -37,7 +37,8 @@ class JoinClazzWithCodeViewModel(
                 prev.copy(
                     title = getString(Res.string.enter_code_label),
                     hideBottomNavigation = true,
-                    userAccountIconVisible = false
+                    userAccountIconVisible = false,
+                    showBackButton = false
 
                 )
             }
