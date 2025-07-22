@@ -46,7 +46,7 @@ import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
-import world.respect.shared.viewmodel.clazz.list.detail.ClazzDetailViewModel
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
 
 import world.respect.shared.domain.storage.CachePathsProviderAndroid
 import world.respect.shared.domain.storage.GetAndroidSdCardDirUseCase
@@ -54,6 +54,8 @@ import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroi
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
+import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
+import world.respect.shared.viewmodel.clazz.student.StudentViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -120,6 +122,10 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
+    viewModelOf(::AcceptInviteViewModel)
+    viewModelOf(::StudentViewModel)
+
+
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.clazz
@@ -26,14 +25,12 @@ data class ClazzListUiState(
 
 class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
 
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
         viewModelScope.launch {

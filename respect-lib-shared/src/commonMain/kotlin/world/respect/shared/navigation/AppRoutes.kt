@@ -39,6 +39,11 @@ object RespectAppList : RespectAppRoute
 @Serializable
 object EnterLink : RespectAppRoute
 
+@Serializable
+object AcceptInvite : RespectAppRoute
+
+@Serializable
+object Student : RespectAppRoute
 
 /**
  * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app

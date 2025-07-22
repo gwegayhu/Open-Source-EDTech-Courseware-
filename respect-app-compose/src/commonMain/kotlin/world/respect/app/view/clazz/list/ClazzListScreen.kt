@@ -1,4 +1,4 @@
-package world.respect.app.view.classes.list
+package world.respect.app.view.clazz.list
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

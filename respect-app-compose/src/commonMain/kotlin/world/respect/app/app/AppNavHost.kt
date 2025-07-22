@@ -10,9 +10,11 @@ import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.apps.detail.AppsDetailScreen
 import world.respect.app.view.assignments.AssignmentScreen
-import world.respect.app.view.classes.list.ClazzListScreen
+import world.respect.app.view.clazz.list.ClazzListScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
-import world.respect.app.view.classes.detail.ClazzDetailScreen
+import world.respect.app.view.clazz.acceptinvite.AcceptInviteScreen
+import world.respect.app.view.clazz.detail.ClazzDetailScreen
+import world.respect.app.view.clazz.student.StudentScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
@@ -26,6 +28,7 @@ import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailView
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
+import world.respect.shared.navigation.AcceptInvite
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.AppsDetail
@@ -37,8 +40,11 @@ import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
+import world.respect.shared.navigation.Student
+import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
-import world.respect.shared.viewmodel.clazz.list.detail.ClazzDetailViewModel
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
+import world.respect.shared.viewmodel.clazz.student.StudentViewModel
 
 
 @Composable
@@ -153,6 +159,26 @@ fun AppNavHost(
                 navController = respectNavController
             )
             LearningUnitDetailScreen(
+                viewModel = viewModel
+            )
+        }
+
+        composable<Student> {
+            val viewModel: StudentViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            StudentScreen(
+                viewModel = viewModel
+            )
+        }
+
+        composable<AcceptInvite> {
+            val viewModel: AcceptInviteViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            AcceptInviteScreen(
                 viewModel = viewModel
             )
         }

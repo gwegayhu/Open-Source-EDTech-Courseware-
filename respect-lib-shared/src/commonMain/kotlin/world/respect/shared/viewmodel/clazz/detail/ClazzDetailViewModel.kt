@@ -1,4 +1,4 @@
-package world.respect.shared.viewmodel.clazz.list.detail
+package world.respect.shared.viewmodel.clazz.detail
 
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.MutableStateFlow

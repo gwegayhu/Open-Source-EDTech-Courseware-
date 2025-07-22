@@ -1,9 +1,8 @@
-package world.respect.app.view.classes.detail
+package world.respect.app.view.clazz.detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,8 +33,8 @@ import world.respect.shared.generated.resources.accept_invite
 import world.respect.shared.generated.resources.invite_students
 import world.respect.shared.generated.resources.invite_teachers
 import world.respect.shared.generated.resources.students
-import world.respect.shared.viewmodel.clazz.list.detail.ClazzDetailUiState
-import world.respect.shared.viewmodel.clazz.list.detail.ClazzDetailViewModel
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailUiState
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
 import world.respect.shared.generated.resources.teachers
 @Composable
 fun ClazzDetailScreen(
