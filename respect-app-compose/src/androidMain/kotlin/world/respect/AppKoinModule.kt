@@ -64,11 +64,13 @@ import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroi
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
+import org.koin.core.qualifier.named
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
 
 const val SHARED_PREF_SETTINGS_NAME = "respect_settings"
+const val TAG_TMP_DIR = "tmpDir"
 
 val appKoinModule = module {
     single<Json> {
@@ -198,6 +200,9 @@ val appKoinModule = module {
         OkHttpWebViewClient(
             okHttpClient = get()
         )
+    }
+    single(named(TAG_TMP_DIR)) {
+        File(androidContext().applicationContext.cacheDir, "tmp").apply { mkdirs() }
     }
 
     //Uncomment to switch to using real datasource

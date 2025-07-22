@@ -15,7 +15,7 @@ import world.respect.app.view.assignments.AssignmentScreen
 import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
-import world.respect.app.view.manageuser.Signup.SignupScreen
+import world.respect.app.view.manageuser.signup.SignupScreen
 import world.respect.app.view.manageuser.confirmation.ConfirmationScreen
 import world.respect.app.view.manageuser.joinclazzwithcode.JoinClazzWithCodeScreen
 import world.respect.app.view.manageuser.login.LoginScreen

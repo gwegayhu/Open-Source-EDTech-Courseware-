@@ -38,7 +38,6 @@ class SignupViewModel(
                     nameLabel = getString(Res.string.your_name_label),
                     genderLabel = getString(Res.string.your_gender_label),
                     dateOfBirthLabel = getString(Res.string.your_dob_label),
-                    note = getString(Res.string.your_note)
                 )
 
                 ProfileType.CHILD -> SignupUiState(
@@ -47,7 +46,6 @@ class SignupViewModel(
                     nameLabel = getString(Res.string.child_name_label),
                     genderLabel = getString(Res.string.child_gender_label),
                     dateOfBirthLabel = getString(Res.string.child_dob_label),
-                    note = getString(Res.string.child_note)
                 )
             }
 
@@ -94,6 +92,14 @@ class SignupViewModel(
                 dateOfBirthError = if (value != null) null else StringResourceUiText(Res.string.dob_required)
             )
         }
+    }
+    fun onPersonPictureChanged(pictureUri: String?) {
+        _uiState.update { prev ->
+            prev.copy(
+                personPicture = pictureUri?:""
+            )
+        }
+
     }
 
     fun onClickSave() {
@@ -147,7 +153,7 @@ data class SignupUiState(
     val nameLabel: String = "",
     val genderLabel: String = "",
     val dateOfBirthLabel: String = "",
-    val note: String = "",
+    val personPicture: String?=null,
 
     val personInfo: RespectRedeemInviteRequest.PersonInfo? = null,
 

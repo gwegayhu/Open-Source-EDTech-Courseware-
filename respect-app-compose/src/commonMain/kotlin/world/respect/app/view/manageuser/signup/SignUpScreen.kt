@@ -1,17 +1,21 @@
-package world.respect.app.view.manageuser.Signup
+package world.respect.app.view.manageuser.signup
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
 import world.respect.app.app.dateofbirth.DateOfBirthSelector
 import world.respect.app.components.RespectExposedDropDownMenuField
+import world.respect.app.components.RespectImageSelectButton
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.uiTextStringResource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterGenderEnum
@@ -28,7 +32,8 @@ fun SignupScreen(
         onFullNameChanged = viewModel::onFullNameChanged,
         onGenderChanged = viewModel::onGenderChanged,
         onDateOfBirthChanged = viewModel::onDateOfBirthChanged,
-    )
+        onPersonPictureUriChanged = viewModel::onPersonPictureChanged
+        )
 }
 
 @Composable
@@ -37,13 +42,23 @@ fun SignupScreen(
     onFullNameChanged: (String) -> Unit,
     onGenderChanged: (OneRosterGenderEnum) -> Unit,
     onDateOfBirthChanged: (LocalDate?) -> Unit,
-) {
+    onPersonPictureUriChanged: (String?) -> Unit = { },
+
+    ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .defaultItemPadding()
-    ) {
+            .defaultItemPadding(),
+             horizontalAlignment = Alignment.CenterHorizontally
 
+    ) {
+        item {
+            RespectImageSelectButton(
+                imageUri = uiState.personPicture,
+                onImageUriChanged = onPersonPictureUriChanged,
+                modifier = Modifier.size(80.dp),
+            )
+        }
 
         item {
             OutlinedTextField(
