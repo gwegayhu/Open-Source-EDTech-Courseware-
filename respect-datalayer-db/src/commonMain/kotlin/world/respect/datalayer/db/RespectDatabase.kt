@@ -5,7 +5,9 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
+import world.respect.datalayer.db.compatibleapps.daos.CompatibleAppAddJoinDao
 import world.respect.datalayer.db.compatibleapps.daos.CompatibleAppEntityDao
+import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppAddJoin
 import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppEntity
 import world.respect.datalayer.db.opds.OpdsTypeConverters
 import world.respect.datalayer.db.opds.daos.OpdsFeedEntityDao
@@ -35,6 +37,7 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         OpdsGroupEntity::class,
         OpdsFeedEntity::class,
         OpdsFeedMetadataEntity::class,
+        CompatibleAppAddJoin::class,
     ],
     version = 1,
 )
@@ -43,6 +46,8 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
 abstract class RespectDatabase: RoomDatabase() {
 
     abstract fun getCompatibleAppEntityDao(): CompatibleAppEntityDao
+
+    abstract fun getCompatibleAppAddJoinDao(): CompatibleAppAddJoinDao
 
     abstract fun getLangMapEntityDao(): LangMapEntityDao
 
@@ -70,7 +75,9 @@ abstract class RespectDatabase: RoomDatabase() {
 }
 
 // The Room compiler generates the `actual` implementations.
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING",
+    "KotlinNoActualForExpect"
+)
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<RespectDatabase> {
     override fun initialize(): RespectDatabase
 }

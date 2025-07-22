@@ -33,7 +33,8 @@ data class AppsDetailUiState(
     val publications: List<OpdsPublication> = emptyList(),
     val navigation: List<ReadiumLink> = emptyList(),
     val group: List<OpdsGroup> = emptyList(),
-    val appIcon: String? = null
+    val appIcon: String? = null,
+    val isAdded: Boolean = false,
 )
 
 class AppsDetailViewModel(
@@ -50,7 +51,6 @@ class AppsDetailViewModel(
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
-
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
@@ -95,6 +95,16 @@ class AppsDetailViewModel(
                             else -> {}
                         }
                     }
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            dataSource.compatibleAppsDataSource.appIsAddedToLaunchpadAsFlow(
+                manifestUrl = route.manifestUrl
+            ).collect { isAdded ->
+                _uiState.update {
+                    it.copy(isAdded = isAdded)
                 }
             }
         }
@@ -155,8 +165,9 @@ class AppsDetailViewModel(
     }
 
     fun onClickAdd() {
-        /*Add App Button Click*/
-
+        viewModelScope.launch {
+            dataSource.compatibleAppsDataSource.addAppToLaunchpad(route.manifestUrl)
+        }
     }
 
     companion object {

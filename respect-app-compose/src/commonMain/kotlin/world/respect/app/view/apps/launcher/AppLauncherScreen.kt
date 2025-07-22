@@ -71,6 +71,8 @@ fun AppLauncherScreen(
     onClickRemove: (RespectAppManifest) -> Unit,
     onSnackBarShown: () -> Unit,
     onNavigateToCurriculum: () -> Unit = {}
+    onClickRemove: (DataLoadState<RespectAppManifest>) -> Unit,
+    onSnackBarShown: () -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     uiState.snackbarMessage?.let { message ->
@@ -140,10 +142,10 @@ fun AppLauncherScreen(
                         AppGridItem(
                             app = app,
                             onClickApp = {
-                                app.dataOrNull()?.also { onClickApp(app) }
+                                onClickApp(app)
                             },
                             onClickRemove = {
-                                app.dataOrNull()?.also { onClickRemove(it) }
+                                onClickRemove(app)
                             }
                         )
                     }
