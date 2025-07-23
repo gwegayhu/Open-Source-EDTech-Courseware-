@@ -240,7 +240,6 @@ fun AppNavHost(
             WaitingForApprovalScreen(
                 viewModel = viewModel)
         }
-    }
 
         composable<CurriculumList> {
             val viewModel: CurriculumListViewModel = respectViewModel(

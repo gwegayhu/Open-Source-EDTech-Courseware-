@@ -2,8 +2,18 @@
 
 package world.respect
 
+import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.SharedPreferencesSettings
+import com.ustadmobile.core.domain.storage.GetOfflineStorageOptionsUseCase
+import com.ustadmobile.libcache.CachePathsProvider
+import com.ustadmobile.libcache.UstadCache
+import com.ustadmobile.libcache.UstadCacheBuilder
+import com.ustadmobile.libcache.db.ClearNeighborsCallback
+import com.ustadmobile.libcache.db.UstadCacheDb
+import com.ustadmobile.libcache.webview.OkHttpWebViewClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -141,8 +151,6 @@ val appKoinModule = module {
 
 
 
-
-
     single<GetAndroidSdCardDirUseCase> {
         GetAndroidSdCardDirUseCase(
             appContext = androidContext().applicationContext
@@ -155,15 +163,13 @@ val appKoinModule = module {
             settings = get(),
         )
     }
-
-    single<CachePathsProvider> {
+    single<CachePathsProviderAndroid> {
         CachePathsProviderAndroid(
             appContext = androidContext().applicationContext,
             getAndroidSdCardPathUseCase = get(),
             getOfflineStorageSettingUseCase = get(),
         )
     }
-
     single<Settings> {
         SharedPreferencesSettings(
             delegate = androidContext().getSharedPreferences(
@@ -189,7 +195,7 @@ val appKoinModule = module {
                 File(androidContext().filesDir, "httpfiles").absolutePath
             ),
             sizeLimit = { 100_000_000L },
-            db = get(),
+            db = get()
         ).build()
     }
 
@@ -209,14 +215,13 @@ val appKoinModule = module {
         )
     }
 
- 
+
     single<GetInviteInfoUseCase> {
         MockGetInviteInfoUseCase()
     }
     single<SubmitRedeemInviteRequestUseCase> {
         MockSubmitRedeemInviteRequestUseCase()
     }
-
 
     single<RespectAppDataSourceProvider> {
         val appContext = androidContext().applicationContext
@@ -226,7 +231,8 @@ val appKoinModule = module {
                     respectDatabase = Room.databaseBuilder<RespectDatabase>(
                         appContext, appContext.getDatabasePath("respect.db").absolutePath
                     ).setDriver(BundledSQLiteDriver())
-                    .build(),
+                        .fallbackToDestructiveMigration()
+                        .build(),
                     json = get(),
                     xxStringHasher = get(),
                     primaryKeyGenerator = PrimaryKeyGenerator(RespectDatabase.TABLE_IDS),
@@ -239,3 +245,5 @@ val appKoinModule = module {
         )
     }
 }
+
+

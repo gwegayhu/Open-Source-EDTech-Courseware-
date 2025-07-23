@@ -82,13 +82,6 @@
     <string name="load_failed">Failed to load. Please try again.</string>
     <string name="error_not_found">Item not found.</string>
     <string name="field_required">This field is required</string>
-    <string name="learning_objectives_label">Learning Objectives:</string>
-    <string name="expected_outcomes_label">Expected Outcomes:</string>
-
-
-</resources>
-
-
     <string name="supported_by">Supported by:</string>
     <string name="network_powered_by">Network powered by:</string>
     <string name="enter_invite_code_message">Enter the code provided by your teacher or school admin</string>
@@ -125,17 +118,13 @@
     <string name="full_name_required">Full name is required</string>
     <string name="gender_required">Gender is required</string>
     <string name="dob_required">Date of birth is required</string>
-
-
     <string name="create_account">Create account</string>
     <string name="username_label">Username</string>
     <string name="username_required">Username is required</string>
     <string name="signup_with_passkey">Sign-up with passkey</string>
-    <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="other_options">Other options</string>
     <string name="something_went_wrong">Something went wrong.</string>
-
     <string name="waiting_title">Waiting for approval</string>
     <string name="please_wait">Please wait</string>
     <string name="waiting_for_approval_to_join">Waiting for approval to join %1$s</string>
@@ -144,11 +133,8 @@
     <string name="female">Female</string>
     <string name="other">Other</string>
     <string name="gender">Gender</string>
-
-
     <string name="phone_memory">Phone memory</string>
     <string name="memory_card">Memory card</string>
-
     <string name="select_picture_from_gallery">Select picture from gallery</string>
     <string name="select_picture_from_files">Select picture from files</string>
     <string name="take_new_photo_from_camera">Take new photo from camera</string>

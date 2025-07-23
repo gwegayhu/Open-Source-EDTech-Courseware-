@@ -19,6 +19,7 @@ interface GetStrandByIdUseCase {
 interface SaveStrandUseCase {
     suspend operator fun invoke(params: SaveStrandParams): Result<CurriculumStrand>
 }
+
 object StrandMockData {
     val strands = MutableStateFlow<List<StrandEntity>>(
         listOf(
