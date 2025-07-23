@@ -36,6 +36,7 @@ import world.respect.shared.generated.resources.students
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
 import world.respect.shared.generated.resources.teachers
+
 @Composable
 fun ClazzDetailScreen(
     viewModel: ClazzDetailViewModel
@@ -43,10 +44,11 @@ fun ClazzDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     ClazzDetailScreen(
-        uiState=uiState,
-        onClickAcceptInvite = { viewModel.onClickAcceptInvite() },
-
-        )
+        uiState = uiState,
+        onClickAcceptInvite = {
+            viewModel.onClickAcceptInvite()
+        },
+    )
 }
 
 @Composable
@@ -61,8 +63,9 @@ fun ClazzDetailScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Text(text =
-                stringResource(resource = Res.string.teachers)
+            Text(
+                text =
+                    stringResource(resource = Res.string.teachers)
             )
         }
 
@@ -72,8 +75,9 @@ fun ClazzDetailScreen(
                     Icon(imageVector = Icons.Filled.Share, contentDescription = null)
                 },
                 headlineContent = {
-                    Text(text =
-                        stringResource(resource = Res.string.invite_teachers)
+                    Text(
+                        text =
+                            stringResource(resource = Res.string.invite_teachers)
                     )
                 }
             )
@@ -88,8 +92,9 @@ fun ClazzDetailScreen(
                     Icon(imageVector = Icons.Filled.Check, contentDescription = null)
                 },
                 headlineContent = {
-                    Text(text =
-                        stringResource(resource = Res.string.accept_invite)
+                    Text(
+                        text =
+                            stringResource(resource = Res.string.accept_invite)
                     )
                 }
             )
@@ -127,8 +132,9 @@ fun ClazzDetailScreen(
         }
 
         item {
-            Text(text =
-                stringResource(resource = Res.string.students)
+            Text(
+                text =
+                    stringResource(resource = Res.string.students)
             )
         }
 
@@ -138,8 +144,9 @@ fun ClazzDetailScreen(
                     Icon(imageVector = Icons.Filled.Share, contentDescription = null)
                 },
                 headlineContent = {
-                    Text(text =
-                        stringResource(resource = Res.string.invite_students)
+                    Text(
+                        text =
+                            stringResource(resource = Res.string.invite_students)
                     )
                 }
             )
@@ -154,9 +161,10 @@ fun ClazzDetailScreen(
                     Icon(imageVector = Icons.Filled.Check, contentDescription = null)
                 },
                 headlineContent = {
-                    Text(text =
-                        stringResource(resource = Res.string.accept_invite)
-                        )
+                    Text(
+                        text =
+                            stringResource(resource = Res.string.accept_invite)
+                    )
                 }
             )
         }

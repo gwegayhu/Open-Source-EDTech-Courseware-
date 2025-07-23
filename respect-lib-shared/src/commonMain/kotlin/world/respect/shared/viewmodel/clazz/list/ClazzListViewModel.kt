@@ -20,7 +20,6 @@ data class ClazzListUiState(
     val clazzList: List<String> = listOf("Class 1","Class 2","Class 3"),
     val clazzFilter: List<String> = listOf("First","Last"),
     val selectedFilterTitle: String? = null,
-
     )
 
 class ClazzListViewModel(
@@ -30,7 +29,6 @@ class ClazzListViewModel(
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
-
 
     init {
         viewModelScope.launch {
