@@ -29,9 +29,21 @@ import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectDatabase
 import world.respect.datalayer.http.RespectAppDataSourceHttp
 import world.respect.datalayer.repository.RespectAppDataSourceRepository
+import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
+import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
+import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
+import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
+import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
+import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
+import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
+import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
+import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
+import world.respect.shared.domain.mock.MockGetInviteInfoUseCase
+import world.respect.shared.domain.mock.MockSubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 import world.respect.shared.viewmodel.curriculum.list.CurriculumListViewModel
@@ -40,9 +52,21 @@ import world.respect.shared.viewmodel.curriculum.edit.CurriculumEditViewModel
 import world.respect.shared.viewmodel.strand.edit.StrandEditViewModel
 import world.respect.shared.domain.curriculum.*
 import world.respect.shared.domain.strand.*
+import world.respect.shared.domain.storage.CachePathsProviderAndroid
+import world.respect.shared.domain.storage.GetAndroidSdCardDirUseCase
+import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroid
+import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
+import java.io.File
+import kotlinx.io.files.Path
+import org.koin.core.qualifier.named
+import world.respect.shared.domain.account.RespectAccountManager
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
+
+
+const val SHARED_PREF_SETTINGS_NAME = "respect_settings"
+const val TAG_TMP_DIR = "tmpDir"
 
 val appKoinModule = module {
     single<Json> {
@@ -100,11 +124,98 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
+
     viewModelOf(::CurriculumListViewModel)
     viewModelOf(::CurriculumDetailViewModel)
     viewModelOf(::CurriculumEditViewModel)
     viewModelOf(::StrandEditViewModel)
 
+    viewModelOf(::AcknowledgementViewModel)
+    viewModelOf(::JoinClazzWithCodeViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::ConfirmationViewModel)
+    viewModelOf(::SignupViewModel)
+    viewModelOf(::TermsAndConditionViewModel)
+    viewModelOf(::WaitingForApprovalViewModel)
+    viewModelOf(::CreateAccountViewModel)
+
+
+
+
+
+    single<GetAndroidSdCardDirUseCase> {
+        GetAndroidSdCardDirUseCase(
+            appContext = androidContext().applicationContext
+        )
+    }
+
+    single<GetOfflineStorageSettingUseCase> {
+        GetOfflineStorageSettingUseCase(
+            getOfflineStorageOptionsUseCase = get(),
+            settings = get(),
+        )
+    }
+
+    single<CachePathsProvider> {
+        CachePathsProviderAndroid(
+            appContext = androidContext().applicationContext,
+            getAndroidSdCardPathUseCase = get(),
+            getOfflineStorageSettingUseCase = get(),
+        )
+    }
+
+    single<Settings> {
+        SharedPreferencesSettings(
+            delegate = androidContext().getSharedPreferences(
+                SHARED_PREF_SETTINGS_NAME,
+                Context.MODE_PRIVATE
+            )
+        )
+    }
+
+    single<UstadCacheDb> {
+        Room.databaseBuilder(
+            androidContext().applicationContext,
+            UstadCacheDb::class.java,
+            UstadCacheBuilder.DEFAULT_DB_NAME
+        ).addCallback(ClearNeighborsCallback())
+            .build()
+    }
+
+    single<UstadCache> {
+        UstadCacheBuilder(
+            appContext = androidContext().applicationContext,
+            storagePath = Path(
+                File(androidContext().filesDir, "httpfiles").absolutePath
+            ),
+            sizeLimit = { 100_000_000L },
+            db = get(),
+        ).build()
+    }
+
+    single<OkHttpWebViewClient> {
+        OkHttpWebViewClient(
+            okHttpClient = get()
+        )
+    }
+    single(named(TAG_TMP_DIR)) {
+        File(androidContext().applicationContext.cacheDir, "tmp").apply { mkdirs() }
+    }
+
+    single<RespectAccountManager> {
+        RespectAccountManager(
+            settings = get(),
+            json = get(),
+        )
+    }
+
+ 
+    single<GetInviteInfoUseCase> {
+        MockGetInviteInfoUseCase()
+    }
+    single<SubmitRedeemInviteRequestUseCase> {
+        MockSubmitRedeemInviteRequestUseCase()
+    }
 
 
     single<RespectAppDataSourceProvider> {

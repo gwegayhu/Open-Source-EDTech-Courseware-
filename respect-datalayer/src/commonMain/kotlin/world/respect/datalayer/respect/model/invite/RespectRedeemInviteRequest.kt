@@ -18,10 +18,10 @@ class RespectRedeemInviteRequest(
     }
 
     @Serializable
-    class PersonInfo(
-        val name: String,
-        val gender: OneRosterGenderEnum,
-        val dateOfBirth: LocalDate,
+   data class PersonInfo(
+        var name:  String ?=null,
+        var gender: OneRosterGenderEnum?=null,
+        var dateOfBirth: LocalDate?=null,
     )
 
     @Serializable

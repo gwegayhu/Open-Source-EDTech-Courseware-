@@ -2,6 +2,14 @@ appId: world.respect.app
 ---
 - clearState:  world.respect.app
 - launchApp
+- tapOn: "I already have an account"
+- tapOn: "UserId"
+- inputText: "admin"
+- tapOn: "Password"
+- inputText: "testpass"
+- tapOn:
+      text: "Login"
+      index: 1
 - assertVisible:
     id: "app_title"
     text: "Apps"
