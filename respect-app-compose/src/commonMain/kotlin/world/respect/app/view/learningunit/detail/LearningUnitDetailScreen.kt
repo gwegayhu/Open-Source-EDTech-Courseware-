@@ -50,6 +50,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
 import world.respect.app.components.UstadQuickActionButton
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailUiState
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
@@ -106,13 +107,8 @@ fun LearningUnitDetailScreen(
                     )
                 },
                 supportingContent = {
-                    Column(
-                        verticalArrangement =
-                            Arrangement.spacedBy(4.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
                                     .size(20.dp)
@@ -131,24 +127,12 @@ fun LearningUnitDetailScreen(
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = stringResource(Res.string.app_name),
+                                text = uiState.app.dataOrNull()?.name?.getTitle() ?: ""
                             )
                         }
 
                         Text(
-                            text = uiState.lessonDetail?.metadata?.subtitle
-                                ?.getTitle().orEmpty()
-                        )
-
-                        Text(
-                            text = stringResource(Res.string.score_or_progress),
-                        )
-
-                        LinearProgressIndicator(
-                            progress = { 0f },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(4.dp)
+                            text = uiState.lessonDetail?.metadata?.subtitle?.getTitle().orEmpty()
                         )
                     }
                 }

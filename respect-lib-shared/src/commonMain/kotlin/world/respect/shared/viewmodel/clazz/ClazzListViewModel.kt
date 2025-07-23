@@ -41,7 +41,11 @@ class ClazzListViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(resource = Res.string.clazz),
+                    title = if(route.assignLessonId != null){
+                        "Assign to..."
+                    }else {
+                        getString(resource = Res.string.clazz)
+                    },
                     showBackButton = false,
                     fabState = if(accountManager.isActiveUserTeacher()) {
                         FabUiState(
