@@ -69,7 +69,8 @@ class SignupViewModel(
             val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
             prev.copy(
                 personInfo = currentPerson.copy(name = value),
-                fullNameError = if (value.isNotBlank()) null else StringResourceUiText(Res.string.full_name_required)
+                fullNameError = if (value.isNotBlank()) null
+                else StringResourceUiText(Res.string.full_name_required)
             )
         }
     }
@@ -79,7 +80,8 @@ class SignupViewModel(
             val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
             prev.copy(
                 personInfo = currentPerson.copy(gender = value),
-                genderError = if (value != OneRosterGenderEnum.UNSPECIFIED) null else StringResourceUiText(Res.string.gender_required)
+                genderError = if (value != OneRosterGenderEnum.UNSPECIFIED) null
+                else StringResourceUiText(Res.string.gender_required)
             )
         }
     }
@@ -89,7 +91,8 @@ class SignupViewModel(
             val currentPerson = prev.personInfo ?: RespectRedeemInviteRequest.PersonInfo()
             prev.copy(
                 personInfo = currentPerson.copy(dateOfBirth = value),
-                dateOfBirthError = if (value != null) null else StringResourceUiText(Res.string.dob_required)
+                dateOfBirthError = if (value != null) null
+                else StringResourceUiText(Res.string.dob_required)
             )
         }
     }
@@ -102,7 +105,7 @@ class SignupViewModel(
 
     }
 
-    fun onClickSave() {
+    private fun onClickSave() {
 
         viewModelScope.launch {
             val personInfo = _uiState.value.personInfo

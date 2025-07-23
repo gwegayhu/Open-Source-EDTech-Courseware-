@@ -13,12 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.stringResource
 import world.respect.app.app.dateofbirth.DateOfBirthSelector
 import world.respect.app.components.RespectExposedDropDownMenuField
 import world.respect.app.components.RespectImageSelectButton
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.uiTextStringResource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterGenderEnum
+import world.respect.shared.util.toGenderLabel
 import world.respect.shared.viewmodel.manageuser.profile.SignupUiState
 import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 
@@ -82,7 +84,7 @@ fun SignupScreen(
                 options = OneRosterGenderEnum.entries.filterNot { it==OneRosterGenderEnum.UNSPECIFIED },
                 onOptionSelected = { onGenderChanged(it) },
                 itemText = { gender ->
-                    gender.name
+                    stringResource(gender.toGenderLabel)
                 },
                 isError = uiState.genderError != null,
                 supportingText = {
