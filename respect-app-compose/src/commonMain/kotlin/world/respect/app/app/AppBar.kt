@@ -17,6 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,9 @@ import androidx.navigation.NavController
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeBackgroundColor
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeContentColor
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import world.respect.app.components.RespectPersonAvatar
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.search
 import world.respect.shared.viewmodel.app.appstate.AppBarColors
@@ -51,6 +55,9 @@ fun RespectAppBar(
     val title = appUiState.title ?: screenName ?: ""
     val defaultCanGoBack = navController.previousBackStackEntry != null
     val canGoBack = appUiState.showBackButton ?: defaultCanGoBack
+
+    val accountManager: RespectAccountManager = koinInject()
+    val activeAccount by accountManager.activeAccountFlow.collectAsState(null)
 
     var searchActive by remember {
         mutableStateOf(false)
@@ -145,12 +152,12 @@ fun RespectAppBar(
                 }
             }
             if(appUiState.userAccountIconVisible) {
-                IconButton(
-                    onClick = onProfileClick,
-                    modifier = Modifier.testTag("profile_icon")
-                ) {
-                    Icon(Icons.Default.Person,
-                        contentDescription =null)
+                activeAccount?.also {
+                    IconButton(
+                        onClick = onProfileClick,
+                    ) {
+                        RespectPersonAvatar(name = it.userSourcedId)
+                    }
                 }
             }
         },
