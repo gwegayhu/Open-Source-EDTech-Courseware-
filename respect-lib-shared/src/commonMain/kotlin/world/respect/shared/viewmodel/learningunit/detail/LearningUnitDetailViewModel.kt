@@ -20,6 +20,8 @@ import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.respect.model.LEARNING_UNIT_MIME_TYPES
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.navigation.Clazz
+import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.app.appstate.getTitle
 
 data class LearningUnitDetailUiState(
@@ -95,6 +97,14 @@ class LearningUnitDetailViewModel(
             navigateFn = {
                 _navCommandFlow.tryEmit(it)
             }
+        )
+    }
+
+    fun onClickAssign() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                Clazz(assignLessonId = route.learningUnitManifestUrl.toString())
+            )
         )
     }
 

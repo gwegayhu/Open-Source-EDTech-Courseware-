@@ -1,4 +1,4 @@
-package world.respect.shared.viewmodel.assignments
+package world.respect.shared.viewmodel.assignments.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope

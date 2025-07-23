@@ -35,10 +35,18 @@ object LoginScreen : RespectAppRoute
 object RespectAppLauncher : RespectAppRoute
 
 @Serializable
-object Assignment : RespectAppRoute
+object AssignmentList : RespectAppRoute
 
 @Serializable
-object Clazz : RespectAppRoute
+data class AssignmentEdit(
+    val lessonId: String?,
+    val assignToClazzId: String?,
+): RespectAppRoute
+
+@Serializable
+data class Clazz(
+    val assignLessonId: String? = null,
+) : RespectAppRoute
 
 @Serializable
 object Report : RespectAppRoute

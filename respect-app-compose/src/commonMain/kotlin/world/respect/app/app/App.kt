@@ -39,7 +39,7 @@ import world.respect.shared.generated.resources.assignments
 import world.respect.shared.generated.resources.clazz
 import world.respect.shared.generated.resources.report
 import world.respect.shared.navigation.RespectAppLauncher
-import world.respect.shared.navigation.Assignment
+import world.respect.shared.navigation.AssignmentList
 import world.respect.shared.navigation.Clazz
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectAccountList
@@ -60,12 +60,12 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
         label = Res.string.apps
     ),
     TopNavigationItem(
-        destRoute = Assignment,
+        destRoute = AssignmentList,
         icon = Icons.Filled.ImportContacts,
         label = Res.string.assignments
     ),
     TopNavigationItem(
-        destRoute = Clazz,
+        destRoute = Clazz(),
         icon = Icons.AutoMirrored.Filled.LibraryBooks,
         label = Res.string.clazz
     ),

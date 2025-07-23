@@ -11,7 +11,8 @@ import world.respect.app.view.apps.detail.AppsDetailScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
-import world.respect.app.view.assignments.AssignmentScreen
+import world.respect.app.view.assignments.edit.AssignmentEditScreen
+import world.respect.app.view.assignments.list.AssignmentListScreen
 import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
@@ -28,7 +29,8 @@ import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.shared.navigation.Acknowledgement
 import world.respect.shared.navigation.AppsDetail
-import world.respect.shared.navigation.Assignment
+import world.respect.shared.navigation.AssignmentEdit
+import world.respect.shared.navigation.AssignmentList
 import world.respect.shared.navigation.Clazz
 import world.respect.shared.navigation.ConfirmationScreen
 import world.respect.shared.navigation.EnterLink
@@ -50,7 +52,7 @@ import world.respect.shared.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.shared.viewmodel.apps.list.AppListViewModel
-import world.respect.shared.viewmodel.assignments.AssignmentViewModel
+import world.respect.shared.viewmodel.assignments.list.AssignmentViewModel
 import world.respect.shared.viewmodel.clazz.ClazzListViewModel
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
@@ -122,14 +124,23 @@ fun AppNavHost(
             )
         }
 
-        composable<Assignment> {
+        composable<AssignmentList> {
             val viewModel: AssignmentViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            AssignmentScreen(
+            AssignmentListScreen(
                 navController = navController,
                 viewModel = viewModel
+            )
+        }
+
+        composable<AssignmentEdit> {
+            AssignmentEditScreen(
+                viewModel = respectViewModel(
+                    onSetAppUiState = onSetAppUiState,
+                    navController = respectNavController,
+                )
             )
         }
 

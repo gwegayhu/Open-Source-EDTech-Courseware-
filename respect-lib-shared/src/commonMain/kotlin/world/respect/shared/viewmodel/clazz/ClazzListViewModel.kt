@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.clazz
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,9 @@ import world.respect.datalayer.dclazz.model.DClazz
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.clazz
+import world.respect.shared.navigation.AssignmentEdit
+import world.respect.shared.navigation.Clazz
+import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.isActiveUserTeacher
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 
@@ -30,6 +34,8 @@ class ClazzListViewModel(
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState: Flow<ClazzListUiState> = _uiState.asStateFlow()
+
+    val route: Clazz = savedStateHandle.toRoute()
 
     init {
         viewModelScope.launch {
@@ -60,7 +66,21 @@ class ClazzListViewModel(
                 }
             }
         }
-
     }
+
+    fun onClickClazz(clazz: DClazz) {
+        val assignLessonId = route.assignLessonId
+        if(assignLessonId != null) {
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    AssignmentEdit(
+                        lessonId = assignLessonId,
+                        assignToClazzId = clazz.clazzId,
+                    )
+                )
+            )
+        }
+    }
+
 
 }

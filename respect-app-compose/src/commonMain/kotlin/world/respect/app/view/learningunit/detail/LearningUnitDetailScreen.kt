@@ -49,6 +49,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import world.respect.app.app.RespectAsyncImage
+import world.respect.app.components.UstadQuickActionButton
+import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailUiState
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 
@@ -61,6 +63,7 @@ fun LearningUnitDetailScreen(
     LearningUnitDetailScreen(
         uiState = uiState,
         onClickOpen = viewModel::onClickOpen,
+        onClickAssign = viewModel::onClickAssign,
     )
 }
 
@@ -68,6 +71,7 @@ fun LearningUnitDetailScreen(
 fun LearningUnitDetailScreen(
     uiState: LearningUnitDetailUiState,
     onClickOpen: () -> Unit,
+    onClickAssign: () -> Unit,
 ) {
 
     LazyColumn(
@@ -168,17 +172,22 @@ fun LearningUnitDetailScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconLabel(
+
+                UstadQuickActionButton(
                     Icons.Filled.ArrowCircleDown,
-                    stringResource(Res.string.download)
+                    labelText = StringResourceUiText(Res.string.download)
                 )
-                IconLabel(
+
+                UstadQuickActionButton(
                     Icons.Filled.Share,
-                    stringResource(Res.string.share)
+                    labelText = StringResourceUiText(Res.string.share)
                 )
-                IconLabel(
-                    Icons.Filled.NearMe,
-                    stringResource(Res.string.assign)
+
+
+                UstadQuickActionButton(
+                    imageVector = Icons.Filled.NearMe,
+                    onClick = onClickAssign,
+                    labelText = StringResourceUiText(Res.string.assign)
                 )
             }
         }

@@ -32,7 +32,7 @@ import world.respect.shared.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.shared.viewmodel.apps.list.AppListViewModel
-import world.respect.shared.viewmodel.assignments.AssignmentViewModel
+import world.respect.shared.viewmodel.assignments.list.AssignmentViewModel
 import world.respect.shared.viewmodel.clazz.ClazzListViewModel
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
@@ -68,6 +68,7 @@ import org.koin.core.qualifier.named
 import world.respect.app.ds.MockDClazzDataSource
 import world.respect.datalayer.dclazz.DClazzDataSource
 import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.viewmodel.assignments.edit.AssignmentEditViewModel
 import world.respect.shared.viewmodel.manageuser.accountlist.RespectAccountListViewModel
 
 @Suppress("unused")
@@ -144,6 +145,7 @@ val appKoinModule = module {
     viewModelOf(::WaitingForApprovalViewModel)
     viewModelOf(::CreateAccountViewModel)
     viewModelOf(::RespectAccountListViewModel)
+    viewModelOf(::AssignmentEditViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
