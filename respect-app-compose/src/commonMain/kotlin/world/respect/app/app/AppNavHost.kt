@@ -132,7 +132,6 @@ fun AppNavHost(
                 navController = respectNavController
             )
             AssignmentListScreen(
-                navController = navController,
                 viewModel = viewModel
             )
         }

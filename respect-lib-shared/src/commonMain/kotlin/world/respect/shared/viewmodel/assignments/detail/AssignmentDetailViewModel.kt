@@ -9,16 +9,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.datalayer.dclazz.DClazzDataSource
 import world.respect.datalayer.dclazz.model.DAssignment
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.navigation.AssignmentDetail
+import world.respect.shared.util.isActiveUserTeacher
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class AssignmentDetailUiState(
     val assignment: DAssignment? = null,
+    val isTeacher: Boolean = false,
 )
 
 class AssignmentDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val dClazzDataSource: DClazzDataSource,
+    private val accountManager: RespectAccountManager,
 ): RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(AssignmentDetailUiState())
@@ -28,6 +32,10 @@ class AssignmentDetailViewModel(
     private val route: AssignmentDetail = savedStateHandle.toRoute()
 
     init {
+        _uiState.update {
+            it.copy(isTeacher = accountManager.isActiveUserTeacher())
+        }
+
         viewModelScope.launch {
             dClazzDataSource.getAssignmentAsFlow(
                 route.assignmentId
@@ -43,6 +51,10 @@ class AssignmentDetailViewModel(
                 }
             }
         }
+    }
+
+    fun onClickOpen() {
+
     }
 
 }
