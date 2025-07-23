@@ -44,6 +44,11 @@ data class AssignmentEdit(
 ): RespectAppRoute
 
 @Serializable
+data class AssignmentDetail(
+    val assignmentId: Long,
+): RespectAppRoute
+
+@Serializable
 data class Clazz(
     val assignLessonId: String? = null,
 ) : RespectAppRoute
@@ -266,7 +271,6 @@ class LearningUnitViewer(
             )
         }
     }
-
 }
 
 @Serializable

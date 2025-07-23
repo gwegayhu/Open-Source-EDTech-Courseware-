@@ -68,6 +68,7 @@ import org.koin.core.qualifier.named
 import world.respect.app.ds.MockDClazzDataSource
 import world.respect.datalayer.dclazz.DClazzDataSource
 import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.viewmodel.assignments.detail.AssignmentDetailViewModel
 import world.respect.shared.viewmodel.assignments.edit.AssignmentEditViewModel
 import world.respect.shared.viewmodel.manageuser.accountlist.RespectAccountListViewModel
 
@@ -146,6 +147,7 @@ val appKoinModule = module {
     viewModelOf(::CreateAccountViewModel)
     viewModelOf(::RespectAccountListViewModel)
     viewModelOf(::AssignmentEditViewModel)
+    viewModelOf(::AssignmentDetailViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
@@ -228,7 +230,10 @@ val appKoinModule = module {
     }
 
     single<DClazzDataSource> {
-        MockDClazzDataSource()
+        MockDClazzDataSource(
+            settings = get(),
+            json = get(),
+        )
     }
 
     single<RespectAppDataSourceProvider> {

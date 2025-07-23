@@ -11,6 +11,7 @@ import world.respect.app.view.apps.detail.AppsDetailScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
+import world.respect.app.view.assignments.detail.AssignmentDetailScreen
 import world.respect.app.view.assignments.edit.AssignmentEditScreen
 import world.respect.app.view.assignments.list.AssignmentListScreen
 import world.respect.app.view.clazz.ClazzScreen
@@ -29,6 +30,7 @@ import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.shared.navigation.Acknowledgement
 import world.respect.shared.navigation.AppsDetail
+import world.respect.shared.navigation.AssignmentDetail
 import world.respect.shared.navigation.AssignmentEdit
 import world.respect.shared.navigation.AssignmentList
 import world.respect.shared.navigation.Clazz
@@ -137,6 +139,15 @@ fun AppNavHost(
 
         composable<AssignmentEdit> {
             AssignmentEditScreen(
+                viewModel = respectViewModel(
+                    onSetAppUiState = onSetAppUiState,
+                    navController = respectNavController,
+                )
+            )
+        }
+
+        composable<AssignmentDetail> {
+            AssignmentDetailScreen(
                 viewModel = respectViewModel(
                     onSetAppUiState = onSetAppUiState,
                     navController = respectNavController,
