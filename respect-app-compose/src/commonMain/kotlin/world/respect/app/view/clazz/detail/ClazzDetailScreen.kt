@@ -48,6 +48,9 @@ fun ClazzDetailScreen(
         onClickAcceptInvite = {
             viewModel.onClickAcceptInvite()
         },
+        onClickInviteStudent = {
+            viewModel.onClickInviteStudent()
+        },
     )
 }
 
@@ -55,6 +58,7 @@ fun ClazzDetailScreen(
 fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
     onClickAcceptInvite: () -> Unit,
+    onClickInviteStudent: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -140,6 +144,9 @@ fun ClazzDetailScreen(
 
         item {
             ListItem(
+                modifier = Modifier.clickable{
+                    onClickInviteStudent()
+                },
                 leadingContent = {
                     Icon(imageVector = Icons.Filled.Share, contentDescription = null)
                 },

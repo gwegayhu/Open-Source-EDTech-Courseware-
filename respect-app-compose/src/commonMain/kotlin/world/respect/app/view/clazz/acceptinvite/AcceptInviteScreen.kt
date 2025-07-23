@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
@@ -79,12 +80,12 @@ fun AcceptInviteScreen(
                 trailingContent = {
                     Row {
                         Icon(
-                            imageVector = Icons.Filled.Check,
+                            imageVector = Icons.Default.CheckCircle,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                         )
                         Icon(
-                            imageVector = Icons.Filled.Cancel,
+                            imageVector = Icons.Default.Cancel,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                         )

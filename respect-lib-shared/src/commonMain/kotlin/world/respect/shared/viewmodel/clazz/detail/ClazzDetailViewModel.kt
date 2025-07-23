@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import world.respect.shared.navigation.AcceptInvite
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.Student
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class ClazzDetailUiState(
@@ -23,6 +24,14 @@ class ClazzDetailViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 AcceptInvite
+            )
+        )
+    }
+
+    fun onClickInviteStudent() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                Student
             )
         )
     }
