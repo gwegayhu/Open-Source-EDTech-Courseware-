@@ -125,8 +125,6 @@ val appKoinModule = module {
     viewModelOf(::AcceptInviteViewModel)
     viewModelOf(::StudentViewModel)
 
-
-
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
             getAndroidSdCardDirUseCase = get()

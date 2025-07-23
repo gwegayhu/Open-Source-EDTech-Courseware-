@@ -83,13 +83,11 @@ fun AcceptInviteScreen(
                             imageVector = Icons.Filled.Check,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.primary
                         )
                         Icon(
                             imageVector = Icons.Filled.Cancel,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
