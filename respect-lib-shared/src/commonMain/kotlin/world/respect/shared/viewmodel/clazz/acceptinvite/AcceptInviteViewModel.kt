@@ -10,7 +10,6 @@ import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.accept_invite
 import world.respect.shared.viewmodel.RespectViewModel
-import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 
 data class AcceptInviteUiState(
     val name: String = ""

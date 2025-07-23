@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import world.respect.app.app.RespectAsyncImage
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteUiState
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
-import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 
 @Composable
 fun AcceptInviteScreen(
