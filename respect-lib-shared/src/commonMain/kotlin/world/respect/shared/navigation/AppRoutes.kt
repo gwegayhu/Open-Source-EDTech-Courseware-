@@ -42,6 +42,7 @@ data class AssignmentEdit(
     val lessonId: String?,
     val assignmentAppManifestUrl: String? = null,
     val assignToClazzId: String?,
+    val learningUnitManifestUrl: String? = null,
 ): RespectAppRoute
 
 @Serializable
@@ -53,6 +54,7 @@ data class AssignmentDetail(
 data class Clazz(
     val assignLessonId: String? = null,
     val assignmentAppManifestUrl: String? = null,
+    val learningUnitManifestUrl: String? = null,
 ) : RespectAppRoute
 
 @Serializable

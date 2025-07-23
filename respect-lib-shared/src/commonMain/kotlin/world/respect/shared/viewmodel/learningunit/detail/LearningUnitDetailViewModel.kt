@@ -111,7 +111,8 @@ class LearningUnitDetailViewModel(
             NavCommand.Navigate(
                 Clazz(
                     assignLessonId = launchUrl.toString(),
-                    assignmentAppManifestUrl = route.appManifestUrl.toString()
+                    assignmentAppManifestUrl = route.appManifestUrl.toString(),
+                    learningUnitManifestUrl = route.learningUnitManifestUrl.toString(),
                 )
             )
         )

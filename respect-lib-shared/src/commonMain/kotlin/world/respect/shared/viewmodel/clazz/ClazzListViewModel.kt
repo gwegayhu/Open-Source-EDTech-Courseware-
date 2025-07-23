@@ -76,6 +76,7 @@ class ClazzListViewModel(
                     AssignmentEdit(
                         lessonId = assignLessonId,
                         assignmentAppManifestUrl = route.assignmentAppManifestUrl,
+                        learningUnitManifestUrl = route.learningUnitManifestUrl,
                         assignToClazzId = clazz.clazzId,
                     )
                 )

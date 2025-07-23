@@ -54,6 +54,7 @@ class AssignmentEditViewModel(
                     toClazzId = route.assignToClazzId ?: "",
                     learningUnitId = route.lessonId ?: "",
                     appManifestUrl = route.assignmentAppManifestUrl ?: "",
+                    learningUnitManifestUrl = route.learningUnitManifestUrl ?: ""
                 )
             )
         }

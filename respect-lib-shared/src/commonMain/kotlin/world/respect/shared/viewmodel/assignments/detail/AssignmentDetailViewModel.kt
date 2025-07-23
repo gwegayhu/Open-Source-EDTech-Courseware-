@@ -16,6 +16,7 @@ import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.datalayer.dclazz.DClazzDataSource
 import world.respect.datalayer.dclazz.model.DAssignment
 import world.respect.datalayer.ext.dataOrNull
+import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
@@ -27,6 +28,7 @@ data class AssignmentDetailUiState(
     val assignment: DAssignment? = null,
     val isTeacher: Boolean = false,
     val app: DataLoadState<RespectAppManifest> = DataLoadingState(),
+    val learningUnit: DataLoadState<OpdsPublication> = DataLoadingState(),
 )
 
 class AssignmentDetailViewModel(
@@ -52,6 +54,7 @@ class AssignmentDetailViewModel(
             dClazzDataSource.getAssignmentAsFlow(
                 route.assignmentId
             ).collectLatest { assignment ->
+                println("assignment = $assignment")
                 _uiState.update { prev ->
                     prev.copy(assignment = assignment)
                 }
@@ -62,8 +65,9 @@ class AssignmentDetailViewModel(
                     )
                 }
 
+                if(assignment == null) return@collectLatest
+
                 launch {
-                    if(assignment == null) return@launch
                     dataSourceProvider.getDataSource(
                         activeAccount
                     ).compatibleAppsDataSource.getAppAsFlow(
@@ -72,6 +76,23 @@ class AssignmentDetailViewModel(
                         _uiState.update { prev ->
                             prev.copy(
                                 app = app
+                            )
+                        }
+                    }
+                }
+
+                launch {
+                    dataSourceProvider.getDataSource(
+                        activeAccount
+                    ).opdsDataSource.loadOpdsPublication(
+                        url = Url(assignment.learningUnitManifestUrl),
+                        DataLoadParams(),
+                        referrerUrl = null,
+                        expectedPublicationId = null,
+                    ).collect { publication ->
+                        _uiState.update { prev ->
+                            prev.copy(
+                                learningUnit = publication
                             )
                         }
                     }

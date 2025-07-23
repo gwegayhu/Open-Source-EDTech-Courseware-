@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -16,10 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import world.respect.app.app.RespectAsyncImage
 import world.respect.app.components.defaultItemPadding
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.shared.util.displayStr
+import world.respect.shared.viewmodel.app.appstate.getTitle
 import world.respect.shared.viewmodel.assignments.detail.AssignmentDetailUiState
 import world.respect.shared.viewmodel.assignments.detail.AssignmentDetailViewModel
+import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 
 @Composable
 fun AssignmentDetailScreen(
@@ -75,6 +82,34 @@ fun AssignmentDetailScreen(
                 Text("Deadline")
             }
         )
+
+        uiState.learningUnit.dataOrNull()?.also { publication ->
+            ListItem(
+                leadingContent = {
+                    val iconUrl = uiState.learningUnit.dataOrNull()?.images?.find {
+                        it.type?.contains(IMAGE) == true
+                    }?.href
+
+                    iconUrl.also { icon ->
+                        RespectAsyncImage(
+                            uri = icon,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(40.dp)
+                        )
+                    }
+                },
+                headlineContent = {
+                    Text(publication.metadata.title.getTitle())
+                },
+                supportingContent = {
+                    uiState.app.dataOrNull()?.also {
+                        Text(it.name.getTitle())
+                    }
+                }
+            )
+        }
 
         if(!uiState.isTeacher) {
             Button(
