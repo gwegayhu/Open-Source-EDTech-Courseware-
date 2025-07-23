@@ -75,6 +75,7 @@ class ClazzListViewModel(
                 NavCommand.Navigate(
                     AssignmentEdit(
                         lessonId = assignLessonId,
+                        assignmentAppManifestUrl = route.assignmentAppManifestUrl,
                         assignToClazzId = clazz.clazzId,
                     )
                 )

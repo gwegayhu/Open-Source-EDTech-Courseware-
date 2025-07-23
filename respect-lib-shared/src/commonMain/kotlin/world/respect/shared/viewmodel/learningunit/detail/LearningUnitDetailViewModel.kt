@@ -101,9 +101,18 @@ class LearningUnitDetailViewModel(
     }
 
     fun onClickAssign() {
+        val launchLink = _uiState.value.lessonDetail?.links?.firstOrNull { link ->
+            link.rel?.any { it.startsWith("http://opds-spec.org/acquisition") } == true &&
+                    LEARNING_UNIT_MIME_TYPES.any { link.type?.startsWith(it) == true }
+        } ?: return
+        val launchUrl = route.learningUnitManifestUrl.resolve(launchLink.href)
+
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                Clazz(assignLessonId = route.learningUnitManifestUrl.toString())
+                Clazz(
+                    assignLessonId = launchUrl.toString(),
+                    assignmentAppManifestUrl = route.appManifestUrl.toString()
+                )
             )
         )
     }

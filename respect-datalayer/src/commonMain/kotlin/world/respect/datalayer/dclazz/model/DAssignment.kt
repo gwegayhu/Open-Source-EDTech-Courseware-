@@ -13,6 +13,7 @@ data class DAssignment(
     val assignmentId: Long = 0,
     val toClazzId: String = "",
     val learningUnitId: String = "",
+    val appManifestUrl: String = "",
     val title: String = "",
     val description: String = "",
     val deadline: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.UTC).date,

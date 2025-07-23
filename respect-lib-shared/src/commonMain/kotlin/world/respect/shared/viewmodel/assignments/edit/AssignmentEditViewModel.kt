@@ -52,7 +52,8 @@ class AssignmentEditViewModel(
                 assignment = prev.assignment.copy(
                     assignmentId = Clock.System.now().toEpochMilliseconds(),
                     toClazzId = route.assignToClazzId ?: "",
-                    learningUnitId = route.lessonId ?: ""
+                    learningUnitId = route.lessonId ?: "",
+                    appManifestUrl = route.assignmentAppManifestUrl ?: "",
                 )
             )
         }
