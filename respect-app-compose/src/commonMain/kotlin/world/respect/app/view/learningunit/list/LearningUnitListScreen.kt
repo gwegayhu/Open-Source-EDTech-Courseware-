@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -287,7 +286,6 @@ fun NavigationListItem(
                 imageVector = Icons.Filled.ArrowCircleDown,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
             )
         }
     )
@@ -366,7 +364,6 @@ fun PublicationListItem(
                 imageVector = Icons.Filled.ArrowCircleDown,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
             )
         }
     )
