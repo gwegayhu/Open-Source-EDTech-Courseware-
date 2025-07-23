@@ -66,6 +66,7 @@ import java.io.File
 import kotlinx.io.files.Path
 import org.koin.core.qualifier.named
 import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.viewmodel.manageuser.accountlist.RespectAccountListViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -140,6 +141,7 @@ val appKoinModule = module {
     viewModelOf(::TermsAndConditionViewModel)
     viewModelOf(::WaitingForApprovalViewModel)
     viewModelOf(::CreateAccountViewModel)
+    viewModelOf(::RespectAccountListViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

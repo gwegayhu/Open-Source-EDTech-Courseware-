@@ -2,11 +2,16 @@ package world.respect.shared.viewmodel.manageuser.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.libutil.ext.resolve
+import world.respect.shared.domain.account.RespectAccount
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import world.respect.shared.navigation.NavCommand
@@ -22,10 +27,12 @@ data class LoginUiState(
 )
 
 class LoginViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val accountManager: RespectAccountManager,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
+
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -73,6 +80,18 @@ class LoginViewModel(
             if (uiState.value.userIdError!=null || uiState.value.passwordError!=null) {
                 return@launch
             }
+
+            val (username, domain) = userID.split("@")
+            val serverUrl = Url("https://$domain/")
+            accountManager.activeAccount = RespectAccount(
+                userSourcedId = username,
+                serverUrls = RespectRealm(
+                    xapi = serverUrl.resolve("api/xapi/"),
+                    oneRoster = serverUrl.resolve("api/oneroster/"),
+                    respectExt = serverUrl.resolve("api/respect/"),
+                )
+            )
+
             viewModelScope.launch {
                 _navCommandFlow.tryEmit(
                     NavCommand.Navigate(RespectAppLauncher)

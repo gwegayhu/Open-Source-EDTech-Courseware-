@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.defaultScreenPadding
@@ -31,7 +32,7 @@ import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
 fun LoginScreen(
     viewModel: LoginViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState(Dispatchers.Main.immediate)
 
     LoginScreen(
         uiState = uiState,

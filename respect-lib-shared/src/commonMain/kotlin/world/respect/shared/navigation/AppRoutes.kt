@@ -261,3 +261,6 @@ class LearningUnitViewer(
 
 }
 
+@Serializable
+object RespectAccountList: RespectAppRoute
+

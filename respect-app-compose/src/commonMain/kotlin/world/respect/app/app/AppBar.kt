@@ -44,7 +44,7 @@ fun RespectAppBar(
     compactHeader: Boolean,
     appUiState: AppUiState,
     navController: NavController,
-    screenName: String? = null, // <-- Pass screen name if available
+    screenName: String? = null,
     onProfileClick: () -> Unit = {}, // <-- Handle profile icon click
 ) {
 

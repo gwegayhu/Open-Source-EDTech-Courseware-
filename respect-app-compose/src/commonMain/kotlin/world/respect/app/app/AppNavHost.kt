@@ -15,6 +15,7 @@ import world.respect.app.view.assignments.AssignmentScreen
 import world.respect.app.view.clazz.ClazzScreen
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
 import world.respect.app.view.learningunit.list.LearningUnitListScreen
+import world.respect.app.view.manageuser.accountlist.RespectAccountListScreen
 import world.respect.app.view.manageuser.signup.SignupScreen
 import world.respect.app.view.manageuser.confirmation.ConfirmationScreen
 import world.respect.app.view.manageuser.joinclazzwithcode.JoinClazzWithCodeScreen
@@ -41,6 +42,7 @@ import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.RespectComposeNavController
 import world.respect.shared.navigation.CreateAccount
+import world.respect.shared.navigation.RespectAccountList
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -220,6 +222,15 @@ fun AppNavHost(
             )
             WaitingForApprovalScreen(
                 viewModel = viewModel)
+        }
+
+        composable<RespectAccountList> {
+            RespectAccountListScreen(
+                respectViewModel(
+                    onSetAppUiState = onSetAppUiState,
+                    navController = respectNavController,
+                )
+            )
         }
     }
 

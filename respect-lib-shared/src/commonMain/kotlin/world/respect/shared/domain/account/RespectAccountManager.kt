@@ -21,7 +21,7 @@ class RespectAccountManager(
         } ?: emptyList()
     )
 
-    val storedAccounts = _storedAccounts.asStateFlow()
+    val storedAccountsFlow: Flow<List<RespectAccount>> = _storedAccounts.asStateFlow()
 
     private val _activeAccountSourcedId = MutableStateFlow(
         settings.getStringOrNull(SETTINGS_KEY_ACTIVE_ACCOUNT)
@@ -51,7 +51,7 @@ class RespectAccountManager(
 
 
 
-    private val activeAccountFlow: Flow<RespectAccount?> = _storedAccounts.combine(
+    val activeAccountFlow: Flow<RespectAccount?> = _storedAccounts.combine(
         _activeAccountSourcedId
     ) { accountList, activeAccountSourcedId ->
         accountList.firstOrNull { it.userSourcedId == activeAccountSourcedId }
