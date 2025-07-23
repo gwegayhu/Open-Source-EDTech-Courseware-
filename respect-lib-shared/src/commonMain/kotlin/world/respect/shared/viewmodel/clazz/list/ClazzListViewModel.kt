@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.clazz
@@ -17,7 +19,7 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 
 data class ClazzListUiState(
-    val clazzList: List<String> = listOf("Class 1","Class 2","Class 3"),
+    val oneRoasterClass: List<OneRosterClass> = emptyList(),
     val clazzFilter: List<String> = listOf("First","Last"),
     val selectedFilterTitle: String? = null,
     )
@@ -26,6 +28,7 @@ class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
+    private val fakeRosterDataSource = FakeRosterDataSource()
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
@@ -33,6 +36,12 @@ class ClazzListViewModel(
     init {
         viewModelScope.launch {
 
+            val classes = fakeRosterDataSource.getAllClasses()
+            _uiState.update {
+                it.copy(
+                    oneRoasterClass = classes
+                )
+            }
             _appUiState.update {
                 it.copy(
                     title = getString(Res.string.classes),

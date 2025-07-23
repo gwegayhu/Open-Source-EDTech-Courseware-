@@ -125,9 +125,9 @@ fun ClazzListScreen(
 
             itemsIndexed(
                 //dummy list
-                uiState.clazzList,
-                key = { index, name -> index }
-            ) { index, name ->
+                uiState.oneRoasterClass,
+                key = { index, clazz -> index }
+            ) { index, clazz ->
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -160,7 +160,7 @@ fun ClazzListScreen(
                     headlineContent = {
                         //dummy data
                         Text(
-                            text = name
+                            text = clazz.title
                         )
                     }
                 )
