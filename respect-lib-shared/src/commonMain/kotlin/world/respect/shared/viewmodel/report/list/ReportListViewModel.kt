@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.db.shared.entities.Report
+import world.respect.datalayer.respect.RespectReportDataSource
+import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
 import world.respect.shared.domain.report.model.ReportOptions
@@ -39,7 +40,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 data class ReportListUiState(
-    val reportList: () -> PagingSource<Int, Report> = { EmptyPagingSource() },
+    val reportList: () -> PagingSource<Int, RespectReport> = { EmptyPagingSource() },
     val addSheetOrDialogVisible: Boolean = false,
     val activeUserPersonUid: Long = 0L,
     val xAxisFormatter: GraphFormatter<String>? = null,
@@ -49,13 +50,16 @@ data class ReportListUiState(
 class ReportListViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
-    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase
+    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
+    private val respectReportDataSource: RespectReportDataSource
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ReportListUiState())
     val uiState: Flow<ReportListUiState> = _uiState.asStateFlow()
+
     private val activeUserPersonUid: Long = 0
-    private val pagingSourceFactory: () -> PagingSource<Int, Report> = { DummyReportPagingSource() }
+    private val pagingSourceFactory: () -> PagingSource<Int, RespectReport> =
+        { DummyReportPagingSource() }
 
     init {
         viewModelScope.launch {
@@ -89,11 +93,11 @@ class ReportListViewModel(
     }
 
     @OptIn(ExperimentalTime::class)
-    fun runReport(report: Report): Flow<RunReportResultAndFormatters> = flow {
+    fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> = flow {
         try {
             val reportOptions = Json.decodeFromString<ReportOptions>(
                 ReportOptions.serializer(),
-                report.reportOptions ?: ""
+                report.reportOptions
             )
 
             // Generate realistic dummy data for the last 7 days
@@ -125,7 +129,7 @@ class ReportListViewModel(
             val reportResult = RunReportUseCase.RunReportResult(
                 timestamp = Clock.System.now().toEpochMilliseconds(),
                 request = RunReportUseCase.RunReportRequest(
-                    reportUid = report.reportUid,
+                    reportUid = report.reportId.toLong(),
                     reportOptions = reportOptions,
                     accountPersonUid = activeUserPersonUid,
                     timeZone = TimeZone.currentSystemDefault()
@@ -164,7 +168,7 @@ class ReportListViewModel(
             val errorResult = RunReportUseCase.RunReportResult(
                 timestamp = Clock.System.now().toEpochMilliseconds(),
                 request = RunReportUseCase.RunReportRequest(
-                    reportUid = report.reportUid,
+                    reportUid = report.reportId.toLong(),
                     reportOptions = ReportOptions(), // Empty options in error case
                     accountPersonUid = activeUserPersonUid,
                     timeZone = TimeZone.currentSystemDefault()
@@ -194,10 +198,10 @@ class ReportListViewModel(
 
     }
 
-    fun onClickEntry(entry: Report) {
+    fun onClickEntry(entry: RespectReport) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportDetail.create(entry.reportUid)
+                ReportDetail.create(entry.reportId.toLong())
             )
         )
     }
@@ -208,12 +212,12 @@ class ReportListViewModel(
 }
 
 
-class DummyReportPagingSource : PagingSource<Int, Report>() {
-    override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Report> {
+class DummyReportPagingSource : PagingSource<Int, RespectReport>() {
+    override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, RespectReport> {
         val dummyReports = List(3) { index ->
-            Report(
-                reportUid = index.toLong(),
-                reportTitle = "Report ${index + 1}",
+            RespectReport(
+                reportId = (index + 1).toString(),
+                title = "Report ${index + 1}",
                 reportOptions = Json.encodeToString(
                     ReportOptions.serializer(),
                     ReportOptions(
@@ -236,8 +240,6 @@ class DummyReportPagingSource : PagingSource<Int, Report>() {
                     )
                 ),
                 reportIsTemplate = index % 3 == 0,
-                reportLastModTime = System.currentTimeMillis() - (index * 86400000L),
-                reportOwnerPersonUid = 1L
             )
         }
 
@@ -248,7 +250,7 @@ class DummyReportPagingSource : PagingSource<Int, Report>() {
         )
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Report>): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, RespectReport>): Int? = null
 }
 
 class EmptyPagingSource<Key : Any, Value : Any> : PagingSource<Key, Value>() {

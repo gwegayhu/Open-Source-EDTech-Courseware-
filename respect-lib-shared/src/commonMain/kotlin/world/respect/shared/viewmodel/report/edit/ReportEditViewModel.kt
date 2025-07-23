@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.db.shared.entities.Report
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.respect.RespectReportDataSource
+import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportSeries
@@ -20,13 +22,9 @@ import world.respect.shared.ext.replace
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_a_new_report
 import world.respect.shared.generated.resources.edit_report
-import world.respect.shared.generated.resources.field
 import world.respect.shared.generated.resources.field_required_prompt
-import world.respect.shared.generated.resources.quantity
 import world.respect.shared.generated.resources.quantity_must_be_at_least_1
-import world.respect.shared.generated.resources.report
 import world.respect.shared.generated.resources.series
-import world.respect.shared.generated.resources.series_title
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
@@ -50,6 +48,7 @@ data class ReportEditUiState(
 
 class ReportEditViewModel(
     savedStateHandle: SavedStateHandle,
+    private val respectReportDataSource: RespectReportDataSource
 ) : RespectViewModel(savedStateHandle) {
 
     private val route: ReportEdit = savedStateHandle.toRoute()
@@ -76,12 +75,49 @@ class ReportEditViewModel(
                 )
             }
 
-            // TODO: Replace with actual report loading logic
-            val mockedReport = ReportOptions()
-            _uiState.update { prev ->
-                prev.copy(
-                    reportOptions = mockedReport
-                )
+            try {
+                val reportFlow = respectReportDataSource.getReportAsFlow(entityUid.toString())
+                launch {
+                    reportFlow
+                        .collect { reportState ->
+                            when (reportState) {
+                                is DataReadyState -> {
+                                    val report = reportState.data
+                                    val optionsJson = report.reportOptions
+
+                                    val parsedOptions = try {
+                                        Json.decodeFromString(
+                                            ReportOptions.serializer(),
+                                            optionsJson.trim()
+                                        )
+                                    } catch (e: Exception) {
+                                        println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
+                                        throw IllegalArgumentException("Invalid report options format: ${e.message}")
+                                    }
+                                    if (entityUid == 0L) {
+                                        val mockedReport = ReportOptions()
+                                        _uiState.update { prev ->
+                                            prev.copy(
+                                                reportOptions = mockedReport
+                                            )
+                                        }
+                                    } else {
+                                        _uiState.update { currentState ->
+                                            currentState.copy(
+                                                reportOptions = parsedOptions,
+                                            )
+                                        }
+                                    }
+                                }
+
+                                else -> {
+                                    // TODO
+                                }
+                            }
+                        }
+                }
+            } catch (e: Exception) {
+                println("Exception $e")
             }
         }
     }
@@ -148,16 +184,15 @@ class ReportEditViewModel(
         viewModelScope.launch {
             try {
                 val currentReports = _uiState.value.reportOptions
-                val report = Report(
-                    reportUid = entityUid,
-                    reportTitle = currentReports.title,
+                val report = RespectReport(
+                    reportId = entityUid.toString(),
+                    title = currentReports.title,
                     reportOptions = Json.encodeToString(currentReports),
-                    reportOwnerPersonUid = 0L, // TODO: Get actual user ID
                 )
 
                 // TODO: Implement proper repository pattern
                 if (entityUid == 0L) {
-//                    activeRepoWithFallback.reportDao().insertAsync(report)
+                    respectReportDataSource.putReport(report)
                     println("Report options inserted successfully: ${report}")
                 } else {
 //                    activeRepoWithFallback.reportDao().updateAsync(report)

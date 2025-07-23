@@ -37,7 +37,7 @@ import androidx.paging.PagingSource
 import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.view.report.graph.CombinedGraph
-import world.respect.datalayer.db.shared.entities.Report
+import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase
@@ -55,7 +55,7 @@ fun ReportListScreen(
 ) {
     val uiState: ReportListUiState by viewModel.uiState.collectAsState(ReportListUiState())
 
-    var reports by remember { mutableStateOf<List<Report>>(emptyList()) }
+    var reports by remember { mutableStateOf<List<RespectReport>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -119,11 +119,11 @@ fun ReportListScreen(
 
 @Composable
 private fun ReportGridCard(
-    report: Report,
+    report: RespectReport,
     viewModel: ReportListViewModel,
     activeUserPersonUid: Long
 ) {
-    val reportDataFlow = remember(report.reportUid) {
+    val reportDataFlow = remember(report.reportId) {
         viewModel.runReport(report)
     }
     val reportResultWithFormatters by reportDataFlow.collectAsState(
@@ -131,7 +131,7 @@ private fun ReportGridCard(
             reportResult = RunReportUseCase.RunReportResult(
                 timestamp = 0,
                 request = RunReportUseCase.RunReportRequest(
-                    reportUid = report.reportUid,
+                    reportUid = report.reportId.toLong(),
                     reportOptions = ReportOptions(),
                     accountPersonUid = activeUserPersonUid,
                     timeZone = TimeZone.currentSystemDefault()
@@ -160,7 +160,7 @@ private fun ReportGridCard(
             ) {
                 // Title above the chart
                 Text(
-                    report.reportTitle ?:stringResource(Res.string.untitled_report),
+                    report.title ?:stringResource(Res.string.untitled_report),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -200,7 +200,7 @@ private fun ReportGridCard(
                 modifier = Modifier
                     .size(32.dp)
                     .padding(8.dp)
-                    .clickable { viewModel.onRemoveReport(report.reportUid) }
+                    .clickable { viewModel.onRemoveReport(report.reportId.toLong()) }
                     .align(Alignment.TopEnd)
             )
         }

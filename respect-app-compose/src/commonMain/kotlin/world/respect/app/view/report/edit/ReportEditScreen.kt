@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.LocalContentColor
@@ -99,7 +98,9 @@ private fun ReportEditScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .defaultItemPadding(bottom = 16.dp)
+            .defaultItemPadding(bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+
     ) {
         item {
             OutlinedTextField(
@@ -345,7 +346,7 @@ private fun ReportEditScreen(
 }
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : OptionWithLabelStringResource> ExposedDropdownMenu(
     options: List<T>,
@@ -361,13 +362,16 @@ fun <T : OptionWithLabelStringResource> ExposedDropdownMenu(
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
-        onExpandedChange = { isExpanded = !isExpanded }
+        onExpandedChange = { isExpanded = !isExpanded },
+        modifier = modifier
     ) {
         OutlinedTextField(
             value = selectedValue?.let { stringResource(it.label) } ?: "",
             onValueChange = {},
             readOnly = true,
-            modifier = modifier,
+            modifier = modifier
+                .fillMaxWidth()
+                .menuAnchor(),
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
             },
@@ -377,7 +381,8 @@ fun <T : OptionWithLabelStringResource> ExposedDropdownMenu(
         )
         ExposedDropdownMenu(
             expanded = isExpanded,
-            onDismissRequest = { isExpanded = false }
+            onDismissRequest = { isExpanded = false },
+            modifier = Modifier
         ) {
             options.forEach { option ->
                 val isDisabled = option in disabledOptions

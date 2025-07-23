@@ -8,6 +8,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import world.respect.libutil.ext.UNSET_DISTANT_FUTURE
@@ -119,6 +120,7 @@ sealed class ReportPeriod {
  * @param rangeQuantity The quantity of the unit to subtract from the current time
  */
 @Serializable
+@SerialName("RelativeRangeReportPeriod")
 class RelativeRangeReportPeriod(
     val rangeUnit: ReportTimeRangeUnit,
     val rangeQuantity: Int,
@@ -171,6 +173,7 @@ class RelativeRangeReportPeriod(
  *        constant, even if the timezone changes).
  */
 @Serializable
+@SerialName("FixedReportTimeRange")
 class FixedReportTimeRange(
     val fromDateMillis: Long,
     val toDateMillis: Long,

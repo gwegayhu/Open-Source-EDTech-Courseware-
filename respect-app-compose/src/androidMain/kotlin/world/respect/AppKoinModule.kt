@@ -52,6 +52,8 @@ import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroi
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
+import world.respect.datalayer.respect.MockRespectReportDataSource
+import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.domain.report.query.RunReportUseCaseClientImpl
@@ -216,5 +218,8 @@ val appKoinModule = module {
     }
     single<CreateGraphFormatterUseCase> {
         CreateGraphFormatterUseCase()
+    }
+    single<RespectReportDataSource> {
+        MockRespectReportDataSource()
     }
 }

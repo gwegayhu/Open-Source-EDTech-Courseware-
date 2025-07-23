@@ -9,15 +9,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.db.shared.entities.Report
+import world.respect.datalayer.DataErrorResult
+import world.respect.datalayer.DataLoadingState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
+import world.respect.datalayer.respect.RespectReportDataSource
+import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
 import world.respect.shared.domain.report.model.ReportOptions
-import world.respect.shared.domain.report.model.ReportSeries
-import world.respect.shared.domain.report.model.ReportSeriesVisualType
-import world.respect.shared.domain.report.model.ReportSeriesYAxis
-import world.respect.shared.domain.report.model.ReportXAxis
 import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
@@ -33,10 +35,10 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
 
 data class ReportDetailUiState(
-    val report: Report? = null,
+    val report: RespectReport? = null,
     val reportResult: RunReportUseCase.RunReportResult? = null,
     val errorMessage: String? = null,
-    val reportOptions2: ReportOptions = ReportOptions(),
+    val reportOptions: ReportOptions = ReportOptions(),
     val xAxisFormatter: GraphFormatter<String>? = null,
     val yAxisFormatter: GraphFormatter<Double>? = null,
     val subgroupFormatter: GraphFormatter<String>? = null
@@ -46,7 +48,8 @@ data class ReportDetailUiState(
 class ReportDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
-    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase
+    private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
+    private val respectReportDataSource: RespectReportDataSource
 ) : RespectViewModel(savedStateHandle) {
 
     private val route: ReportDetail = savedStateHandle.toRoute()
@@ -76,104 +79,117 @@ class ReportDetailViewModel(
             }
 
             try {
-                // TODO: Replace with actual report options from database
-                val mockOptions = ReportOptions(
-                    title = "Weekly Session Report",
-                    xAxis = ReportXAxis.YEAR,
-                    series = listOf(
-                        ReportSeries(
-                            reportSeriesUid = 1,
-                            reportSeriesTitle = "Session Duration",
-                            reportSeriesYAxis = ReportSeriesYAxis.TOTAL_DURATION,
-                            reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
-                            reportSeriesSubGroup = ReportXAxis.GENDER
-                        ),
-                        ReportSeries(
-                            reportSeriesUid = 2,
-                            reportSeriesTitle = "Average Duration",
-                            reportSeriesYAxis = ReportSeriesYAxis.AVERAGE_DURATION,
-                            reportSeriesVisualType = ReportSeriesVisualType.LINE_GRAPH,
-                            reportSeriesSubGroup = ReportXAxis.GENDER
-                        )
-                    )
-                )
+                val reportFlow = respectReportDataSource.getReportAsFlow(reportUid.toString())
+                launch {
+                    reportFlow
+                        .collect { reportState ->
+                            when (reportState) {
+                                is DataReadyState -> {
+                                    val optionsJson = reportState.data.reportOptions
+                                    val parsedOptions = try {
+                                        Json.decodeFromString(
+                                            ReportOptions.serializer(),
+                                            optionsJson.trim()
+                                        )
+                                    } catch (e: Exception) {
+                                        println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
+                                        throw IllegalArgumentException("Invalid report options format: ${e.message}")
+                                    }
 
-                _appUiState.update { prev ->
-                    prev.copy(title = mockOptions.title)
-                }
+                                    _uiState.update { currentState ->
+                                        currentState.copy(
+                                            report = reportState.data,
+                                            reportOptions = parsedOptions,
+                                        )
+                                    }
+                                    _appUiState.update { prev ->
+                                        prev.copy(title = reportState.data.title)
+                                    }
+                                    // TODO: Replace with actual request parameters
+                                    val request = RunReportUseCase.RunReportRequest(
+                                        reportUid = 0L,
+                                        reportOptions = parsedOptions,
+                                        accountPersonUid = 0L, // TODO: Get actual user ID
+                                        timeZone = TimeZone.currentSystemDefault()
+                                    )
 
-                _uiState.update {
-                    it.copy(reportOptions2 = mockOptions)
-                }
+                                    // TODO: Replace with actual report results from database
+                                    val mockReportResult = RunReportUseCase.RunReportResult(
+                                        results = listOf(
+                                            listOf(
+                                                StatementReportRow(120383.0, "2023-01-01", "2"),
+                                                StatementReportRow(183248.0, "2023-01-02", "1"),
+                                                StatementReportRow(9732.0, "2023-01-03", "1"),
+                                                StatementReportRow(2187324.0, "2023-01-04", "2"),
+                                                StatementReportRow(187423.0, "2023-01-05", "1"),
+                                                StatementReportRow(33033.0, "2023-01-06", "2"),
+                                                StatementReportRow(2362.0, "2023-01-07", "1")
+                                            ),
+                                            // Second series data
+                                            listOf(
+                                                StatementReportRow(6324.0, "2023-01-01", "1"),
+                                                StatementReportRow(9730.0, "2023-01-02", "1"),
+                                                StatementReportRow(43325.0, "2023-01-03", "2"),
+                                                StatementReportRow(18325.0, "2023-01-04", "1"),
+                                                StatementReportRow(753874.0, "2023-01-05", "2"),
+                                                StatementReportRow(03847.0, "2023-01-06", "2"),
+                                                StatementReportRow(023783.0, "2023-01-07", "2")
+                                            )
+                                        ),
+                                        timestamp = System.currentTimeMillis(),
+                                        request = request,
+                                        age = 0
+                                    )
 
-                // TODO: Replace with actual request parameters
-                val request = RunReportUseCase.RunReportRequest(
-                    reportUid = 0L,
-                    reportOptions = mockOptions,
-                    accountPersonUid = 0L, // TODO: Get actual user ID
-                    timeZone = TimeZone.currentSystemDefault()
-                )
+                                    // TODO: Consider caching formatters
+                                    val xAxisFormatter = createGraphFormatterUseCase(
+                                        reportResult = mockReportResult,
+                                        options = CreateGraphFormatterUseCase.FormatterOptions(
+                                            paramType = String::class,
+                                            axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
+                                        )
+                                    )
+                                    val subgroupFormatter = createGraphFormatterUseCase(
+                                        reportResult = mockReportResult,
+                                        options = CreateGraphFormatterUseCase.FormatterOptions(
+                                            paramType = String::class,
+                                            axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES,
+                                            forSubgroup = true
+                                        )
+                                    )
+                                    val yAxisFormatter = createGraphFormatterUseCase(
+                                        reportResult = mockReportResult,
+                                        options = CreateGraphFormatterUseCase.FormatterOptions(
+                                            paramType = Double::class,
+                                            axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
+                                        )
+                                    )
 
-                // TODO: Replace with actual report results from database
-                val mockReportResult = RunReportUseCase.RunReportResult(
-                    results = listOf(
-                        listOf(
-                            StatementReportRow(120383.0, "2023-01-01", "2"),
-                            StatementReportRow(183248.0, "2023-01-02", "1"),
-                            StatementReportRow(9732.0, "2023-01-03", "1"),
-                            StatementReportRow(2187324.0, "2023-01-04", "2"),
-                            StatementReportRow(187423.0, "2023-01-05", "1"),
-                            StatementReportRow(33033.0, "2023-01-06", "2"),
-                            StatementReportRow(2362.0, "2023-01-07", "1")
-                        ),
-                        // Second series data
-                        listOf(
-                            StatementReportRow(6324.0, "2023-01-01", "1"),
-                            StatementReportRow(9730.0, "2023-01-02", "1"),
-                            StatementReportRow(43325.0, "2023-01-03", "2"),
-                            StatementReportRow(18325.0, "2023-01-04", "1"),
-                            StatementReportRow(753874.0, "2023-01-05", "2"),
-                            StatementReportRow(03847.0, "2023-01-06", "2"),
-                            StatementReportRow(023783.0, "2023-01-07", "2")
-                        )
-                    ),
-                    timestamp = System.currentTimeMillis(),
-                    request = request,
-                    age = 0
-                )
+                                    _uiState.update { prev ->
+                                        prev.copy(
+                                            reportResult = mockReportResult,
+                                            xAxisFormatter = xAxisFormatter,
+                                            yAxisFormatter = yAxisFormatter,
+                                            subgroupFormatter = subgroupFormatter
+                                        )
+                                    }
 
-                // TODO: Consider caching formatters
-                val xAxisFormatter = createGraphFormatterUseCase(
-                    reportResult = mockReportResult,
-                    options = CreateGraphFormatterUseCase.FormatterOptions(
-                        paramType = String::class,
-                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
-                    )
-                )
-                val subgroupFormatter = createGraphFormatterUseCase(
-                    reportResult = mockReportResult,
-                    options = CreateGraphFormatterUseCase.FormatterOptions(
-                        paramType = String::class,
-                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES,
-                        forSubgroup = true
-                    )
-                )
+                                }
 
-                val yAxisFormatter = createGraphFormatterUseCase(
-                    reportResult = mockReportResult,
-                    options = CreateGraphFormatterUseCase.FormatterOptions(
-                        paramType = Double::class,
-                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
-                    )
-                )
+                                is DataErrorResult -> {
+                                    _uiState.update {
+                                        it.copy(
+                                            errorMessage = reportState.error.message
+                                                ?: "Unknown error"
+                                        )
+                                    }
+                                }
 
-                _uiState.update { prev ->
-                    prev.copy(
-                        reportResult = mockReportResult,
-                        xAxisFormatter = xAxisFormatter,
-                        yAxisFormatter = yAxisFormatter,
-                        subgroupFormatter = subgroupFormatter
-                    )
+                                is DataLoadingState, is NoDataLoadedState -> {
+                                    // Handle loading or no data states if needed
+                                }
+                            }
+                        }
                 }
 
             } catch (e: Exception) {
