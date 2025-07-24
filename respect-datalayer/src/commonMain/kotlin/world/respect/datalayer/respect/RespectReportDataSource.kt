@@ -1,5 +1,6 @@
 package world.respect.datalayer.respect
 
+import app.cash.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.respect.model.RespectReport
@@ -12,4 +13,5 @@ interface RespectReportDataSource {
 
     suspend fun putReport(report: RespectReport)
 
+    fun getReportsPagingSource(): PagingSource<Int, RespectReport>
 }

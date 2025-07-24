@@ -50,7 +50,7 @@ class CreateGraphFormatterUseCase() {
                 // Use subgroup axis type if formatting for subgroup
                 val axisType = if (options.forSubgroup) {
                     reportResult.request.reportOptions.series.first().reportSeriesSubGroup
-                        ?: reportResult.request.reportOptions.xAxis
+                        ?: ReportXAxis.DAY
                 } else {
                     reportResult.request.reportOptions.xAxis
                 }

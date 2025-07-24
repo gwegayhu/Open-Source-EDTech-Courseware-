@@ -1,5 +1,9 @@
 package world.respect.datalayer.respect
 
+import androidx.paging.PagingState
+import app.cash.paging.PagingSource
+import app.cash.paging.PagingSourceLoadParams
+import app.cash.paging.PagingSourceLoadResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import world.respect.datalayer.DataErrorResult
@@ -11,18 +15,23 @@ import world.respect.datalayer.respect.model.RespectReport
 class MockRespectReportDataSource : RespectReportDataSource {
     private val mockReports = mutableListOf(
         RespectReport(
-            reportId = "0",
-            title = "Weekly Session Duration",
+            reportId = "1",
+            title = "Weekly Duration",
             reportOptions = """{"title":"Weekly Session Duration","xAxis":"WEEK","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"WEEK","rangeQuantity":1},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Total Duration","reportSeriesYAxis":"TOTAL_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
             reportIsTemplate = false
         ),
         RespectReport(
-            reportId = "1",
-            title = "Weekly Session Duration",
-            reportOptions = """{"title":"Weekly Session Duration","xAxis":"WEEK","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"WEEK","rangeQuantity":1},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Total Duration","reportSeriesYAxis":"TOTAL_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
+            reportId = "2",
+            title = "Weekly Duration2",
+            reportOptions = """{"title":"Weekly Session Duration","xAxis":"MONTH","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"WEEK","rangeQuantity":1},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Total Duration","reportSeriesYAxis":"TOTAL_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
             reportIsTemplate = false
+        ),
+        RespectReport(
+            reportId = "3",
+            title = "Daily Activity",
+            reportOptions = """{"title":"Daily Activity","xAxis":"DAY","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"DAY","rangeQuantity":7},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Activity Duration","reportSeriesYAxis":"AVERAGE_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
+            reportIsTemplate = true
         )
-
     )
 
     override suspend fun putReport(report: RespectReport) {
@@ -38,6 +47,25 @@ class MockRespectReportDataSource : RespectReportDataSource {
                 report
             }
             mockReports.add(reportToAdd)
+        }
+    }
+
+    override fun getReportsPagingSource(): PagingSource<Int, RespectReport> {
+        return object : PagingSource<Int, RespectReport>() {
+            override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, RespectReport> {
+                return _root_ide_package_.app.cash.paging.PagingSourceLoadResultPage(
+                    data = mockReports,
+                    prevKey = null,
+                    nextKey = null
+                )
+            }
+
+            override fun getRefreshKey(state: PagingState<Int, RespectReport>): Int? {
+                return state.anchorPosition?.let { anchorPosition ->
+                    state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                        ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+                }
+            }
         }
     }
 
@@ -70,5 +98,19 @@ class MockRespectReportDataSource : RespectReportDataSource {
                 )
             }
         )
+    }
+}
+
+
+class EmptyPagingSource<Key : Any, Value : Any> : PagingSource<Key, Value>() {
+    // TODO: Consider if this is needed in production or just for testing
+    override fun getRefreshKey(state: PagingState<Key, Value>): Key? = null
+
+    override suspend fun load(params: PagingSourceLoadParams<Key>): PagingSourceLoadResult<Key, Value> {
+        return _root_ide_package_.app.cash.paging.PagingSourceLoadResultPage<Key, Value>(
+            emptyList(),
+            null,
+            null
+        ) as PagingSourceLoadResult<Key, Value>
     }
 }

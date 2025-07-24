@@ -1,5 +1,6 @@
 package world.respect.shared.domain.report.formatter
 
+import io.ktor.util.toLowerCasePreservingASCIIRules
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toLocalDate
 import world.respect.shared.domain.report.model.ReportXAxis
@@ -22,7 +23,8 @@ class DateGraphFormatter(
             when (xAxisType) {
                 ReportXAxis.MONTH -> {
                     val date = LocalDate.parse(value)
-                    StringUiText("${date.month} - ${date.year}")
+                    val monthShortName = date.month.name.take(3).replaceFirstChar { it.lowercase() }.toLowerCasePreservingASCIIRules()
+                    StringUiText("$monthShortName - ${date.year}")
                 }
 
                 ReportXAxis.YEAR -> StringUiText(value.toLocalDate().year.toString())

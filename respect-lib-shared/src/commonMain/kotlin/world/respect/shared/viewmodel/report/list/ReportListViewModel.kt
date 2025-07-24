@@ -3,9 +3,6 @@ package world.respect.shared.viewmodel.report.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,16 +12,12 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
+import world.respect.datalayer.respect.EmptyPagingSource
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
 import world.respect.shared.domain.report.model.ReportOptions
-import world.respect.shared.domain.report.model.ReportPeriodOption
-import world.respect.shared.domain.report.model.ReportSeries
-import world.respect.shared.domain.report.model.ReportSeriesVisualType
-import world.respect.shared.domain.report.model.ReportSeriesYAxis
-import world.respect.shared.domain.report.model.ReportXAxis
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
@@ -57,9 +50,10 @@ class ReportListViewModel(
     private val _uiState = MutableStateFlow(ReportListUiState())
     val uiState: Flow<ReportListUiState> = _uiState.asStateFlow()
 
+    private val pagingSourceFactory: () -> PagingSource<Int, RespectReport> = {
+        respectReportDataSource.getReportsPagingSource()
+    }
     private val activeUserPersonUid: Long = 0
-    private val pagingSourceFactory: () -> PagingSource<Int, RespectReport> =
-        { DummyReportPagingSource() }
 
     init {
         viewModelScope.launch {
@@ -82,13 +76,14 @@ class ReportListViewModel(
                     )
                 )
             }
+
+            // Initialize paging data
             _uiState.update { prev ->
                 prev.copy(
                     reportList = pagingSourceFactory,
                     activeUserPersonUid = activeUserPersonUid
                 )
             }
-
         }
     }
 
@@ -99,47 +94,43 @@ class ReportListViewModel(
                 ReportOptions.serializer(),
                 report.reportOptions
             )
-
-            // Generate realistic dummy data for the last 7 days
-            val daysOfWeek = listOf(
-                "15-06-2025",
-                "16-06-2025",
-                "17-06-2025",
-                "18-06-2025",
-                "19-06-2025",
-                "20-06-2025",
-                "21-06-2025"
+            // TODO: Replace with actual request parameters
+            val request = RunReportUseCase.RunReportRequest(
+                reportUid = 0L,
+                reportOptions = reportOptions,
+                accountPersonUid = 0L, // TODO: Get actual user ID
+                timeZone = TimeZone.currentSystemDefault()
             )
-            val dummyResults = daysOfWeek.mapIndexed { dayIndex, dayName ->
-                reportOptions.series.map { series ->
-                    StatementReportRow(
-                        xAxis = dayName,
-                        subgroup = series.reportSeriesTitle,
-                        yAxis = when (series.reportSeriesYAxis) {
-                            ReportSeriesYAxis.TOTAL_DURATION -> (4..12).random() * 3600.0 // 4-12 hours
-                            ReportSeriesYAxis.AVERAGE_DURATION -> (30..120).random() * 60.0 // 30-120 minutes
-                            ReportSeriesYAxis.NUMBER_SESSIONS -> (1..10).random()
-                                .toDouble() // 1-10 sessions
-                            else -> (1..100).random().toDouble()
-                        }
+            // TODO: Replace with actual report results from database
+            val mockReportResult = RunReportUseCase.RunReportResult(
+                results = listOf(
+                    listOf(
+                        StatementReportRow(120383.0, "2023-01-01", "2"),
+                        StatementReportRow(183248.0, "2023-01-02", "1"),
+                        StatementReportRow(9732.0, "2023-01-03", "1"),
+                        StatementReportRow(2187324.0, "2023-01-04", "2"),
+                        StatementReportRow(187423.0, "2023-01-05", "1"),
+                        StatementReportRow(33033.0, "2023-01-06", "2"),
+                        StatementReportRow(2362.0, "2023-01-07", "1")
+                    ),
+                    // Second series data
+                    listOf(
+                        StatementReportRow(6324.0, "2023-01-01", "1"),
+                        StatementReportRow(9730.0, "2023-01-02", "1"),
+                        StatementReportRow(43325.0, "2023-01-03", "2"),
+                        StatementReportRow(18325.0, "2023-01-04", "1"),
+                        StatementReportRow(753874.0, "2023-01-05", "2"),
+                        StatementReportRow(03847.0, "2023-01-06", "2"),
+                        StatementReportRow(023783.0, "2023-01-07", "2")
                     )
-                }
-            }
-
-            val reportResult = RunReportUseCase.RunReportResult(
-                timestamp = Clock.System.now().toEpochMilliseconds(),
-                request = RunReportUseCase.RunReportRequest(
-                    reportUid = report.reportId.toLong(),
-                    reportOptions = reportOptions,
-                    accountPersonUid = activeUserPersonUid,
-                    timeZone = TimeZone.currentSystemDefault()
                 ),
-                results = dummyResults,
+                timestamp = System.currentTimeMillis(),
+                request = request,
+                age = 0
             )
 
-            // Create formatters for the graph axes
             val xAxisFormatter = createGraphFormatterUseCase(
-                reportResult = reportResult,
+                reportResult = mockReportResult,
                 options = CreateGraphFormatterUseCase.FormatterOptions(
                     paramType = String::class,
                     axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
@@ -147,29 +138,27 @@ class ReportListViewModel(
             )
 
             val yAxisFormatter = createGraphFormatterUseCase(
-                reportResult = reportResult,
+                reportResult = mockReportResult,
                 options = CreateGraphFormatterUseCase.FormatterOptions(
                     paramType = Double::class,
                     axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
                 )
             )
 
-            // Emit the combined result
             emit(
                 RunReportResultAndFormatters(
-                    reportResult = reportResult,
+                    reportResult = mockReportResult,
                     xAxisFormatter = xAxisFormatter,
                     yAxisFormatter = yAxisFormatter
                 )
             )
 
         } catch (e: Exception) {
-            // Handle errors and emit an empty result with error state
             val errorResult = RunReportUseCase.RunReportResult(
                 timestamp = Clock.System.now().toEpochMilliseconds(),
                 request = RunReportUseCase.RunReportRequest(
                     reportUid = report.reportId.toLong(),
-                    reportOptions = ReportOptions(), // Empty options in error case
+                    reportOptions = ReportOptions(),
                     accountPersonUid = activeUserPersonUid,
                     timeZone = TimeZone.currentSystemDefault()
                 ),
@@ -195,7 +184,6 @@ class ReportListViewModel(
                 ReportEdit.create(0L)
             )
         )
-
     }
 
     fun onClickEntry(entry: RespectReport) {
@@ -208,60 +196,5 @@ class ReportListViewModel(
 
     fun onRemoveReport(uid: Long) {
         // Implement remove functionality
-    }
-}
-
-
-class DummyReportPagingSource : PagingSource<Int, RespectReport>() {
-    override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, RespectReport> {
-        val dummyReports = List(3) { index ->
-            RespectReport(
-                reportId = (index + 1).toString(),
-                title = "Report ${index + 1}",
-                reportOptions = Json.encodeToString(
-                    ReportOptions.serializer(),
-                    ReportOptions(
-                        title = "Sample Report $index",
-                        xAxis = ReportXAxis.DAY,
-                        period = ReportPeriodOption.LAST_WEEK.period,
-                        series = List(3) { seriesIndex ->
-                            ReportSeries(
-                                reportSeriesTitle = "Series ${seriesIndex + 1}",
-                                reportSeriesUid = seriesIndex + 1,
-                                reportSeriesYAxis = when (seriesIndex % 3) {
-                                    0 -> ReportSeriesYAxis.TOTAL_DURATION
-                                    1 -> ReportSeriesYAxis.AVERAGE_DURATION
-                                    else -> ReportSeriesYAxis.NUMBER_SESSIONS
-                                },
-                                reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
-                                reportSeriesSubGroup = ReportXAxis.DAY
-                            )
-                        }
-                    )
-                ),
-                reportIsTemplate = index % 3 == 0,
-            )
-        }
-
-        return _root_ide_package_.app.cash.paging.PagingSourceLoadResultPage(
-            data = dummyReports,
-            prevKey = null,
-            nextKey = null
-        )
-    }
-
-    override fun getRefreshKey(state: PagingState<Int, RespectReport>): Int? = null
-}
-
-class EmptyPagingSource<Key : Any, Value : Any> : PagingSource<Key, Value>() {
-    // TODO: Consider if this is needed in production or just for testing
-    override fun getRefreshKey(state: PagingState<Key, Value>): Key? = null
-
-    override suspend fun load(params: PagingSourceLoadParams<Key>): PagingSourceLoadResult<Key, Value> {
-        return _root_ide_package_.app.cash.paging.PagingSourceLoadResultPage<Key, Value>(
-            emptyList(),
-            null,
-            null
-        ) as PagingSourceLoadResult<Key, Value>
     }
 }
