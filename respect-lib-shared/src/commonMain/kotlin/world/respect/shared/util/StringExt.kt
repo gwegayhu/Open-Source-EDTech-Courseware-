@@ -1,7 +1,13 @@
 package world.respect.shared.util
 
+fun String.firstNonWhiteSpaceChar(): Char? {
+    val index = indexOfFirst { !it.isWhitespace() }
+    return if(index != -1)
+        this[index]
+    else
+        null
+}
 
-fun String.requirePostfix(
-    postFix: String,
-    ignoreCase: Boolean = false
-) = if(this.endsWith(postFix, ignoreCase)) this else "$this$postFix"
+fun String.initial(): String {
+    return firstNonWhiteSpaceChar()?.uppercase() ?: ""
+}
