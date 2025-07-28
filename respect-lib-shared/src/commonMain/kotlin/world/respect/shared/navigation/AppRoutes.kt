@@ -31,6 +31,9 @@ object Clazz : RespectAppRoute
 object Report : RespectAppRoute
 
 @Serializable
+object ReportTemplateList : RespectAppRoute
+
+@Serializable
 class ReportEdit private constructor(
     private val reportUidStr: String
 ) : RespectAppRoute {

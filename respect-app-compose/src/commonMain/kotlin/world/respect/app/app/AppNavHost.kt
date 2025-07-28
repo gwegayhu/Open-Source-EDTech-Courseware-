@@ -18,6 +18,7 @@ import world.respect.app.view.learningunit.list.LearningUnitListScreen
 import world.respect.app.view.report.detail.ReportDetailScreen
 import world.respect.app.view.report.edit.ReportEditScreen
 import world.respect.app.view.report.list.ReportListScreen
+import world.respect.app.view.report.list.ReportTemplateListScreen
 import world.respect.shared.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
@@ -38,10 +39,12 @@ import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportTemplateList
 import world.respect.shared.navigation.RespectComposeNavController
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
+import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
 
 @Composable
@@ -120,6 +123,13 @@ fun AppNavHost(
                 navController = respectNavController
             )
             ReportListScreen(navController = navController, viewModel = viewModel)
+        }
+        composable<ReportTemplateList> {
+            val viewModel: ReportTemplateListViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            ReportTemplateListScreen(navController = navController, viewModel = viewModel)
         }
 
         composable<RespectAppList> {

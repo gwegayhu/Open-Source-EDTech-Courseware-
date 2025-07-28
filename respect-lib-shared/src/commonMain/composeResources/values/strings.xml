@@ -76,6 +76,9 @@
     <string name="field_required_prompt">Field required prompt</string>
     <string name="quantity_must_be_at_least_1">Quantity must be at least 1</string>
     <string name="untitled_report">Untitled Report</string>
+    <string name="select_template">Select template</string>
+    <string name="done">Done</string>
+
 
     <!-- Conditions -->
     <string name="equals">= Equals</string>

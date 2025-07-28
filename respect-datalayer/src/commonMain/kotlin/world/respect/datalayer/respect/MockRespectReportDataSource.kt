@@ -69,6 +69,26 @@ class MockRespectReportDataSource : RespectReportDataSource {
         }
     }
 
+    override fun getTemplateReportsPagingSource(): PagingSource<Int, RespectReport> {
+        return object : PagingSource<Int, RespectReport>() {
+            override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, RespectReport> {
+                val templateReports = mockReports.filter { it.reportIsTemplate }
+                return _root_ide_package_.app.cash.paging.PagingSourceLoadResultPage(
+                    data = templateReports,
+                    prevKey = null,
+                    nextKey = null
+                )
+            }
+
+            override fun getRefreshKey(state: PagingState<Int, RespectReport>): Int? {
+                return state.anchorPosition?.let { anchorPosition ->
+                    state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                        ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+                }
+            }
+        }
+    }
+
     override fun getAllReportsAsFlow(): Flow<DataLoadState<RespectReport>> {
         return flowOf(
             DataReadyState(

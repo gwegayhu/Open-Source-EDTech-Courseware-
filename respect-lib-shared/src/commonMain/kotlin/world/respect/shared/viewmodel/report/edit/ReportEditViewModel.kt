@@ -21,6 +21,7 @@ import world.respect.shared.domain.report.model.ReportSeriesYAxis
 import world.respect.shared.ext.replace
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_a_new_report
+import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_report
 import world.respect.shared.generated.resources.field_required_prompt
 import world.respect.shared.generated.resources.quantity_must_be_at_least_1
@@ -29,6 +30,7 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.viewmodel.RespectViewModel
+import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
 
@@ -72,6 +74,16 @@ class ReportEditViewModel(
                 AppUiState(
                     title = title,
                     hideBottomNavigation = false
+                )
+            }
+            _appUiState.update { prev ->
+                prev.copy(
+                    actionBarButtonState = ActionBarButtonUiState(
+                        visible = true,
+                        text =   getString(resource = Res.string.done),
+                        onClick = this@ReportEditViewModel::onClickSave
+                    ),
+                    userAccountIconVisible = false
                 )
             }
 

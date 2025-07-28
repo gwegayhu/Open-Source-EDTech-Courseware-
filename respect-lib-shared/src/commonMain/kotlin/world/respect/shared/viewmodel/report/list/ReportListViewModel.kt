@@ -25,7 +25,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.report
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
-import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportTemplateList
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
@@ -34,7 +34,6 @@ import kotlin.time.ExperimentalTime
 
 data class ReportListUiState(
     val reportList: () -> PagingSource<Int, RespectReport> = { EmptyPagingSource() },
-    val addSheetOrDialogVisible: Boolean = false,
     val activeUserPersonUid: Long = 0L,
     val xAxisFormatter: GraphFormatter<String>? = null,
     val yAxisFormatter: GraphFormatter<Double>? = null
@@ -181,7 +180,7 @@ class ReportListViewModel(
     fun onClickAdd() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportEdit.create(0L)
+                ReportTemplateList
             )
         )
     }

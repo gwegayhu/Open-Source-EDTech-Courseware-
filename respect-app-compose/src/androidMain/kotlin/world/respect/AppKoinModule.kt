@@ -61,6 +61,7 @@ import world.respect.shared.domain.report.query.RunReportUseCaseDatabaseImpl
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
+import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
 
 @Suppress("unused")
@@ -130,6 +131,7 @@ val appKoinModule = module {
     viewModelOf(::ReportDetailViewModel)
     viewModelOf(::ReportEditViewModel)
     viewModelOf(::ReportListViewModel)
+    viewModelOf(::ReportTemplateListViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

@@ -48,7 +48,8 @@ fun CombinedGraph(
     reportResult: RunReportUseCase.RunReportResult,
     modifier: Modifier = Modifier,
     xAxisFormatter: GraphFormatter<String>?,
-    yAxisFormatter: GraphFormatter<Double>?
+    yAxisFormatter: GraphFormatter<Double>?,
+    isSmallSize: Boolean = false
 ) {
     val colorMap: Map<RunReportUseCase.RunReportResult.Subgroup, Color> =
         remember(reportResult.timestamp) {
@@ -70,44 +71,52 @@ fun CombinedGraph(
             minimumMajorTickIncrement = 1f
         ),
         xAxisLabels = {
-            xAxisFormatter?.format(it)?.let { uiText ->
-                Text(
-                    text = uiText.asString(),
-                    modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
-                    fontSize = MaterialTheme.typography.labelSmall.fontSize,
-                    maxLines = 1
-                )
+            if (!isSmallSize) {
+                xAxisFormatter?.format(it)?.let { uiText ->
+                    Text(
+                        text = uiText.asString(),
+                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
+                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                        maxLines = 1
+                    )
+                }
             }
         },
         xAxisTitle = {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(reportResult.request.reportOptions.xAxis.label),
-                )
+            if (!isSmallSize) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = stringResource(reportResult.request.reportOptions.xAxis.label),
+                    )
+                }
             }
         },
         yAxisLabels = {
-            val value = yAxisFormatter?.adjust(it.toDouble()) ?: 0.0
-            val formattedText = yAxisFormatter?.format(value)
-            if (formattedText != null) {
-                Text(
-                    text = formattedText.asString(),
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    fontSize = MaterialTheme.typography.labelSmall.fontSize
-                )
+            if (!isSmallSize) {
+                val value = yAxisFormatter?.adjust(it.toDouble()) ?: 0.0
+                val formattedText = yAxisFormatter?.format(value)
+                if (formattedText != null) {
+                    Text(
+                        text = formattedText.asString(),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        fontSize = MaterialTheme.typography.labelSmall.fontSize
+                    )
+                }
             }
         },
         yAxisTitle = {
-            Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = if (reportResult.yAxisType == YAxisTypes.DURATION) {
-                        stringResource(Res.string.duration) + getDurationUnitTitle(reportResult.yRange.endInclusive)
-                    } else {
-                        stringResource(Res.string.count)
-                    },
-                    modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                )
+            if (!isSmallSize) {
+                Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = if (reportResult.yAxisType == YAxisTypes.DURATION) {
+                            stringResource(Res.string.duration) + getDurationUnitTitle(reportResult.yRange.endInclusive)
+                        } else {
+                            stringResource(Res.string.count)
+                        },
+                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                    )
+                }
             }
         }
     ) {

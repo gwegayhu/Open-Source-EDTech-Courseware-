@@ -14,4 +14,7 @@ interface RespectReportDataSource {
     suspend fun putReport(report: RespectReport)
 
     fun getReportsPagingSource(): PagingSource<Int, RespectReport>
+
+    fun getTemplateReportsPagingSource(): PagingSource<Int, RespectReport>
+
 }
