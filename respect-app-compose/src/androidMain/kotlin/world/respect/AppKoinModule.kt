@@ -41,6 +41,14 @@ import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectDatabase
 import world.respect.datalayer.http.RespectAppDataSourceHttp
 import world.respect.datalayer.repository.RespectAppDataSourceRepository
+import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
+import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
+import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
+import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
+import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
+import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
+import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
+import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
@@ -52,6 +60,8 @@ import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroi
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
+import org.koin.core.qualifier.named
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.datalayer.respect.MockRespectReportDataSource
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
@@ -68,6 +78,7 @@ import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
 
 const val SHARED_PREF_SETTINGS_NAME = "respect_settings"
+const val TAG_TMP_DIR = "tmpDir"
 
 val appKoinModule = module {
     single<Json> {
@@ -128,6 +139,14 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
+    viewModelOf(::AcknowledgementViewModel)
+    viewModelOf(::JoinClazzWithCodeViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::ConfirmationViewModel)
+    viewModelOf(::SignupViewModel)
+    viewModelOf(::TermsAndConditionViewModel)
+    viewModelOf(::WaitingForApprovalViewModel)
+    viewModelOf(::CreateAccountViewModel)
     viewModelOf(::ReportDetailViewModel)
     viewModelOf(::ReportEditViewModel)
     viewModelOf(::ReportListViewModel)
@@ -193,6 +212,24 @@ val appKoinModule = module {
         OkHttpWebViewClient(
             okHttpClient = get()
         )
+    }
+    single(named(TAG_TMP_DIR)) {
+        File(androidContext().applicationContext.cacheDir, "tmp").apply { mkdirs() }
+    }
+
+    single<RespectAccountManager> {
+        RespectAccountManager(
+            settings = get(),
+            json = get(),
+        )
+    }
+
+    //Uncomment to switch to using real datasource
+    single<GetInviteInfoUseCase> {
+        MockGetInviteInfoUseCase()
+    }
+    single<SubmitRedeemInviteRequestUseCase> {
+        MockSubmitRedeemInviteRequestUseCase()
     }
 
     single<RespectAppDataSourceProvider> {

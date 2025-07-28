@@ -144,15 +144,13 @@ fun RespectAppBar(
                     Text(appUiState.actionBarButtonState.text ?: "")
                 }
             }
-            if (appUiState.userAccountIconVisible) {
+            if(appUiState.userAccountIconVisible) {
                 IconButton(
                     onClick = onProfileClick,
                     modifier = Modifier.testTag("profile_icon")
                 ) {
-                    Icon(
-                        Icons.Default.Person,
-                        contentDescription = null
-                    )
+                    Icon(Icons.Default.Person,
+                        contentDescription =null)
                 }
             }
         },
