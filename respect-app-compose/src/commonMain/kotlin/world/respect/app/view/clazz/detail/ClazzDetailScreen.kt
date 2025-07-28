@@ -106,7 +106,7 @@ fun ClazzDetailScreen(
 
         itemsIndexed(
             //dummy list
-            listOf("Micky", "Mouse", "Bunny"),
+            uiState.listOfTeachers,
             key = { index, name -> "teacher_$index" }
         ) { _, name ->
             ListItem(
@@ -178,7 +178,7 @@ fun ClazzDetailScreen(
 
         itemsIndexed(
             //dummy list
-            listOf("Micky", "Mouse"),
+            uiState.listOfTeachers,
             key = { index, name -> "student_$index" }
         ) { _, name ->
             ListItem(

@@ -12,7 +12,8 @@ import world.respect.shared.generated.resources.accept_invite
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class AcceptInviteUiState(
-    val name: String = ""
+    val name: String = "",
+    val listOfStudents: List<String> = listOf("Micky", "Mouse", "Bunny")
 )
 
 class AcceptInviteViewModel(

@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -26,9 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import world.respect.app.app.RespectAsyncImage
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteUiState
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.description
 
 @Composable
 fun AcceptInviteScreen(
@@ -50,7 +52,7 @@ fun AcceptInviteScreen(
     ) {
 
         itemsIndexed(
-            listOf("Micky", "Mouse", "Bunny"),
+            uiState.listOfStudents,
             key = { index, name -> "invite_$index" }
         ) { _, name ->
             ListItem(
@@ -75,7 +77,7 @@ fun AcceptInviteScreen(
                     Text(text = name)
                 },
                 supportingContent = {
-                    Text(text = "Description")
+                    Text(text = stringResource(Res.string.description))
                 },
                 trailingContent = {
                     Row {

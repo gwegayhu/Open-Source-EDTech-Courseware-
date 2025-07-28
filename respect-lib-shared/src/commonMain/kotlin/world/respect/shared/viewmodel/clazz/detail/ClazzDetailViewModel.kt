@@ -9,8 +9,9 @@ import world.respect.shared.navigation.Student
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class ClazzDetailUiState(
-    val teachers: List<String> = emptyList(),
-)
+    val listOfTeachers: List<String> = listOf("Micky", "Mouse", "Bunny"),
+
+    )
 
 class ClazzDetailViewModel(
     savedStateHandle: SavedStateHandle,
