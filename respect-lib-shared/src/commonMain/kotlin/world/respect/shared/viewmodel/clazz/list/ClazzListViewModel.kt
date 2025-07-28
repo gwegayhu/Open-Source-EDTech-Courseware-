@@ -12,6 +12,7 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.clazz
+import world.respect.shared.navigation.AddClazz
 import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.RespectViewModel
@@ -53,7 +54,7 @@ class ClazzListViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ClazzDetail
+                                    AddClazz
                                 )
                             )
                         }

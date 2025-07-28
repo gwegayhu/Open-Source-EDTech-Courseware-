@@ -47,6 +47,8 @@ import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
+import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
+
 
 import world.respect.shared.domain.storage.CachePathsProviderAndroid
 import world.respect.shared.domain.storage.GetAndroidSdCardDirUseCase
@@ -118,6 +120,7 @@ val appKoinModule = module {
     viewModelOf(::AppListViewModel)
     viewModelOf(::AssignmentViewModel)
     viewModelOf(::ClazzListViewModel)
+    viewModelOf(::AddClazzViewModel)
     viewModelOf(::ClazzDetailViewModel)
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)
@@ -195,7 +198,7 @@ val appKoinModule = module {
                     respectDatabase = Room.databaseBuilder<RespectDatabase>(
                         appContext, appContext.getDatabasePath("respect.db").absolutePath
                     ).setDriver(BundledSQLiteDriver())
-                    .build(),
+                        .build(),
                     json = get(),
                     xxStringHasher = get(),
                     primaryKeyGenerator = PrimaryKeyGenerator(RespectDatabase.TABLE_IDS),
