@@ -23,6 +23,7 @@ import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.report
+import world.respect.shared.generated.resources.reports
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportTemplateList
@@ -59,7 +60,7 @@ class ReportListViewModel(
             _appUiState.update { prev ->
                 prev.copy(
                     navigationVisible = true,
-                    title = getString(resource = Res.string.report),
+                    title = getString(resource = Res.string.reports),
                     fabState = FabUiState(
                         text = getString(resource = Res.string.report),
                         icon = FabUiState.FabIcon.ADD,

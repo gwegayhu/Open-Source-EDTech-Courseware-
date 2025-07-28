@@ -35,6 +35,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectDateField
+import world.respect.app.components.uiTextStringResource
 import world.respect.app.util.ext.defaultItemPadding
 import world.respect.shared.domain.report.model.FixedReportTimeRange
 import world.respect.shared.domain.report.model.OptionWithLabelStringResource
@@ -115,7 +116,9 @@ private fun ReportEditScreen(
                 isError = uiState.submitted && uiState.reportTitleError != null,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 supportingText = {
-                    Text(uiState.reportTitleError ?: stringResource(Res.string.required))
+                    uiState.reportTitleError?.let {
+                        Text(uiTextStringResource(it))
+                    }
                 }
             )
 
@@ -160,7 +163,9 @@ private fun ReportEditScreen(
                 isError = uiState.submitted && uiState.timeRangeError != null && selected == null,
                 supportingText = {
                     if (selected == null) {
-                        Text(uiState.timeRangeError ?: stringResource(Res.string.required))
+                        uiState.timeRangeError?.let {
+                            Text(uiTextStringResource(it))
+                        }
                     } else {
                         Text("")
                     }
@@ -177,7 +182,9 @@ private fun ReportEditScreen(
                         val updatedOptions = uiState.reportOptions.copy(period = newRange)
                         onReportChanged(updatedOptions)
                     },
-                    quantityError = uiState.quantityError
+                    quantityError = uiState.quantityError?.let {
+                        uiTextStringResource(it)
+                    }
                 )
             }
 
@@ -205,7 +212,9 @@ private fun ReportEditScreen(
                 },
                 isError = uiState.submitted && uiState.xAxisError != null,
                 supportingText = {
-                    Text(uiState.xAxisError ?: stringResource(Res.string.required))
+                    uiState.xAxisError?.let {
+                        Text(uiTextStringResource(it))
+                    }
                 }
             )
         }
@@ -246,10 +255,9 @@ private fun ReportEditScreen(
                             },
                             isError = uiState.submitted && uiState.seriesTitleErrors[seriesItem.reportSeriesUid] != null,
                             supportingText = {
-                                Text(
-                                    uiState.seriesTitleErrors[seriesItem.reportSeriesUid]
-                                        ?: stringResource(Res.string.required)
-                                )
+                                uiState.seriesTitleErrors[seriesItem.reportSeriesUid]?.let {
+                                    Text(uiTextStringResource(it))
+                                }
                             },
                         )
                         if (!uiState.hasSingleSeries) {
@@ -276,10 +284,9 @@ private fun ReportEditScreen(
                         },
                         isError = uiState.submitted && uiState.yAxisErrors[seriesItem.reportSeriesUid] != null,
                         supportingText = {
-                            Text(
-                                uiState.yAxisErrors[seriesItem.reportSeriesUid]
-                                    ?: stringResource(Res.string.required)
-                            )
+                            uiState.yAxisErrors[seriesItem.reportSeriesUid]?.let {
+                                Text(uiTextStringResource(it))
+                            }
                         },
                         disabledOptions = if (uiState.reportOptions.series.size > 1) {
                             requiredYAxisType?.let { requiredType ->
@@ -323,10 +330,9 @@ private fun ReportEditScreen(
                             onSeriesChanged(updatedSeries)
                         },
                         supportingText = {
-                            Text(
-                                uiState.chartTypeError[seriesItem.reportSeriesUid]
-                                    ?: stringResource(Res.string.required)
-                            )
+                            uiState.chartTypeError[seriesItem.reportSeriesUid]?.let {
+                                Text(uiTextStringResource(it))
+                            }
                         },
                         isError = uiState.submitted && uiState.chartTypeError[seriesItem.reportSeriesUid] != null,
                     )

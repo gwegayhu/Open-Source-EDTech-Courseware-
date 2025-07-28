@@ -16,7 +16,8 @@
     <string name="app">App</string>
     <string name="assignments">Assignments</string>
     <string name="clazz">Classes</string>
-    <string name="report">Reports</string>
+    <string name="report">Report</string>
+    <string name="reports">Reports</string>
     <string name="select_app">Select app</string>
     <string name="enter_link">Enter link</string>
     <string name="add">Add</string>
@@ -143,8 +144,6 @@
     <string name="quantity_must_be_at_least_1">Quantity must be at least 1</string>
     <string name="untitled_report">Untitled Report</string>
     <string name="select_template">Select template</string>
-    <string name="done">Done</string>
-
 
     <!-- Conditions -->
     <string name="equals">= Equals</string>
@@ -155,11 +154,6 @@
     <string name="not_in_list">Not In List</string>
     <string name="greater_or_equal">&gt; = Greater Than or Equal</string>
     <string name="lesser_or_equal">&lt; = Less Than or Equal</string>
-
-    <!-- Gender Options -->
-    <string name="other">Other</string>
-    <string name="male">Male</string>
-    <string name="female">Female</string>
 
     <!-- Export Options -->
     <string name="export_data">Export data</string>
@@ -213,10 +207,5 @@
 
     <!-- Actions -->
     <string name="delete">Delete</string>
-
-    <!-- Date Field Strings -->
-    <string name="select_date">Select date</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
 
 </resources>
