@@ -28,6 +28,9 @@ object Assignment : RespectAppRoute
 object Clazz : RespectAppRoute
 
 @Serializable
+object AddClazz : RespectAppRoute
+
+@Serializable
 object ClazzDetail : RespectAppRoute
 
 @Serializable

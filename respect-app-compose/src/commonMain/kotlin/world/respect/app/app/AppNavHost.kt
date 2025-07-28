@@ -13,6 +13,7 @@ import world.respect.app.view.assignments.AssignmentScreen
 import world.respect.app.view.clazz.list.ClazzListScreen
 import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.clazz.acceptinvite.AcceptInviteScreen
+import world.respect.app.view.clazz.addclazz.AddClazzScreen
 import world.respect.app.view.clazz.detail.ClazzDetailScreen
 import world.respect.app.view.clazz.student.StudentScreen
 import world.respect.app.view.report.ReportScreen
@@ -29,6 +30,7 @@ import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewMode
 import world.respect.shared.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.shared.navigation.AcceptInvite
+import world.respect.shared.navigation.AddClazz
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.AppsDetail
@@ -42,6 +44,7 @@ import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
 import world.respect.shared.navigation.Student
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
+import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
 import world.respect.shared.viewmodel.clazz.student.StudentViewModel
@@ -101,6 +104,16 @@ fun AppNavHost(
                 navController = respectNavController
             )
             ClazzListScreen(
+                viewModel = viewModel
+            )
+        }
+
+        composable<AddClazz> {
+            val viewModel: AddClazzViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            AddClazzScreen(
                 viewModel = viewModel
             )
         }
