@@ -1,6 +1,5 @@
 package world.respect.app.view.clazz.list
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,10 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -34,14 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ustadmobile.libuicompose.theme.black
 import world.respect.app.app.RespectAsyncImage
 import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
+import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
 
 @Composable
 fun ClazzListScreen(
@@ -68,7 +64,7 @@ fun ClazzListScreen(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
         val filterList = uiState.clazzFilter
-        val selectedFilter = uiState.selectedFilterTitle ?: filterList.firstOrNull().orEmpty()
+        val selectedFilter = uiState.selectedFilterTitle?.takeIf { it.isNotBlank() } ?: NAME
 
         if (filterList.isNotEmpty()) {
             var expanded by remember { mutableStateOf(false) }
@@ -78,8 +74,6 @@ fun ClazzListScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .border(1.dp, black, shape = RoundedCornerShape(6.dp))
-                        .clip(CircleShape)
                         .clickable { expanded = true }
                         .padding(horizontal = 4.dp)
                 ) {
@@ -88,7 +82,7 @@ fun ClazzListScreen(
                     ) {
                         Text(text = selectedFilter)
                         Icon(
-                            imageVector = Icons.Filled.ArrowDropDown,
+                            imageVector = Icons.Filled.ArrowDownward,
                             modifier = Modifier.padding(6.dp),
                             contentDescription = null
                         )

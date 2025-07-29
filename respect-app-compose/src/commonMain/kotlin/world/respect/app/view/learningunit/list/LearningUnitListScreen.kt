@@ -1,6 +1,5 @@
 package world.respect.app.view.learningunit.list
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
@@ -86,8 +83,6 @@ fun LearningUnitListScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .border(1.dp, black, shape = RoundedCornerShape(6.dp))
-                        .clip(CircleShape)
                         .clickable { expanded = true }
                         .padding(horizontal = 4.dp)
                 ) {

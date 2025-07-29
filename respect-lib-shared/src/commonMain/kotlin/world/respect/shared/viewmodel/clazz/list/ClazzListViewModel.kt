@@ -76,7 +76,7 @@ class ClazzListViewModel(
     }
 
     companion object {
-        val CLAZZ_LIST = "clazz_list"
+        val NAME = "Name"
     }
 }
 
