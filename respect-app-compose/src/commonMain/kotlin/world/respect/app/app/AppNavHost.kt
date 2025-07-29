@@ -24,6 +24,7 @@ import world.respect.app.view.manageuser.termsandcondition.TermsAndConditionScre
 import world.respect.app.view.manageuser.waitingforapproval.WaitingForApprovalScreen
 import world.respect.app.view.report.detail.ReportDetailScreen
 import world.respect.app.view.report.edit.ReportEditScreen
+import world.respect.app.view.report.indictor.IndictorEditScreen
 import world.respect.app.view.report.list.ReportListScreen
 import world.respect.app.view.report.list.ReportTemplateListScreen
 import world.respect.app.viewmodel.respectViewModel
@@ -41,6 +42,7 @@ import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportIndictorEdit
 import world.respect.shared.navigation.ReportTemplateList
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
@@ -67,6 +69,7 @@ import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndCondi
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
+import world.respect.shared.viewmodel.report.indictor.IndictorEditViewmodel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
 import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
@@ -175,6 +178,13 @@ fun AppNavHost(
                 navController = respectNavController
             )
             ReportTemplateListScreen(navController = navController, viewModel = viewModel)
+        }
+        composable<ReportIndictorEdit> {
+            val viewModel: IndictorEditViewmodel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            IndictorEditScreen(navController = navController, viewModel = viewModel)
         }
 
         composable<RespectAppList> {

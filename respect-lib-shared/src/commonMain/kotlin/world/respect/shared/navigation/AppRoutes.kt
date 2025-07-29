@@ -47,6 +47,10 @@ object Report : RespectAppRoute
 object ReportTemplateList : RespectAppRoute
 
 @Serializable
+object ReportIndictorEdit : RespectAppRoute
+
+
+@Serializable
 class ReportEdit private constructor(
     private val reportUidStr: String
 ) : RespectAppRoute {

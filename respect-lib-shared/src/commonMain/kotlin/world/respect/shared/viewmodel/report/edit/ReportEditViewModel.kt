@@ -25,15 +25,18 @@ import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_report
 import world.respect.shared.generated.resources.field_required_prompt
 import world.respect.shared.generated.resources.quantity_must_be_at_least_1
+import world.respect.shared.generated.resources.indicator
 import world.respect.shared.generated.resources.series
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportIndictorEdit
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
+import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
 
 data class ReportEditUiState(
@@ -78,6 +81,7 @@ class ReportEditViewModel(
                     hideBottomNavigation = false
                 )
             }
+
             _appUiState.update { prev ->
                 prev.copy(
                     actionBarButtonState = ActionBarButtonUiState(
@@ -85,7 +89,14 @@ class ReportEditViewModel(
                         text = getString(resource = Res.string.done),
                         onClick = this@ReportEditViewModel::onClickSave
                     ),
-                    userAccountIconVisible = false
+                    userAccountIconVisible = false,
+                    navigationVisible = true,
+                    fabState = FabUiState(
+                        text = getString(resource = Res.string.indicator),
+                        icon = FabUiState.FabIcon.ADD,
+                        onClick = {this@ReportEditViewModel.addIndictor()},
+                        visible = true
+                    )
                 )
             }
 
@@ -162,6 +173,13 @@ class ReportEditViewModel(
         }
     }
 
+    fun addIndictor(){
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                ReportIndictorEdit
+            )
+        )
+    }
     fun onClickSave() {
         viewModelScope.launch {
             loadingState = LoadingUiState.INDETERMINATE

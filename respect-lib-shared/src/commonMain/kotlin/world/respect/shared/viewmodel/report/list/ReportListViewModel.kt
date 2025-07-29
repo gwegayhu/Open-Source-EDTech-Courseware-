@@ -65,13 +65,6 @@ class ReportListViewModel(
                         text = getString(resource = Res.string.report),
                         icon = FabUiState.FabIcon.ADD,
                         onClick = { this@ReportListViewModel.onClickAdd() },
-                    )
-                )
-            }
-
-            _appUiState.update { prev ->
-                prev.copy(
-                    fabState = prev.fabState.copy(
                         visible = true
                     )
                 )
