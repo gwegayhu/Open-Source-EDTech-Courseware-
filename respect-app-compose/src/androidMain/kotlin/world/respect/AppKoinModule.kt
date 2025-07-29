@@ -19,6 +19,7 @@ import com.ustadmobile.libcache.webview.OkHttpWebViewClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.Dispatcher
@@ -65,6 +66,12 @@ import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
 import org.koin.core.qualifier.named
+import world.respect.credentials.passkey.CreatePasskeyUseCase
+import world.respect.credentials.passkey.CreatePasskeyUseCaseImpl
+import world.respect.credentials.passkey.EncodeUserHandleUseCaseImpl
+import world.respect.credentials.passkey.request.CreatePublicKeyCredentialCreationOptionsJsonUseCase
+import world.respect.credentials.passkey.request.EncodeUserHandleUseCase
+import world.respect.credentials.passkey.username.CreateCredentialUsernameUseCase
 import world.respect.shared.domain.account.RespectAccountManager
 
 @Suppress("unused")
@@ -211,6 +218,31 @@ val appKoinModule = module {
             settings = get(),
             json = get(),
         )
+    }
+    scope<Url> {
+        scoped<CreatePasskeyUseCase> {
+            CreatePasskeyUseCaseImpl(
+                context = androidContext().applicationContext,
+                json = get(),
+                createPublicKeyJsonUseCase = get()
+            )
+        }
+
+        scoped {
+            CreatePublicKeyCredentialCreationOptionsJsonUseCase(
+                url = get(),
+                createCredentialUsernameUseCase = get(),
+                encodeUserHandleUseCase = get()
+            )
+        }
+
+        scoped {
+            CreateCredentialUsernameUseCase(url = get())
+        }
+
+        scoped<EncodeUserHandleUseCase> {
+            EncodeUserHandleUseCaseImpl(url = get())
+        }
     }
 
     //Uncomment to switch to using real datasource
