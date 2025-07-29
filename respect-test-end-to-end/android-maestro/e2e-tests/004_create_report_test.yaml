@@ -39,3 +39,5 @@ tags:
 - scrollUntilVisible:
     element:
        text: "Test Report"
+    direction: DOWN
+    timeout: 50000
