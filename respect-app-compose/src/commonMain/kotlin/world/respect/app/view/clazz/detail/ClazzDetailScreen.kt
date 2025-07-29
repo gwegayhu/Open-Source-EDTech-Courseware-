@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.AddComment
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -93,7 +94,7 @@ fun ClazzDetailScreen(
                     onClickAcceptInvite()
                 },
                 leadingContent = {
-                    Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.AddComment, contentDescription = null)
                 },
                 headlineContent = {
                     Text(
