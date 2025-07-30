@@ -40,6 +40,10 @@ fun CreateAccountScreen(
             .fillMaxSize()
             .defaultScreenPadding()
     ) {
+        uiState.passkeyError?.let {
+            Text(it)
+        }
+
         OutlinedTextField(
             value = uiState.username,
             onValueChange = onUsernameChanged,

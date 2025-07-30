@@ -50,7 +50,7 @@ kotlin {
         val androidMain by getting
 
         androidMain.dependencies {
-            implementation(project(":respect-credentials"))
+            api(projects.respectCredentials)
             implementation(libs.credentials.androidx)
             implementation(libs.credentialsplay)
             implementation(compose.preview)
