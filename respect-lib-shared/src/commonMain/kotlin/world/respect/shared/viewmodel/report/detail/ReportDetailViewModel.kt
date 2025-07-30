@@ -70,7 +70,7 @@ class ReportDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ReportEdit.create(reportUid)
+                                    ReportEdit.create(reportUid = reportUid)
                                 )
                             )
                         },

@@ -148,6 +148,8 @@
     <string name="indicator_name">Indicator Name</string>
     <string name="description">Description</string>
     <string name="sql">SQL</string>
+    <string name="edit_filters">Edit Filters</string>
+
 
     <!-- Conditions -->
     <string name="equals">= Equals</string>
@@ -161,7 +163,7 @@
 
     <!-- Export Options -->
     <string name="export_data">Export data</string>
-    <string name="graph_data">Graph data</string>
+    <string name="graph_data">Graph Format</string>
     <string name="raw_data">Raw data</string>
 
     <!-- Misc -->

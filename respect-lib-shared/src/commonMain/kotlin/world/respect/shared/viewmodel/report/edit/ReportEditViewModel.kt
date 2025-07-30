@@ -14,6 +14,7 @@ import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
+import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportSeries
 import world.respect.shared.domain.report.model.ReportSeriesVisualType
@@ -30,6 +31,7 @@ import world.respect.shared.generated.resources.series
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportEditFilter
 import world.respect.shared.navigation.ReportIndictorEdit
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
@@ -316,6 +318,42 @@ class ReportEditViewModel(
                 hasSingleSeries = updatedSeriesList.size == 1
             )
         }
+    }
+
+    fun onAddFilter(seriesId: Int = 0) {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                ReportEditFilter
+            )
+        )
+    }
+    private fun onFilterChanged(newFilter: ReportFilter, seriesId: Int) {
+        _uiState.update { prevState ->
+            val updatedSeries = prevState.reportOptions.series.map { series ->
+                if (series.reportSeriesUid == seriesId) {
+                    val currentFilters = series.reportSeriesFilters.orEmpty().toMutableList()
+                    // Check if the filter already exists by UID
+                    val existingIndex = currentFilters.indexOfFirst {
+                        it.reportFilterUid == newFilter.reportFilterUid
+                    }
+                    if (existingIndex != -1) {
+                        // Replace existing filter
+                        currentFilters[existingIndex] = newFilter
+                    } else {
+                        // Append new filter
+                        currentFilters.add(newFilter)
+                    }
+                    series.copy(reportSeriesFilters = currentFilters)
+                } else {
+                    series
+                }
+            }
+
+            prevState.copy(
+                reportOptions = prevState.reportOptions.copy(series = updatedSeries)
+            )
+        }
+        onEntityChanged(_uiState.value.reportOptions)
     }
 
     fun ReportEditUiState.hasErrors(): Boolean {

@@ -1,6 +1,8 @@
 package world.respect.app.view.report.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,17 +11,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ImportExport
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +49,10 @@ import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.empty_data
+import world.respect.shared.generated.resources.export_data
+import world.respect.shared.generated.resources.graph_data
+import world.respect.shared.generated.resources.raw_data
+import world.respect.shared.generated.resources.share
 import world.respect.shared.generated.resources.subgroup_by
 import world.respect.shared.generated.resources.x_axis
 import world.respect.shared.generated.resources.y_axis
@@ -57,10 +73,14 @@ fun ReportDetailScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportDetailScreen(
     uiState: ReportDetailUiState
 ) {
+    val sheetState = rememberModalBottomSheetState()
+    var showExportOptions by remember { mutableStateOf(false) }
+
     Column(Modifier.fillMaxSize()) {
         if (uiState.reportResult?.results?.isNotEmpty() == true) {
             val reportResult = uiState.reportResult
@@ -76,14 +96,34 @@ fun ReportDetailScreen(
                     modifier = Modifier.weight(0.4f),
                     xAxisFormatter = uiState.xAxisFormatter,
                     yAxisFormatter = uiState.yAxisFormatter,
-                    subgroupFormatter = uiState.subgroupFormatter
+                    subgroupFormatter = uiState.subgroupFormatter,
+                    onExportClick = { showExportOptions = true }
                 )
             }
         } else {
             EmptyDataMessage(Modifier.weight(1f))
         }
     }
+
+    if (showExportOptions) {
+        ModalBottomSheet(
+            onDismissRequest = { showExportOptions = false },
+            sheetState = sheetState
+        ) {
+            ExportOptionsBottomSheet(
+                onGraphFormatClick = {
+                    // Handle graph format export
+                    showExportOptions = false
+                },
+                onRawDataClick = {
+                    // Handle raw data export
+                    showExportOptions = false
+                }
+            )
+        }
+    }
 }
+
 
 @Composable
 private fun EmptyDataMessage(modifier: Modifier = Modifier) {
@@ -92,6 +132,90 @@ private fun EmptyDataMessage(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(stringResource(Res.string.empty_data))
+    }
+}
+
+@Composable
+fun MoreOptionsSection(
+    seriesList: List<RunReportUseCase.RunReportResult.Series>,
+    modifier: Modifier = Modifier,
+    xAxisFormatter: GraphFormatter<String>?,
+    yAxisFormatter: GraphFormatter<Double>?,
+    subgroupFormatter: GraphFormatter<String>?,
+    onExportClick: () -> Unit = {}
+) {
+    LazyColumn(modifier = modifier.fillMaxWidth()) {
+        item { HorizontalDivider(thickness = 1.dp) }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Share Option
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        contentDescription = "Share",
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(text = stringResource(Res.string.share))
+                }
+
+                // Export Option
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { onExportClick() }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ImportExport,
+                        contentDescription = "Export data",
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(text = stringResource(Res.string.export_data))
+                }
+            }
+        }
+
+        item { HorizontalDivider(thickness = 1.dp) }
+
+        items(seriesList) { series ->
+            DataTable(
+                data = series.data,
+                reportSeries = series.reportSeriesOptions,
+                xAxisFormatter = xAxisFormatter,
+                yAxisFormatter = yAxisFormatter,
+                subgroupFormatter = subgroupFormatter
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun ExportOptionsBottomSheet(
+    onGraphFormatClick: () -> Unit,
+    onRawDataClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = stringResource(Res.string.graph_data),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.clickable { onGraphFormatClick() }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(Res.string.raw_data),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.clickable { onRawDataClick() }
+        )
     }
 }
 
@@ -204,30 +328,6 @@ fun DataTable(
                 }
                 HorizontalDivider(color = Color.LightGray)
             }
-        }
-    }
-}
-
-@Composable
-fun MoreOptionsSection(
-    seriesList: List<RunReportUseCase.RunReportResult.Series>,
-    modifier: Modifier = Modifier,
-    xAxisFormatter: GraphFormatter<String>?,
-    yAxisFormatter: GraphFormatter<Double>?,
-    subgroupFormatter: GraphFormatter<String>?
-) {
-    LazyColumn(modifier = modifier.fillMaxWidth()) {
-        item { HorizontalDivider(thickness = 1.dp) }
-
-        items(seriesList) { series ->
-            DataTable(
-                data = series.data,
-                reportSeries = series.reportSeriesOptions,
-                xAxisFormatter = xAxisFormatter,
-                yAxisFormatter = yAxisFormatter,
-                subgroupFormatter = subgroupFormatter
-            )
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

@@ -49,12 +49,12 @@ import world.respect.shared.domain.report.model.ReportTimeRangeUnit
 import world.respect.shared.domain.report.model.ReportXAxis
 import world.respect.shared.domain.report.model.YAxisTypes
 import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.add_filter
 import world.respect.shared.generated.resources.add_series
 import world.respect.shared.generated.resources.chart_type
 import world.respect.shared.generated.resources.from
 import world.respect.shared.generated.resources.quantity
 import world.respect.shared.generated.resources.remove
-import world.respect.shared.generated.resources.required
 import world.respect.shared.generated.resources.series_title
 import world.respect.shared.generated.resources.subgroup_by
 import world.respect.shared.generated.resources.time_range
@@ -79,6 +79,7 @@ fun ReportEditScreen(
         onReportChanged = viewModel::onEntityChanged,
         onSeriesChanged = viewModel::onSeriesChanged,
         onAddSeries = viewModel::onAddSeries,
+        onAddFilter = viewModel::onAddFilter,
         onRemoveSeries = viewModel::onRemoveSeries,
     )
 }
@@ -88,6 +89,7 @@ private fun ReportEditScreen(
     uiState: ReportEditUiState = ReportEditUiState(),
     onReportChanged: (ReportOptions) -> Unit = {},
     onAddSeries: () -> Unit = { },
+    onAddFilter: () -> Unit = { },
     onSeriesChanged: (ReportSeries) -> Unit = {},
     onRemoveSeries: (Int) -> Unit = { },
 ) {
@@ -340,7 +342,13 @@ private fun ReportEditScreen(
                 }
             }
         }
-
+        item {
+            Button(onClick = { onAddFilter() }, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = stringResource(Res.string.add_filter),
+                )
+            }
+        }
         item {
             Button(onClick = { onAddSeries() }, modifier = Modifier.fillMaxWidth()) {
                 Text(
