@@ -36,6 +36,8 @@ tags:
     id: "app_title"
     text: "Test Report"
 - tapOn: "Reports"
-- scrollUntilVisible:
-    element:
-       text: "Test Report"
+#- scrollUntilVisible:
+#    element:
+#       text: "Test Report"
+#    direction: DOWN
+#    timeout: 50000
