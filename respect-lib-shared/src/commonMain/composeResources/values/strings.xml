@@ -45,6 +45,7 @@
     <string name="invite_teachers">Invite Teachers</string>">
     <string name="invite_students">Invite Students</string>">
     <string name="accept_invite">Accept Invite</string>">
+    <string name="pending_invite">Pending invites</string>">
     <string name="add_student">Add a student</string>">
     <string name="copy_invite_code">Copy invite code : </string>">
     <string name="share_with_link_or_qr_code">Invite with link or QR code</string>">

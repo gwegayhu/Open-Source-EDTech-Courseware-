@@ -15,9 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.outlined.AddComment
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.app.RespectAsyncImage
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.accept_invite
 import world.respect.shared.generated.resources.invite_students
 import world.respect.shared.generated.resources.invite_teachers
+import world.respect.shared.generated.resources.pending_invite
 import world.respect.shared.generated.resources.students
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
@@ -94,12 +93,12 @@ fun ClazzDetailScreen(
                     onClickAcceptInvite()
                 },
                 leadingContent = {
-                    Icon(imageVector = Icons.Outlined.AddComment, contentDescription = null)
+                    Icon(imageVector = Icons.Default.Group, contentDescription = null)
                 },
                 headlineContent = {
                     Text(
                         text =
-                            stringResource(resource = Res.string.accept_invite)
+                            stringResource(resource = Res.string.pending_invite)
                     )
                 }
             )
@@ -166,12 +165,12 @@ fun ClazzDetailScreen(
                     onClickAcceptInvite()
                 },
                 leadingContent = {
-                    Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                    Icon(imageVector = Icons.Default.Group, contentDescription = null)
                 },
                 headlineContent = {
                     Text(
                         text =
-                            stringResource(resource = Res.string.accept_invite)
+                            stringResource(resource = Res.string.pending_invite)
                     )
                 }
             )
