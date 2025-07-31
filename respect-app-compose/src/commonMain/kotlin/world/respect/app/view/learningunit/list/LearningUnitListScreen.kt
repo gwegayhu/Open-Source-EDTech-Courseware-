@@ -41,7 +41,6 @@ import world.respect.shared.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
-import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel.Companion.ICON
 
 @Composable
