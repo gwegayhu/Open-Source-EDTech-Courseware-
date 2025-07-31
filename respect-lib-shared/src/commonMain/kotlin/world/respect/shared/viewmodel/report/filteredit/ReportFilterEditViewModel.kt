@@ -2,11 +2,11 @@ package world.respect.shared.viewmodel.report.filteredit
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.shared.domain.report.model.FilterType
@@ -17,10 +17,12 @@ import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_filters
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportEditFilter
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
+import kotlin.text.get
 
 data class ReportFilterEditUiState(
     val filters: ReportFilter? = ReportFilter(),
@@ -34,6 +36,8 @@ class ReportFilterEditViewModel(
 
     private val _uiState = MutableStateFlow(ReportFilterEditUiState())
     val uiState: StateFlow<ReportFilterEditUiState> = _uiState
+
+    private val route: ReportEditFilter = savedStateHandle.toRoute()
 
     init {
         loadingState = LoadingUiState.INDETERMINATE
@@ -51,13 +55,18 @@ class ReportFilterEditViewModel(
                 )
             }
         }
+        val existingFilter = route.filter
+        if (existingFilter != null) {
+            handleExistingFilter(existingFilter)
+        } else {
+            handleNewFilter(savedStateHandle)
+        }
+
     }
 
-    private fun handleExistingFilter(existingFilterJson: String) {
+    private fun handleExistingFilter(existingFilter: ReportFilter) {
         try {
-            val existingFilter =
-                Json.decodeFromString(ReportFilter.serializer(), existingFilterJson)
-            _uiState.value = ReportFilterEditUiState(
+               _uiState.value = ReportFilterEditUiState(
                 filters = existingFilter,
                 filterConditionOptions = getConditionOptionsForField(existingFilter.reportFilterField)
             )
@@ -70,8 +79,8 @@ class ReportFilterEditViewModel(
     }
 
     private fun handleNewFilter(savedStateHandle: SavedStateHandle) {
-        val tempFilterUid = 0
-        val seriesUid = 0
+        val tempFilterUid = route.filter?.reportFilterUid ?: 0
+        val seriesUid = route.seriesId
 
         // Assign the temp UID to the new filter
         _uiState.value = if (tempFilterUid != null && seriesUid != null) {
@@ -92,7 +101,7 @@ class ReportFilterEditViewModel(
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     ReportEdit.create(
-                        currentFilter.reportFilterUid.toLong(),
+                        route.reportUid,
                         currentFilter
                     )
                 )

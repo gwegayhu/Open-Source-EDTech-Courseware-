@@ -172,6 +172,12 @@ class ReportEditViewModel(
             } catch (e: Exception) {
                 println("Exception $e")
             }
+            route.filter?.let { filter ->
+                viewModelScope.launch {
+                    val seriesId = filter.reportFilterSeriesUid
+                    onFilterChanged(filter, seriesId)
+                }
+            }
         }
     }
 
@@ -320,28 +326,31 @@ class ReportEditViewModel(
         }
     }
 
-    fun onAddFilter(seriesId: Int = 0) {
+    fun onAddFilter(seriesId: Int) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportEditFilter
+                ReportEditFilter.create(
+                    reportUid = entityUid,
+                    seriesId = seriesId
+                )
             )
         )
     }
-    private fun onFilterChanged(newFilter: ReportFilter, seriesId: Int) {
+    private fun onFilterChanged(newFilter: ReportFilter?, seriesId: Int) {
         _uiState.update { prevState ->
             val updatedSeries = prevState.reportOptions.series.map { series ->
                 if (series.reportSeriesUid == seriesId) {
                     val currentFilters = series.reportSeriesFilters.orEmpty().toMutableList()
                     // Check if the filter already exists by UID
                     val existingIndex = currentFilters.indexOfFirst {
-                        it.reportFilterUid == newFilter.reportFilterUid
+                        it.reportFilterUid == newFilter?.reportFilterUid
                     }
                     if (existingIndex != -1) {
                         // Replace existing filter
-                        currentFilters[existingIndex] = newFilter
+                        currentFilters[existingIndex] = newFilter ?: ReportFilter()
                     } else {
                         // Append new filter
-                        currentFilters.add(newFilter)
+                        currentFilters.add(newFilter ?: ReportFilter())
                     }
                     series.copy(reportSeriesFilters = currentFilters)
                 } else {
@@ -356,6 +365,26 @@ class ReportEditViewModel(
         onEntityChanged(_uiState.value.reportOptions)
     }
 
+    fun onRemoveFilter(index: Int, seriesId: Int) {
+        _uiState.update { prev ->
+            val updatedSeriesList = prev.reportOptions.series.map { series ->
+                if (series.reportSeriesUid == seriesId) {
+                    val updatedFilters = series.reportSeriesFilters?.toMutableList()?.apply {
+                        removeAt(index)
+                    }
+                    series.copy(reportSeriesFilters = updatedFilters)
+                } else {
+                    series
+                }
+            }
+
+            prev.copy(
+                reportOptions = prev.reportOptions.copy(
+                    series = updatedSeriesList
+                )
+            )
+        }
+    }
     fun ReportEditUiState.hasErrors(): Boolean {
         if (!submitted) return false
         return reportTitleError != null ||

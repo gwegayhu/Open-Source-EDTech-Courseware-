@@ -51,7 +51,38 @@ object ReportTemplateList : RespectAppRoute
 object ReportIndictorEdit : RespectAppRoute
 
 @Serializable
-object ReportEditFilter : RespectAppRoute
+class ReportEditFilter private constructor(
+    private val reportUidStr: String,
+    private val seriesIdStr: String,
+    private val filterJson: String? = null
+) : RespectAppRoute {
+
+    @Transient
+    val reportUid = reportUidStr.toLong()
+
+    @Transient
+    val seriesId = seriesIdStr.toInt()
+
+    @Transient
+    val filter: ReportFilter? = filterJson?.let { Json.decodeFromString(it) }
+
+    companion object {
+        fun create(reportUid: Long, seriesId: Int): ReportEditFilter {
+            return ReportEditFilter(
+                reportUidStr = reportUid.toString(),
+                seriesIdStr = seriesId.toString()
+            )
+        }
+
+        fun create(reportUid: Long, seriesId: Int, filter: ReportFilter): ReportEditFilter {
+            return ReportEditFilter(
+                reportUidStr = reportUid.toString(),
+                seriesIdStr = seriesId.toString(),
+                filterJson = Json.encodeToString(filter)
+            )
+        }
+    }
+}
 
 @Serializable
 class ReportEdit private constructor(

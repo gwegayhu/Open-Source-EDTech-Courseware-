@@ -52,6 +52,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_filter
 import world.respect.shared.generated.resources.add_series
 import world.respect.shared.generated.resources.chart_type
+import world.respect.shared.generated.resources.filters
 import world.respect.shared.generated.resources.from
 import world.respect.shared.generated.resources.quantity
 import world.respect.shared.generated.resources.remove
@@ -81,6 +82,7 @@ fun ReportEditScreen(
         onAddSeries = viewModel::onAddSeries,
         onAddFilter = viewModel::onAddFilter,
         onRemoveSeries = viewModel::onRemoveSeries,
+        onRemoveFilter = viewModel::onRemoveFilter
     )
 }
 
@@ -89,9 +91,10 @@ private fun ReportEditScreen(
     uiState: ReportEditUiState = ReportEditUiState(),
     onReportChanged: (ReportOptions) -> Unit = {},
     onAddSeries: () -> Unit = { },
-    onAddFilter: () -> Unit = { },
+    onAddFilter: (Int) -> Unit = { },
     onSeriesChanged: (ReportSeries) -> Unit = {},
     onRemoveSeries: (Int) -> Unit = { },
+    onRemoveFilter: (Int, Int) -> Unit = { _, _ -> }
 ) {
     val requiredYAxisType: YAxisTypes? = uiState.reportOptions.series
         .mapNotNull { it.reportSeriesYAxis?.type }
@@ -338,17 +341,40 @@ private fun ReportEditScreen(
                         },
                         isError = uiState.submitted && uiState.chartTypeError[seriesItem.reportSeriesUid] != null,
                     )
+                    if (seriesItem.reportSeriesFilters != null) {
+                        Text(stringResource(Res.string.filters))
+                    }
 
+                    seriesItem.reportSeriesFilters?.forEachIndexed { index, value ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("${value.reportFilterField?.let { stringResource(it.label) }} ${value.reportFilterCondition?.symbol} ${value.reportFilterValue}")
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = stringResource(Res.string.remove),
+                                modifier = Modifier
+                                    .clickable {
+                                        onRemoveFilter(index, seriesItem.reportSeriesUid)
+                                    }
+                            )
+                        }
+                    }
+                }
+            }
+            item {
+                Button(
+                    onClick = { onAddFilter(seriesItem.reportSeriesUid) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(Res.string.add_filter),
+                    )
                 }
             }
         }
-        item {
-            Button(onClick = { onAddFilter() }, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(Res.string.add_filter),
-                )
-            }
-        }
+
         item {
             Button(onClick = { onAddSeries() }, modifier = Modifier.fillMaxWidth()) {
                 Text(
