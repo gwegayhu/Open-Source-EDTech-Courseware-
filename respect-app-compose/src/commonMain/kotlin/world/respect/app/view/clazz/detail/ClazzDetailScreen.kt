@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.app.RespectAsyncImage
+import world.respect.app.components.RespectFilterChipRow
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.invite_students
 import world.respect.shared.generated.resources.invite_teachers
@@ -64,7 +65,11 @@ fun ClazzDetailScreen(
         },
         onClickFilter = {
             viewModel.onClickFilter(it)
-        },)
+        },
+        onSelectChip = {
+            viewModel.onSelectChip(it)
+        },
+    )
 }
 
 @Composable
@@ -73,10 +78,19 @@ fun ClazzDetailScreen(
     onClickAcceptInvite: () -> Unit,
     onClickInviteStudent: () -> Unit,
     onClickFilter: (String) -> Unit,
-    ) {
+    onSelectChip: (String) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
+
+        RespectFilterChipRow(
+            options = uiState.chipOptions,
+            selectedOption = uiState.selectedChip,
+            onOptionSelected = { onSelectChip(it) },
+            optionLabel = { it }
+        )
+
         val filterList = uiState.clazzFilter
         val selectedFilter = uiState.selectedFilterTitle?.takeIf { it.isNotBlank() } ?: NAME
         if (filterList.isNotEmpty()) {

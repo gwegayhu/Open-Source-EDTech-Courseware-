@@ -13,6 +13,8 @@ data class ClazzDetailUiState(
     val listOfTeachers: List<String> = listOf("Micky", "Mouse", "Bunny"),
     val clazzFilter: List<String> = listOf("First","Last"),
     val selectedFilterTitle: String? = null,
+    val chipOptions: List<String> = listOf("Active", "All"),
+    val selectedChip: String = "All",
     )
 
 class ClazzDetailViewModel(
@@ -42,6 +44,11 @@ class ClazzDetailViewModel(
     fun onClickFilter(title: String) {
         _uiState.update { it.copy(selectedFilterTitle = title) }
     }
+
+    fun onSelectChip(chip: String) {
+        _uiState.update { it.copy(selectedChip = chip) }
+    }
+
 
     companion object {
         val NAME = "Name"
