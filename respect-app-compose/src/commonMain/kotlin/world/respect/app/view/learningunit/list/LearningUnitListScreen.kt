@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package world.respect.app.view.learningunit.list
 
 import androidx.compose.foundation.clickable
@@ -6,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,33 +20,28 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
+import world.respect.app.components.RespectSortOption
 import world.respect.shared.viewmodel.app.appstate.getTitle
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel.Companion.ICON
 
 @Composable
@@ -73,60 +69,18 @@ fun LearningUnitListScreen(
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        uiState.lessonFilter.firstOrNull()?.let { facet ->
-            var expanded by remember { mutableStateOf(false) }
-
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clickable { expanded = true }
-                        .padding(horizontal = 4.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = uiState.selectedFilterTitle ?: facet.metadata.title)
-                        Icon(
-                            imageVector = Icons.Filled.ArrowDropDown,
-                            modifier = Modifier.padding(6.dp),
-                            contentDescription = null
-                        )
-                    }
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = facet.metadata.title,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {},
-                        enabled = false
-                    )
-
-                    facet.links.forEach { link ->
-                        DropdownMenuItem(
-                            text = { Text(link.title ?: "") },
-                            onClick = {
-                                onClickFilter(link.title ?: "")
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-
-
+        if(uiState.selectedFilterTitle != null){
+        RespectSortOption(
+            options = uiState.lessonFilter,
+            selectedOption = uiState.selectedFilterTitle
+                ?: uiState.lessonFilter.firstOrNull()?.metadata?.title,
+            onOptionSelected = onClickFilter,
+            optionLabel = { it.toString() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp),
+        )
+    }
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {

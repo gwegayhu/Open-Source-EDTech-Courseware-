@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,25 +14,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import world.respect.app.app.RespectAsyncImage
+import world.respect.app.components.RespectSortOption
 import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
@@ -63,55 +53,16 @@ fun ClazzListScreen(
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        val filterList = uiState.clazzFilter
-        val selectedFilter = uiState.selectedFilterTitle?.takeIf { it.isNotBlank() } ?: NAME
 
-        if (filterList.isNotEmpty()) {
-            var expanded by remember { mutableStateOf(false) }
-
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clickable { expanded = true }
-                        .padding(horizontal = 4.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = selectedFilter)
-                        Icon(
-                            imageVector = Icons.Filled.ArrowDownward,
-                            modifier = Modifier.padding(6.dp),
-                            contentDescription = null
-                        )
-                    }
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    filterList.forEach { filterItem ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = filterItem,
-                                    fontSize = 14.sp
-                                )
-                            },
-                            onClick = {
-                                expanded = false
-                                onClickFilter(filterItem)
-                            }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
+        RespectSortOption(
+            options = uiState.sortOptions,
+            selectedOption = uiState.selectedSortOption ?: NAME,
+            onOptionSelected = onClickFilter,
+            optionLabel = {it},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp)
+        )
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),

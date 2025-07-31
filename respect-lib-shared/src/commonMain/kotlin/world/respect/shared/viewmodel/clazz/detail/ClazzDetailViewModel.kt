@@ -11,8 +11,8 @@ import world.respect.shared.viewmodel.RespectViewModel
 
 data class ClazzDetailUiState(
     val listOfTeachers: List<String> = listOf("Micky", "Mouse", "Bunny"),
-    val clazzFilter: List<String> = listOf("First","Last"),
-    val selectedFilterTitle: String? = null,
+    val sortOptions: List<String> = listOf("First","Last"),
+    val selectedSortOption: String? = null,
     val chipOptions: List<String> = listOf("Active", "All"),
     val selectedChip: String = "All",
     )
@@ -42,7 +42,7 @@ class ClazzDetailViewModel(
     }
 
     fun onClickFilter(title: String) {
-        _uiState.update { it.copy(selectedFilterTitle = title) }
+        _uiState.update { it.copy(selectedSortOption = title) }
     }
 
     fun onSelectChip(chip: String) {
