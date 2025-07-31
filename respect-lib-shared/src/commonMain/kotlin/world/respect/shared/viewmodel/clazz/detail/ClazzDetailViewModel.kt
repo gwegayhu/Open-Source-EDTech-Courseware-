@@ -49,9 +49,4 @@ class ClazzDetailViewModel(
         _uiState.update { it.copy(selectedChip = chip) }
     }
 
-
-    companion object {
-        val NAME = "Name"
-    }
-
 }
