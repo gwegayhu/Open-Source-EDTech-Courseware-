@@ -70,6 +70,7 @@ import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewMode
 import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
 import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
+import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedViewModel
 import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
@@ -150,6 +151,7 @@ val appKoinModule = module {
     viewModelOf(::TermsAndConditionViewModel)
     viewModelOf(::WaitingForApprovalViewModel)
     viewModelOf(::CreateAccountViewModel)
+    viewModelOf(::GetStartedViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
@@ -224,25 +226,25 @@ val appKoinModule = module {
     }
 
     single<EncodeUserHandleUseCase> {
-        EncodeUserHandleUseCaseImpl(url = Url("https://respect.com"))
+        EncodeUserHandleUseCaseImpl(url = Url("https://testproxy.devserver3.ustadmobile.com/"))
     }
 
     single {
         CreateCredentialUsernameUseCase(
-            url = Url("https://respect.com")
+            url = Url("https://testproxy.devserver3.ustadmobile.com/")
         )
     }
 
     single {
         CreatePublicKeyCredentialCreationOptionsJsonUseCase(
-            url = Url("https://respect.com"),
+            url = Url("https://testproxy.devserver3.ustadmobile.com/"),
             createCredentialUsernameUseCase = get(),
             encodeUserHandleUseCase = get()
         )
     }
     single {
         CreatePublicKeyCredentialRequestOptionsJsonUseCase(
-            url = Url("https://respect.com")
+            url = Url("https://testproxy.devserver3.ustadmobile.com/")
         )
     }
 

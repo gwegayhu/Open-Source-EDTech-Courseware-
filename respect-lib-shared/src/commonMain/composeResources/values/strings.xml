@@ -106,4 +106,12 @@
     <string name="remove_picture">Remove picture</string>
 
     <string name="select_date">Select date</string>
+
+    <string name="lets_get_started">Let's get started</string>
+    <string name="enter_school_name">School name</string>
+    <string name="school_name_placeholder">Type school name here...</string>
+    <string name="i_have_an_invite_code">I have an invite code</string>
+    <string name="invalid_school_name">Invalid school name</string>
+
+
 </resources>
