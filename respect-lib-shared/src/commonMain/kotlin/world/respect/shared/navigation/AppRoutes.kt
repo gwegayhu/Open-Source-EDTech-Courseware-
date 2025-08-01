@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
+import world.respect.shared.domain.report.model.IndicatorData
 import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -48,7 +49,26 @@ object Report : RespectAppRoute
 object ReportTemplateList : RespectAppRoute
 
 @Serializable
-object ReportIndictorEdit : RespectAppRoute
+class ReportIndictorEdit private constructor(
+    private val reportUidStr: String,
+    private val seriesIdStr: String,
+) : RespectAppRoute {
+
+    @Transient
+    val reportUid = reportUidStr.toLong()
+
+    @Transient
+    val seriesId = seriesIdStr.toInt()
+
+    companion object {
+        fun create(reportUid: Long, seriesId: Int): ReportIndictorEdit {
+            return ReportIndictorEdit(
+                reportUidStr = reportUid.toString(),
+                seriesIdStr = seriesId.toString()
+            )
+        }
+    }
+}
 
 @Serializable
 class ReportEditFilter private constructor(
@@ -87,7 +107,9 @@ class ReportEditFilter private constructor(
 @Serializable
 class ReportEdit private constructor(
     private val reportUidStr: String,
-    private val filterJson: String? = null
+    private val filterJson: String? = null,
+    private val indicatorJson: String? = null
+
 ) : RespectAppRoute {
 
     @Transient
@@ -95,6 +117,9 @@ class ReportEdit private constructor(
 
     @Transient
     val filter: ReportFilter? = filterJson?.let { Json.decodeFromString(it) }
+
+    @Transient
+    val indicatorData: IndicatorData? = indicatorJson?.let { Json.decodeFromString(it) }
 
     companion object {
         fun create(reportUid: Long): ReportEdit {
@@ -105,6 +130,12 @@ class ReportEdit private constructor(
             return ReportEdit(
                 reportUid.toString(),
                 Json.encodeToString(filter)
+            )
+        }
+        fun create(reportUid: Long, indicatorData: IndicatorData): ReportEdit {
+            return ReportEdit(
+                reportUid.toString(),
+                Json.encodeToString(indicatorData)
             )
         }
     }

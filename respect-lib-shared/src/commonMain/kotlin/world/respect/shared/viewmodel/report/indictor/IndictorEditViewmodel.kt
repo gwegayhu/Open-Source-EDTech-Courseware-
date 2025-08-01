@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.report.indictor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +14,9 @@ import world.respect.shared.domain.report.model.IndicatorData
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.indicator
+import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.navigation.ReportIndictorEdit
 import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
@@ -32,6 +36,9 @@ class IndictorEditViewmodel(
     private val _uiState = MutableStateFlow(IndicatorEditUiState())
     val uiState: Flow<IndicatorEditUiState> = _uiState.asStateFlow()
 
+    private val route: ReportIndictorEdit = savedStateHandle.toRoute()
+
+
     init {
         viewModelScope.launch {
             _appUiState.update { prev ->
@@ -50,8 +57,12 @@ class IndictorEditViewmodel(
     }
 
     fun onClickSave() {
-        viewModelScope.launch {
-
-        }
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                ReportEdit.create(
+                    route.reportUid, _uiState.value.indicatorData
+                )
+            )
+        )
     }
 }

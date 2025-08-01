@@ -54,6 +54,7 @@ import world.respect.shared.generated.resources.add_series
 import world.respect.shared.generated.resources.chart_type
 import world.respect.shared.generated.resources.filters
 import world.respect.shared.generated.resources.from
+import world.respect.shared.generated.resources.indicator
 import world.respect.shared.generated.resources.quantity
 import world.respect.shared.generated.resources.remove
 import world.respect.shared.generated.resources.series_title
@@ -82,7 +83,8 @@ fun ReportEditScreen(
         onAddSeries = viewModel::onAddSeries,
         onAddFilter = viewModel::onAddFilter,
         onRemoveSeries = viewModel::onRemoveSeries,
-        onRemoveFilter = viewModel::onRemoveFilter
+        onRemoveFilter = viewModel::onRemoveFilter,
+        addIndictor = viewModel::addIndictor
     )
 }
 
@@ -94,7 +96,8 @@ private fun ReportEditScreen(
     onAddFilter: (Int) -> Unit = { },
     onSeriesChanged: (ReportSeries) -> Unit = {},
     onRemoveSeries: (Int) -> Unit = { },
-    onRemoveFilter: (Int, Int) -> Unit = { _, _ -> }
+    onRemoveFilter: (Int, Int) -> Unit = { _, _ -> },
+    addIndictor: () -> Unit = { },
 ) {
     val requiredYAxisType: YAxisTypes? = uiState.reportOptions.series
         .mapNotNull { it.reportSeriesYAxis?.type }
@@ -341,7 +344,7 @@ private fun ReportEditScreen(
                         },
                         isError = uiState.submitted && uiState.chartTypeError[seriesItem.reportSeriesUid] != null,
                     )
-                    if (seriesItem.reportSeriesFilters != null) {
+                    if (!seriesItem.reportSeriesFilters.isNullOrEmpty()) {
                         Text(stringResource(Res.string.filters))
                     }
 
@@ -379,6 +382,13 @@ private fun ReportEditScreen(
             Button(onClick = { onAddSeries() }, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(Res.string.add_series),
+                )
+            }
+        }
+        item {
+            Button(onClick = { addIndictor() }, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = stringResource(Res.string.indicator),
                 )
             }
         }

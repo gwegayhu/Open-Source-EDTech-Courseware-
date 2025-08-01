@@ -144,7 +144,7 @@
     <string name="quantity_must_be_at_least_1">Quantity must be at least 1</string>
     <string name="untitled_report">Untitled Report</string>
     <string name="select_template">Select template</string>
-    <string name="indicator">Indicator</string>
+    <string name="indicator">Indicators</string>
     <string name="indicator_name">Indicator Name</string>
     <string name="description">Description</string>
     <string name="sql">SQL</string>

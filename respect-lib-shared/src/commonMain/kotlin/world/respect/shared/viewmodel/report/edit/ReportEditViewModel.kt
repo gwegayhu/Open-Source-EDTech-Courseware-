@@ -26,7 +26,6 @@ import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_report
 import world.respect.shared.generated.resources.field_required_prompt
 import world.respect.shared.generated.resources.quantity_must_be_at_least_1
-import world.respect.shared.generated.resources.indicator
 import world.respect.shared.generated.resources.series
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
@@ -38,7 +37,6 @@ import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
-import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
 
 data class ReportEditUiState(
@@ -93,12 +91,6 @@ class ReportEditViewModel(
                     ),
                     userAccountIconVisible = false,
                     navigationVisible = true,
-                    fabState = FabUiState(
-                        text = getString(resource = Res.string.indicator),
-                        icon = FabUiState.FabIcon.ADD,
-                        onClick = {this@ReportEditViewModel.addIndictor()},
-                        visible = true
-                    )
                 )
             }
 
@@ -181,13 +173,14 @@ class ReportEditViewModel(
         }
     }
 
-    fun addIndictor(){
+    fun addIndictor() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportIndictorEdit
+                ReportIndictorEdit.create(route.reportUid, 0)  //TODO
             )
         )
     }
+
     fun onClickSave() {
         viewModelScope.launch {
             loadingState = LoadingUiState.INDETERMINATE
@@ -336,6 +329,7 @@ class ReportEditViewModel(
             )
         )
     }
+
     private fun onFilterChanged(newFilter: ReportFilter?, seriesId: Int) {
         _uiState.update { prevState ->
             val updatedSeries = prevState.reportOptions.series.map { series ->
@@ -385,6 +379,7 @@ class ReportEditViewModel(
             )
         }
     }
+
     fun ReportEditUiState.hasErrors(): Boolean {
         if (!submitted) return false
         return reportTitleError != null ||
