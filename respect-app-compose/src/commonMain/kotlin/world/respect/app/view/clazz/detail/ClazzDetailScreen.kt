@@ -87,7 +87,7 @@ fun ClazzDetailScreen(
             options = uiState.sortOptions,
             selectedOption = uiState.selectedSortOption ?: NAME,
             onOptionSelected = onClickFilter,
-            optionLabel = {it},
+            optionLabel = { it },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp)
@@ -109,7 +109,10 @@ fun ClazzDetailScreen(
             item {
                 ListItem(
                     leadingContent = {
-                        Icon(imageVector = Icons.Filled.Share, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = null
+                        )
                     },
                     headlineContent = {
                         Text(
@@ -126,12 +129,16 @@ fun ClazzDetailScreen(
                         onClickAcceptInvite()
                     },
                     leadingContent = {
-                        Icon(imageVector = Icons.Default.Group, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.Group,
+                            contentDescription = null
+                        )
                     },
                     headlineContent = {
                         Text(
-                            text =
-                                stringResource(resource = Res.string.pending_invite)
+                            text = stringResource(
+                                resource = Res.string.pending_invite
+                            )
                         )
                     }
                 )
@@ -235,7 +242,9 @@ fun ClazzDetailScreen(
                         }
                     },
                     headlineContent = {
-                        Text(text = name)
+                        Text(
+                            text = name
+                        )
                     }
                 )
             }
