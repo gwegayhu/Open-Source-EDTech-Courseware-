@@ -14,8 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +30,13 @@ import world.respect.app.app.RespectAsyncImage
 import world.respect.app.components.RespectSortOption
 import world.respect.app.components.RespectFilterChip
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.invite_students
-import world.respect.shared.generated.resources.invite_teachers
+import world.respect.shared.generated.resources.add_teacher
+import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.pending_invite
 import world.respect.shared.generated.resources.students
+import world.respect.shared.generated.resources.teachers
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
-import world.respect.shared.generated.resources.teachers
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
 
 @Composable
@@ -62,180 +62,163 @@ fun ClazzDetailScreen(
     onClickSortOption: (String) -> Unit,
     onSelectChip: (String) -> Unit
 ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            item {
-                RespectFilterChip(
-                    options = uiState.chipOptions,
-                    selectedOption = uiState.selectedChip,
-                    onOptionSelected = { onSelectChip(it) },
-                    optionLabel = { it }
-                )
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        item {
+            RespectFilterChip(
+                options = uiState.chipOptions,
+                selectedOption = uiState.selectedChip,
+                onOptionSelected = { onSelectChip(it) },
+                optionLabel = { it }
+            )
 
-                RespectSortOption(
-                    options = uiState.sortOptions,
-                    selectedOption = uiState.selectedSortOption ?: NAME,
-                    onOptionSelected = onClickSortOption,
-                    optionLabel = { it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                )
+            RespectSortOption(
+                options = uiState.sortOptions,
+                selectedOption = uiState.selectedSortOption ?: NAME,
+                onOptionSelected = onClickSortOption,
+                optionLabel = { it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp)
+            )
 
-            }
-            item {
-                Text(
-                    modifier = Modifier.padding( 16.dp),
-                    text =
-                        stringResource(resource = Res.string.teachers)
-                )
-            }
-
-            item {
-                ListItem(
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = null
+        }
+        item {
+            ListItem(
+                modifier = Modifier.clickable {
+                    onClickAcceptInvite()
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.Group,
+                        contentDescription = null
+                    )
+                },
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            resource = Res.string.pending_invite
                         )
-                    },
-                    headlineContent = {
-                        Text(
-                            text =
-                                stringResource(resource = Res.string.invite_teachers)
-                        )
-                    }
-                )
-            }
+                    )
+                }
+            )
+        }
 
-            item {
-                ListItem(
-                    modifier = Modifier.clickable {
-                        onClickAcceptInvite()
-                    },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Default.Group,
-                            contentDescription = null
-                        )
-                    },
-                    headlineContent = {
-                        Text(
-                            text = stringResource(
-                                resource = Res.string.pending_invite
-                            )
-                        )
-                    }
-                )
-            }
+        item {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                text =
+                    stringResource(resource = Res.string.teachers)
+            )
+        }
 
-            itemsIndexed(
-                //dummy list
-                uiState.listOfTeachers,
-                key = { index, name -> "teacher_$index" }
-            ) { _, name ->
-                ListItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Max)
-                        .clickable { /* handle click */ },
-                    leadingContent = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(48.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            RespectAsyncImage(
-                                uri = "", // Replace with image url
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.size(36.dp)
-                            )
-                        }
-                    },
-                    headlineContent = {
-                        Text(text = name)
-                    }
-                )
-            }
+        item {
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null
+                    )
+                },
+                headlineContent = {
+                    Text(
+                        text =
+                            stringResource(resource = Res.string.add_teacher)
+                    )
+                }
+            )
+        }
 
-            item {
-                Text(
-                    modifier = Modifier.padding( 16.dp),
-                    text =
-                        stringResource(resource = Res.string.students)
-                )
-            }
 
-            item {
-                ListItem(
-                    modifier = Modifier.clickable {
-                        onClickInviteStudent()
-                    },
-                    leadingContent = {
-                        Icon(imageVector = Icons.Filled.Share, contentDescription = null)
-                    },
-                    headlineContent = {
-                        Text(
-                            text =
-                                stringResource(resource = Res.string.invite_students)
+        itemsIndexed(
+            //dummy list
+            uiState.listOfTeachers,
+            key = { index, name -> "teacher_$index" }
+        ) { _, name ->
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
+                    .clickable { /* handle click */ },
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        RespectAsyncImage(
+                            uri = "", // Replace with image url
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.size(36.dp)
                         )
                     }
-                )
-            }
+                },
+                headlineContent = {
+                    Text(text = name)
+                }
+            )
+        }
 
-            item {
-                ListItem(
-                    modifier = Modifier.clickable {
-                        onClickAcceptInvite()
-                    },
-                    leadingContent = {
-                        Icon(imageVector = Icons.Default.Group, contentDescription = null)
-                    },
-                    headlineContent = {
-                        Text(
-                            text =
-                                stringResource(resource = Res.string.pending_invite)
+        item {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                text = stringResource(resource = Res.string.students)
+            )
+        }
+
+        item {
+            ListItem(
+                modifier = Modifier.clickable {
+                    onClickInviteStudent()
+                },
+                leadingContent = {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+                },
+                headlineContent = {
+                    Text(
+                        text =
+                            stringResource(resource = Res.string.add_student)
+                    )
+                }
+            )
+        }
+
+        itemsIndexed(
+            //dummy list
+            uiState.listOfTeachers,
+            key = { index, name -> "student_$index" }
+        ) { _, name ->
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
+                    .clickable { },
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        RespectAsyncImage(
+                            uri = "", // Replace with image url
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.size(36.dp)
                         )
                     }
-                )
-            }
-
-            itemsIndexed(
-                //dummy list
-                uiState.listOfTeachers,
-                key = { index, name -> "student_$index" }
-            ) { _, name ->
-                ListItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Max)
-                        .clickable { },
-                    leadingContent = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(48.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            RespectAsyncImage(
-                                uri = "", // Replace with image url
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.size(36.dp)
-                            )
-                        }
-                    },
-                    headlineContent = {
-                        Text(
-                            text = name
-                        )
-                    }
-                )
-            }
+                },
+                headlineContent = {
+                    Text(
+                        text = name
+                    )
+                }
+            )
         }
     }
+}
 
