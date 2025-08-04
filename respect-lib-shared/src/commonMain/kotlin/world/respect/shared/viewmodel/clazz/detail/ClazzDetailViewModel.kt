@@ -11,11 +11,11 @@ import world.respect.shared.viewmodel.RespectViewModel
 
 data class ClazzDetailUiState(
     val listOfTeachers: List<String> = listOf("Micky", "Mouse", "Bunny"),
-    val sortOptions: List<String> = listOf("First","Last"),
+    val sortOptions: List<String> = listOf("First", "Last"),
     val selectedSortOption: String? = null,
     val chipOptions: List<String> = listOf("Active", "All"),
-    val selectedChip: String = "All",
-    )
+    val selectedChip: String = "All"
+)
 
 class ClazzDetailViewModel(
     savedStateHandle: SavedStateHandle,

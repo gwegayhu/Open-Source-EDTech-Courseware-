@@ -21,9 +21,9 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 data class ClazzListUiState(
     val oneRoasterClass: List<OneRosterClass> = emptyList(),
-    val sortOptions: List<String> = listOf("First","Last"),
-    val selectedSortOption: String? = null,
-    )
+    val sortOptions: List<String> = listOf("First", "Last"),
+    val selectedSortOption: String? = null
+)
 
 class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
@@ -67,6 +67,7 @@ class ClazzListViewModel(
     fun onClickSortOption(title: String) {
         _uiState.update { it.copy(selectedSortOption = title) }
     }
+
     fun onClickClazz() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
