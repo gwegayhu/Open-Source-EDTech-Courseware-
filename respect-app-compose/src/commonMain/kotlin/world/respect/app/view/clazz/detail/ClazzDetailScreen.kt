@@ -47,18 +47,10 @@ fun ClazzDetailScreen(
 
     ClazzDetailScreen(
         uiState = uiState,
-        onClickAcceptInvite = {
-            viewModel.onClickAcceptInvite()
-        },
-        onClickInviteStudent = {
-            viewModel.onClickInviteStudent()
-        },
-        onClickSortOption = {
-            viewModel.onClickSortOption(it)
-        },
-        onSelectChip = {
-            viewModel.onSelectChip(it)
-        },
+        onClickAcceptInvite = viewModel::onClickAcceptInvite,
+        onClickInviteStudent = viewModel::onClickInviteStudent,
+        onClickSortOption = { viewModel.onClickSortOption(it) },
+        onSelectChip = { viewModel.onSelectChip(it) },
     )
 }
 
