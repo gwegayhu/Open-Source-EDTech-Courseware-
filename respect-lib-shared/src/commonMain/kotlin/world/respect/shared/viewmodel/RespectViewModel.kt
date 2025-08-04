@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import world.respect.datalayer.opds.model.LangMapStringValue
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.navigation.NavCommand
@@ -35,7 +36,9 @@ abstract class RespectViewModel(
     //Placeholder: will be provided via an AccountManager that will use multiplatform settings.
     protected val activeAccount = RespectAccount(
         userSourcedId = "testacct",
-        serverUrls = RespectRealm(
+        realm = RespectRealm(
+            name = LangMapStringValue("School"),
+            self = Url("https://example.org/respect-realm.json"),
             xapi = Url("https://example.org/xapi"),
             oneRoster = Url("https://example.org/oneroster"),
             respectExt = Url("https://example.org/respect-ext"),

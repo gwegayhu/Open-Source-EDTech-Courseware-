@@ -6,12 +6,15 @@ import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import com.eygraber.uri.Uri
 import io.ktor.http.Url
+import world.respect.datalayer.opds.model.LangMapStringValue
 
 class MockGetInviteInfoUseCase : GetInviteInfoUseCase {
     override suspend fun invoke(code: String): RespectInviteInfo {
         return RespectInviteInfo(
             code = code,
             realm = RespectRealm(
+                name = LangMapStringValue("School"),
+                self = Url("https://example.org/respect-realm.json"),
                 xapi = Url("https://example.org/xapi"),
                 oneRoster = Url("https://example.org/oneroster"),
                 respectExt = Url("https://example.org/respect-ext"),

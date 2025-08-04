@@ -11,5 +11,5 @@ import world.respect.datalayer.respect.model.RespectRealm
 @Serializable
 data class RespectAccount(
     val userSourcedId: String,
-    val serverUrls: RespectRealm,
+    val realm: RespectRealm,
 )

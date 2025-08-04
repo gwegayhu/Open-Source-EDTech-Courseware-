@@ -48,4 +48,5 @@ include(":respect-lib-ihttp-iostreams")
 include(":respect-lib-ihttp-okhttp")
 include(":respect-lib-ihttp-nanohttpd")
 include(":respect-lib-cache")
+include(":respect-datalayer-directory")
 
