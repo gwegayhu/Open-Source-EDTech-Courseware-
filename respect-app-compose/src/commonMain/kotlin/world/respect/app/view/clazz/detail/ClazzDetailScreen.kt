@@ -1,9 +1,7 @@
 package world.respect.app.view.clazz.detail
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,8 +53,8 @@ fun ClazzDetailScreen(
         onClickInviteStudent = {
             viewModel.onClickInviteStudent()
         },
-        onClickFilter = {
-            viewModel.onClickFilter(it)
+        onClickSortOption = {
+            viewModel.onClickSortOption(it)
         },
         onSelectChip = {
             viewModel.onSelectChip(it)
@@ -69,38 +67,35 @@ fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
     onClickAcceptInvite: () -> Unit,
     onClickInviteStudent: () -> Unit,
-    onClickFilter: (String) -> Unit,
+    onClickSortOption: (String) -> Unit,
     onSelectChip: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
-    ) {
-
-        RespectFilterChip(
-            options = uiState.chipOptions,
-            selectedOption = uiState.selectedChip,
-            onOptionSelected = { onSelectChip(it) },
-            optionLabel = { it }
-        )
-
-        RespectSortOption(
-            options = uiState.sortOptions,
-            selectedOption = uiState.selectedSortOption ?: NAME,
-            onOptionSelected = onClickFilter,
-            optionLabel = { it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp)
-        )
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
+                RespectFilterChip(
+                    options = uiState.chipOptions,
+                    selectedOption = uiState.selectedChip,
+                    onOptionSelected = { onSelectChip(it) },
+                    optionLabel = { it }
+                )
+
+                RespectSortOption(
+                    options = uiState.sortOptions,
+                    selectedOption = uiState.selectedSortOption ?: NAME,
+                    onOptionSelected = onClickSortOption,
+                    optionLabel = { it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                )
+
+            }
+            item {
                 Text(
+                    modifier = Modifier.padding( 16.dp),
                     text =
                         stringResource(resource = Res.string.teachers)
                 )
@@ -177,6 +172,7 @@ fun ClazzDetailScreen(
 
             item {
                 Text(
+                    modifier = Modifier.padding( 16.dp),
                     text =
                         stringResource(resource = Res.string.students)
                 )
@@ -250,4 +246,4 @@ fun ClazzDetailScreen(
             }
         }
     }
-}
+

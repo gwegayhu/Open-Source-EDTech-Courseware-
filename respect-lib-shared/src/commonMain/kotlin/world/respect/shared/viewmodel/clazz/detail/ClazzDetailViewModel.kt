@@ -41,7 +41,7 @@ class ClazzDetailViewModel(
         )
     }
 
-    fun onClickFilter(title: String) {
+    fun onClickSortOption(title: String) {
         _uiState.update { it.copy(selectedSortOption = title) }
     }
 

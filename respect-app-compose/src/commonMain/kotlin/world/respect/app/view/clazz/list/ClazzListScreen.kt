@@ -1,9 +1,7 @@
 package world.respect.app.view.clazz.list
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,7 +37,7 @@ fun ClazzListScreen(
     ClazzListScreen(
         uiState = uiState,
         onClickClazz = { viewModel.onClickClazz() },
-        onClickFilter = { viewModel.onClickFilter(it) },
+        onClickSortOption = { viewModel.onClickSortOption(it) },
     )
 }
 
@@ -47,70 +45,65 @@ fun ClazzListScreen(
 fun ClazzListScreen(
     uiState: ClazzListUiState,
     onClickClazz: () -> Unit,
-    onClickFilter: (String) -> Unit,
+    onClickSortOption: (String) -> Unit,
 ) {
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
     ) {
-
-        RespectSortOption(
-            options = uiState.sortOptions,
-            selectedOption = uiState.selectedSortOption ?: NAME,
-            onOptionSelected = onClickFilter,
-            optionLabel = {it},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp)
-        )
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-
-            itemsIndexed(
-                //dummy list
-                uiState.oneRoasterClass,
-                key = { index, clazz -> index }
-            ) { index, clazz ->
-                ListItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Max)
-                        .clickable {
-                            onClickClazz()
-                        },
-
-                    leadingContent = {
-                        //dummy data
-                        val iconUrl = ""
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(48.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            iconUrl.also { icon ->
-                                RespectAsyncImage(
-                                    uri = icon,
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                )
-                            }
-                        }
+        item {
+            RespectSortOption(
+                options = uiState.sortOptions,
+                selectedOption = uiState.selectedSortOption ?: NAME,
+                onOptionSelected = onClickSortOption,
+                optionLabel = { it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp)
+            )
+        }
+        itemsIndexed(
+            //dummy list
+            uiState.oneRoasterClass,
+            key = { index, clazz -> index }
+        ) { index, clazz ->
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
+                    .clickable {
+                        onClickClazz()
                     },
 
-                    headlineContent = {
-                        //dummy data
-                        Text(
-                            text = clazz.title
-                        )
+                leadingContent = {
+                    //dummy data
+                    val iconUrl = ""
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        iconUrl.also { icon ->
+                            RespectAsyncImage(
+                                uri = icon,
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(36.dp)
+                            )
+                        }
                     }
-                )
-            }
+                },
 
+                headlineContent = {
+                    //dummy data
+                    Text(
+                        text = clazz.title
+                    )
+                }
+            )
         }
+
     }
 }
