@@ -1,18 +1,12 @@
-package world.respect
+package world.respect.server
 
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import world.respect.Greeting
 
-fun main() {
-    embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}
-
+@Suppress("unused") // Used via application.conf
 fun Application.module() {
-
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")

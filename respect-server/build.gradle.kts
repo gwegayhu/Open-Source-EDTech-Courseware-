@@ -6,8 +6,9 @@ plugins {
 
 group = "world.respect.app"
 version = "1.0.0"
+
 application {
-    mainClass.set("world.respect.ApplicationKt")
+    mainClass.set("world.respect.server.ServerAppMainKt")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=${extra["io.ktor.development"] ?: "false"}")
 }
 
@@ -16,5 +17,6 @@ dependencies {
     implementation(libs.logback)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation(libs.argparse4j)
     testImplementation(libs.kotlin.test.junit)
 }
