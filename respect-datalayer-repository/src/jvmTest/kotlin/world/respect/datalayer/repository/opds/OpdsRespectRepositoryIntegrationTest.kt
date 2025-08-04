@@ -12,6 +12,7 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.conditionalheaders.ConditionalHeaders
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.flow.filter
@@ -63,6 +64,7 @@ class OpdsRespectRepositoryIntegrationTest {
         println("port = $port")
         val server = embeddedServer(Netty, port = port) {
             install(ConditionalHeaders)
+            install(CallLogging)
 
             routing {
                 staticResources("/resources", "/world/respect/datalayer/repository/opds")
