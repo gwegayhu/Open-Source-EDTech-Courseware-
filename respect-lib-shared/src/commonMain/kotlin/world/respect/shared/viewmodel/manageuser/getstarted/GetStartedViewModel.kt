@@ -40,39 +40,36 @@ class GetStartedViewModel(
         }
         viewModelScope.launch {
 
-            viewModelScope.launch {
-                try {
-                    when (val credentialResult = getCredentialUseCase()) {
-                        is GetCredentialUseCase.PasskeyCredentialResult -> {
-                            viewModelScope.launch {
-                                _navCommandFlow.tryEmit(
-                                    NavCommand.Navigate(RespectAppLauncher)
-                                )
-                            }
-                        }
-
-                        is GetCredentialUseCase.PasswordCredentialResult -> {
-
-                        }
-
-                        is GetCredentialUseCase.Error -> {
-                            _uiState.update { prev ->
-                                prev.copy(
-                                    errorText = (credentialResult.message),
-                                )
-                            }
-                            println ( "Error occurred: ${credentialResult.message}")
-                        }
-
-                        is GetCredentialUseCase.NoCredentialAvailableResult,
-                        is GetCredentialUseCase.UserCanceledResult-> {
-                            //do nothing
-                        }
+            try {
+                when (val credentialResult = getCredentialUseCase()) {
+                    is GetCredentialUseCase.PasskeyCredentialResult -> {
+                        _navCommandFlow.tryEmit(
+                            NavCommand.Navigate(RespectAppLauncher)
+                        )
 
                     }
-                } catch (e: Exception) {
-                    println( "Error occurred: ${e.message}")
+
+                    is GetCredentialUseCase.PasswordCredentialResult -> {
+
+                    }
+
+                    is GetCredentialUseCase.Error -> {
+                        _uiState.update { prev ->
+                            prev.copy(
+                                errorText = (credentialResult.message),
+                            )
+                        }
+                        println("Error occurred: ${credentialResult.message}")
+                    }
+
+                    is GetCredentialUseCase.NoCredentialAvailableResult,
+                    is GetCredentialUseCase.UserCanceledResult -> {
+                        //do nothing
+                    }
+
                 }
+            } catch (e: Exception) {
+                println("Error occurred: ${e.message}")
             }
         }
     }
@@ -119,8 +116,9 @@ class GetStartedViewModel(
         }
     }
 }
+
 data class GetStartedUiState(
     val schoolName: String = "",
-    val errorText: String ? = null,
+    val errorText: String? = null,
     val errorMessage: StringResourceUiText? = null,
 )
