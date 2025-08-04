@@ -8,6 +8,8 @@ import kotlin.system.exitProcess
 
 const val CMD_RUN_SERVER = "runserver"
 
+const val CMD_ADD_REALM = "addrealm"
+
 fun main(args: Array<String>) {
     val parser = ArgumentParsers.newFor("respect-server").build()
 
@@ -19,6 +21,7 @@ fun main(args: Array<String>) {
         .metavar("COMMAND")
 
     subparsers.addParser(CMD_RUN_SERVER).help("Run RESPECT http server")
+    subparsers.addParser(CMD_ADD_REALM).help("Add a new RESPECT Realm")
 
     val ns: Namespace?
     try {
@@ -31,6 +34,12 @@ fun main(args: Array<String>) {
             CMD_RUN_SERVER -> {
                 //As per https://ktor.io/docs/server-create-a-new-project.html#change-the-port-via-yaml
                 io.ktor.server.netty.EngineMain.main(args)
+            }
+            else -> {
+                if(ns == null)
+                    throw IllegalStateException("ns should not be null if not running $CMD_RUN_SERVER")
+
+                managerServerMain(ns)
             }
         }
     }catch (e: ArgumentParserException) {

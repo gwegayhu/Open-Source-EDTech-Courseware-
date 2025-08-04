@@ -10,7 +10,9 @@ import world.respect.datalayer.respect.model.invite.RespectInviteInfo
  */
 interface RespectDirectoryDataSource {
 
-    suspend fun allRealms(): Flow<DataLoadState<List<RespectRealm>>>
+    suspend fun allRealmsAsFlow(): Flow<DataLoadState<List<RespectRealm>>>
+
+    suspend fun allRealmsInDirectory(): List<RespectRealm>
 
     suspend fun searchRealms(text: String): Flow<DataLoadState<List<RespectRealm>>>
 
