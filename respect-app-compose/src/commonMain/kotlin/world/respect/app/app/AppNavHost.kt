@@ -15,7 +15,7 @@ import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.clazz.acceptinvite.AcceptInviteScreen
 import world.respect.app.view.clazz.addclazz.AddClazzScreen
 import world.respect.app.view.clazz.detail.ClazzDetailScreen
-import world.respect.app.view.clazz.student.AddPersonToClazzScreen
+import world.respect.app.view.clazz.addperson.AddPersonToClazzScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen

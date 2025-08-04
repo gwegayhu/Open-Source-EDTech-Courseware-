@@ -1,4 +1,4 @@
-package world.respect.app.view.clazz.student
+package world.respect.app.view.clazz.addperson
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -19,7 +19,7 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.share_qr_code
 import world.respect.shared.generated.resources.share_with_link_or_qr_code
-import world.respect.shared.viewmodel.clazz.student.AddStudentUIState
+import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzUIState
 import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
 
 @Composable
@@ -34,7 +34,7 @@ fun AddPersonToClazzScreen(
 
 @Composable
 fun AddPersonToClazzScreen(
-    uiState: AddStudentUIState
+    uiState: AddPersonToClazzUIState
 ) {
 
     Column {
