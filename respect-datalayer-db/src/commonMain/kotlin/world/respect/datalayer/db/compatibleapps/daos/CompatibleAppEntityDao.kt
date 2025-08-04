@@ -27,6 +27,15 @@ interface CompatibleAppEntityDao {
     @Query("SELECT * FROM CompatibleAppEntity")
     fun selectAllAsFlow(): Flow<List<CompatibleAppEntity>>
 
+    @Query("""
+        SELECT *
+          FROM CompatibleAppEntity
+               JOIN CompatibleAppAddJoin
+                    ON CompatibleAppEntity.caeUid = CompatibleAppAddJoin.appCaeUid
+         WHERE CompatibleAppAddJoin.added = 1
+    """)
+    fun selectAddedAppsAsFlow(): Flow<List<CompatibleAppEntity>>
+
     @Query("""SELECT * 
                         FROM CompatibleAppEntity 
                        WHERE caeUid = :caeUid""")
