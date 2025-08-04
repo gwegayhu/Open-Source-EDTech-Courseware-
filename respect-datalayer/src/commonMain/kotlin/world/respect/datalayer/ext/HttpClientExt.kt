@@ -6,10 +6,10 @@ import io.ktor.client.request.get
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
+import io.ktor.http.toHttpDate
+import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
 import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadParams
@@ -19,7 +19,6 @@ import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
@@ -27,12 +26,11 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
     validationHelper: NetworkDataSourceValidationHelper? = null,
 ): DataLoadState<T> {
     return try {
+        //see https://github.com/Kotlin/kotlinx-datetime/issues/564
         val validationInfo = validationHelper?.getValidationInfo(url)
         val response = this.get(url) {
             validationInfo?.lastModified?.takeIf { it > 0 }?.also { lastMod ->
-                headers[HttpHeaders.IfModifiedSince] = Instant.fromEpochMilliseconds(
-                    lastMod
-                ).format(DateTimeComponents.Formats.RFC_1123)
+                headers[HttpHeaders.IfModifiedSince] = GMTDate(lastMod).toHttpDate()
             }
 
             validationInfo?.etag?.also { etag ->
