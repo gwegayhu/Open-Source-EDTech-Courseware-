@@ -15,7 +15,7 @@ import world.respect.app.view.apps.enterlink.EnterLinkScreen
 import world.respect.app.view.clazz.acceptinvite.AcceptInviteScreen
 import world.respect.app.view.clazz.addclazz.AddClazzScreen
 import world.respect.app.view.clazz.detail.ClazzDetailScreen
-import world.respect.app.view.clazz.student.StudentScreen
+import world.respect.app.view.clazz.student.AddPersonToClazzScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.app.view.learningunit.detail.LearningUnitDetailScreen
@@ -47,7 +47,7 @@ import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
 import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
-import world.respect.shared.viewmodel.clazz.student.StudentViewModel
+import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
 
 
 @Composable
@@ -177,11 +177,11 @@ fun AppNavHost(
         }
 
         composable<Student> {
-            val viewModel: StudentViewModel = respectViewModel(
+            val viewModel: AddPersonToClazzViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            StudentScreen(
+            AddPersonToClazzScreen(
                 viewModel = viewModel
             )
         }

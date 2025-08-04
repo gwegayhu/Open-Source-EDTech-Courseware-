@@ -57,7 +57,7 @@ import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
-import world.respect.shared.viewmodel.clazz.student.StudentViewModel
+import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -126,7 +126,7 @@ val appKoinModule = module {
     viewModelOf(::LearningUnitDetailViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::AcceptInviteViewModel)
-    viewModelOf(::StudentViewModel)
+    viewModelOf(::AddPersonToClazzViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

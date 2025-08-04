@@ -20,20 +20,20 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.share_qr_code
 import world.respect.shared.generated.resources.share_with_link_or_qr_code
 import world.respect.shared.viewmodel.clazz.student.AddStudentUIState
-import world.respect.shared.viewmodel.clazz.student.StudentViewModel
+import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
 
 @Composable
-fun StudentScreen(
-    viewModel: StudentViewModel
+fun AddPersonToClazzScreen(
+    viewModel: AddPersonToClazzViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    StudentScreen(
+    AddPersonToClazzScreen(
         uiState = uiState
     )
 }
 
 @Composable
-fun StudentScreen(
+fun AddPersonToClazzScreen(
     uiState: AddStudentUIState
 ) {
 

@@ -12,14 +12,14 @@ import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.generated.resources.add_student
 
 
-data class AddStudentUIState(
+data class AddPersonToClazzUIState(
     val name:String=""
 )
-class StudentViewModel(
+class AddPersonToClazzViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val _uiState = MutableStateFlow(AddStudentUIState())
+    private val _uiState = MutableStateFlow(AddPersonToClazzUIState())
 
     val uiState = _uiState.asStateFlow()
 
