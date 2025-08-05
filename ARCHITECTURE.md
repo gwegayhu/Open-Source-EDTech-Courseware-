@@ -8,7 +8,7 @@ RESPECT's network architecture is designed to:
 * **Support offline usage and reducing data usage**: maximize support for offline usage (though
   some login mechanisms may require Internet access) and support a variety of techniques to reduce
   data usage (including peer-to-peer caching, ISP/mobile network content delivery networks, etc).
-* **Be language and infrastructure agnostic**: APIs can be implemented using a federated monoliths,
+* **Be language and infrastructure agnostic**: APIs can be implemented using federated monoliths,
   clustering, microservices, or any combination thereof.
 
 RESPECT's network design includes:
