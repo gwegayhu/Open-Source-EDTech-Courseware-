@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
-import world.respect.shared.navigation.AcceptInvite
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.RespectViewModel
@@ -64,15 +63,6 @@ class ClazzDetailViewModel(
             }
         }
     }
-
-    fun onClickAcceptInvite() {
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                AcceptInvite
-            )
-        )
-    }
-
     fun onClickAddPersonToClazz() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(

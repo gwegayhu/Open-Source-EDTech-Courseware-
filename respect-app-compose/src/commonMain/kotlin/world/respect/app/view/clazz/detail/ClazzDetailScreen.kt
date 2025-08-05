@@ -43,7 +43,6 @@ fun ClazzDetailScreen(
 
     ClazzDetailScreen(
         uiState = uiState,
-        onClickAcceptInvite = viewModel::onClickAcceptInvite,
         onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
         onClickSortOption = { viewModel.onClickSortOption(it) },
         onSelectChip = { viewModel.onSelectChip(it) },
@@ -53,7 +52,6 @@ fun ClazzDetailScreen(
 @Composable
 fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
-    onClickAcceptInvite: () -> Unit,
     onClickAddPersonToClazz: () -> Unit,
     onClickSortOption: (String) -> Unit,
     onSelectChip: (String) -> Unit
@@ -83,7 +81,6 @@ fun ClazzDetailScreen(
         }
         item {
             ListItem(
-                modifier = Modifier.clickable { onClickAcceptInvite() },
                 headlineContent = {
                     Text(
                         text = stringResource(
@@ -111,7 +108,8 @@ fun ClazzDetailScreen(
 
             ListItem(
                 modifier = Modifier.fillMaxWidth()
-                    .clickable { /* handle click */ },
+                    .clickable {
+                    },
                 leadingContent = {
                     RespectPersonAvatar(
                         name = pendingUser.givenName,

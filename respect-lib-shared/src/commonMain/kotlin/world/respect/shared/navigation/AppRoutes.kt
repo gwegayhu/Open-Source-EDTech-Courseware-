@@ -56,9 +56,6 @@ object RespectAppList : RespectAppRoute
 object EnterLink : RespectAppRoute
 
 @Serializable
-object AcceptInvite : RespectAppRoute
-
-@Serializable
 object AddPersonToClazz : RespectAppRoute
 
 /**
