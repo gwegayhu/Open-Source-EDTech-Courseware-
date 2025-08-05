@@ -12,7 +12,9 @@ RESPECT's network architecture is designed to:
   clustering, microservices, or any combination thereof.
 
 RESPECT's network design includes:
-* **Realms** (typically a school): in the context of network security, a realm is a logical grouping
+
+## Realms
+A **realm** (typically a school): in the context of network security, a realm is a logical grouping
   of networked resources each with its own users, security rules, and data. Each RESPECT realm has an 
   xAPI LRS endpoint and OneRoster endpoint. It may also implement some RESPECT extension endpoints
   (e.g. for user sign-up via invitations etc). A realm is represented by a json file e.g.
@@ -33,7 +35,14 @@ This dramatically reduces the work required to perform queries (e.g. searching a
 contains only a thousand or so users in a particular school instead of a table that contains
 all users in a district/country).
 
-* **Directories** (typically country or regional level): a directory server lists realms. It is used
-  by the RESPECT app to find the realm for a given school name. Directory servers are also used when 
-  handling sign-up invitations.
+## Directories
+**Directories** (typically country or regional level): a directory server lists realms. It is used
+by the RESPECT app to find the realm for a given school name. Directory servers are also used when 
+handling sign-up invitations.
+
+Using a directory is recommended, but not required. Directories allow the user to:
+* Find their school using the school name
+* Join using a numerical invite code.
+
+A user can manually enter a link for the realm in the RESPECT app.
 
