@@ -10,6 +10,7 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleTypeEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+
 @OptIn(ExperimentalTime::class)
 class FakeRosterDataSource : OneRosterRosterDataSource {
 
@@ -42,7 +43,7 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
                 roles = listOf(teacherRole),
                 username = "alice.anderson",
                 email = "alice@example.com",
-                enabledUser=false
+                enabledUser = false
             ),
             OneRosterUser(
                 sourcedId = "t2",
@@ -71,7 +72,7 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
                 roles = listOf(studentRole),
                 username = "diana.davis",
                 email = "diana@example.com",
-                enabledUser=false
+                enabledUser = false
             ),
             OneRosterUser(
                 sourcedId = "s3",
@@ -87,28 +88,38 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
 
     override suspend fun putUser(user: OneRosterUser) {}
 
-    @OptIn(ExperimentalTime::class)
-    override suspend fun getAllClasses(): List<OneRosterClass> {
-        return listOf(
-            OneRosterClass(
-                sourcedId = "1",
-                title = "Math Class",
-                dateLastModified = Instant.DISTANT_PAST
-            ),
-            OneRosterClass(
-                sourcedId = "2",
-                title = "Science Class",
-                dateLastModified = Instant.DISTANT_PAST
-            ),
-            OneRosterClass(
-                sourcedId = "3",
-                title = "History Class",
-                dateLastModified = Instant.DISTANT_PAST
+    private val classList = mutableListOf<OneRosterClass>()
+
+    init {
+        classList.addAll(
+            listOf(
+                OneRosterClass(
+                    sourcedId = "1",
+                    title = "Math Class",
+                    dateLastModified = Instant.DISTANT_PAST
+                ),
+                OneRosterClass(
+                    sourcedId = "2",
+                    title = "Science Class",
+                    dateLastModified = Instant.DISTANT_PAST
+                ),
+                OneRosterClass(
+                    sourcedId = "3",
+                    title = "History Class",
+                    dateLastModified = Instant.DISTANT_PAST
+                )
             )
         )
     }
 
-    override suspend fun putClass(clazz: OneRosterClass) {}
+    @OptIn(ExperimentalTime::class)
+    override suspend fun getAllClasses(): List<OneRosterClass> {
+        return classList
+    }
+
+    override suspend fun putClass(clazz: OneRosterClass) {
+        classList.add(clazz)
+    }
 
     override suspend fun getEnrolmentsByClass(classSourcedId: String) {}
 
