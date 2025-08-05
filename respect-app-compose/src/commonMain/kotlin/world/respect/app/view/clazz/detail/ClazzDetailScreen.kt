@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +45,7 @@ fun ClazzDetailScreen(
     ClazzDetailScreen(
         uiState = uiState,
         onClickAcceptInvite = viewModel::onClickAcceptInvite,
-        onClickInviteStudent = viewModel::onClickInviteStudent,
+        onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
         onClickSortOption = { viewModel.onClickSortOption(it) },
         onSelectChip = { viewModel.onSelectChip(it) },
     )
@@ -54,7 +55,7 @@ fun ClazzDetailScreen(
 fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
     onClickAcceptInvite: () -> Unit,
-    onClickInviteStudent: () -> Unit,
+    onClickAddPersonToClazz: () -> Unit,
     onClickSortOption: (String) -> Unit,
     onSelectChip: (String) -> Unit
 ) {
@@ -83,14 +84,19 @@ fun ClazzDetailScreen(
         }
         item {
             ListItem(
-                modifier = Modifier.clickable {
-                    onClickAcceptInvite()
-                },
+                modifier = Modifier.clickable { onClickAcceptInvite() },
                 headlineContent = {
                     Text(
                         text = stringResource(
                             resource = Res.string.pending_invite
                         )
+                    )
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             )
@@ -133,15 +139,29 @@ fun ClazzDetailScreen(
         }
 
         item {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text =
-                    stringResource(resource = Res.string.teachers)
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            resource = Res.string.teachers
+                        )
+                    )
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
             )
         }
 
         item {
             ListItem(
+                modifier = Modifier.clickable {
+                    onClickAddPersonToClazz()
+                },
                 leadingContent = {
                     Icon(
                         imageVector = Icons.Filled.Add,
@@ -159,7 +179,6 @@ fun ClazzDetailScreen(
 
 
         itemsIndexed(
-            //dummy list
             uiState.listOfTeachers,
             key = { index, name -> "teacher_$index" }
         ) { _, name ->
@@ -181,16 +200,28 @@ fun ClazzDetailScreen(
         }
 
         item {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(resource = Res.string.students)
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            resource = Res.string.students
+                        )
+                    )
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
             )
         }
 
         item {
             ListItem(
                 modifier = Modifier.clickable {
-                    onClickInviteStudent()
+                    onClickAddPersonToClazz()
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = null)
@@ -205,7 +236,6 @@ fun ClazzDetailScreen(
         }
 
         itemsIndexed(
-            //dummy list
             uiState.listOfTeachers,
             key = { index, name -> "student_$index" }
         ) { _, name ->

@@ -59,7 +59,7 @@ object EnterLink : RespectAppRoute
 object AcceptInvite : RespectAppRoute
 
 @Serializable
-object Student : RespectAppRoute
+object AddPersonToClazz : RespectAppRoute
 
 /**
  * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app

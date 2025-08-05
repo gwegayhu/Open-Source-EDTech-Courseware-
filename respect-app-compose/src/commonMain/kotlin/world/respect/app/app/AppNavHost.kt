@@ -40,6 +40,7 @@ import world.respect.app.viewmodel.respectViewModel
 import world.respect.shared.navigation.Acknowledgement
 import world.respect.shared.navigation.AcceptInvite
 import world.respect.shared.navigation.AddClazz
+import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.AppsDetail
@@ -55,7 +56,6 @@ import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
-import world.respect.shared.navigation.Student
 import world.respect.shared.viewmodel.clazz.acceptinvite.AcceptInviteViewModel
 import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
@@ -86,6 +86,17 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
+        startDestination = RespectAppLauncher,
+        modifier = modifier,
+    ) {
+        composable<RespectAppLauncher> {
+            val viewModel: AppLauncherViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            AppLauncherScreen(viewModel)
+        }
+      /*  navController = navController,
         startDestination = Acknowledgement,
         modifier = modifier,
     ) {
@@ -95,7 +106,7 @@ fun AppNavHost(
                 navController = respectNavController
             )
             AcknowledgementScreen(viewModel)
-        }
+        }*/
         composable<LoginScreen> {
             val viewModel: LoginViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -221,7 +232,7 @@ fun AppNavHost(
             )
         }
 
-        composable<Student> {
+        composable<AddPersonToClazz> {
             val viewModel: AddPersonToClazzViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
