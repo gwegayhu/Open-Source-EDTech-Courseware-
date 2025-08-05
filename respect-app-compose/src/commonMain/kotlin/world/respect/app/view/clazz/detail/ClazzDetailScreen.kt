@@ -102,7 +102,7 @@ fun ClazzDetailScreen(
             )
         }
         itemsIndexed(
-            uiState.listOfTeachers,
+            listOf("AA","BB","CC"),
             key = { index, name -> "invite_$index" }
         ) { _, name ->
             ListItem(
@@ -180,21 +180,22 @@ fun ClazzDetailScreen(
 
         itemsIndexed(
             uiState.listOfTeachers,
-            key = { index, name -> "teacher_$index" }
-        ) { _, name ->
+            key = { index, teacher ->
+                teacher.sourcedId
+            }) { index, teacher ->
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { /* handle click */ },
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = name,
+                        name = teacher.givenName,
                         modifier = Modifier.size(40.dp),
                         fontScale = 1.0f
                     )
                 },
                 headlineContent = {
-                    Text(text = name)
+                    Text(text = teacher.givenName)
                 }
             )
         }
@@ -236,23 +237,24 @@ fun ClazzDetailScreen(
         }
 
         itemsIndexed(
-            uiState.listOfTeachers,
-            key = { index, name -> "student_$index" }
-        ) { _, name ->
+            uiState.listOfStudents,
+            key = { index, student ->
+                student.sourcedId
+            }) { index, student ->
             ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { },
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = name,
+                        name = student.givenName,
                         modifier = Modifier.size(40.dp),
                         fontScale = 1.0f
                     )
                 },
                 headlineContent = {
                     Text(
-                        text = name
+                        text = student.givenName
                     )
                 }
             )

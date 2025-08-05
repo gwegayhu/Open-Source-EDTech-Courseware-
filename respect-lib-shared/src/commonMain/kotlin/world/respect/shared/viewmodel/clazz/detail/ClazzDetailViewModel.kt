@@ -1,16 +1,22 @@
 package world.respect.shared.viewmodel.clazz.detail
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
+import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.shared.navigation.AcceptInvite
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class ClazzDetailUiState(
-    val listOfTeachers: List<String> = listOf("Micky", "Mouse", "Bunny"),
+    val listOfTeachers: List<OneRosterUser> = emptyList(),
+    val listOfStudents: List<OneRosterUser> = emptyList(),
     val sortOptions: List<String> = listOf("First", "Last"),
     val selectedSortOption: String? = null,
     val chipOptions: List<String> = listOf("Active", "All"),
@@ -21,9 +27,38 @@ class ClazzDetailViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
+    private val fakeRosterDataSource = FakeRosterDataSource()
     private val _uiState = MutableStateFlow(ClazzDetailUiState())
 
     val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val users = fakeRosterDataSource.getAllUsers()
+
+            val teachers = users.filter { user ->
+                user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
+            }
+
+            val students = users.filter { user ->
+                user.roles.any { it.role == OneRosterRoleEnum.STUDENT }
+            }
+
+            _uiState.update {
+                it.copy(
+                    listOfTeachers = teachers,
+                    listOfStudents = students
+                )
+            }
+
+            _appUiState.update {
+                it.copy(
+                    title = "Class Detail",
+                    showBackButton = true
+                )
+            }
+        }
+    }
 
     fun onClickAcceptInvite() {
         _navCommandFlow.tryEmit(
