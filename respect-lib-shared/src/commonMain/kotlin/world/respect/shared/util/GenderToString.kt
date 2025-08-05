@@ -11,5 +11,5 @@ val OneRosterGenderEnum.toGenderLabel: StringResource
         OneRosterGenderEnum.FEMALE -> Res.string.female
         OneRosterGenderEnum.MALE ->Res.string.male
         OneRosterGenderEnum.OTHER -> Res.string.other
-        OneRosterGenderEnum.UNSPECIFIED -> Res.string.gender
+        OneRosterGenderEnum.UNSPECIFIED -> Res.string.unspecified
     }

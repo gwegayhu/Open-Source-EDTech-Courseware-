@@ -42,7 +42,7 @@ class CreatePublicKeyCredentialCreationOptionsJsonUseCase(
         return PublicKeyCredentialCreationOptionsJSON(
             rp = PublicKeyCredentialRpEntity(
                 id = url.host,
-                name = "",
+                name = "Respect",
                 icon = null,
             ),
             user = PublicKeyCredentialUserEntityJSON(

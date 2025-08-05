@@ -95,6 +95,7 @@
     <string name="female">Female</string>
     <string name="other">Other</string>
     <string name="gender">Gender</string>
+    <string name="unspecified">Unspecified</string>
 
 
     <string name="phone_memory">Phone memory</string>
