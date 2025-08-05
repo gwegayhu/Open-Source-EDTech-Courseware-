@@ -15,7 +15,12 @@ import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
 data class AddClazzUiState(
     var className: String = "",
-)
+    var description: String = "",
+    var startDate: String = "",
+    var endDate: String = "",
+
+
+    )
 
 class AddClazzViewModel(
     savedStateHandle: SavedStateHandle,
@@ -39,10 +44,24 @@ class AddClazzViewModel(
             }
         }
     }
-
-    fun onClassNameChange(
-        className: String
-    ) {
-
+    fun onClassNameChange(newValue: String) {
+        _uiState.update {
+            it.copy(className = newValue)
+        }
+    }
+    fun onClassDescriptionChange(newValue: String) {
+        _uiState.update {
+            it.copy(description = newValue)
+        }
+    }
+    fun onStartDateChange(newValue: String) {
+        _uiState.update {
+            it.copy(startDate = newValue)
+        }
+    }
+    fun onEndDateChange(newValue: String) {
+        _uiState.update {
+            it.copy(endDate = newValue)
+        }
     }
 }
