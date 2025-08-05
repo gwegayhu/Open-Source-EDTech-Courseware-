@@ -83,17 +83,6 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = RespectAppLauncher,
-        modifier = modifier,
-    ) {
-        composable<RespectAppLauncher> {
-            val viewModel: AppLauncherViewModel = respectViewModel(
-                onSetAppUiState = onSetAppUiState,
-                navController = respectNavController
-            )
-            AppLauncherScreen(viewModel)
-        }
-      /*  navController = navController,
         startDestination = Acknowledgement,
         modifier = modifier,
     ) {
@@ -103,7 +92,7 @@ fun AppNavHost(
                 navController = respectNavController
             )
             AcknowledgementScreen(viewModel)
-        }*/
+        }
         composable<LoginScreen> {
             val viewModel: LoginViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -245,7 +234,8 @@ fun AppNavHost(
                 navController = respectNavController
             )
             SignupScreen(
-                viewModel = viewModel)
+                viewModel = viewModel
+            )
         }
         composable<ConfirmationScreen> {
             val viewModel: ConfirmationViewModel = respectViewModel(
@@ -254,7 +244,8 @@ fun AppNavHost(
             )
             ConfirmationScreen(
 
-                viewModel = viewModel)
+                viewModel = viewModel
+            )
         }
         composable<TermsAndCondition> {
             val viewModel: TermsAndConditionViewModel = respectViewModel(
@@ -262,7 +253,8 @@ fun AppNavHost(
                 navController = respectNavController
             )
             TermsAndConditionScreen(
-                viewModel = viewModel)
+                viewModel = viewModel
+            )
         }
         composable<CreateAccount> {
             val viewModel: CreateAccountViewModel = respectViewModel(
@@ -270,7 +262,8 @@ fun AppNavHost(
                 navController = respectNavController
             )
             CreateAccountScreen(
-                viewModel = viewModel)
+                viewModel = viewModel
+            )
         }
         composable<WaitingForApproval> {
             val viewModel: WaitingForApprovalViewModel = respectViewModel(
@@ -278,7 +271,8 @@ fun AppNavHost(
                 navController = respectNavController
             )
             WaitingForApprovalScreen(
-                viewModel = viewModel)
+                viewModel = viewModel
+            )
         }
     }
 

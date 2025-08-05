@@ -12,9 +12,6 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.classes
-import world.respect.shared.navigation.Clazz
-import world.respect.shared.navigation.ClazzDetail
-import world.respect.shared.navigation.NavCommand
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import java.util.UUID

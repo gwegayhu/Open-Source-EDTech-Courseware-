@@ -65,6 +65,7 @@ fun AddClazzScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 modifier = Modifier.fillMaxWidth(),
             )
+
             OutlinedTextField(
                 value = uiState.description,
                 onValueChange = onClassDescriptionChange,
@@ -77,11 +78,13 @@ fun AddClazzScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 modifier = Modifier.fillMaxWidth(),
             )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+
                 OutlinedTextField(
                     value = uiState.startDate,
                     onValueChange = onStartDateChange,
@@ -94,6 +97,7 @@ fun AddClazzScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     modifier = Modifier.weight(1f),
                 )
+
                 OutlinedTextField(
                     value = uiState.endDate,
                     onValueChange = onEndDateChange,
