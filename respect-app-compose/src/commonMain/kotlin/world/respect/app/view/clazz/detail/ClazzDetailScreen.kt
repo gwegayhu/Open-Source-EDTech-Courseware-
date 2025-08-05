@@ -28,7 +28,6 @@ import world.respect.app.components.RespectPersonAvatar
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
-import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.pending_invite
 import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
@@ -102,24 +101,26 @@ fun ClazzDetailScreen(
             )
         }
         itemsIndexed(
-            listOf("AA","BB","CC"),
-            key = { index, name -> "invite_$index" }
-        ) { _, name ->
+            uiState.listOfPending,
+            key = { index, pendingUser ->
+                pendingUser.sourcedId
+            }) { index, pendingUser ->
+            val roleName = pendingUser.roles.firstOrNull()?.role?.name
+                ?.lowercase()
+                ?.replaceFirstChar { it.uppercase() } ?: "Unknown"
+
             ListItem(
                 modifier = Modifier.fillMaxWidth()
                     .clickable { /* handle click */ },
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = name,
+                        name = pendingUser.givenName,
                         modifier = Modifier.size(40.dp),
                         fontScale = 1.0f
                     )
                 },
                 headlineContent = {
-                    Text(text = name)
-                },
-                supportingContent = {
-                    Text(text = stringResource(Res.string.description))
+                    Text(text = pendingUser.givenName + "(" + roleName + ")")
                 },
                 trailingContent = {
                     Row {

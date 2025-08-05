@@ -41,7 +41,8 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
                 familyName = "Anderson",
                 roles = listOf(teacherRole),
                 username = "alice.anderson",
-                email = "alice@example.com"
+                email = "alice@example.com",
+                enabledUser=false
             ),
             OneRosterUser(
                 sourcedId = "t2",
@@ -69,7 +70,8 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
                 familyName = "Davis",
                 roles = listOf(studentRole),
                 username = "diana.davis",
-                email = "diana@example.com"
+                email = "diana@example.com",
+                enabledUser=false
             ),
             OneRosterUser(
                 sourcedId = "s3",

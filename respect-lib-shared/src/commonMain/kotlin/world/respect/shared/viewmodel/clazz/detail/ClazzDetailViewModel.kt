@@ -17,6 +17,7 @@ import world.respect.shared.viewmodel.RespectViewModel
 data class ClazzDetailUiState(
     val listOfTeachers: List<OneRosterUser> = emptyList(),
     val listOfStudents: List<OneRosterUser> = emptyList(),
+    val listOfPending: List<OneRosterUser> = emptyList(),
     val sortOptions: List<String> = listOf("First", "Last"),
     val selectedSortOption: String? = null,
     val chipOptions: List<String> = listOf("Active", "All"),
@@ -37,17 +38,21 @@ class ClazzDetailViewModel(
             val users = fakeRosterDataSource.getAllUsers()
 
             val teachers = users.filter { user ->
-                user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
+                user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
             }
 
             val students = users.filter { user ->
-                user.roles.any { it.role == OneRosterRoleEnum.STUDENT }
+                user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.STUDENT }
+            }
+            val pendingInvites = users.filter { user ->
+                !user.enabledUser
             }
 
             _uiState.update {
                 it.copy(
                     listOfTeachers = teachers,
-                    listOfStudents = students
+                    listOfStudents = students,
+                    listOfPending = pendingInvites
                 )
             }
 
