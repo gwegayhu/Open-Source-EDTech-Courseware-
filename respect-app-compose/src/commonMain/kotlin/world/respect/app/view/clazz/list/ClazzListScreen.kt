@@ -18,7 +18,6 @@ import world.respect.app.components.RespectPersonAvatar
 import world.respect.app.components.RespectSortOption
 import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
-import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
 
 @Composable
 fun ClazzListScreen(
@@ -47,9 +46,9 @@ fun ClazzListScreen(
         item {
             RespectSortOption(
                 options = uiState.sortOptions,
-                selectedOption = uiState.selectedSortOption ?: NAME,
+                selectedOption = uiState.selectedSortOption ,
                 onOptionSelected = onClickSortOption,
-                optionLabel = { it },
+                optionLabel = { it.toString() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp)

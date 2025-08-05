@@ -22,7 +22,7 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 data class ClazzListUiState(
     val oneRoasterClass: List<OneRosterClass> = emptyList(),
     val sortOptions: List<String> = listOf("First", "Last"),
-    val selectedSortOption: String? = null
+    val selectedSortOption: String? = sortOptions.first()
 )
 
 class ClazzListViewModel(
@@ -76,8 +76,6 @@ class ClazzListViewModel(
         )
     }
 
-    companion object {
-        val NAME = "Name"
-    }
+
 }
 

@@ -33,7 +33,6 @@ import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
-import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel.Companion.NAME
 
 @Composable
 fun ClazzDetailScreen(
@@ -70,9 +69,9 @@ fun ClazzDetailScreen(
 
             RespectSortOption(
                 options = uiState.sortOptions,
-                selectedOption = uiState.selectedSortOption ?: NAME,
+                selectedOption = uiState.selectedSortOption,
                 onOptionSelected = onClickSortOption,
-                optionLabel = { it },
+                optionLabel = { it.toString() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp)

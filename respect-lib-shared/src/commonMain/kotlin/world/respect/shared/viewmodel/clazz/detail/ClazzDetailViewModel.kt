@@ -18,7 +18,7 @@ data class ClazzDetailUiState(
     val listOfStudents: List<OneRosterUser> = emptyList(),
     val listOfPending: List<OneRosterUser> = emptyList(),
     val sortOptions: List<String> = listOf("First", "Last"),
-    val selectedSortOption: String? = null,
+    val selectedSortOption: String? = sortOptions.first(),
     val chipOptions: List<String> = listOf("Active", "All"),
     val selectedChip: String = "All"
 )
@@ -52,13 +52,6 @@ class ClazzDetailViewModel(
                     listOfTeachers = teachers,
                     listOfStudents = students,
                     listOfPending = pendingInvites
-                )
-            }
-
-            _appUiState.update {
-                it.copy(
-                    title = "Class Detail",
-                    showBackButton = true
                 )
             }
         }
