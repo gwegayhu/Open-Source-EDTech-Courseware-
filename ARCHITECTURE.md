@@ -27,6 +27,11 @@ GET https://school.example.org/respect-realm.json
     respectExt: "https://school.example.org/api/respect/" 
 }
 ```
+School-level realms group related data together enabling each to be its own database (e.g. 
+[horizontal partitioning](https://en.wikipedia.org/wiki/Partition_(database)#Partitioning_methods)).
+This dramatically reduces the work required to perform queries (e.g. searching a users table that
+contains only a thousand or so users in a particular school instead of a table that contains
+all users in a district/country).
 
 * **Directories** (typically country or regional level): a directory server lists realms. It is used
   by the RESPECT app to find the realm for a given school name. Directory servers are also used when 
