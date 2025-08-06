@@ -48,7 +48,7 @@ fun ClazzListScreen(
                 options = uiState.sortOptions.map { it.option },
                 selectedOption = uiState.selectedSortOption ,
                 onOptionSelected = onClickSortOption,
-                optionLabel = { it.toString() },
+                optionLabel = { it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding( 16.dp)
