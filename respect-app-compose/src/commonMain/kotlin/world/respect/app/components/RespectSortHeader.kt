@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun <T> RespectSortOption(
+fun <T> RespectSortHeader(
     options: List<T>,
     selectedOption: T,
     onOptionSelected: (String) -> Unit,

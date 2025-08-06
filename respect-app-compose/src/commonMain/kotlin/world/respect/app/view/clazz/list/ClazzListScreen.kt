@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import world.respect.app.components.RespectPersonAvatar
-import world.respect.app.components.RespectSortOption
+import world.respect.app.components.RespectSortHeader
 import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 
@@ -44,7 +44,7 @@ fun ClazzListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         item {
-            RespectSortOption(
+            RespectSortHeader(
                 options = uiState.sortOptions.map { it.option },
                 selectedOption = uiState.selectedSortOption ,
                 onOptionSelected = onClickSortOption,

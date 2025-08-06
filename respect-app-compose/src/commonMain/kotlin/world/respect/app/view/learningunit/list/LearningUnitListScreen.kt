@@ -34,7 +34,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
-import world.respect.app.components.RespectSortOption
+import world.respect.app.components.RespectSortHeader
 import world.respect.shared.viewmodel.app.appstate.getTitle
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListUiState
@@ -69,7 +69,7 @@ fun LearningUnitListScreen(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
         if(uiState.selectedFilterTitle != null){
-        RespectSortOption(
+        RespectSortHeader(
             options = uiState.lessonFilter,
             selectedOption = uiState.selectedFilterTitle
                 ?: uiState.lessonFilter.firstOrNull()?.metadata?.title,

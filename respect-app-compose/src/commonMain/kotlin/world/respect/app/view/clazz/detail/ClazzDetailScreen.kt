@@ -22,8 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import world.respect.app.components.RespectSortOption
-import world.respect.app.components.RespectFilterChip
+import world.respect.app.components.RespectSortHeader
+import world.respect.app.components.RespectFilterChipsHeader
 import world.respect.app.components.RespectPersonAvatar
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
@@ -60,14 +60,14 @@ fun ClazzDetailScreen(
             .fillMaxSize()
     ) {
         item {
-            RespectFilterChip(
+            RespectFilterChipsHeader(
                 options = uiState.chipOptions,
                 selectedOption = uiState.selectedChip,
                 onOptionSelected = { onSelectChip(it) },
                 optionLabel = { it }
             )
 
-            RespectSortOption(
+            RespectSortHeader(
                 options = uiState.sortOptions.map { it.option },
                 selectedOption = uiState.selectedSortOption,
                 onOptionSelected = onClickSortOption,
