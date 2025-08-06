@@ -48,9 +48,7 @@ fun AddClazzScreen(
     onEndDateChange: (String) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize(),
     ) {
         item {
             OutlinedTextField(
@@ -63,7 +61,11 @@ fun AddClazzScreen(
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 6.dp
+                    ),
             )
 
             OutlinedTextField(
@@ -76,12 +78,15 @@ fun AddClazzScreen(
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 6.dp
+                    ),
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
@@ -95,7 +100,13 @@ fun AddClazzScreen(
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
+                        .padding(
+                            start = 12.dp,
+                            end = 6.dp,
+                            top = 6.dp,
+                            bottom = 6.dp
+                        ),
                 )
 
                 OutlinedTextField(
@@ -108,7 +119,13 @@ fun AddClazzScreen(
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
+                        .padding(
+                            start = 6.dp,
+                            end = 12.dp,
+                            top = 6.dp,
+                            bottom = 6.dp
+                        ),
                 )
 
             }

@@ -2,6 +2,7 @@ package world.respect.app.view.clazz.detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -75,7 +76,7 @@ fun ClazzDetailScreen(
                 optionLabel = { it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp)
+                    .padding(start = 12.dp)
             )
         }
 
@@ -137,10 +138,12 @@ fun ClazzDetailScreen(
             )
         }
 
+
         item {
             ListItem(
                 headlineContent = {
                     Text(
+                        modifier = Modifier.padding(top = 24.dp),
                         text = stringResource(
                             resource = Res.string.teachers
                         )
@@ -202,6 +205,7 @@ fun ClazzDetailScreen(
             ListItem(
                 headlineContent = {
                     Text(
+                        modifier = Modifier.padding(top = 24.dp),
                         text = stringResource(
                             resource = Res.string.students
                         )

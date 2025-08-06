@@ -83,17 +83,33 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Acknowledgement,
+        startDestination = RespectAppLauncher,
         modifier = modifier,
     ) {
 
-        composable<Acknowledgement> {
-            val viewModel: AcknowledgementViewModel = respectViewModel(
+        composable<RespectAppLauncher> {
+            val viewModel: AppLauncherViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
-                navController = respectNavController
+                navController = respectNavController,
             )
-            AcknowledgementScreen(viewModel)
+
+            AppLauncherScreen(
+                viewModel = viewModel
+            )
         }
+
+//        navController = navController,
+//        startDestination = Acknowledgement,
+//        modifier = modifier,
+//    ) {
+//
+//        composable<Acknowledgement> {
+//            val viewModel: AcknowledgementViewModel = respectViewModel(
+//                onSetAppUiState = onSetAppUiState,
+//                navController = respectNavController
+//            )
+//            AcknowledgementScreen(viewModel)
+//        }
 
         composable<LoginScreen> {
             val viewModel: LoginViewModel = respectViewModel(
