@@ -10,7 +10,7 @@ import world.respect.datalayer.opds.model.LangMap
  * also have a RESPECT API server.
  *
  * @property name the name of the realm (e.g. school name), potentially in more than one language
- * @property self the absolute URL to this Respect Realm JSON e.g. https://school.example.org/respect-realm.json
+ * @property self the absolute URL to this Respect Realm, under which . https://school.example.org/
  * @property xapi URL to xAPI endpoint e.g. https://school.example.org/api/xapi/
  * @property oneRoster URL to OneRoster endpoint e.g. https://school.example.org/api/oneroster/
  * @property respectExt URL to Respect extensions endpoint (if available). Required for invites etc

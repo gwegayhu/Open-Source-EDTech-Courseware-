@@ -12,6 +12,7 @@ data class RealmEntity(
     @PrimaryKey
     val reUid: Long,
     val reLastMod: Long,
+    val reEtag: String?,
     val reSelf: Url,
     val reXapi: Url,
     val reOneRoster: Url,

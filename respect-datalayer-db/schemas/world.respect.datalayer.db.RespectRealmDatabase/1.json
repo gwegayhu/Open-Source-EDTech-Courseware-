@@ -1,0 +1,71 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "d14767ab43a10c2033613ac055b9b19b",
+    "entities": [
+      {
+        "tableName": "PersonEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pGuid` TEXT NOT NULL, `pGuidHash` INTEGER NOT NULL, `pActive` INTEGER NOT NULL, `pLastModified` INTEGER NOT NULL, `pUsername` TEXT, `pGivenName` TEXT NOT NULL, `pFamilyName` TEXT NOT NULL, `pMiddleName` TEXT, PRIMARY KEY(`pGuidHash`))",
+        "fields": [
+          {
+            "fieldPath": "pGuid",
+            "columnName": "pGuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pGuidHash",
+            "columnName": "pGuidHash",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pActive",
+            "columnName": "pActive",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pLastModified",
+            "columnName": "pLastModified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pUsername",
+            "columnName": "pUsername",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pGivenName",
+            "columnName": "pGivenName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pFamilyName",
+            "columnName": "pFamilyName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pMiddleName",
+            "columnName": "pMiddleName",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pGuidHash"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd14767ab43a10c2033613ac055b9b19b')"
+    ]
+  }
+}

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a68221e84a51e1163a89a42b88a61e03",
+    "identityHash": "38e80447aafcd1b4a4bfb3d007aba188",
     "entities": [
       {
         "tableName": "LangMapEntity",
@@ -648,13 +648,24 @@
       },
       {
         "tableName": "RealmEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reUid` INTEGER NOT NULL, `reSelf` TEXT NOT NULL, `reXapi` TEXT NOT NULL, `reOneRoster` TEXT NOT NULL, `reRespectExt` TEXT, PRIMARY KEY(`reUid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reUid` INTEGER NOT NULL, `reLastMod` INTEGER NOT NULL, `reEtag` TEXT, `reSelf` TEXT NOT NULL, `reXapi` TEXT NOT NULL, `reOneRoster` TEXT NOT NULL, `reRespectExt` TEXT, PRIMARY KEY(`reUid`))",
         "fields": [
           {
             "fieldPath": "reUid",
             "columnName": "reUid",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "reLastMod",
+            "columnName": "reLastMod",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reEtag",
+            "columnName": "reEtag",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "reSelf",
@@ -686,11 +697,35 @@
             "reUid"
           ]
         }
+      },
+      {
+        "tableName": "RealmConfigEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rcUid` INTEGER NOT NULL, `dbUrl` TEXT NOT NULL, PRIMARY KEY(`rcUid`))",
+        "fields": [
+          {
+            "fieldPath": "rcUid",
+            "columnName": "rcUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbUrl",
+            "columnName": "dbUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "rcUid"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a68221e84a51e1163a89a42b88a61e03')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38e80447aafcd1b4a4bfb3d007aba188')"
     ]
   }
 }

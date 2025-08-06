@@ -22,8 +22,10 @@ import world.respect.datalayer.db.opds.entities.OpdsGroupEntity
 import world.respect.datalayer.db.opds.entities.OpdsPublicationEntity
 import world.respect.datalayer.db.opds.entities.ReadiumLinkEntity
 import world.respect.datalayer.db.opds.entities.ReadiumSubjectEntity
+import world.respect.datalayer.db.realmdirectory.daos.RealmConfigEntityDao
 import world.respect.datalayer.db.realmdirectory.daos.RealmDirectoryEntityDao
 import world.respect.datalayer.db.realmdirectory.daos.RealmEntityDao
+import world.respect.datalayer.db.realmdirectory.entities.RealmConfigEntity
 import world.respect.datalayer.db.realmdirectory.entities.RealmDirectoryEntity
 import world.respect.datalayer.db.realmdirectory.entities.RealmEntity
 import world.respect.datalayer.db.shared.SharedConverters
@@ -51,6 +53,7 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         //realmdirectory
         RealmDirectoryEntity::class,
         RealmEntity::class,
+        RealmConfigEntity::class,
     ],
     version = 1,
 )
@@ -75,6 +78,8 @@ abstract class RespectAppDatabase: RoomDatabase() {
     abstract fun getOpdsGroupEntityDao(): OpdsGroupEntityDao
 
     abstract fun getRealmEntityDao(): RealmEntityDao
+
+    abstract fun getRealmConfigEntityDao(): RealmConfigEntityDao
 
     abstract fun getRealmDirectoryEntityDao(): RealmDirectoryEntityDao
 

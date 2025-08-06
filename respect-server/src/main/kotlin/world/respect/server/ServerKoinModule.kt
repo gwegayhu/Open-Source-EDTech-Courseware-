@@ -1,17 +1,24 @@
 package world.respect.server
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import io.ktor.http.Url
 import io.ktor.server.config.ApplicationConfig
+import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectAppDatabase
+import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
+import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
+import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.server.domain.realm.add.AddRealmUseCase
+import world.respect.server.domain.realm.add.AddServerManagedDirectoryCallback
+import world.respect.shared.domain.realm.RespectRealmPath
 import java.io.File
 
 const val APP_DB_FILENAME = "respect-app.db"
@@ -27,6 +34,7 @@ fun serverKoinModule(
         val dbFile = File(dataDir, APP_DB_FILENAME)
         Room.databaseBuilder<RespectAppDatabase>(dbFile.absolutePath)
             .setDriver(BundledSQLiteDriver())
+            .addCallback(AddServerManagedDirectoryCallback(xxStringHasher = get()))
             .build()
     }
 
@@ -55,6 +63,35 @@ fun serverKoinModule(
         AddRealmUseCase(
             directoryDataSource = get<RespectAppDataSource>().realmDirectoryDataSource as RealmDirectoryDataSourceLocal
         )
+    }
+
+    /*
+     * Realm scope: realm id = the full realm url as per RespectRealm.self
+     */
+    scope<RespectRealm> {
+        scoped<RespectRealmPath> {
+            val realmDirName = Url(id).sanitizedForFilename()
+            val realmDirFile = File(dataDir, realmDirName).also {
+                if(!it.exists())
+                    it.mkdirs()
+            }
+
+            RespectRealmPath(
+                path = Path(realmDirFile.absolutePath)
+            )
+        }
+
+
+        scoped<RespectRealmDatabase> {
+            val path: RespectRealmPath = get()
+            val dbPath = Path(path.path, "respect-realm.db")
+
+            Room.databaseBuilder<RespectRealmDatabase>(dbPath.toString())
+                .setDriver(BundledSQLiteDriver())
+                .build()
+
+
+        }
     }
 
 }

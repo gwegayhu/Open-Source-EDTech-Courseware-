@@ -18,6 +18,7 @@ import net.sourceforge.argparse4j.inf.Namespace
 import world.respect.datalayer.opds.model.LangMapStringValue
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.libutil.ext.resolve
+import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.server.domain.realm.add.AddRealmUseCase
 import java.io.File
 import java.util.Properties
@@ -60,21 +61,21 @@ fun managerServerMain(ns: Namespace) {
         when(ns.getString("subparser_name")) {
             CMD_ADD_REALM -> {
                 val realmBaseUrl = Url(ns.getString("url"))
-                val request = AddRealmUseCase.AddRealmRequest(
-                    realm = RespectRealm(
-                        name = LangMapStringValue(ns.getString("name")),
-                        self = realmBaseUrl,
-                        xapi = realmBaseUrl.resolve("api/xapi"),
-                        oneRoster = realmBaseUrl.resolve("api/oneroster"),
-                        respectExt = realmBaseUrl.resolve("api/respect-ext"),
-                    )
-                )
 
                 val response = httpClient.post(serverUrl.resolve("/directory/admin/add-realm")) {
                     header(HttpHeaders.Authorization, authHeader)
                     contentType(ContentType.Application.Json)
                     setBody(
-                        request
+                        AddRealmUseCase.AddRealmRequest(
+                            realm = RespectRealm(
+                                name = LangMapStringValue(ns.getString("name")),
+                                self = realmBaseUrl,
+                                xapi = realmBaseUrl.resolve("api/xapi"),
+                                oneRoster = realmBaseUrl.resolve("api/oneroster"),
+                                respectExt = realmBaseUrl.resolve("api/respect-ext"),
+                            ),
+                            dbUrl = ns.getString("dbUrl") ?: realmBaseUrl.sanitizedForFilename()
+                        )
                     )
                 }
                 println("Response: ${response.status}")

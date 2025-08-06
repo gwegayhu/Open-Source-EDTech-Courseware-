@@ -13,7 +13,7 @@ import kotlin.time.Instant
 object InstantISO8601Serializer: KSerializer<Instant> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
-        "world.respect.UriStringSerializer", PrimitiveKind.STRING
+        "world.respect.Instant8601Serializer", PrimitiveKind.STRING
     )
 
     override fun serialize(

@@ -1,5 +1,7 @@
 package world.respect.datalayer.db.realmdirectory.adapters
 
+import world.respect.datalayer.DataLoadMetaInfo
+import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.db.realmdirectory.entities.RealmEntity
 import world.respect.datalayer.db.shared.adapters.asEntities
 import world.respect.datalayer.db.shared.adapters.toModel
@@ -12,19 +14,21 @@ data class RespectRealmEntities(
     val langMapEntities: List<LangMapEntity>,
 )
 
-fun RespectRealm.asEntity(
+fun DataReadyState<RespectRealm>.toEntities(
     xxStringHasher: XXStringHasher,
 ): RespectRealmEntities {
-    val reUid = xxStringHasher.hash(self.toString())
+    val reUid = xxStringHasher.hash(data.self.toString())
     return RespectRealmEntities(
         realm = RealmEntity(
-            reUid = xxStringHasher.hash(self.toString()),
-            reSelf = self,
-            reXapi = xapi,
-            reOneRoster = oneRoster,
-            reRespectExt = respectExt,
+            reUid = reUid,
+            reSelf = data.self,
+            reXapi = data.xapi,
+            reOneRoster = data.oneRoster,
+            reLastMod = metaInfo.lastModified,
+            reEtag = metaInfo.etag,
+            reRespectExt = data.respectExt,
         ),
-        langMapEntities = name.asEntities(
+        langMapEntities = data.name.asEntities(
             lmeTopParentType = LangMapEntity.TopParentType.RESPECT_REALM,
             lmeTopParentUid1 = reUid,
             lmePropType = LangMapEntity.PropType.RESPECT_REALM_NAME,
@@ -33,12 +37,18 @@ fun RespectRealm.asEntity(
     )
 }
 
-fun RespectRealmEntities.toModel() : RespectRealm {
-    return RespectRealm(
-        self = realm.reSelf,
-        xapi = realm.reXapi,
-        oneRoster = realm.reOneRoster,
-        respectExt = realm.reRespectExt,
-        name = langMapEntities.toModel(),
+fun RespectRealmEntities.toModel() : DataReadyState<RespectRealm> {
+    return DataReadyState(
+        data = RespectRealm(
+            self = realm.reSelf,
+            xapi = realm.reXapi,
+            oneRoster = realm.reOneRoster,
+            respectExt = realm.reRespectExt,
+            name = langMapEntities.toModel(),
+        ),
+        metaInfo = DataLoadMetaInfo(
+            lastModified = realm.reLastMod,
+            etag = realm.reEtag,
+        )
     )
 }
