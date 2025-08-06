@@ -6,19 +6,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.first_name
+import world.respect.shared.generated.resources.last_name
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.NAME
 
 data class ClazzDetailUiState(
     val listOfTeachers: List<OneRosterUser> = emptyList(),
     val listOfStudents: List<OneRosterUser> = emptyList(),
     val listOfPending: List<OneRosterUser> = emptyList(),
-    val sortOptions: List<String> = listOf("First", "Last"),
-    val selectedSortOption: String? = sortOptions.first(),
+    val sortOptions: List<SortOrderOption> = emptyList(),
+    val selectedSortOption: String = NAME,
     val chipOptions: List<String> = listOf("Active", "All"),
     val selectedChip: String = "All"
 )
@@ -51,11 +57,17 @@ class ClazzDetailViewModel(
                 it.copy(
                     listOfTeachers = teachers,
                     listOfStudents = students,
-                    listOfPending = pendingInvites
+                    listOfPending = pendingInvites,
+                    sortOptions = listOf(
+                        SortOrderOption(getString(Res.string.first_name)),
+                        SortOrderOption(getString(Res.string.last_name))
+                    ),
+                    selectedSortOption = getString(Res.string.first_name),
                 )
             }
         }
     }
+
     fun onClickAddPersonToClazz() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
@@ -72,4 +84,7 @@ class ClazzDetailViewModel(
         _uiState.update { it.copy(selectedChip = chip) }
     }
 
+    companion object {
+        const val NAME = "Name"
+    }
 }

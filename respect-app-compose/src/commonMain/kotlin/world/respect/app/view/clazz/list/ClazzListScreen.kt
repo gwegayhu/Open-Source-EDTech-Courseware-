@@ -45,13 +45,13 @@ fun ClazzListScreen(
     ) {
         item {
             RespectSortOption(
-                options = uiState.sortOptions,
+                options = uiState.sortOptions.map { it.option },
                 selectedOption = uiState.selectedSortOption ,
                 onOptionSelected = onClickSortOption,
                 optionLabel = { it.toString() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp)
+                    .padding( 16.dp)
             )
         }
         itemsIndexed(

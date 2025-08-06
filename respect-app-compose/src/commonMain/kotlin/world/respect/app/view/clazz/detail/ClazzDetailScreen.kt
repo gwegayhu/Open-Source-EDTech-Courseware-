@@ -68,10 +68,10 @@ fun ClazzDetailScreen(
             )
 
             RespectSortOption(
-                options = uiState.sortOptions,
+                options = uiState.sortOptions.map { it.option },
                 selectedOption = uiState.selectedSortOption,
                 onOptionSelected = onClickSortOption,
-                optionLabel = { it.toString() },
+                optionLabel = { it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp)

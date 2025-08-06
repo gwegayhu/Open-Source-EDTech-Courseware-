@@ -12,17 +12,21 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.clazz
+import world.respect.shared.generated.resources.first_name
+import world.respect.shared.generated.resources.last_name
 import world.respect.shared.navigation.AddClazz
 import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.NAME
 
 
 data class ClazzListUiState(
     val oneRoasterClass: List<OneRosterClass> = emptyList(),
-    val sortOptions: List<String> = listOf("First", "Last"),
-    val selectedSortOption: String? = sortOptions.first()
+    val sortOptions: List<SortOrderOption> = emptyList(),
+    val selectedSortOption: String = NAME
 )
 
 class ClazzListViewModel(
@@ -38,11 +42,17 @@ class ClazzListViewModel(
         viewModelScope.launch {
 
             val classes = fakeRosterDataSource.getAllClasses()
+
             _uiState.update {
                 it.copy(
-                    oneRoasterClass = classes
-                )
+                    oneRoasterClass = classes,
+                    sortOptions = listOf(
+                        SortOrderOption( getString(Res.string.first_name)),
+                        SortOrderOption( getString(Res.string.last_name))
+                    ),
+                    selectedSortOption = getString(Res.string.first_name))
             }
+
             _appUiState.update {
                 it.copy(
                     title = getString(Res.string.classes),
