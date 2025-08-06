@@ -60,6 +60,7 @@ fun ClazzDetailScreen(
             .fillMaxSize()
     ) {
         item {
+
             RespectFilterChipsHeader(
                 options = uiState.chipOptions,
                 selectedOption = uiState.selectedChip,
@@ -76,8 +77,8 @@ fun ClazzDetailScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp)
             )
-
         }
+
         item {
             ListItem(
                 headlineContent = {
@@ -96,6 +97,7 @@ fun ClazzDetailScreen(
                 }
             )
         }
+
         itemsIndexed(
             uiState.listOfPending,
             key = { index, pendingUser ->
@@ -106,9 +108,8 @@ fun ClazzDetailScreen(
                 ?.replaceFirstChar { it.uppercase() } ?: "Unknown"
 
             ListItem(
-                modifier = Modifier.fillMaxWidth()
-                    .clickable {
-                    },
+                modifier = Modifier
+                    .fillMaxWidth(),
                 leadingContent = {
                     RespectPersonAvatar(
                         name = pendingUser.givenName,
@@ -183,8 +184,7 @@ fun ClazzDetailScreen(
             }) { index, teacher ->
             ListItem(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { /* handle click */ },
+                    .fillMaxWidth(),
                 leadingContent = {
                     RespectPersonAvatar(
                         name = teacher.givenName,

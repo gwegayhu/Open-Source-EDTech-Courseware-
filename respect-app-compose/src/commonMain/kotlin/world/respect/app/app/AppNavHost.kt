@@ -86,6 +86,7 @@ fun AppNavHost(
         startDestination = Acknowledgement,
         modifier = modifier,
     ) {
+
         composable<Acknowledgement> {
             val viewModel: AcknowledgementViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -93,6 +94,7 @@ fun AppNavHost(
             )
             AcknowledgementScreen(viewModel)
         }
+
         composable<LoginScreen> {
             val viewModel: LoginViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -108,12 +110,12 @@ fun AppNavHost(
             )
             JoinClazzWithCodeScreen(viewModel)
         }
+
         composable<RespectAppLauncher> {
             val viewModel: AppLauncherViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController,
             )
-
             AppLauncherScreen(
                 viewModel = viewModel
             )
@@ -237,16 +239,17 @@ fun AppNavHost(
                 viewModel = viewModel
             )
         }
+
         composable<ConfirmationScreen> {
             val viewModel: ConfirmationViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
             ConfirmationScreen(
-
                 viewModel = viewModel
             )
         }
+
         composable<TermsAndCondition> {
             val viewModel: TermsAndConditionViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -256,6 +259,7 @@ fun AppNavHost(
                 viewModel = viewModel
             )
         }
+
         composable<CreateAccount> {
             val viewModel: CreateAccountViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -265,6 +269,7 @@ fun AppNavHost(
                 viewModel = viewModel
             )
         }
+
         composable<WaitingForApproval> {
             val viewModel: WaitingForApprovalViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
@@ -275,7 +280,6 @@ fun AppNavHost(
             )
         }
     }
-
 }
 
 

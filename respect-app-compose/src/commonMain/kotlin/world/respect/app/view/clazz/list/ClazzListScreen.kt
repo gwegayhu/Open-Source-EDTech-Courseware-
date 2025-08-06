@@ -43,17 +43,19 @@ fun ClazzListScreen(
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
+
         item {
             RespectSortHeader(
                 options = uiState.sortOptions.map { it.option },
-                selectedOption = uiState.selectedSortOption ,
+                selectedOption = uiState.selectedSortOption,
                 onOptionSelected = onClickSortOption,
                 optionLabel = { it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding( 16.dp)
+                    .padding(16.dp)
             )
         }
+
         itemsIndexed(
             uiState.oneRoasterClass,
             key = { index, clazz -> index }
@@ -80,6 +82,5 @@ fun ClazzListScreen(
                 }
             )
         }
-
     }
 }
