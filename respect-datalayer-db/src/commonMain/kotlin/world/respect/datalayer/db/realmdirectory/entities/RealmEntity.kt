@@ -11,6 +11,7 @@ import io.ktor.http.Url
 data class RealmEntity(
     @PrimaryKey
     val reUid: Long,
+    val reLastMod: Long,
     val reSelf: Url,
     val reXapi: Url,
     val reOneRoster: Url,

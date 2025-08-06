@@ -3,6 +3,9 @@ package world.respect.server
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.basic
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -11,6 +14,7 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import world.respect.Greeting
 import world.respect.libutil.ext.randomString
+import world.respect.server.routes.AUTH_CONFIG_DIRECTORY_ADMIN_BASIC
 import world.respect.server.routes.RespectRealmDirectoryRoute
 import java.io.File
 import java.util.Properties
@@ -50,6 +54,21 @@ fun Application.module() {
             contentType = ContentType.Application.Json
         )
     }
+
+    install(Authentication) {
+        basic(AUTH_CONFIG_DIRECTORY_ADMIN_BASIC) {
+            realm = "Access realm directory admin"
+            validate { credentials ->
+                val adminPassword = dirAdminFile.readText()
+                if(credentials.password == adminPassword) {
+                    UserIdPrincipal(credentials.name)
+                }else {
+                    null
+                }
+            }
+        }
+    }
+
 
     routing {
         get("/") {
