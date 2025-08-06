@@ -3,9 +3,22 @@ package world.respect.server
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.Url
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.encodeBase64
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import net.sourceforge.argparse4j.inf.Namespace
+import world.respect.datalayer.opds.model.LangMapStringValue
+import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.libutil.ext.resolve
+import world.respect.server.domain.realm.add.AddRealmUseCase
 import java.io.File
 import java.util.Properties
 import kotlin.system.exitProcess
@@ -40,9 +53,34 @@ fun managerServerMain(ns: Namespace) {
 
     println("Connect to $port using auth $systemConfigAuth")
 
-    when(ns.getString("subparser_name")) {
-        CMD_ADD_REALM -> {
+    val serverUrl = Url("http://localhost:$port/")
+    val authHeader = "Basic ${"admin:$systemConfigAuth".encodeBase64()}"
 
+    runBlocking {
+        when(ns.getString("subparser_name")) {
+            CMD_ADD_REALM -> {
+                val realmBaseUrl = Url(ns.getString("url"))
+                val request = AddRealmUseCase.AddRealmRequest(
+                    realm = RespectRealm(
+                        name = LangMapStringValue(ns.getString("name")),
+                        self = realmBaseUrl,
+                        xapi = realmBaseUrl.resolve("api/xapi"),
+                        oneRoster = realmBaseUrl.resolve("api/oneroster"),
+                        respectExt = realmBaseUrl.resolve("api/respect-ext"),
+                    )
+                )
+
+                val response = httpClient.post(serverUrl.resolve("/directory/admin/add-realm")) {
+                    header(HttpHeaders.Authorization, authHeader)
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        request
+                    )
+                }
+                println("Response: ${response.status}")
+            }
         }
+
+        exitProcess(0)
     }
 }

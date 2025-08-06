@@ -226,7 +226,7 @@ val appKoinModule = module {
         SingleDataSourceProvider(
             datasource = RespectAppDataSourceRepository(
                 local = RespectAppDataSourceDb(
-                    respectDatabase = Room.databaseBuilder<RespectAppDatabase>(
+                    respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
                         appContext, appContext.getDatabasePath("respect.db").absolutePath
                     ).setDriver(BundledSQLiteDriver())
                     .build(),

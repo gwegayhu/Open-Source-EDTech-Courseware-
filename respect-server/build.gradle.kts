@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
     application
 }
 
@@ -15,9 +16,17 @@ application {
 dependencies {
     implementation(projects.respectLibShared)
     implementation(projects.respectDatalayer)
+    implementation(projects.respectDatalayerDb)
+    implementation(projects.respectLibXxhash)
+    implementation(projects.respectLibPrimarykeygen)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.sqlite.bundled)
+
     implementation(libs.logback)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
     implementation(libs.argparse4j)
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)

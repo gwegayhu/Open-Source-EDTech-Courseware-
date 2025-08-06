@@ -22,14 +22,20 @@ import world.respect.datalayer.db.opds.entities.OpdsGroupEntity
 import world.respect.datalayer.db.opds.entities.OpdsPublicationEntity
 import world.respect.datalayer.db.opds.entities.ReadiumLinkEntity
 import world.respect.datalayer.db.opds.entities.ReadiumSubjectEntity
+import world.respect.datalayer.db.realmdirectory.daos.RealmDirectoryEntityDao
+import world.respect.datalayer.db.realmdirectory.daos.RealmEntityDao
+import world.respect.datalayer.db.realmdirectory.entities.RealmDirectoryEntity
+import world.respect.datalayer.db.realmdirectory.entities.RealmEntity
 import world.respect.datalayer.db.shared.SharedConverters
 import world.respect.datalayer.db.shared.daos.LangMapEntityDao
 import world.respect.datalayer.db.shared.entities.LangMapEntity
 
 @Database(
     entities = [
-        CompatibleAppEntity::class,
+        //Shared
         LangMapEntity::class,
+
+        //OPDS
         ReadiumLinkEntity::class,
         OpdsPublicationEntity::class,
         ReadiumSubjectEntity::class,
@@ -37,7 +43,14 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         OpdsGroupEntity::class,
         OpdsFeedEntity::class,
         OpdsFeedMetadataEntity::class,
+
+        //Compatible apps
+        CompatibleAppEntity::class,
         CompatibleAppAddJoin::class,
+
+        //realmdirectory
+        RealmDirectoryEntity::class,
+        RealmEntity::class,
     ],
     version = 1,
 )
@@ -60,6 +73,10 @@ abstract class RespectAppDatabase: RoomDatabase() {
     abstract fun getReadiumLinkEntityDao(): ReadiumLinkEntityDao
 
     abstract fun getOpdsGroupEntityDao(): OpdsGroupEntityDao
+
+    abstract fun getRealmEntityDao(): RealmEntityDao
+
+    abstract fun getRealmDirectoryEntityDao(): RealmDirectoryEntityDao
 
     companion object {
 

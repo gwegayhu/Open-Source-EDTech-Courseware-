@@ -1,6 +1,7 @@
-package world.respect.datalayer.db.directory.entities
+package world.respect.datalayer.db.realmdirectory.entities
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import io.ktor.http.Url
 
 /**
@@ -9,7 +10,8 @@ import io.ktor.http.Url
  * @param rdInvitePrefix
  */
 @Entity
-data class RespectDirectoryEntity(
+data class RealmDirectoryEntity(
+    @PrimaryKey
     val rdUid: Long,
     val rdUrl: Url,
     val rdInvitePrefix: String,

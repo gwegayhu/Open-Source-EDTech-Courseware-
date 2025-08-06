@@ -21,7 +21,11 @@ fun main(args: Array<String>) {
         .metavar("COMMAND")
 
     subparsers.addParser(CMD_RUN_SERVER).help("Run RESPECT http server")
-    subparsers.addParser(CMD_ADD_REALM).help("Add a new RESPECT Realm")
+    subparsers.addParser(CMD_ADD_REALM).help("Add a new RESPECT Realm").also {
+        it.addArgument("-u", "--url").help("Realm URL")
+        it.addArgument("-i", "--inviteprefix").help("Realm invite prefix")
+        it.addArgument("-n", "--name").help("Realm name")
+    }
 
     val ns: Namespace?
     try {

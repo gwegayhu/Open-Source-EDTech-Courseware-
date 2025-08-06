@@ -1,4 +1,4 @@
-package world.respect.datalayer.directory
+package world.respect.datalayer.realmdirectory
 
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadState
@@ -9,7 +9,7 @@ import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 /**
  * DataSource to access all known directories
  */
-interface RespectDirectoryDataSource {
+interface RealmDirectoryDataSource {
 
     suspend fun allDirectories(): List<RespectRealmDirectory>
 

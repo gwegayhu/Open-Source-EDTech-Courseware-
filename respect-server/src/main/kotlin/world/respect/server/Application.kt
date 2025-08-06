@@ -1,8 +1,12 @@
 package world.respect.server
 
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.Json
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import world.respect.Greeting
@@ -31,9 +35,20 @@ fun Application.module() {
         it.writeText(randomString(DEFAULT_DIR_ADMIN_PASS_LENGTH))
     }
 
+    val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     install(Koin) {
         slf4jLogger()
-        modules(serverKoinModule(environment.config))
+        modules(serverKoinModule(environment.config, json))
+    }
+
+    install(ContentNegotiation) {
+        json(
+            json = json,
+            contentType = ContentType.Application.Json
+        )
     }
 
     routing {
@@ -41,6 +56,8 @@ fun Application.module() {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
 
-        RespectRealmDirectoryRoute()
+        route("directory") {
+            RespectRealmDirectoryRoute()
+        }
     }
 }
