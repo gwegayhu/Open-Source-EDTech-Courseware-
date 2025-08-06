@@ -38,7 +38,7 @@ import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailView
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
 import world.respect.datalayer.db.RespectAppDataSourceDb
-import world.respect.datalayer.db.RespectDatabase
+import world.respect.datalayer.db.RespectAppDatabase
 import world.respect.datalayer.http.RespectAppDataSourceHttp
 import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
@@ -226,13 +226,13 @@ val appKoinModule = module {
         SingleDataSourceProvider(
             datasource = RespectAppDataSourceRepository(
                 local = RespectAppDataSourceDb(
-                    respectDatabase = Room.databaseBuilder<RespectDatabase>(
+                    respectDatabase = Room.databaseBuilder<RespectAppDatabase>(
                         appContext, appContext.getDatabasePath("respect.db").absolutePath
                     ).setDriver(BundledSQLiteDriver())
                     .build(),
                     json = get(),
                     xxStringHasher = get(),
-                    primaryKeyGenerator = PrimaryKeyGenerator(RespectDatabase.TABLE_IDS),
+                    primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS),
                 ),
                 remote = RespectAppDataSourceHttp(
                     httpClient = get(),

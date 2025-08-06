@@ -7,7 +7,7 @@ import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
-import world.respect.datalayer.db.RespectDatabase
+import world.respect.datalayer.db.RespectAppDatabase
 import world.respect.datalayer.db.compatibleapps.adapters.asEntities
 import world.respect.datalayer.db.compatibleapps.adapters.asModel
 import world.respect.libxxhash.XXStringHasher
@@ -25,7 +25,7 @@ import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelp
 import world.respect.datalayer.networkvalidation.NetworkValidationInfo
 
 class CompatibleAppDataSourceDb(
-    private val respectDb: RespectDatabase,
+    private val respectDb: RespectAppDatabase,
     private val json: Json,
     private val xxStringHasher: XXStringHasher,
 ): CompatibleAppsDataSourceLocal, NetworkDataSourceValidationHelper {

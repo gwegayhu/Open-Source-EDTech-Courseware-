@@ -42,8 +42,8 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
     version = 1,
 )
 @TypeConverters(SharedConverters::class, OpdsTypeConverters::class)
-@ConstructedBy(AppDatabaseConstructor::class)
-abstract class RespectDatabase: RoomDatabase() {
+@ConstructedBy(RespectAppDatabaseConstructor::class)
+abstract class RespectAppDatabase: RoomDatabase() {
 
     abstract fun getCompatibleAppEntityDao(): CompatibleAppEntityDao
 
@@ -78,6 +78,6 @@ abstract class RespectDatabase: RoomDatabase() {
 @Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING",
     "KotlinNoActualForExpect"
 )
-expect object AppDatabaseConstructor : RoomDatabaseConstructor<RespectDatabase> {
-    override fun initialize(): RespectDatabase
+expect object RespectAppDatabaseConstructor : RoomDatabaseConstructor<RespectAppDatabase> {
+    override fun initialize(): RespectAppDatabase
 }

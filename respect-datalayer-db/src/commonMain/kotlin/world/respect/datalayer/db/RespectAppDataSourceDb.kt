@@ -8,7 +8,7 @@ import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 
 class RespectAppDataSourceDb(
-    private val respectDatabase: RespectDatabase,
+    private val respectDatabase: RespectAppDatabase,
     private val json: Json,
     private val xxStringHasher: XXStringHasher,
     private val primaryKeyGenerator: PrimaryKeyGenerator,

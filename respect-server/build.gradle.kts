@@ -14,7 +14,7 @@ application {
 
 dependencies {
     implementation(projects.respectLibShared)
-    implementation(projects.respectDatalayerDirectory)
+    implementation(projects.respectDatalayer)
     implementation(libs.logback)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)

@@ -33,7 +33,8 @@ School-level realms group related data together enabling each to be its own data
 [horizontal partitioning](https://en.wikipedia.org/wiki/Partition_(database)#Partitioning_methods)).
 This dramatically reduces the work required to perform queries (e.g. searching a users table that
 contains only a thousand or so users in a particular school instead of a table that contains
-all users in a district/country).
+all users in a district/country). Reports above school level are almost always aggregate data which
+can be handled using a REST API.
 
 ## Directories
 **Directories** (typically country or regional level): a directory server lists realms. It is used

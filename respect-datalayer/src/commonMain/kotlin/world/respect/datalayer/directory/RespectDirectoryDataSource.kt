@@ -3,6 +3,7 @@ package world.respect.datalayer.directory
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.RespectRealmDirectory
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 
 /**
@@ -10,7 +11,7 @@ import world.respect.datalayer.respect.model.invite.RespectInviteInfo
  */
 interface RespectDirectoryDataSource {
 
-    suspend fun allRealmsAsFlow(): Flow<DataLoadState<List<RespectRealm>>>
+    suspend fun allDirectories(): List<RespectRealmDirectory>
 
     suspend fun allRealmsInDirectory(): List<RespectRealm>
 
