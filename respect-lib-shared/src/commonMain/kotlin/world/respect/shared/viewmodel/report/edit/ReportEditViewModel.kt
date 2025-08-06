@@ -13,12 +13,13 @@ import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
+import world.respect.shared.domain.report.model.DefaultIndicators
+import world.respect.shared.domain.report.model.Indicator
 import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
 import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportSeries
 import world.respect.shared.domain.report.model.ReportSeriesVisualType
-import world.respect.shared.domain.report.model.ReportSeriesYAxis
 import world.respect.shared.ext.replace
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_a_new_report
@@ -121,7 +122,7 @@ class ReportEditViewModel(
                                                     reportSeriesUid = 1,
                                                     reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
                                                     reportSeriesSubGroup = null,
-                                                    reportSeriesYAxis = ReportSeriesYAxis.TOTAL_DURATION,
+                                                    reportSeriesYAxis = DefaultIndicators.list.first(),
                                                     reportSeriesFilters = emptyList()
                                                 )
                                             )
@@ -147,7 +148,7 @@ class ReportEditViewModel(
                                                 reportSeriesUid = 1,
                                                 reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
                                                 reportSeriesSubGroup = null,
-                                                reportSeriesYAxis = ReportSeriesYAxis.TOTAL_DURATION,
+                                                reportSeriesYAxis = DefaultIndicators.list.first(),
                                                 reportSeriesFilters = emptyList()
                                             )
                                         )
@@ -164,21 +165,51 @@ class ReportEditViewModel(
             } catch (e: Exception) {
                 println("Exception $e")
             }
-            route.filter?.let { filter ->
-                viewModelScope.launch {
+            viewModelScope.launch {
+                route.filter?.let { filter ->
                     val seriesId = filter.reportFilterSeriesUid
                     onFilterChanged(filter, seriesId)
+                }
+                route.indicator?.let { indicator ->
+                    updateSeriesWithIndicator(indicator)
                 }
             }
         }
     }
 
-    fun addIndictor() {
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                ReportIndictorEdit.create(route.reportUid, 0)  //TODO
+    fun addIndicator(seriesId: Int) {
+        val currentSeries = _uiState.value.reportOptions.series.firstOrNull {
+            it.reportSeriesUid == seriesId
+        }
+
+
+        currentSeries?.let { series ->
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    ReportIndictorEdit.create(
+                        reportUid = route.reportUid,
+                        seriesId = seriesId,
+                        indicator = series.reportSeriesYAxis
+                    )
+                )
             )
-        )
+        }
+    }
+
+    private fun updateSeriesWithIndicator(indicator: Indicator) {
+        _uiState.update { currentState ->
+            val seriesId = 0 // TODO need to update Indicators as per series/ report
+            val updatedSeries = currentState.reportOptions.series.map { series ->
+                if (series.reportSeriesUid == seriesId) {
+                    series.copy(reportSeriesYAxis = indicator)
+                } else {
+                    series
+                }
+            }
+            currentState.copy(
+                reportOptions = currentState.reportOptions.copy(series = updatedSeries)
+            )
+        }
     }
 
     fun onClickSave() {
@@ -294,10 +325,10 @@ class ReportEditViewModel(
                     reportOptions = prev.reportOptions.copy(
                         series = prev.reportOptions.series + ReportSeries(
                             reportSeriesUid = newUid,
-                            reportSeriesTitle = getString(resource = Res.string.series) + newUid, // TODO: Use string resource
+                            reportSeriesTitle = getString(resource = Res.string.series) + newUid,
                             reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART, // Default type
                             reportSeriesSubGroup = null,
-                            reportSeriesYAxis = ReportSeriesYAxis.TOTAL_DURATION // Default Y-axis
+                            reportSeriesYAxis = DefaultIndicators.list.first() // Default Y-axis
                         ),
                     ),
                     hasSingleSeries = false

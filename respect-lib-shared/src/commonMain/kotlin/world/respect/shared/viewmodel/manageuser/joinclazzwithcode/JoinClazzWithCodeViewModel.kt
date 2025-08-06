@@ -12,8 +12,8 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.enter_code_label
 import world.respect.shared.generated.resources.invalid_invite_code
 import world.respect.shared.navigation.ConfirmationScreen
-import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.Report
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
@@ -78,7 +78,7 @@ class JoinClazzWithCodeViewModel(
     fun onClickAlreadyHaveAccount() {
         viewModelScope.launch {
             _navCommandFlow.tryEmit(
-                NavCommand.Navigate(LoginScreen)
+                NavCommand.Navigate(Report)
             )
         }
     }

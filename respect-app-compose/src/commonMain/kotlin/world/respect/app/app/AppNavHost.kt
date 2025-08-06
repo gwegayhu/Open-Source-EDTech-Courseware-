@@ -72,7 +72,7 @@ import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForAp
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.filteredit.ReportFilterEditViewModel
-import world.respect.shared.viewmodel.report.indictor.IndictorEditViewmodel
+import world.respect.shared.viewmodel.report.indictor.IndicatorEditViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
 import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
@@ -183,7 +183,7 @@ fun AppNavHost(
             ReportTemplateListScreen(navController = navController, viewModel = viewModel)
         }
         composable<ReportIndictorEdit> {
-            val viewModel: IndictorEditViewmodel = respectViewModel(
+            val viewModel: IndicatorEditViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )

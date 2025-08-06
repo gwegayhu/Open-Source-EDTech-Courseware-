@@ -1,6 +1,7 @@
 package world.respect.shared.domain.report.model
 
 import kotlinx.datetime.DatePeriod
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import world.respect.shared.generated.resources.Res
@@ -13,7 +14,8 @@ data class ReportSeries(
 
     val reportSeriesTitle: String = "Series 1",
 
-    val reportSeriesYAxis: ReportSeriesYAxis = ReportSeriesYAxis.TOTAL_DURATION,
+    @Contextual
+    val reportSeriesYAxis: Indicator = DefaultIndicators.list.first(),
 
     val reportSeriesVisualType: ReportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
 
@@ -23,23 +25,19 @@ data class ReportSeries(
 
     )
 
+@Serializable(with = IndicatorSerializer::class)
+data class Indicator(
+    val name: String? = null,
+    val description: String? = null,
+    val sql: String? = null,
+    @Contextual override val label: StringResource = Res.string.bar_chart,
+    val type: YAxisTypes = YAxisTypes.PERCENTAGE
+) : OptionWithLabelStringResource
+
 enum class YAxisTypes(
     override val label: StringResource,
 ) : OptionWithLabelStringResource {
-    COUNT(Res.string.count), DURATION(Res.string.duration),
-}
-
-/** Enum representing different Y-axis or report series options */
-enum class ReportSeriesYAxis(
-    override val label: StringResource,
-    val type: YAxisTypes
-) : OptionWithLabelStringResource {
-    TOTAL_DURATION(Res.string.total_duration, YAxisTypes.DURATION),
-    AVERAGE_DURATION(Res.string.average_duration, YAxisTypes.DURATION),
-    NUMBER_SESSIONS(Res.string.number_sessions, YAxisTypes.COUNT),
-    INTERACTIONS_RECORDED(Res.string.interactions_recorded, YAxisTypes.COUNT),
-    NUMBER_ACTIVE_USERS(Res.string.number_active_users, YAxisTypes.COUNT),
-    AVERAGE_USAGE_TIME_PER_USER(Res.string.average_usage_time_per_user, YAxisTypes.DURATION),
+    COUNT(Res.string.count), DURATION(Res.string.duration), PERCENTAGE(Res.string.percentage)
 }
 
 /** Enum representing different visual types for report series */
@@ -49,55 +47,35 @@ enum class ReportSeriesVisualType(override val label: StringResource) :
     LINE_GRAPH(Res.string.line_chart);
 }
 
-/** Enum representing different X-axis or sub-group options for report series */
+/**
+ * Enum representing different X-axis or sub-group options for report series
+ * Organized by: Time Dimensions, Educational Dimensions, Demographic Dimensions, Technical Dimensions
+ */
 enum class ReportXAxis(
     override val label: StringResource,
     val personJoinRequired: Boolean = false,
     val datePeriod: DatePeriod? = null,
+    val requiresAdditionalJoin: Boolean = false,
 ) : OptionWithLabelStringResource {
-    /**
-     * Displayed to the user using the localized date formatted for the specified date
-     */
     DAY(Res.string.day, datePeriod = DatePeriod(days = 1)),
-
-    /**
-     * When report data xAxis is by week, or data is subgrouped by week, this is based on the day of
-     * the week of the first day of the reporting period. E.g. if the report period is Tuesday
-     * 4/Feb/25 to Monday 17/Feb/25, then there will be two entries on the xAxis: 2025-02-04, and
-     * 2025-02-11.
-     *
-     * Displayed to the user using the localized date formatted for the specified date
-     */
     WEEK(Res.string.weekly, datePeriod = DatePeriod(days = 7)),
-
-    /**
-     * When report data xAxis is by month, or data is subgrouped by month, this will be done by
-     * calendar month. Queries will group data using YYYY-MM-01 e.g. using DATE_TRUNC('month'..)
-     * on PostgreSQL and the strftime 'start of month' modifier on SQLite.
-     *
-     * Displayed to the user as Month - Year using localized date formatter
-     */
     MONTH(Res.string.monthly, datePeriod = DatePeriod(months = 1)),
-
-    /**
-     * When report data xAxis is by month, or data is subgrouped by month, this will be done by
-     * calendar year. Queries will group data using YYYY-01-01 e.g. using DATE_TRUNC('year'..)
-     * on PostgreSQL and the strftime 'start of year' modifier on SQLite.
-     *
-     * Displayed to the user as the year (only)
-     */
-    YEAR(Res.string.year, datePeriod = DatePeriod(years = 1)),
-
-    /**
-     * Displayed to the user as the clazz name. RunReportUseCaseDbImpl will substitute the clazzUid
-     * included in the query with the clazz name
-     */
-    CLASS(Res.string.class_name),
-
-    /**
-     * Displayed to the user using the localized string as per their locale (e.g. male, female..)
-     */
-    GENDER(Res.string.gender_literal, personJoinRequired = true),
+    QUARTER(Res.string.quarterly, datePeriod = DatePeriod(months = 3)),
+    YEAR(Res.string.yearly, datePeriod = DatePeriod(years = 1)),
+    TIME_OF_DAY(Res.string.time_of_day),
+    CLASS(Res.string.class_name, requiresAdditionalJoin = true),
+    SUBJECT(Res.string.subject, requiresAdditionalJoin = true),
+    SCHOOL(Res.string.school, requiresAdditionalJoin = true),
+    ASSESSMENT_TYPE(Res.string.assessment_type),
+    GRADE_LEVEL(Res.string.grade_level, requiresAdditionalJoin = true),
+    GENDER(Res.string.gender, personJoinRequired = true),
+    AGE_GROUP(Res.string.age_group, personJoinRequired = true),
+    REGION(Res.string.region, requiresAdditionalJoin = true),
+    LANGUAGE(Res.string.language, personJoinRequired = true),
+    USER_ROLE(Res.string.user_role, personJoinRequired = true),
+    ACTIVITY_VERB(Res.string.activity_verb),
+    APPLICATION(Res.string.application),
+    DEVICE_TYPE(Res.string.device_type),
 }
 
 /** Enum representing different filter types for report series */

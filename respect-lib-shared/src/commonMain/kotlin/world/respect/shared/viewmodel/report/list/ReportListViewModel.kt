@@ -10,16 +10,22 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.EmptyPagingSource
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
+import world.respect.shared.domain.report.model.Indicator
+import world.respect.shared.domain.report.model.IndicatorSerializer
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.model.StatementReportRow
+import world.respect.shared.domain.report.model.StringResourceSerializer
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.report
@@ -80,10 +86,19 @@ class ReportListViewModel(
         }
     }
 
-    @OptIn(ExperimentalTime::class)
+    @OptIn(ExperimentalTime::class, ExperimentalSerializationApi::class)
     fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> = flow {
         try {
-            val reportOptions = Json.decodeFromString<ReportOptions>(
+            val json = Json {
+                serializersModule = SerializersModule {
+                    contextual(StringResource::class, StringResourceSerializer)
+                    contextual(Indicator::class, IndicatorSerializer)
+                }
+                ignoreUnknownKeys = true
+                isLenient = true
+                allowTrailingComma = true
+            }
+            val reportOptions = json.decodeFromString<ReportOptions>(
                 ReportOptions.serializer(),
                 report.reportOptions
             )

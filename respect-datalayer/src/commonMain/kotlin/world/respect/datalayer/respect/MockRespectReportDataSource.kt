@@ -17,21 +17,67 @@ class MockRespectReportDataSource : RespectReportDataSource {
         RespectReport(
             reportId = "1",
             title = "Weekly Duration",
-            reportOptions = """{"title":"Weekly Session Duration","xAxis":"WEEK","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"WEEK","rangeQuantity":1},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Total Duration","reportSeriesYAxis":"TOTAL_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
+            reportOptions = """
+                {
+                    "title": "Weekly Session Duration",
+                    "xAxis": "WEEK",
+                    "period": {
+                        "type": "RelativeRangeReportPeriod",
+                        "rangeUnit": "WEEK",
+                        "rangeQuantity": 1
+                    },
+                    "series": [
+                        {
+                            "reportSeriesUid": 1,
+                            "reportSeriesTitle": "Total Duration",
+                            "reportSeriesYAxis": {
+                                "name": "Total Duration",
+                                "description": "Total content usage duration",
+                                "sql": "SUM(duration)",
+                                "isCustom": false,
+                                "label": "total_duration",
+                                "type": "DURATION"
+                            },
+                            "reportSeriesVisualType": "BAR_CHART",
+                            "reportSeriesSubGroup": "GENDER"
+                        }
+                    ]
+                }
+            """.trimIndent(),
             reportIsTemplate = false
         ),
         RespectReport(
             reportId = "2",
-            title = "Weekly Duration2",
-            reportOptions = """{"title":"Weekly Session Duration","xAxis":"MONTH","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"WEEK","rangeQuantity":1},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Total Duration","reportSeriesYAxis":"TOTAL_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
+            title = "Weekly Duration",
+            reportOptions = """
+                {
+                    "title": "Weekly Session Duration",
+                    "xAxis": "WEEK",
+                    "period": {
+                        "type": "RelativeRangeReportPeriod",
+                        "rangeUnit": "WEEK",
+                        "rangeQuantity": 1
+                    },
+                    "series": [
+                        {
+                            "reportSeriesUid": 1,
+                            "reportSeriesTitle": "Total Duration",
+                            "reportSeriesYAxis": {
+                                "name": "Total Duration",
+                                "description": "Total content usage duration",
+                                "sql": "SUM(duration)",
+                                "isCustom": false,
+                                "label": "total_duration",
+                                "type": "DURATION"
+                            },
+                            "reportSeriesVisualType": "BAR_CHART",
+                            "reportSeriesSubGroup": "GENDER"
+                        }
+                    ]
+                }
+            """.trimIndent(),
             reportIsTemplate = false
         ),
-        RespectReport(
-            reportId = "3",
-            title = "Daily Activity",
-            reportOptions = """{"title":"Daily Activity","xAxis":"DAY","period":{"type":"RelativeRangeReportPeriod","rangeUnit":"DAY","rangeQuantity":7},"series":[{"reportSeriesUid":1,"reportSeriesTitle":"Activity Duration","reportSeriesYAxis":"AVERAGE_DURATION","reportSeriesVisualType":"BAR_CHART","reportSeriesSubGroup":"GENDER"}]}""",
-            reportIsTemplate = true
-        )
     )
 
     override suspend fun putReport(report: RespectReport) {

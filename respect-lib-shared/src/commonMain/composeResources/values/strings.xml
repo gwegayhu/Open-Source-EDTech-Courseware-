@@ -150,6 +150,37 @@
     <string name="sql">SQL</string>
     <string name="edit_filters">Edit Filters</string>
 
+    <!-- Duration Metrics -->
+    <string name="total_content_usage_duration">Total Content Usage Duration</string>
+    <string name="average_content_usage_duration_per_user">Average Content Usage Duration Per User</string>
+
+    <!-- Percentage Metrics -->
+    <string name="percentage_pass">% Pass</string>
+    <string name="percentage_fail">% Fail</string>
+    <string name="attendance_percentage">Attendance %</string>
+    <string name="absence_percentage">Absence %</string>
+    <string name="completion_rate">Completion Rate</string>
+    <string name="task_completion_percentage">Completion per Assigned Task %</string>
+    <string name="retention_rate">Retention Rate</string>
+    <string name="offline_usage_percentage">Offline Usage %</string>
+
+    <!-- Score Metrics -->
+    <string name="average_score">Average Score</string>
+    <string name="total_score">Total Score</string>
+
+    <!-- Count Metrics -->
+    <string name="number_of_activities">Number of Activities</string>
+    <string name="active_days_per_user">Active Days per User</string>
+
+    <!-- Top 5 Metrics -->
+    <string name="top_5_apps">Top 5 Apps</string>
+    <string name="top_5_languages">Top 5 Languages</string>
+    <string name="top_5_lessons">Top 5 Lessons</string>
+    <string name="top_5_schools">Top 5 Schools</string>
+    <string name="top_5_students">Top 5 Students</string>
+    <string name="percentage">Percentage</string>
+
+
 
     <!-- Conditions -->
     <string name="equals">= Equals</string>
@@ -181,6 +212,29 @@
     <string name="daily">Every working day</string>
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
+    <string name="time_of_day">Time of Day (Morning/Evening)</string>
+    <string name="quarterly">Quarterly</string>
+
+    <!-- Educational Dimensions -->
+    <string name="subject">Subject</string>
+    <string name="school">School</string>
+    <string name="grade_level">Grade Level</string>
+    <string name="assessment_type">Assessment Type (Self/Assignment)</string>
+
+
+    <!-- Demographic Dimensions -->
+    <string name="age_group">Age Group</string>
+    <string name="region">Region</string>
+    <string name="language">Language</string>
+
+    <!-- Role-Based Dimensions -->
+    <string name="activity_verb">Activity Verb</string>
+    <string name="user_role">Role (Teacher/Student/Parent)</string>
+
+    <!-- Technical Dimensions -->
+    <string name="application">Application</string>
+    <string name="device_type">Device Type</string>
+    <string name="platform">Platform</string>
 
     <!-- Time Ranges -->
     <string name="custom_period">Custom period (e.g. last x days/weeks)</string>

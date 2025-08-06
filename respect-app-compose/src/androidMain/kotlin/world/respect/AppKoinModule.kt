@@ -76,7 +76,7 @@ import world.respect.shared.domain.report.query.RunReportUseCaseDatabaseImpl
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.filteredit.ReportFilterEditViewModel
-import world.respect.shared.viewmodel.report.indictor.IndictorEditViewmodel
+import world.respect.shared.viewmodel.report.indictor.IndicatorEditViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
 import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
@@ -158,7 +158,7 @@ val appKoinModule = module {
     viewModelOf(::ReportEditViewModel)
     viewModelOf(::ReportListViewModel)
     viewModelOf(::ReportTemplateListViewModel)
-    viewModelOf(::IndictorEditViewmodel)
+    viewModelOf(::IndicatorEditViewModel)
     viewModelOf(::ReportFilterEditViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {

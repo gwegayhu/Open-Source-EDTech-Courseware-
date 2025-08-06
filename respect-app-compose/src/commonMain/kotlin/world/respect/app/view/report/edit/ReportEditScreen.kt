@@ -37,6 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectDateField
 import world.respect.app.components.uiTextStringResource
 import world.respect.app.util.ext.defaultItemPadding
+import world.respect.shared.domain.report.model.DefaultIndicators
 import world.respect.shared.domain.report.model.FixedReportTimeRange
 import world.respect.shared.domain.report.model.OptionWithLabelStringResource
 import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
@@ -44,10 +45,8 @@ import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportPeriodOption
 import world.respect.shared.domain.report.model.ReportSeries
 import world.respect.shared.domain.report.model.ReportSeriesVisualType
-import world.respect.shared.domain.report.model.ReportSeriesYAxis
 import world.respect.shared.domain.report.model.ReportTimeRangeUnit
 import world.respect.shared.domain.report.model.ReportXAxis
-import world.respect.shared.domain.report.model.YAxisTypes
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_filter
 import world.respect.shared.generated.resources.add_series
@@ -84,7 +83,7 @@ fun ReportEditScreen(
         onAddFilter = viewModel::onAddFilter,
         onRemoveSeries = viewModel::onRemoveSeries,
         onRemoveFilter = viewModel::onRemoveFilter,
-        addIndictor = viewModel::addIndictor
+        addIndictor = viewModel::addIndicator
     )
 }
 
@@ -97,12 +96,9 @@ private fun ReportEditScreen(
     onSeriesChanged: (ReportSeries) -> Unit = {},
     onRemoveSeries: (Int) -> Unit = { },
     onRemoveFilter: (Int, Int) -> Unit = { _, _ -> },
-    addIndictor: () -> Unit = { },
+    addIndictor: (Int) -> Unit = { },
 ) {
-    val requiredYAxisType: YAxisTypes? = uiState.reportOptions.series
-        .mapNotNull { it.reportSeriesYAxis?.type }
-        .distinct()
-        .singleOrNull()
+    val availableIndicators = remember { DefaultIndicators.list }
 
     LazyColumn(
         modifier = Modifier
@@ -284,7 +280,7 @@ private fun ReportEditScreen(
                     // Y Axis Dropdown
                     ExposedDropdownMenu(
                         label = { Text(stringResource(Res.string.y_axis) + "*") },
-                        options = ReportSeriesYAxis.entries,
+                        options = availableIndicators,
                         selectedValue = seriesItem.reportSeriesYAxis,
                         onOptionSelected = { selectedYAxis ->
                             val updatedSeries = seriesItem.copy(reportSeriesYAxis = selectedYAxis)
@@ -295,15 +291,10 @@ private fun ReportEditScreen(
                             uiState.yAxisErrors[seriesItem.reportSeriesUid]?.let {
                                 Text(uiTextStringResource(it))
                             }
-                        },
-                        disabledOptions = if (uiState.reportOptions.series.size > 1) {
-                            requiredYAxisType?.let { requiredType ->
-                                ReportSeriesYAxis.entries.filter { it.type != requiredType }
-                            } ?: emptyList()
-                        } else {
-                            emptyList()
                         }
                     )
+
+
 
                     // Subgroup Dropdown
                     ExposedDropdownMenu(
@@ -376,19 +367,19 @@ private fun ReportEditScreen(
                     )
                 }
             }
+            item {
+                Button(onClick = { addIndictor(seriesItem.reportSeriesUid) }, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = stringResource(Res.string.indicator),
+                    )
+                }
+            }
         }
 
         item {
             Button(onClick = { onAddSeries() }, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(Res.string.add_series),
-                )
-            }
-        }
-        item {
-            Button(onClick = { addIndictor() }, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(Res.string.indicator),
                 )
             }
         }
