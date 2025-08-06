@@ -71,6 +71,7 @@ import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewMo
 import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedViewModel
+import world.respect.shared.viewmodel.manageuser.otheroption.OtherOptionsViewModel
 import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
@@ -152,6 +153,7 @@ val appKoinModule = module {
     viewModelOf(::WaitingForApprovalViewModel)
     viewModelOf(::CreateAccountViewModel)
     viewModelOf(::GetStartedViewModel)
+    viewModelOf(::OtherOptionsViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

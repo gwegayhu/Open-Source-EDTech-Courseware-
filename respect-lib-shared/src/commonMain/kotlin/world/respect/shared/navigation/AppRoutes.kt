@@ -52,6 +52,9 @@ object EnterLink : RespectAppRoute
 @Serializable
 object GetStartedScreen : RespectAppRoute
 
+@Serializable
+object OtherOption : RespectAppRoute
+
 /**
  * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app
  */
@@ -144,18 +147,21 @@ class WaitingForApproval(
 class SignupScreen(
     private val profileType: ProfileType,
     private val inviteInfoJson: String,
+    private val pendingInviteStateUid: String?,
 
     ) : RespectAppRoute {
 
     @Transient
     val type = profileType
     @Transient
+    val uid = pendingInviteStateUid
+    @Transient
     val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
 
     companion object {
-        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo): SignupScreen {
+        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo,pendingInviteStateUid:String?=null): SignupScreen {
             val inviteJson = Json.encodeToString(inviteInfo)
-            return SignupScreen(profileType, inviteJson)
+            return SignupScreen(profileType, inviteJson,pendingInviteStateUid)
         }
     }
 }

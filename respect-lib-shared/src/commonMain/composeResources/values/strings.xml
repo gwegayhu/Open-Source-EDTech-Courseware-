@@ -114,5 +114,8 @@
     <string name="i_have_an_invite_code">I have an invite code</string>
     <string name="invalid_school_name">Invalid school name</string>
 
+    <string name="enter_school_link">Enter the link provided by your teacher or school admin</string>
+    <string name="paste_link_here">Paste the link here</string>
+    <string name="invalid_code">Invalid code, try again</string>
 
 </resources>

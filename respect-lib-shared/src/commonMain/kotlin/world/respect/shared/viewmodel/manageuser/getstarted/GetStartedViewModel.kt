@@ -14,6 +14,7 @@ import world.respect.shared.generated.resources.lets_get_started
 import world.respect.shared.navigation.JoinClazzWithCode
 import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.OtherOption
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.RespectViewModel
@@ -108,6 +109,9 @@ class GetStartedViewModel(
     }
 
     fun onClickOtherOptions() {
+        viewModelScope.launch {
+            _navCommandFlow.tryEmit(NavCommand.Navigate(OtherOption))
+        }
     }
 
     fun onClickAlreadyHaveAccount() {

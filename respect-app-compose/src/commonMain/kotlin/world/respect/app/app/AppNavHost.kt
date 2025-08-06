@@ -22,6 +22,7 @@ import world.respect.app.view.manageuser.login.LoginScreen
 import world.respect.app.view.manageuser.waitingforapproval.WaitingForApprovalScreen
 import world.respect.app.view.manageuser.createaccount.CreateAccountScreen
 import world.respect.app.view.manageuser.getstarted.GetStartedScreen
+import world.respect.app.view.manageuser.otheroption.OtherOptionsScreen
 import world.respect.app.view.manageuser.termsandcondition.TermsAndConditionScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
@@ -43,6 +44,7 @@ import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.RespectComposeNavController
 import world.respect.shared.navigation.CreateAccount
 import world.respect.shared.navigation.GetStartedScreen
+import world.respect.shared.navigation.OtherOption
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -58,6 +60,7 @@ import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewMo
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedViewModel
 import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
+import world.respect.shared.viewmodel.manageuser.otheroption.OtherOptionsViewModel
 import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
@@ -172,6 +175,14 @@ fun AppNavHost(
                 navController = respectNavController
             )
             GetStartedScreen(viewModel = viewModel)
+        }
+
+        composable<OtherOption> {
+            val viewModel: OtherOptionsViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            OtherOptionsScreen(viewModel = viewModel)
         }
 
         composable<LearningUnitList> {
