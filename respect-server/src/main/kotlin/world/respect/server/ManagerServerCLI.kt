@@ -74,7 +74,7 @@ fun managerServerMain(ns: Namespace) {
                                 oneRoster = realmBaseUrl.resolve("api/oneroster"),
                                 respectExt = realmBaseUrl.resolve("api/respect-ext"),
                             ),
-                            dbUrl = ns.getString("dbUrl") ?: realmBaseUrl.sanitizedForFilename()
+                            dbUrl = ns.getString("dburl") ?: realmBaseUrl.sanitizedForFilename()
                         )
                     )
                 }

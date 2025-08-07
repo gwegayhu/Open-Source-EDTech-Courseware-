@@ -25,6 +25,7 @@ fun main(args: Array<String>) {
         it.addArgument("-u", "--url").help("Realm URL")
         it.addArgument("-i", "--inviteprefix").help("Realm invite prefix")
         it.addArgument("-n", "--name").help("Realm name")
+        it.addArgument("-d", "--dburl").help("DB url: path to SQLite file (absolute or relative to realm data directory)")
     }
 
     val ns: Namespace?

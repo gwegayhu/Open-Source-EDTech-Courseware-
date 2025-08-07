@@ -3,6 +3,7 @@ import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import io.ktor.http.Url
 import io.ktor.server.config.ApplicationConfig
+import kotlinx.coroutines.runBlocking
 import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
@@ -81,16 +82,21 @@ fun serverKoinModule(
             )
         }
 
-
         scoped<RespectRealmDatabase> {
-            val path: RespectRealmPath = get()
-            val dbPath = Path(path.path, "respect-realm.db")
+            val realmPath: RespectRealmPath = get()
+            val appDb: RespectAppDatabase = get()
+            val xxHasher: XXStringHasher = get()
 
-            Room.databaseBuilder<RespectRealmDatabase>(dbPath.toString())
+            val realmConfig = runBlocking {
+                appDb.getRealmConfigEntityDao().findByUid(xxHasher.hash(id))
+            } ?: throw IllegalStateException("Realm config not found")
+
+            val realmPathFile = File(realmPath.path.toString())
+            val dbFile = realmPathFile.resolve(realmConfig.dbUrl)
+
+            Room.databaseBuilder<RespectRealmDatabase>(dbFile.absolutePath)
                 .setDriver(BundledSQLiteDriver())
                 .build()
-
-
         }
     }
 
