@@ -30,11 +30,6 @@ class OtherOptionsViewModel(
         viewModelScope.launch {
             _appUiState.update { prev ->
                 prev.copy(
-                    actionBarButtonState = ActionBarButtonUiState(
-                        visible = true,
-                        text = getString(Res.string.next),
-                        onClick = { onClickNext() }
-                    ),
                     title = getString(Res.string.other_options),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false,
@@ -53,7 +48,7 @@ class OtherOptionsViewModel(
         }
     }
 
-    private fun onClickNext() {
+     fun onClickNext() {
         val link = uiState.value.link
         if (link.isBlank()) {
             _uiState.update {

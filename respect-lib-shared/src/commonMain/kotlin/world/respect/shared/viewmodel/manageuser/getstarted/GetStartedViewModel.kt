@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.credentials.passkey.GetCredentialUseCase
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.invalid_school_name
 import world.respect.shared.generated.resources.lets_get_started
+import world.respect.shared.generated.resources.school_not_exist_error
 import world.respect.shared.navigation.JoinClazzWithCode
 import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
@@ -28,6 +28,12 @@ class GetStartedViewModel(
     private val _uiState = MutableStateFlow(GetStartedUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val schoolList = listOf(
+        School("respect school", "https://testproxy.devserver3.ustadmobile.com/"),
+        School("respect 2 school", "https://respect2.com"),
+        School("spix school", "https://spix.com"),
+        School("ustad school", "https://ustad.com"),
+    )
     init {
         viewModelScope.launch {
             _appUiState.update { prev ->
@@ -76,26 +82,19 @@ class GetStartedViewModel(
     }
 
     fun onSchoolNameChanged(name: String) {
+        val suggestions = if (name.isBlank()) {
+            emptyList()
+        } else {
+            schoolList.filter { it.name.contains(name, ignoreCase = true) }
+        }
+
         _uiState.update {
             it.copy(
                 schoolName = name,
-                errorMessage = null
-            )
-        }
-    }
-
-    fun onClickAddMySchool() {
-        val name = uiState.value.schoolName
-        if (name.isBlank()) {
-            _uiState.update {
-                it.copy(errorMessage = StringResourceUiText(Res.string.invalid_school_name))
-            }
-            return
-        }
-
-        viewModelScope.launch {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(LoginScreen)
+                errorMessage = if (suggestions.isEmpty())
+                    StringResourceUiText(Res.string.school_not_exist_error) else null,
+                suggestions = suggestions,
+                showButtons = suggestions.isEmpty()
             )
         }
     }
@@ -108,21 +107,29 @@ class GetStartedViewModel(
         }
     }
 
+    fun onSchoolSelected(school: School) {
+        viewModelScope.launch {
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(LoginScreen)
+            )
+        }
+    }
     fun onClickOtherOptions() {
         viewModelScope.launch {
             _navCommandFlow.tryEmit(NavCommand.Navigate(OtherOption))
         }
     }
 
-    fun onClickAlreadyHaveAccount() {
-        viewModelScope.launch {
-            _navCommandFlow.tryEmit(NavCommand.Navigate(LoginScreen))
-        }
-    }
 }
-
+data class School(
+    val name: String,
+    val url: String
+)
 data class GetStartedUiState(
     val schoolName: String = "",
     val errorText: String? = null,
+    val showButtons: Boolean = true,
     val errorMessage: StringResourceUiText? = null,
+    val suggestions: List<School> = emptyList()
+
 )

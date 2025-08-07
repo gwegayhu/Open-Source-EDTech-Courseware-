@@ -1,4 +1,4 @@
-package world.respect.shared.viewmodel.manageuser.signup
+package world.respect.shared.viewmodel.manageuser.otheroptionsignup
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -12,41 +12,32 @@ import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.create_account
-import world.respect.shared.generated.resources.username_required
-import world.respect.shared.navigation.CreateAccount
+import world.respect.shared.generated.resources.other_options
+import world.respect.shared.navigation.EnterPasswordSignup
 import world.respect.shared.navigation.HowPasskeyWorks
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.OtherOptionsSignup
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.WaitingForApproval
-import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
-data class CreateAccountViewModelUiState(
-    val username: String = "",
-    val usernameError: StringResourceUiText? = null,
-    val generalError: StringResourceUiText? = null,
-    val passkeyError: String? = null
-)
-
-class CreateAccountViewModel(
+class OtherOptionsSignupViewModel(
     savedStateHandle: SavedStateHandle,
-    private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
     private val createPasskeyUseCase: CreatePasskeyUseCase,
+    private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
     private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase
 ) : RespectViewModel(savedStateHandle) {
-    private val route: CreateAccount = savedStateHandle.toRoute()
+    private val route: OtherOptionsSignup = savedStateHandle.toRoute()
 
-    private val _uiState = MutableStateFlow(CreateAccountViewModelUiState())
+    private val _uiState = MutableStateFlow(OtherOptionsSignupUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(Res.string.create_account),
+                    title = getString(Res.string.other_options),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false
                 )
@@ -54,36 +45,18 @@ class CreateAccountViewModel(
         }
     }
 
-    fun onUsernameChanged(newValue: String) {
-        _uiState.update {
-            it.copy(
-                username = newValue,
-                usernameError = null,
-                generalError = null
-            )
-        }
-    }
 
     fun onClickSignupWithPasskey() {
         viewModelScope.launch {
-            val username = _uiState.value.username
-
-            _uiState.update {
-                it.copy(
-                    usernameError = if (username.isBlank()) StringResourceUiText(Res.string.username_required) else null
-                )
-            }
-
-            if (username.isBlank()) return@launch
 
             try {
 
-                val redeemRequest = respectRedeemInviteRequestUseCase(route.inviteInfo,username)
+                val redeemRequest = respectRedeemInviteRequestUseCase(route.inviteInfo,route.username)
 
                 val result = submitRedeemInviteRequestUseCase(redeemRequest)
 
                 val createPasskeyResult = createPasskeyUseCase(
-                    username = username,
+                    username = route.username,
                 )
                 when (createPasskeyResult) {
                     is CreatePasskeyUseCase.PasskeyCreatedResult -> {
@@ -119,36 +92,21 @@ class CreateAccountViewModel(
                 }
 
             } catch (e: Exception) {
-              println(e.message.toString())
+                println(e.message.toString())
             }
         }
     }
 
+    fun onClickSignupWithPassword() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(EnterPasswordSignup.create(route.username,route.type,route.inviteInfo))
+        )
+    }
+
     fun onClickHowPasskeysWork() {
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(HowPasskeyWorks)
-        )
+        _navCommandFlow.tryEmit(NavCommand.Navigate(HowPasskeyWorks))
     }
-    fun onOtherOptionsClick() {
-        val username = _uiState.value.username
-
-        _uiState.update {
-            it.copy(
-                usernameError = if (username.isBlank()) StringResourceUiText(Res.string.username_required) else null
-            )
-        }
-
-        if (username.isBlank()) return
-
-        _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                OtherOptionsSignup.create(
-                    username = uiState.value.username,
-                    profileType = route.type,
-                    inviteInfo = route.inviteInfo
-                )
-            )
-        )
-    }
-
 }
+data class OtherOptionsSignupUiState(
+    val passkeyError: String? = null
+)

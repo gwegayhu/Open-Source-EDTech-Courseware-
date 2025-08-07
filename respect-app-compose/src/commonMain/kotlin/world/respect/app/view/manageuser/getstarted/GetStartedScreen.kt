@@ -1,11 +1,14 @@
 package world.respect.app.view.manageuser.getstarted
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,6 +28,7 @@ import world.respect.shared.generated.resources.other_options
 import world.respect.shared.generated.resources.school_name_placeholder
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedUiState
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedViewModel
+import world.respect.shared.viewmodel.manageuser.getstarted.School
 
 @Composable
 fun GetStartedScreen(
@@ -36,7 +40,8 @@ fun GetStartedScreen(
         uiState = uiState,
         onSchoolNameChanged = viewModel::onSchoolNameChanged,
         onClickInviteCode = viewModel::onClickIHaveCode,
-        onClickOtherOptions = viewModel::onClickOtherOptions
+        onClickOtherOptions = viewModel::onClickOtherOptions,
+        onSchoolSelected = viewModel::onSchoolSelected
     )
 }
 
@@ -44,6 +49,7 @@ fun GetStartedScreen(
 fun GetStartedScreen(
     uiState: GetStartedUiState,
     onSchoolNameChanged: (String) -> Unit,
+    onSchoolSelected: (School) -> Unit,
     onClickInviteCode: () -> Unit,
     onClickOtherOptions: () -> Unit
 ) {
@@ -73,22 +79,50 @@ fun GetStartedScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedButton(
-            onClick = onClickInviteCode,
-            modifier = Modifier.fillMaxWidth()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
-            Text(text = stringResource(Res.string.i_have_an_invite_code))
+            items(
+                count = uiState.suggestions.size,
+                key = { index -> uiState.suggestions[index].name }
+            ) { index ->
+                val school = uiState.suggestions[index]
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = school.name
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = school.url,
+                            maxLines = 1
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable { onSchoolSelected(school) }
+                )
+            }
         }
+        if (uiState.showButtons){
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = onClickInviteCode,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(Res.string.i_have_an_invite_code))
+            }
 
-        OutlinedButton(
-            onClick = onClickOtherOptions,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(Res.string.other_options))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = onClickOtherOptions,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(Res.string.other_options))
+            }
         }
     }
 }

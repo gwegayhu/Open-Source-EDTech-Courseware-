@@ -55,6 +55,9 @@ object GetStartedScreen : RespectAppRoute
 @Serializable
 object OtherOption : RespectAppRoute
 
+@Serializable
+object HowPasskeyWorks : RespectAppRoute
+
 /**
  * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app
  */
@@ -105,6 +108,55 @@ class LearningUnitList(
 
     }
 
+}
+@Serializable
+class EnterPasswordSignup private constructor(
+    private val usernameStr: String,
+    private val profileType: ProfileType,
+    private val inviteInfoJson: String,
+) : RespectAppRoute {
+
+    @Transient
+    val username = usernameStr
+
+    @Transient
+    val type = profileType
+
+    @Transient
+    val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
+    companion object {
+
+        fun create(username: String,profileType: ProfileType, inviteInfo: RespectInviteInfo): EnterPasswordSignup {
+            val inviteJson = Json.encodeToString(inviteInfo)
+            return EnterPasswordSignup(username,profileType, inviteJson)
+        }
+
+    }
+}
+
+@Serializable
+class OtherOptionsSignup private constructor(
+    private val usernameStr: String,
+    private val profileType: ProfileType,
+    private val inviteInfoJson: String,
+) : RespectAppRoute {
+
+    @Transient
+    val username = usernameStr
+
+    @Transient
+    val type = profileType
+
+    @Transient
+    val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
+    companion object {
+
+        fun create(username: String,profileType: ProfileType, inviteInfo: RespectInviteInfo): OtherOptionsSignup {
+            val inviteJson = Json.encodeToString(inviteInfo)
+            return OtherOptionsSignup(username,profileType, inviteJson)
+        }
+
+    }
 }
 
 @Serializable
