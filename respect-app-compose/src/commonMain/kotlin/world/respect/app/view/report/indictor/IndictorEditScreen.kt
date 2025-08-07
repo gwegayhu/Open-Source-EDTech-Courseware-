@@ -21,8 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.util.ext.defaultItemPadding
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.indicator_name
 import world.respect.shared.generated.resources.description
+import world.respect.shared.generated.resources.field
 import world.respect.shared.generated.resources.sql
 import world.respect.shared.viewmodel.report.indictor.IndicatorEditUiState
 import world.respect.shared.viewmodel.report.indictor.IndicatorEditViewModel
@@ -46,7 +46,7 @@ fun IndictorEditScreen(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = uiState.indicatorData.name ?: "",
-                label = { Text(stringResource(Res.string.indicator_name) + "*") },
+                label = { Text(stringResource(Res.string.field) + "*") },
                 singleLine = true,
                 onValueChange = { newName ->
                     viewModel.updateIndicator { it.copy(name = newName) }

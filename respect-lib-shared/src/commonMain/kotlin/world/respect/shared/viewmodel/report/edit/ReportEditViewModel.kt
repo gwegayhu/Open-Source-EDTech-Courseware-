@@ -78,8 +78,7 @@ class ReportEditViewModel(
 
             _appUiState.update {
                 AppUiState(
-                    title = title,
-                    hideBottomNavigation = false
+                    title = title, hideBottomNavigation = false
                 )
             }
 
@@ -98,52 +97,23 @@ class ReportEditViewModel(
             try {
                 val reportFlow = respectReportDataSource.getReportAsFlow(entityUid.toString())
                 launch {
-                    reportFlow
-                        .collect { reportState ->
-                            when (reportState) {
-                                is DataReadyState -> {
-                                    val report = reportState.data
-                                    val optionsJson = report.reportOptions
+                    reportFlow.collect { reportState ->
+                        when (reportState) {
+                            is DataReadyState -> {
+                                val report = reportState.data
+                                val optionsJson = report.reportOptions
 
-                                    val parsedOptions = try {
-                                        Json.decodeFromString(
-                                            ReportOptions.serializer(),
-                                            optionsJson.trim()
-                                        )
-                                    } catch (e: Exception) {
-                                        println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
-                                        throw IllegalArgumentException("Invalid report options format: ${e.message}")
-                                    }
-                                    if (entityUid == 0L) {
-                                        val mockedReport = ReportOptions(
-                                            title = "",
-                                            series = listOf(
-                                                ReportSeries(
-                                                    reportSeriesUid = 1,
-                                                    reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
-                                                    reportSeriesSubGroup = null,
-                                                    reportSeriesYAxis = DefaultIndicators.list.first(),
-                                                    reportSeriesFilters = emptyList()
-                                                )
-                                            )
-                                        )
-                                        _uiState.update { prev ->
-                                            prev.copy(
-                                                reportOptions = mockedReport
-                                            )
-                                        }
-                                    } else {
-                                        _uiState.update { currentState ->
-                                            currentState.copy(
-                                                reportOptions = parsedOptions,
-                                            )
-                                        }
-                                    }
+                                val parsedOptions = try {
+                                    Json.decodeFromString(
+                                        ReportOptions.serializer(), optionsJson.trim()
+                                    )
+                                } catch (e: Exception) {
+                                    println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
+                                    throw IllegalArgumentException("Invalid report options format: ${e.message}")
                                 }
-
-                                else -> {
+                                if (entityUid == 0L) {
                                     val mockedReport = ReportOptions(
-                                        series = listOf(
+                                        title = "", series = listOf(
                                             ReportSeries(
                                                 reportSeriesUid = 1,
                                                 reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
@@ -158,9 +128,35 @@ class ReportEditViewModel(
                                             reportOptions = mockedReport
                                         )
                                     }
+                                } else {
+                                    _uiState.update { currentState ->
+                                        currentState.copy(
+                                            reportOptions = parsedOptions,
+                                        )
+                                    }
+                                }
+                            }
+
+                            else -> {
+                                val mockedReport = ReportOptions(
+                                    series = listOf(
+                                        ReportSeries(
+                                            reportSeriesUid = 1,
+                                            reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
+                                            reportSeriesSubGroup = null,
+                                            reportSeriesYAxis = DefaultIndicators.list.first(),
+                                            reportSeriesFilters = emptyList()
+                                        )
+                                    )
+                                )
+                                _uiState.update { prev ->
+                                    prev.copy(
+                                        reportOptions = mockedReport
+                                    )
                                 }
                             }
                         }
+                    }
                 }
             } catch (e: Exception) {
                 println("Exception $e")
@@ -251,14 +247,12 @@ class ReportEditViewModel(
         viewModelScope.launch {
             _uiState.update { currentState ->
                 val baseUpdate = currentState.copy(
-                    reportOptions = newOptions,
-                    hasSingleSeries = newOptions.series.size == 1
+                    reportOptions = newOptions, hasSingleSeries = newOptions.series.size == 1
                 )
 
                 if (!baseUpdate.submitted) baseUpdate
                 else validateCurrentState().copy(
-                    reportOptions = newOptions,
-                    hasSingleSeries = newOptions.series.size == 1
+                    reportOptions = newOptions, hasSingleSeries = newOptions.series.size == 1
                 )
             }
         }
@@ -278,18 +272,15 @@ class ReportEditViewModel(
 
         val seriesTitleErrors = currentReport.series.associate { series ->
             series.reportSeriesUid to if (series.reportSeriesTitle.isEmpty()) requiredFieldMessage else null
-        }.filterValues { it != null }
-            .mapValues { it.value as UiText }
+        }.filterValues { it != null }.mapValues { it.value as UiText }
 
         val yAxisErrors = currentReport.series.associate { series ->
             series.reportSeriesUid to if (series.reportSeriesYAxis == null) requiredFieldMessage else null
-        }.filterValues { it != null }
-            .mapValues { it.value as UiText }
+        }.filterValues { it != null }.mapValues { it.value as UiText }
 
         val chartTypeErrors = currentReport.series.associate { series ->
             series.reportSeriesUid to if (series.reportSeriesVisualType == null) requiredFieldMessage else null
-        }.filterValues { it != null }
-            .mapValues { it.value as UiText }
+        }.filterValues { it != null }.mapValues { it.value as UiText }
 
         return ReportEditUiState(
             submitted = true,
@@ -311,27 +302,36 @@ class ReportEditViewModel(
                 reportOptions.copy(
                     series = reportOptions.series.replace(updatedSeries) {
                         it.reportSeriesUid == updatedSeries.reportSeriesUid
-                    }
-                )
-            }
-        )
+                    })
+            })
     }
 
     fun onAddSeries() {
         viewModelScope.launch {
             _uiState.update { prev ->
                 val newUid = (prev.reportOptions.series.maxOfOrNull { it.reportSeriesUid } ?: 0) + 1
+
+                // Determine the required type based on existing series
+                val requiredType = prev.reportOptions.series.firstOrNull()?.reportSeriesYAxis?.type
+
+                // Find a default indicator that matches the required type (or first available if no type restriction)
+                val defaultIndicator = if (requiredType != null) {
+                    DefaultIndicators.list.firstOrNull { it.type == requiredType }
+                        ?: DefaultIndicators.list.first()
+                } else {
+                    DefaultIndicators.list.first()
+                }
+
                 prev.copy(
                     reportOptions = prev.reportOptions.copy(
                         series = prev.reportOptions.series + ReportSeries(
                             reportSeriesUid = newUid,
                             reportSeriesTitle = getString(resource = Res.string.series) + newUid,
-                            reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART, // Default type
+                            reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
                             reportSeriesSubGroup = null,
-                            reportSeriesYAxis = DefaultIndicators.list.first() // Default Y-axis
+                            reportSeriesYAxis = defaultIndicator // Use the type-matched default
                         ),
-                    ),
-                    hasSingleSeries = false
+                    ), hasSingleSeries = false
                 )
             }
         }
@@ -344,8 +344,7 @@ class ReportEditViewModel(
             prev.copy(
                 reportOptions = prev.reportOptions.copy(
                     series = updatedSeriesList
-                ),
-                hasSingleSeries = updatedSeriesList.size == 1
+                ), hasSingleSeries = updatedSeriesList.size == 1
             )
         }
     }
@@ -354,8 +353,7 @@ class ReportEditViewModel(
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 ReportEditFilter.create(
-                    reportUid = entityUid,
-                    seriesId = seriesId
+                    reportUid = entityUid, seriesId = seriesId
                 )
             )
         )
@@ -413,13 +411,6 @@ class ReportEditViewModel(
 
     fun ReportEditUiState.hasErrors(): Boolean {
         if (!submitted) return false
-        return reportTitleError != null ||
-                xAxisError != null ||
-                seriesTitleErrors.isNotEmpty() ||
-                yAxisErrors.isNotEmpty() ||
-                subGroupError != null ||
-                chartTypeError.isNotEmpty() ||
-                timeRangeError != null ||
-                quantityError != null
+        return reportTitleError != null || xAxisError != null || seriesTitleErrors.isNotEmpty() || yAxisErrors.isNotEmpty() || subGroupError != null || chartTypeError.isNotEmpty() || timeRangeError != null || quantityError != null
     }
 }

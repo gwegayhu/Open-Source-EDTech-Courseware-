@@ -78,6 +78,38 @@ class MockRespectReportDataSource : RespectReportDataSource {
             """.trimIndent(),
             reportIsTemplate = false
         ),
+        RespectReport(
+            reportId = "2",
+            title = "Weekly Duration",
+            reportOptions = """
+                {
+                    "title": "Weekly Session Duration",
+                    "xAxis": "WEEK",
+                    "period": {
+                        "type": "RelativeRangeReportPeriod",
+                        "rangeUnit": "WEEK",
+                        "rangeQuantity": 1
+                    },
+                    "series": [
+                        {
+                            "reportSeriesUid": 1,
+                            "reportSeriesTitle": "Total Duration",
+                            "reportSeriesYAxis": {
+                                "name": "Total Duration",
+                                "description": "Total content usage duration",
+                                "sql": "SUM(duration)",
+                                "isCustom": false,
+                                "label": "total_duration",
+                                "type": "DURATION"
+                            },
+                            "reportSeriesVisualType": "BAR_CHART",
+                            "reportSeriesSubGroup": "GENDER"
+                        }
+                    ]
+                }
+            """.trimIndent(),
+            reportIsTemplate = true
+        ),
     )
 
     override suspend fun putReport(report: RespectReport) {

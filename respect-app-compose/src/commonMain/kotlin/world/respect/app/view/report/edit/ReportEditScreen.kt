@@ -99,7 +99,14 @@ private fun ReportEditScreen(
     addIndictor: (Int) -> Unit = { },
 ) {
     val availableIndicators = remember { DefaultIndicators.list }
+    val firstIndicatorType = uiState.reportOptions.series.firstOrNull()?.reportSeriesYAxis?.type
 
+    // Calculate disabled indicators (those with different types than the first series)
+    val disabledIndicators = if (uiState.reportOptions.series.size > 1 && firstIndicatorType != null) {
+        availableIndicators.filter { it.type != firstIndicatorType }
+    } else {
+        emptyList()
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -291,9 +298,9 @@ private fun ReportEditScreen(
                             uiState.yAxisErrors[seriesItem.reportSeriesUid]?.let {
                                 Text(uiTextStringResource(it))
                             }
-                        }
+                        },
+                        disabledOptions = disabledIndicators
                     )
-
 
 
                     // Subgroup Dropdown
@@ -368,7 +375,10 @@ private fun ReportEditScreen(
                 }
             }
             item {
-                Button(onClick = { addIndictor(seriesItem.reportSeriesUid) }, modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = { addIndictor(seriesItem.reportSeriesUid) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(
                         text = stringResource(Res.string.indicator),
                     )
