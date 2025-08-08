@@ -3,6 +3,9 @@ package world.respect.datalayer.db.realm.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * @property pGuid the uid of the person: If following a OneRoster server, then the sourcedId
+ */
 @Entity
 data class PersonEntity(
     val pGuid: String,

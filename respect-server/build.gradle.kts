@@ -13,6 +13,12 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=${extra["io.ktor.development"] ?: "false"}")
 }
 
+kotlin {
+    compilerOptions {
+        optIn.add("kotlin.time.ExperimentalTime")
+    }
+}
+
 dependencies {
     implementation(projects.respectLibShared)
     implementation(projects.respectDatalayer)
