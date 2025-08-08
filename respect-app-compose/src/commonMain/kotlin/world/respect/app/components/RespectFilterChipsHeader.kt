@@ -19,7 +19,7 @@ fun <T> RespectFilterChipsHeader(
     options: List<T>,
     selectedOption: T,
     onOptionSelected: (T) -> Unit,
-    optionLabel: @Composable (T) -> String,
+    optionLabel: @Composable ((T) -> String),
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),

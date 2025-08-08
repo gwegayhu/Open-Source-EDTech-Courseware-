@@ -62,7 +62,7 @@ fun ClazzDetailScreen(
         item {
 
             RespectFilterChipsHeader(
-                options = uiState.chipOptions,
+                options = uiState.chipOptions.map{it.option},
                 selectedOption = uiState.selectedChip,
                 onOptionSelected = { onSelectChip(it) },
                 optionLabel = { it }

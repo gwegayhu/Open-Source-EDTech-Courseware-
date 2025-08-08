@@ -13,10 +13,14 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.first_name
 import world.respect.shared.generated.resources.last_name
+import world.respect.shared.generated.resources.all
+import world.respect.shared.generated.resources.active
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.FilterChipsOption
 import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
+import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.ALL
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.NAME
 
 data class ClazzDetailUiState(
@@ -25,8 +29,8 @@ data class ClazzDetailUiState(
     val listOfPending: List<OneRosterUser> = emptyList(),
     val sortOptions: List<SortOrderOption> = emptyList(),
     val selectedSortOption: String = NAME,
-    val chipOptions: List<String> = listOf("Active", "All"),
-    val selectedChip: String = "All"
+    val chipOptions: List<FilterChipsOption> = emptyList(),
+    val selectedChip: String = ALL
 )
 
 class ClazzDetailViewModel(
@@ -62,6 +66,10 @@ class ClazzDetailViewModel(
                         SortOrderOption(getString(Res.string.first_name)),
                         SortOrderOption(getString(Res.string.last_name))
                     ),
+                    chipOptions = listOf(
+                        FilterChipsOption(getString(Res.string.all)),
+                        FilterChipsOption(getString(Res.string.active))
+                    ),
                     selectedSortOption = getString(Res.string.first_name),
                 )
             }
@@ -86,5 +94,7 @@ class ClazzDetailViewModel(
 
     companion object {
         const val NAME = "Name"
+        const val ALL = "All"
+
     }
 }
