@@ -22,7 +22,6 @@ import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
-import kotlin.text.get
 
 data class ReportFilterEditUiState(
     val filters: ReportFilter? = ReportFilter(),
@@ -66,7 +65,7 @@ class ReportFilterEditViewModel(
 
     private fun handleExistingFilter(existingFilter: ReportFilter) {
         try {
-               _uiState.value = ReportFilterEditUiState(
+            _uiState.value = ReportFilterEditUiState(
                 filters = existingFilter,
                 filterConditionOptions = getConditionOptionsForField(existingFilter.reportFilterField)
             )

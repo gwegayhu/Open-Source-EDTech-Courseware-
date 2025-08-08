@@ -175,17 +175,8 @@ class ReportTemplateListViewModel(
             _appUiState.update { it.copy(loadingState = NOT_LOADING) }
         }
     }
-    fun getBlankTemplate(): RespectReport {
-        return RespectReport(
-            reportId = "0",
-            title = "Blank Report",
-            reportOptions = Json.encodeToString(ReportOptions.serializer(), ReportOptions()),
-            reportIsTemplate = true,
-            // ... other required fields ...
-        )
-    }
     fun onTemplateSelected(template: RespectReport) {
-        if (template.reportId == "0") { // This is our blank template
+        if (template.reportId == "0") { // blank template
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     ReportEdit.create(0L)

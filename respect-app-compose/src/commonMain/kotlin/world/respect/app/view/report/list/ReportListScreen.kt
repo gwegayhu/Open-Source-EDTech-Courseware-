@@ -160,7 +160,7 @@ private fun ReportGridCard(
             ) {
                 // Title above the chart
                 Text(
-                    report.title ?:stringResource(Res.string.untitled_report),
+                    report.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)

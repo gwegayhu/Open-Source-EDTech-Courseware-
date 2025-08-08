@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.LocalContentColor
@@ -19,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
+import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectDateField
 import world.respect.app.components.uiTextStringResource
@@ -365,7 +366,7 @@ private fun ReportEditScreen(
                 }
             }
             item {
-                Button(
+                OutlinedButton(
                     onClick = { onAddFilter(seriesItem.reportSeriesUid) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -375,7 +376,7 @@ private fun ReportEditScreen(
                 }
             }
             item {
-                Button(
+                OutlinedButton(
                     onClick = { addIndictor(seriesItem.reportSeriesUid) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -387,7 +388,7 @@ private fun ReportEditScreen(
         }
 
         item {
-            Button(onClick = { onAddSeries() }, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = { onAddSeries() }, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(Res.string.add_series),
                 )
@@ -556,7 +557,7 @@ fun DatePickerButton(
             modifier = Modifier.fillMaxWidth(),
             value = timestamp,
             label = { Text(label) },
-            timeZoneId = "",
+            timeZoneId = TimeZone.currentSystemDefault().id,
             onValueChange = {
                 onDateSelected(it)
             },

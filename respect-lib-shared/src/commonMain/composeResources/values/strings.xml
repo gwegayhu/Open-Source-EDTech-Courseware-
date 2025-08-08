@@ -149,6 +149,7 @@
     <string name="description">Description</string>
     <string name="sql">SQL</string>
     <string name="edit_filters">Edit Filters</string>
+    <string name="blank_template">Blank Template</string>>
 
     <!-- Duration Metrics -->
     <string name="total_content_usage_duration">Total Content Usage Duration</string>
