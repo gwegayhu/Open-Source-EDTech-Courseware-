@@ -57,7 +57,7 @@ import world.respect.shared.navigation.RespectComposeNavController
 import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
-import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
+import world.respect.shared.viewmodel.clazz.addperson.AddPersonToClazzViewModel
 import world.respect.shared.navigation.CreateAccount
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.navigation.WaitingForApproval

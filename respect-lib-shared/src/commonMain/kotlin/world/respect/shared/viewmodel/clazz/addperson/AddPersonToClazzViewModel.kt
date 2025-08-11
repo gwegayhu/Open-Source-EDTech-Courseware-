@@ -1,4 +1,4 @@
-package world.respect.shared.viewmodel.clazz.student
+package world.respect.shared.viewmodel.clazz.addperson
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope

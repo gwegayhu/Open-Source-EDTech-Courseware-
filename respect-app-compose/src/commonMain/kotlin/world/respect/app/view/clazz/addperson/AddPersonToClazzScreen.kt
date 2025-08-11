@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzUIState
-import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
+import world.respect.shared.viewmodel.clazz.addperson.AddPersonToClazzUIState
+import world.respect.shared.viewmodel.clazz.addperson.AddPersonToClazzViewModel
 
 @Composable
 fun AddPersonToClazzScreen(

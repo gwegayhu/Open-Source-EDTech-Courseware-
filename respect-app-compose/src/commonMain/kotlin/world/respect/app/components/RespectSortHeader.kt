@@ -47,11 +47,11 @@ fun <T> RespectSortHeader(
                 if (labelContent != null) {
                     labelContent()
                 } else {
-                    Text(text = optionLabel(selectedOption), fontSize = 14.sp)
+                    Text(text = optionLabel(selectedOption))
                 }
                 Icon(
                     imageVector = Icons.Filled.ArrowDownward,
-                    modifier = Modifier.padding(6.dp),
+                    modifier = Modifier.padding(8.dp),
                     contentDescription = null
                 )
             }
@@ -64,7 +64,7 @@ fun <T> RespectSortHeader(
             options.forEach { option ->
                 DropdownMenuItem(
                     text = {
-                        Text(text = optionLabel(option), fontSize = 14.sp)
+                        Text(text = optionLabel(option))
                     },
                     onClick = {
                         expanded = false

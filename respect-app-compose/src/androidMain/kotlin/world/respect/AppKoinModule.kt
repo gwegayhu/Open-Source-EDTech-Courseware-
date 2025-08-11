@@ -66,7 +66,7 @@ import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroi
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
-import world.respect.shared.viewmodel.clazz.student.AddPersonToClazzViewModel
+import world.respect.shared.viewmodel.clazz.addperson.AddPersonToClazzViewModel
 import org.koin.core.qualifier.named
 import world.respect.shared.domain.account.RespectAccountManager
 

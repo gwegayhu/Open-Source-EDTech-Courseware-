@@ -22,19 +22,19 @@ fun <T> RespectFilterChipsHeader(
     optionLabel: @Composable ((T) -> String),
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(16.dp)
     ) {
         options.forEach { option ->
             val isSelected = selectedOption == option
             FilterChip(
                 selected = isSelected,
-                onClick = { onOptionSelected(option) },
+                onClick = {
+                    onOptionSelected(option)
+                },
                 label = {
                     Text(
                         text = optionLabel(option),
-                        color = if (isSelected) Color.Black else Color.Gray
-
                     )
                 },
                 border = FilterChipDefaults.filterChipBorder(
