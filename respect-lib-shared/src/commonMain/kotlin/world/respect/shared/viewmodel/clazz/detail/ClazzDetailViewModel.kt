@@ -105,6 +105,10 @@ class ClazzDetailViewModel(
         _uiState.update { it.copy(selectedChip = chip) }
     }
 
+    fun onClickAcceptInvite() {}
+
+    fun onClickDismissInvite() {}
+
 
     companion object {
         const val ALL = "All"

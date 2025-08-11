@@ -48,6 +48,8 @@ fun ClazzDetailScreen(
         onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
         onSortOrderChanged = viewModel::onSortOrderChanged,
         onSelectChip = { viewModel.onSelectChip(it) },
+        onClickAcceptInvite = viewModel::onClickAcceptInvite,
+        onClickDismissInvite = viewModel::onClickDismissInvite
     )
 }
 
@@ -56,7 +58,9 @@ fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
     onClickAddPersonToClazz: () -> Unit,
     onSortOrderChanged: (SortOrderOption) -> Unit = { },
-    onSelectChip: (String) -> Unit
+    onSelectChip: (String) -> Unit,
+    onClickAcceptInvite: () -> Unit,
+    onClickDismissInvite: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -80,11 +84,10 @@ fun ClazzDetailScreen(
                 }
             )
         }
-
         item {
 
             RespectFilterChipsHeader(
-                options = uiState.chipOptions.map{it.option},
+                options = uiState.chipOptions.map { it.option },
                 selectedOption = uiState.selectedChip,
                 onOptionSelected = { onSelectChip(it) },
                 optionLabel = { it }
@@ -132,9 +135,7 @@ fun ClazzDetailScreen(
                     .fillMaxWidth(),
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = pendingUser.givenName,
-                        modifier = Modifier.size(40.dp),
-                        fontScale = 1.0f
+                        name = pendingUser.givenName
                     )
                 },
                 headlineContent = {
@@ -143,14 +144,18 @@ fun ClazzDetailScreen(
                 trailingContent = {
                     Row {
                         Icon(
+                            modifier = Modifier.size(24.dp).clickable {
+                                onClickAcceptInvite()
+                            },
                             imageVector = Icons.Outlined.CheckCircle,
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
                         )
                         Icon(
+                            modifier = Modifier.size(24.dp).clickable {
+                                onClickDismissInvite()
+                            },
                             imageVector = Icons.Outlined.Cancel,
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -209,9 +214,7 @@ fun ClazzDetailScreen(
                     .fillMaxWidth(),
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = teacher.givenName,
-                        modifier = Modifier.size(40.dp),
-                        fontScale = 1.0f
+                        name = teacher.givenName
                     )
                 },
                 headlineContent = {
@@ -268,9 +271,7 @@ fun ClazzDetailScreen(
                     .clickable { },
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = student.givenName,
-                        modifier = Modifier.size(40.dp),
-                        fontScale = 1.0f
+                        name = student.givenName
                     )
                 },
                 headlineContent = {
