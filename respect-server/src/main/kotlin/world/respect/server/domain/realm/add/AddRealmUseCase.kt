@@ -7,7 +7,7 @@ import world.respect.datalayer.db.realm.entities.PersonEntity
 import world.respect.datalayer.db.realmdirectory.ext.virtualHostScopeId
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
 import world.respect.datalayer.respect.model.RespectRealm
-import kotlin.time.Clock
+import world.respect.shared.util.systemTimeInMillis
 import kotlin.time.ExperimentalTime
 
 /**
@@ -36,8 +36,8 @@ class AddRealmUseCase(
             request.realm,  request.dbUrl
         )
 
-        val scope = getKoin().createScope<RespectRealm>(request.realm.virtualHostScopeId)
-        val db = scope.get<RespectRealmDatabase>()
+        val realmScope = getKoin().createScope<RespectRealm>(request.realm.virtualHostScopeId)
+        val db = realmScope.get<RespectRealmDatabase>()
 
         println(db)
         db.getPersonEntityDao().insert(
@@ -45,7 +45,7 @@ class AddRealmUseCase(
                 pGuid = "1",
                 pGuidHash = 1L,
                 pActive = true,
-                pLastModified = Clock.System.now().toEpochMilliseconds(),
+                pLastModified = systemTimeInMillis(),
                 pGivenName = "Admin",
                 pFamilyName = "Admin",
             )

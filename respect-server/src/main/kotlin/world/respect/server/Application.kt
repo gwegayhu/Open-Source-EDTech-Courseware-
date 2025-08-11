@@ -10,6 +10,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import org.koin.ktor.ext.getKoin
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import world.respect.Greeting
@@ -39,15 +40,12 @@ fun Application.module() {
         it.writeText(randomString(DEFAULT_DIR_ADMIN_PASS_LENGTH))
     }
 
-    val json = Json {
-        ignoreUnknownKeys = true
-    }
-
     install(Koin) {
         slf4jLogger()
-        modules(serverKoinModule(environment.config, json))
+        modules(serverKoinModule(environment.config))
     }
 
+    val json = getKoin().get<Json>()
     install(ContentNegotiation) {
         json(
             json = json,

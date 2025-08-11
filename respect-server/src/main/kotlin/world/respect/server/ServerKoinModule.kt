@@ -26,7 +26,6 @@ const val APP_DB_FILENAME = "respect-app.db"
 
 fun serverKoinModule(
     config: ApplicationConfig,
-    json: Json,
 ) = module {
 
     val dataDir = config.absoluteDataDir()
@@ -40,7 +39,9 @@ fun serverKoinModule(
     }
 
     single<Json> {
-        json
+        Json {
+            ignoreUnknownKeys = true
+        }
     }
 
     single<XXStringHasher> {

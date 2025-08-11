@@ -4,7 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
+ * @property atUid primary key (auto generated)
  * @property atPGuidHash foreign key for the related PersonEntity.pGuidHash
+ * @property atPGuid foreign key for the related PersonEntity.pGuid
  * @property atToken the token itself
  * @property atTimeCreated time created (in millis)
  * @property atTtl ttl (in seconds)
@@ -12,8 +14,9 @@ import androidx.room.PrimaryKey
 @Entity
 data class AuthTokenEntity(
     @PrimaryKey(autoGenerate = true)
-    val atUid: Long,
+    val atUid: Long = 0L,
     val atPGuidHash: Long,
+    val atPGuid: String,
     val atCode: String?,
     val atToken: String,
     val atTimeCreated: Long,

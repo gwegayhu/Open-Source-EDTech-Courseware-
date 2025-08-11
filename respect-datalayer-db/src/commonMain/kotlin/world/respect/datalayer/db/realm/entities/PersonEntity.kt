@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * @property pGuid the uid of the person: If following a OneRoster server, then the sourcedId
+ * @property pGuid the uid of the person: If following a OneRoster server, this is sourcedId
  */
 @Entity
 data class PersonEntity(

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "527156c3a59b98c30c83eacf71007c83",
+    "identityHash": "4a20053eeca8b4c00889897e95378ae3",
     "entities": [
       {
         "tableName": "PersonEntity",
@@ -112,7 +112,7 @@
       },
       {
         "tableName": "AuthTokenEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`atUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `atPGuidHash` INTEGER NOT NULL, `atCode` TEXT, `atToken` TEXT NOT NULL, `atTimeCreated` INTEGER NOT NULL, `atTtl` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`atUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `atPGuidHash` INTEGER NOT NULL, `atPGuid` TEXT NOT NULL, `atCode` TEXT, `atToken` TEXT NOT NULL, `atTimeCreated` INTEGER NOT NULL, `atTtl` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "atUid",
@@ -124,6 +124,12 @@
             "fieldPath": "atPGuidHash",
             "columnName": "atPGuidHash",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "atPGuid",
+            "columnName": "atPGuid",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -160,7 +166,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '527156c3a59b98c30c83eacf71007c83')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a20053eeca8b4c00889897e95378ae3')"
     ]
   }
 }

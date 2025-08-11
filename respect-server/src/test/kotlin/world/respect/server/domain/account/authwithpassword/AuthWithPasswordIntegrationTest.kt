@@ -11,7 +11,9 @@ import world.respect.datalayer.db.realm.adapters.toEntities
 import world.respect.datalayer.realm.model.Person
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.server.domain.account.setpassword.SetPasswordUseDbImpl
+import world.respect.server.domain.account.validateauth.ValidateAuthorizationUseCaseDbImpl
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
+import world.respect.shared.domain.account.validateauth.ValidateAuthorizationUseCase
 import java.io.File
 import kotlin.test.Test
 
@@ -37,6 +39,8 @@ class AuthWithPasswordIntegrationTest {
             realmDb, xxHash,PersonDataSourceDb(realmDb, xxHash)
         )
 
+        val validateAuthUseCase = ValidateAuthorizationUseCaseDbImpl(realmDb)
+
         runBlocking {
             val personGuid = "42"
             val password = "password"
@@ -57,10 +61,12 @@ class AuthWithPasswordIntegrationTest {
                 )
             )
 
-            authWithPasswordUseCase(username, password)
-
-            //val tokenInDb = realmDb.ge().findByToken(token.token.accessToken)
-
+            val authResponse = authWithPasswordUseCase(username, password)
+            validateAuthUseCase(
+                ValidateAuthorizationUseCase.BearerTokenCredential(
+                    token = authResponse.token.accessToken
+                )
+            )
             
         }
 

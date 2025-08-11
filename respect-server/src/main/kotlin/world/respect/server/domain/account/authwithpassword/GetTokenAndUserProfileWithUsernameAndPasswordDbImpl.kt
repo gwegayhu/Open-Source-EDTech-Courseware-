@@ -8,7 +8,7 @@ import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
 import world.respect.shared.domain.account.AuthResponse
 import world.respect.datalayer.realm.model.AuthToken
-import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPassword
+import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
@@ -17,13 +17,12 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
     private val realmDb: RespectRealmDatabase,
     private val xxHash: XXStringHasher,
     private val personDataSource: PersonDataSource,
-): GetTokenAndUserProfileWithUsernameAndPassword {
+): GetTokenAndUserProfileWithUsernameAndPasswordUseCase {
 
     override suspend fun invoke(
         username: String,
         password: String
     ): AuthResponse {
-
         val person = personDataSource.findByUsername(username) ?: throw IllegalArgumentException()
         val personGuidHash = xxHash.hash(person.guid)
         val personPassword = realmDb.getPersonPasswordEntityDao().findByUid(personGuidHash)
@@ -43,7 +42,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
             )
 
             realmDb.getAuthTokenEntityDao().insert(
-                token.toEntity(personGuidHash)
+                token.toEntity(person.guid, personGuidHash)
             )
 
             return AuthResponse(
