@@ -15,11 +15,15 @@ import world.respect.shared.generated.resources.first_name
 import world.respect.shared.generated.resources.last_name
 import world.respect.shared.generated.resources.all
 import world.respect.shared.generated.resources.active
+import world.respect.shared.generated.resources.classes
+import world.respect.shared.generated.resources.edit
+import world.respect.shared.navigation.AddClazz
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.FilterChipsOption
 import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
+import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.ALL
 
 data class ClazzDetailUiState(
@@ -58,6 +62,26 @@ class ClazzDetailViewModel(
             val pendingInvites = users.filter { user ->
                 !user.enabledUser
             }
+
+            _appUiState.update {
+                it.copy(
+                    title = getString(Res.string.classes),
+                    showBackButton = false,
+                    fabState = FabUiState(
+                        visible = true,
+                        icon = FabUiState.FabIcon.EDIT,
+                        text = getString(resource = Res.string.edit),
+                        onClick = {
+                            _navCommandFlow.tryEmit(
+                                NavCommand.Navigate(
+                                    AddClazz
+                                )
+                            )
+                        }
+                    )
+                )
+            }
+
 
             _uiState.update {
                 val sortOptions = listOf(

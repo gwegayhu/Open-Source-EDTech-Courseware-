@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ImportContacts
 import androidx.compose.material3.Icon
@@ -152,6 +153,7 @@ fun App(
                         icon = {
                             val imageVector = when (appUiStateVal.fabState.icon) {
                                 FabUiState.FabIcon.ADD -> Icons.Default.Add
+                                FabUiState.FabIcon.EDIT -> Icons.Default.Edit
                                 else -> null
                             }
                             if (imageVector != null) {

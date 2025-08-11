@@ -122,6 +122,7 @@
     <string name="descending">Descending</string>
     <string name="sort_by">Sort by</string>
     <string name="language">Language</string>
+    <string name="edit">Edit</string>
 
 
 </resources>
