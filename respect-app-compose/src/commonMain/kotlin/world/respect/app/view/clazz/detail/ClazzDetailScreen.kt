@@ -29,6 +29,7 @@ import world.respect.app.components.defaultItemPadding
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
+import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.pending_invite
 import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
@@ -61,6 +62,25 @@ fun ClazzDetailScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            resource = Res.string.description
+                        )
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = stringResource(
+                            resource = Res.string.description
+                        )
+                    )
+                }
+            )
+        }
+
         item {
 
             RespectFilterChipsHeader(
