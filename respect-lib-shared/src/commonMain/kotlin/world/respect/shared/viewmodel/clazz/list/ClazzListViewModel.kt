@@ -20,8 +20,6 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
-import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.NAME
-
 
 data class ClazzListUiState(
     val oneRoasterClass: List<OneRosterClass> = emptyList(),

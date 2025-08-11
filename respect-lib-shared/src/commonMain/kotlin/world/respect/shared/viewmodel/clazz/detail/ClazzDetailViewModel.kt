@@ -107,7 +107,6 @@ class ClazzDetailViewModel(
 
 
     companion object {
-        const val NAME = "Name"
         const val ALL = "All"
 
     }
