@@ -2,12 +2,13 @@ package world.respect.server.domain.realm.add
 
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
-import world.respect.datalayer.db.RespectRealmDatabase
-import world.respect.datalayer.db.realm.entities.PersonEntity
+import world.respect.datalayer.RespectRealmDataSourceLocal
 import world.respect.datalayer.db.realmdirectory.ext.virtualHostScopeId
+import world.respect.datalayer.realm.model.Person
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
 import world.respect.datalayer.respect.model.RespectRealm
-import world.respect.shared.util.systemTimeInMillis
+import world.respect.shared.domain.AuthenticatedUserPrincipalId
+import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import kotlin.time.ExperimentalTime
 
 /**
@@ -22,6 +23,8 @@ class AddRealmUseCase(
     data class AddRealmRequest(
         val realm: RespectRealm,
         val dbUrl: String,
+        val adminUsername: String,
+        val adminPassword: String,
     )
 
     @Serializable
@@ -37,24 +40,31 @@ class AddRealmUseCase(
         )
 
         val realmScope = getKoin().createScope<RespectRealm>(request.realm.virtualHostScopeId)
-        val db = realmScope.get<RespectRealmDatabase>()
+        val realmDataSource: RespectRealmDataSourceLocal = realmScope.get()
+        val setPasswordUseCase: SetPasswordUseCase = realmScope.get()
 
-        println(db)
-        db.getPersonEntityDao().insert(
-            PersonEntity(
-                pGuid = "1",
-                pGuidHash = 1L,
-                pActive = true,
-                pLastModified = systemTimeInMillis(),
-                pGivenName = "Admin",
-                pFamilyName = "Admin",
+        val adminPerson = Person(
+            guid = "1",
+            username = request.adminUsername,
+            givenName = "Admin",
+            familyName = "Admin",
+        )
+
+        realmDataSource.personDataSource.addPerson(adminPerson)
+
+        setPasswordUseCase(
+            SetPasswordUseCase.SetPasswordRequest(
+                auth = AuthenticatedUserPrincipalId.directoryAdmin,
+                userGuid = adminPerson.guid,
+                password = request.adminPassword,
             )
         )
 
-        //Add the admin person using an AddPersonUseCase
-
-
         return AddRealmResponse(request.realm)
+    }
+
+    companion object {
+        const val DEFAULT_ADMIN_USERNAME = "admin"
     }
 
 }

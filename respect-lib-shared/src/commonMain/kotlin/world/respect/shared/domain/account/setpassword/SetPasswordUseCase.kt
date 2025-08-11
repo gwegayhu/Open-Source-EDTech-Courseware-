@@ -1,9 +1,11 @@
 package world.respect.shared.domain.account.setpassword
 
+import world.respect.shared.domain.AuthenticatedUserPrincipalId
+
 interface SetPasswordUseCase {
 
     data class SetPasswordRequest(
-        val auth: String,
+        val auth: AuthenticatedUserPrincipalId,
         val userGuid: String,
         val password: String,
     )

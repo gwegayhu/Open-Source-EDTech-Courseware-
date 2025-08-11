@@ -20,6 +20,7 @@ import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.libutil.ext.resolve
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.server.domain.realm.add.AddRealmUseCase
+import world.respect.server.domain.realm.add.AddRealmUseCase.Companion.DEFAULT_ADMIN_USERNAME
 import java.io.File
 import java.util.Properties
 import kotlin.system.exitProcess
@@ -74,7 +75,9 @@ fun managerServerMain(ns: Namespace) {
                                 oneRoster = realmBaseUrl.resolve("api/oneroster"),
                                 respectExt = realmBaseUrl.resolve("api/respect-ext"),
                             ),
-                            dbUrl = ns.getString("dburl") ?: realmBaseUrl.sanitizedForFilename()
+                            dbUrl = ns.getString("dburl") ?: realmBaseUrl.sanitizedForFilename(),
+                            adminUsername = ns.getString("adminusername") ?: DEFAULT_ADMIN_USERNAME,
+                            adminPassword = ns.getString("adminpassword"),
                         )
                     )
                 }

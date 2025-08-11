@@ -11,6 +11,7 @@ import world.respect.datalayer.db.realm.adapters.toEntities
 import world.respect.datalayer.realm.model.Person
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.shared.domain.AuthenticatedUserPrincipalId
 import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPasswordDbImpl
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
@@ -21,6 +22,7 @@ import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class AuthWithPasswordIntegrationTest {
 
@@ -37,6 +39,13 @@ class AuthWithPasswordIntegrationTest {
     private lateinit var getTokenUseCase: GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 
     private lateinit var validateAuthUseCase: ValidateAuthorizationUseCase
+
+    private val defaultTestPerson = Person(
+        guid = "42",
+        username = "testuser",
+        givenName = "John",
+        familyName = "Doe"
+    )
 
     @BeforeTest
     fun setup() {
@@ -59,24 +68,20 @@ class AuthWithPasswordIntegrationTest {
         runBlocking {
             val personGuid = "42"
             val password = "password"
-            val username = "testuser"
-            val person = Person(
-                guid = personGuid,
-                username = username,
-                givenName = "John",
-                familyName = "Doe"
+
+            realmDb.getPersonEntityDao().insert(
+                defaultTestPerson.toEntities(xxHash).personEntity
             )
-            realmDb.getPersonEntityDao().insert(person.toEntities().personEntity)
 
             setPasswordUseCase(
                 SetPasswordUseCase.SetPasswordRequest(
-                    auth = "foo",
+                    auth = AuthenticatedUserPrincipalId("foo"),
                     userGuid = personGuid,
                     password = password,
                 )
             )
 
-            val authResponse = getTokenUseCase(username, password)
+            val authResponse = getTokenUseCase(defaultTestPerson.username!!, password)
 
             val userIdPrincipal = validateAuthUseCase(
                 ValidateAuthorizationUseCase.BearerTokenCredential(
@@ -85,7 +90,35 @@ class AuthWithPasswordIntegrationTest {
             )
 
             assertEquals(authResponse.person.guid, personGuid)
-            assertEquals(person.guid, userIdPrincipal.guid)
+            assertEquals(defaultTestPerson.guid, userIdPrincipal.guid)
+        }
+    }
+
+    @Test
+    fun givenAuthSet_whenAuthPasswordInvokedWithWRongPass_thenWillThrowException() {
+        runBlocking {
+            var exception: Throwable? = null
+            try {
+                val personGuid = "42"
+                val password = "password"
+                realmDb.getPersonEntityDao().insert(
+                    defaultTestPerson.toEntities(xxHash).personEntity
+                )
+
+                setPasswordUseCase(
+                    SetPasswordUseCase.SetPasswordRequest(
+                        auth = AuthenticatedUserPrincipalId("foo"),
+                        userGuid = personGuid,
+                        password = password,
+                    )
+                )
+
+                getTokenUseCase(defaultTestPerson.username!!, "wrong")
+            }catch(e: Throwable) {
+                exception = e
+            }
+
+            assertNotNull(exception)
         }
     }
 

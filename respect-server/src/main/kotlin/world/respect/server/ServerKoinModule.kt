@@ -8,8 +8,11 @@ import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import world.respect.datalayer.RespectAppDataSource
+import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.RespectRealmDataSourceLocal
 import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectAppDatabase
+import world.respect.datalayer.db.RespectRealmDataSourceDb
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
 import world.respect.datalayer.respect.model.RespectRealm
@@ -19,6 +22,8 @@ import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.server.domain.realm.add.AddRealmUseCase
 import world.respect.server.domain.realm.add.AddServerManagedDirectoryCallback
+import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
+import world.respect.shared.domain.account.setpassword.SetPasswordUseDbImpl
 import world.respect.shared.domain.realm.RespectRealmPath
 import java.io.File
 
@@ -98,6 +103,21 @@ fun serverKoinModule(
             Room.databaseBuilder<RespectRealmDatabase>(dbFile.absolutePath)
                 .setDriver(BundledSQLiteDriver())
                 .build()
+        }
+
+        scoped<SetPasswordUseCase> {
+            SetPasswordUseDbImpl(
+                realmDb = get(),
+                xxHash = get()
+            )
+        }
+
+        scoped<RespectRealmDataSourceLocal> {
+            RespectRealmDataSourceDb(realmDb = get(), xxStringHasher = get())
+        }
+
+        scoped<RespectRealmDataSource> {
+            get<RespectRealmDataSourceLocal>()
         }
     }
 

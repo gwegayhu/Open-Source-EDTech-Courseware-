@@ -6,4 +6,6 @@ interface PersonDataSource {
 
     suspend fun findByUsername(username: String): Person?
 
+    suspend fun addPerson(person: Person)
+
 }

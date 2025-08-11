@@ -2,6 +2,7 @@ package world.respect.datalayer.db.realm.adapters
 
 import world.respect.datalayer.db.realm.entities.PersonEntity
 import world.respect.datalayer.realm.model.Person
+import world.respect.libxxhash.XXStringHasher
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -24,11 +25,13 @@ fun PersonEntities.toModel(): Person {
 }
 
 @OptIn(ExperimentalTime::class)
-fun Person.toEntities(): PersonEntities {
+fun Person.toEntities(
+    xxStringHasher: XXStringHasher
+): PersonEntities {
     return PersonEntities(
         personEntity = PersonEntity(
             pGuid = guid,
-            pGuidHash = 0,
+            pGuidHash = xxStringHasher.hash(guid),
             pActive = active,
             pLastModified = lastModified.toEpochMilliseconds(),
             pUsername = username,

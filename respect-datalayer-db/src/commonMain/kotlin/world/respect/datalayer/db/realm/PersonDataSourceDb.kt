@@ -2,6 +2,7 @@ package world.respect.datalayer.db.realm
 
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.datalayer.db.realm.adapters.PersonEntities
+import world.respect.datalayer.db.realm.adapters.toEntities
 import world.respect.datalayer.db.realm.adapters.toModel
 import world.respect.datalayer.realm.PersonDataSourceLocal
 import world.respect.datalayer.realm.model.Person
@@ -18,6 +19,9 @@ class PersonDataSourceDb(
         }?.toModel()
     }
 
-
-
+    override suspend fun addPerson(person: Person) {
+        realmDb.getPersonEntityDao().insert(
+            person.toEntities(xxHash).personEntity
+        )
+    }
 }
