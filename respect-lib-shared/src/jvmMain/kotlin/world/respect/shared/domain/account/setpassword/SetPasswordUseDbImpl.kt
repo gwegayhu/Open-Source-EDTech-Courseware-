@@ -1,11 +1,10 @@
-package world.respect.server.domain.account.setpassword
+package world.respect.shared.domain.account.setpassword
 
 import io.ktor.util.encodeBase64
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.datalayer.db.realm.entities.PersonPasswordEntity
 import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
-import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import kotlin.text.toCharArray

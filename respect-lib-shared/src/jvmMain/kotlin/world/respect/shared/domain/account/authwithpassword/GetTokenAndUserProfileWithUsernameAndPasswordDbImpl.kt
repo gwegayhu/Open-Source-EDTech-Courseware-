@@ -1,4 +1,4 @@
-package world.respect.server.domain.account.authwithpassword
+package world.respect.shared.domain.account.authwithpassword
 
 import io.ktor.util.decodeBase64Bytes
 import world.respect.datalayer.db.RespectRealmDatabase

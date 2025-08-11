@@ -1,8 +1,7 @@
-package world.respect.server.domain.account.validateauth
+package world.respect.shared.domain.account.validateauth
 
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.shared.domain.AuthenticatedUserPrincipalId
-import world.respect.shared.domain.account.validateauth.ValidateAuthorizationUseCase
 import world.respect.shared.util.systemTimeInMillis
 
 class ValidateAuthorizationUseCaseDbImpl(
