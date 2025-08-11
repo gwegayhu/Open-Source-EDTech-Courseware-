@@ -19,6 +19,7 @@ import com.ustadmobile.libcache.webview.OkHttpWebViewClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.Dispatcher
@@ -65,7 +66,14 @@ import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
 import org.koin.core.qualifier.named
+import world.respect.datalayer.realm.model.AuthToken
+import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.datalayer.AuthTokenProvider
+import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
+import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
+import world.respect.shared.domain.account.RespectTokenManager
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -210,6 +218,14 @@ val appKoinModule = module {
         RespectAccountManager(
             settings = get(),
             json = get(),
+            tokenManager = get(),
+        )
+    }
+
+    single<RespectTokenManager> {
+        RespectTokenManager(
+            settings = get(),
+            json = get(),
         )
     }
 
@@ -240,5 +256,28 @@ val appKoinModule = module {
                 )
             )
         )
+    }
+
+    scope<RespectRealm> {
+        scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
+            GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
+                realmUrl = Url(id),
+            )
+        }
+    }
+
+    /**
+     * RespectAccount scope id is always in the form of:
+     * userSourcedId@realm-url e.g. 4232@https://school.example.org/
+     *
+     * The URL will never contain an '@' sign (e.g. user@email.com@https://school.example.org/),
+     * the sourcedId may contain an @ sign. The realm url is after the LAST @ symbol.
+     */
+    scope<RespectAccount> {
+        scoped<AuthTokenProvider> {
+            get<RespectTokenManager>().providerFor(id)
+        }
+
+        //Can now use the token provider for datasources
     }
 }

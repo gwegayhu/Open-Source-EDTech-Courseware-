@@ -8,6 +8,7 @@ import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
 import world.respect.shared.domain.account.AuthResponse
 import world.respect.datalayer.realm.model.AuthToken
+import world.respect.shared.domain.account.ForbiddenException
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
@@ -26,7 +27,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
         val person = personDataSource.findByUsername(username) ?: throw IllegalArgumentException()
         val personGuidHash = xxHash.hash(person.guid)
         val personPassword = realmDb.getPersonPasswordEntityDao().findByUid(personGuidHash)
-            ?: throw IllegalArgumentException()
+            ?: throw ForbiddenException("Invalid username/password")
 
         val keySpec = PBEKeySpec(password.toCharArray(), personPassword.authSalt.toByteArray(),
             personPassword.authIterations, personPassword.authKeyLen)
@@ -38,7 +39,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
             val token = AuthToken(
                 accessToken = randomString(32),
                 timeCreated = System.currentTimeMillis(),
-                ttl = TOKEN_DEFAULT_TTL
+                ttl = TOKEN_DEFAULT_TTL,
             )
 
             realmDb.getAuthTokenEntityDao().insert(
@@ -50,7 +51,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
                 person = person,
             )
         }else {
-            throw IllegalArgumentException()
+            throw ForbiddenException("Invalid username/password")
         }
     }
 

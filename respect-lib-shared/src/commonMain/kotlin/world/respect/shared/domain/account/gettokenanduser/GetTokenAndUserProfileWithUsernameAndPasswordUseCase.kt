@@ -18,4 +18,10 @@ interface GetTokenAndUserProfileWithUsernameAndPasswordUseCase {
         password: String
     ): AuthResponse
 
+    companion object {
+
+        const val PARAM_NAME_USERNAME = "username"
+
+    }
+
 }

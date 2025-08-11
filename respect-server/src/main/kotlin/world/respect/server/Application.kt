@@ -16,6 +16,7 @@ import org.koin.logger.slf4jLogger
 import world.respect.Greeting
 import world.respect.libutil.ext.randomString
 import world.respect.server.routes.AUTH_CONFIG_DIRECTORY_ADMIN_BASIC
+import world.respect.server.routes.AuthRoute
 import world.respect.server.routes.RespectRealmDirectoryRoute
 import java.io.File
 import java.util.Properties
@@ -73,8 +74,17 @@ fun Application.module() {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
 
-        route("directory") {
-            RespectRealmDirectoryRoute()
+        route("api") {
+            route("directory") {
+                RespectRealmDirectoryRoute()
+            }
+
+            route("realm") {
+                route("auth") {
+                    AuthRoute()
+                }
+            }
         }
+
     }
 }

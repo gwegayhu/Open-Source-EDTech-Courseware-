@@ -26,6 +26,8 @@ dependencies {
     implementation(projects.respectLibXxhash)
     implementation(projects.respectLibPrimarykeygen)
 
+    implementation(projects.respectLibIhttpCore)
+
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.sqlite.bundled)
 
