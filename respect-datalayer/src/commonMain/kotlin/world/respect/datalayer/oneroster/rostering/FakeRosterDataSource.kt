@@ -116,7 +116,7 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
     override suspend fun getAllClasses(): List<OneRosterClass> {
         return classList
     }
-    override suspend fun getClazzBySourcedId(sourcedId: String): OneRosterClass {
+    override suspend fun getClassBySourcedId(sourcedId: String): OneRosterClass {
         return classList.first { it.sourcedId == sourcedId }
     }
     override suspend fun putClass(clazz: OneRosterClass) {
