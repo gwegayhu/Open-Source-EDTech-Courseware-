@@ -26,7 +26,10 @@ import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companio
 data class ClazzListUiState(
     val oneRoasterClass: List<OneRosterClass> = emptyList(),
     val sortOptions: List<SortOrderOption> = emptyList(),
-    val selectedSortOption: String = NAME
+    val activeSortOrderOption: SortOrderOption = SortOrderOption(
+        Res.string.first_name, 1, true
+    ),
+    val fieldsEnabled: Boolean = true
 )
 
 class ClazzListViewModel(
@@ -44,13 +47,24 @@ class ClazzListViewModel(
             val classes = fakeRosterDataSource.getAllClasses()
 
             _uiState.update {
+                val sortOptions = listOf(
+                    SortOrderOption(
+                        Res.string.first_name,
+                        flag = 1,
+                        order = true
+                    ),
+                    SortOrderOption(
+                        Res.string.last_name,
+                        flag = 2,
+                        order = true
+                    )
+                )
+
                 it.copy(
                     oneRoasterClass = classes,
-                    sortOptions = listOf(
-                        SortOrderOption( getString(Res.string.first_name)),
-                        SortOrderOption( getString(Res.string.last_name))
-                    ),
-                    selectedSortOption = getString(Res.string.first_name))
+                    sortOptions = sortOptions,
+                    activeSortOrderOption = sortOptions.first()
+                )
             }
 
             _appUiState.update {
@@ -74,8 +88,10 @@ class ClazzListViewModel(
         }
     }
 
-    fun onClickSortOption(title: String) {
-        _uiState.update { it.copy(selectedSortOption = title) }
+    fun onSortOrderChanged(sortOption: SortOrderOption) {
+        _uiState.update {
+            it.copy(activeSortOrderOption = sortOption)
+        }
     }
 
     fun onClickClazz() {

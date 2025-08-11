@@ -22,15 +22,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import world.respect.app.components.RespectSortHeader
 import world.respect.app.components.RespectFilterChipsHeader
+import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
+import world.respect.app.components.defaultItemPadding
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.pending_invite
 import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
+import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
 
@@ -43,7 +45,7 @@ fun ClazzDetailScreen(
     ClazzDetailScreen(
         uiState = uiState,
         onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
-        onClickSortOption = { viewModel.onClickSortOption(it) },
+        onSortOrderChanged = viewModel::onSortOrderChanged,
         onSelectChip = { viewModel.onSelectChip(it) },
     )
 }
@@ -52,7 +54,7 @@ fun ClazzDetailScreen(
 fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
     onClickAddPersonToClazz: () -> Unit,
-    onClickSortOption: (String) -> Unit,
+    onSortOrderChanged: (SortOrderOption) -> Unit = { },
     onSelectChip: (String) -> Unit
 ) {
     LazyColumn(
@@ -68,14 +70,12 @@ fun ClazzDetailScreen(
                 optionLabel = { it }
             )
 
-            RespectSortHeader(
-                options = uiState.sortOptions.map { it.option },
-                selectedOption = uiState.selectedSortOption,
-                onOptionSelected = onClickSortOption,
-                optionLabel = { it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp)
+            RespectListSortHeader(
+                modifier = Modifier.defaultItemPadding(),
+                activeSortOrderOption = uiState.activeSortOrderOption,
+                sortOptions = uiState.sortOptions,
+                enabled = uiState.fieldsEnabled,
+                onClickSortOption = onSortOrderChanged,
             )
         }
 

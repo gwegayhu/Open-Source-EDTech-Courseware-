@@ -5,13 +5,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,58 +27,97 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.stringResource
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.ascending
+import world.respect.shared.generated.resources.descending
+import world.respect.shared.util.SortOrderOption
+import world.respect.shared.util.description
 
+enum class SortListMode {
+
+    POPUP, BOTTOM_SHEET
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> RespectSortHeader(
-    options: List<T>,
-    selectedOption: T,
-    onOptionSelected: (String) -> Unit,
+fun RespectListSortHeader(
+    activeSortOrderOption: SortOrderOption,
     modifier: Modifier = Modifier,
-    labelContent: @Composable (() -> Unit)? = null,
-    optionLabel: @Composable ((T) -> String),
-) {
+    enabled: Boolean = true,
+    mode:SortListMode = defaultSortListMode(),
+    sortOptions: List<SortOrderOption> = emptyList(),
+    onClickSortOption: (SortOrderOption) -> Unit = { },
+){
     var expanded by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
+    Box(
+        modifier = modifier,
     ) {
-        Box(
-            modifier = Modifier
-                .clickable { expanded = true }
-                .padding(horizontal = 4.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (labelContent != null) {
-                    labelContent()
-                } else {
-                    Text(text = optionLabel(selectedOption))
-                }
-                Icon(
-                    imageVector = Icons.Filled.ArrowDownward,
-                    modifier = Modifier.padding(8.dp),
-                    contentDescription = null
-                )
+        TextButton(
+            enabled = enabled,
+            onClick = {
+                expanded = true
             }
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        Text(text = optionLabel(option))
-                    },
-                    onClick = {
-                        expanded = false
-                        onOptionSelected(option as String)
+            Text(stringResource(resource = activeSortOrderOption.fieldMessageId))
+
+            Spacer(Modifier.width(8.dp))
+
+
+            Icon(
+                imageVector = if(activeSortOrderOption.order != false)
+                    Icons.Default.ArrowDownward
+                else
+                    Icons.Default.ArrowUpward,
+                contentDescription = when(activeSortOrderOption.order) {
+                    null -> null
+                    true -> stringResource(Res.string.ascending)
+                    false ->stringResource(Res.string.descending)
+                },
+                modifier = Modifier.size(16.dp)
+            )
+            when(mode) {
+                SortListMode.POPUP -> {
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        sortOptions.forEach { sortOption ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onClickSortOption(sortOption)
+                                },
+                                text = {
+                                    Text(sortOption.description())
+                                }
+                            )
+                        }
                     }
-                )
+                }
+                SortListMode.BOTTOM_SHEET -> {
+                    if(expanded) {
+                        ModalBottomSheet(
+                            onDismissRequest = {
+                                expanded = false
+                            }
+                        ) {
+                            RespectSortOptionsBottomSheet(
+                                sortOptions = sortOptions,
+                                onClickSortOption = onClickSortOption,
+                                onDismissRequest = {
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+fun defaultSortListMode() : SortListMode = SortListMode.BOTTOM_SHEET

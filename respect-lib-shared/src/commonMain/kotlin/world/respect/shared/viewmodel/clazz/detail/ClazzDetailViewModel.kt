@@ -21,16 +21,18 @@ import world.respect.shared.util.FilterChipsOption
 import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.ALL
-import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.NAME
 
 data class ClazzDetailUiState(
     val listOfTeachers: List<OneRosterUser> = emptyList(),
     val listOfStudents: List<OneRosterUser> = emptyList(),
     val listOfPending: List<OneRosterUser> = emptyList(),
-    val sortOptions: List<SortOrderOption> = emptyList(),
-    val selectedSortOption: String = NAME,
     val chipOptions: List<FilterChipsOption> = emptyList(),
-    val selectedChip: String = ALL
+    val selectedChip: String = ALL,
+    val sortOptions: List<SortOrderOption> = emptyList(),
+    val activeSortOrderOption: SortOrderOption = SortOrderOption(
+        Res.string.first_name, 1, true
+    ),
+    val fieldsEnabled: Boolean = true
 )
 
 class ClazzDetailViewModel(
@@ -58,19 +60,28 @@ class ClazzDetailViewModel(
             }
 
             _uiState.update {
+                val sortOptions = listOf(
+                    SortOrderOption(
+                        fieldMessageId = Res.string.first_name,
+                        flag = 1,
+                        order = true
+                    ),
+                    SortOrderOption(
+                        fieldMessageId = Res.string.last_name,
+                        flag = 2,
+                        order = true
+                    )
+                )
                 it.copy(
                     listOfTeachers = teachers,
                     listOfStudents = students,
                     listOfPending = pendingInvites,
-                    sortOptions = listOf(
-                        SortOrderOption(getString(Res.string.first_name)),
-                        SortOrderOption(getString(Res.string.last_name))
-                    ),
+                    sortOptions = sortOptions,
+                    activeSortOrderOption = sortOptions.first(),
                     chipOptions = listOf(
                         FilterChipsOption(getString(Res.string.all)),
                         FilterChipsOption(getString(Res.string.active))
                     ),
-                    selectedSortOption = getString(Res.string.first_name),
                 )
             }
         }
@@ -84,13 +95,16 @@ class ClazzDetailViewModel(
         )
     }
 
-    fun onClickSortOption(title: String) {
-        _uiState.update { it.copy(selectedSortOption = title) }
+    fun onSortOrderChanged(sortOption: SortOrderOption) {
+        _uiState.update {
+            it.copy(activeSortOrderOption = sortOption)
+        }
     }
 
     fun onSelectChip(chip: String) {
         _uiState.update { it.copy(selectedChip = chip) }
     }
+
 
     companion object {
         const val NAME = "Name"

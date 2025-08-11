@@ -34,13 +34,15 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.duration
 import world.respect.app.app.RespectAsyncImage
-import world.respect.app.components.RespectSortHeader
+import world.respect.app.components.RespectListSortHeader
+import world.respect.app.components.defaultItemPadding
 import world.respect.shared.viewmodel.app.appstate.getTitle
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel.Companion.IMAGE
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListUiState
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
+import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel.Companion.ICON
 
 @Composable
@@ -51,7 +53,7 @@ fun LearningUnitListScreen(
 
     LearningUnitListScreen(
         uiState = uiState,
-        onClickFilter = { viewModel.onClickFilter(it) },
+        onSortOrderChanged = viewModel::onSortOrderChanged,
         onClickPublication = { viewModel.onClickPublication(it) },
         onClickNavigation = { viewModel.onClickNavigation(it) }
     )
@@ -60,7 +62,7 @@ fun LearningUnitListScreen(
 @Composable
 fun LearningUnitListScreen(
     uiState: LearningUnitListUiState,
-    onClickFilter: (String) -> Unit,
+    onSortOrderChanged: (SortOrderOption) -> Unit = { },
     onClickPublication: (OpdsPublication) -> Unit,
     onClickNavigation: (ReadiumLink) -> Unit
 
@@ -68,18 +70,14 @@ fun LearningUnitListScreen(
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        if(uiState.selectedFilterTitle != null){
-        RespectSortHeader(
-            options = uiState.lessonFilter,
-            selectedOption = uiState.selectedFilterTitle
-                ?: uiState.lessonFilter.firstOrNull()?.metadata?.title,
-            onOptionSelected = onClickFilter,
-            optionLabel = { it.toString() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp),
+        RespectListSortHeader(
+            modifier = Modifier.defaultItemPadding(),
+            activeSortOrderOption = uiState.activeSortOrderOption,
+            sortOptions = uiState.sortOptions,
+            enabled = uiState.fieldsEnabled,
+            onClickSortOption = onSortOrderChanged,
         )
-    }
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {

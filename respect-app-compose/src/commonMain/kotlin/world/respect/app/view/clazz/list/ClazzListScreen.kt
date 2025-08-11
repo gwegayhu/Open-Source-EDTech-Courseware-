@@ -3,7 +3,6 @@ package world.respect.app.view.clazz.list
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -14,8 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
-import world.respect.app.components.RespectSortHeader
+import world.respect.app.components.defaultItemPadding
+import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 
@@ -29,7 +30,7 @@ fun ClazzListScreen(
     ClazzListScreen(
         uiState = uiState,
         onClickClazz = viewModel::onClickClazz,
-        onClickSortOption = { viewModel.onClickSortOption(it) },
+        onSortOrderChanged = viewModel::onSortOrderChanged,
     )
 }
 
@@ -37,7 +38,7 @@ fun ClazzListScreen(
 fun ClazzListScreen(
     uiState: ClazzListUiState,
     onClickClazz: () -> Unit,
-    onClickSortOption: (String) -> Unit,
+    onSortOrderChanged: (SortOrderOption) -> Unit = { },
 ) {
 
     LazyColumn(
@@ -45,14 +46,12 @@ fun ClazzListScreen(
     ) {
 
         item {
-            RespectSortHeader(
-                options = uiState.sortOptions.map { it.option },
-                selectedOption = uiState.selectedSortOption,
-                onOptionSelected = onClickSortOption,
-                optionLabel = { it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+            RespectListSortHeader(
+                modifier = Modifier.defaultItemPadding(),
+                activeSortOrderOption = uiState.activeSortOrderOption,
+                sortOptions = uiState.sortOptions,
+                enabled = uiState.fieldsEnabled,
+                onClickSortOption = onSortOrderChanged,
             )
         }
 
