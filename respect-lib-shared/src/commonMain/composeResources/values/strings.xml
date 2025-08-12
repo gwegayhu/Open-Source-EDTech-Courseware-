@@ -144,7 +144,6 @@
     <string name="quantity_must_be_at_least_1">Quantity must be at least 1</string>
     <string name="untitled_report">Untitled Report</string>
     <string name="select_template">Select template</string>
-    <string name="indicator">Indicators</string>
     <string name="indicator_name">Indicator Name</string>
     <string name="description">Description</string>
     <string name="sql">SQL</string>
@@ -180,6 +179,11 @@
     <string name="top_5_schools">Top 5 Schools</string>
     <string name="top_5_students">Top 5 Students</string>
     <string name="percentage">Percentage</string>
+    <string name="indicators">Indicators</string>
+    <string name="manage_indicators">Manage Indicators</string>
+    <string name="indicator">Indicator</string>
+    <string name="indicator_detail">Indicator detail</string>
+
 
 
 

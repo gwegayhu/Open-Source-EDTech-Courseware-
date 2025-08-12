@@ -40,8 +40,8 @@ class CreateGraphFormatterUseCase() {
         return when {
             options.axis == FormatterOptions.Axis.Y_AXIS_VALUES && options.paramType == Double::class -> {
                 when (reportResult.request.reportOptions.series.first().reportSeriesYAxis.type) {
-                    YAxisTypes.DURATION -> DurationGraphFormatter(reportResult)
-                    YAxisTypes.COUNT -> CountGraphFormatter()
+                    YAxisTypes.DURATION.name -> DurationGraphFormatter(reportResult)
+                    YAxisTypes.COUNT.name -> CountGraphFormatter()
                     else -> throw IllegalArgumentException("Unsupported Y-axis type")
                 }
             }

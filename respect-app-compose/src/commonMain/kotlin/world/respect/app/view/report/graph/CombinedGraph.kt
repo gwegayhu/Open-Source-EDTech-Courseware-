@@ -27,6 +27,7 @@ import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberFloatLinearAxisModel
 import org.jetbrains.compose.resources.stringResource
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.domain.report.formatter.GraphFormatter
 import world.respect.shared.domain.report.model.ReportSeriesVisualType
 import world.respect.shared.domain.report.model.YAxisTypes
@@ -36,9 +37,6 @@ import world.respect.shared.generated.resources.count
 import world.respect.shared.generated.resources.duration
 import world.respect.shared.generated.resources.hour_unit
 import world.respect.shared.generated.resources.minute_unit
-import world.respect.shared.resources.StringResourceUiText
-import world.respect.shared.resources.StringUiText
-import world.respect.shared.resources.UiText
 
 private const val MS_IN_HOUR = 3_600_000
 
@@ -74,7 +72,7 @@ fun CombinedGraph(
             if (!isSmallSize) {
                 xAxisFormatter?.format(it)?.let { uiText ->
                     Text(
-                        text = uiText.asString(),
+                        text = uiTextStringResource(uiText),
                         modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
                         fontSize = MaterialTheme.typography.labelSmall.fontSize,
                         maxLines = 1
@@ -97,7 +95,7 @@ fun CombinedGraph(
                 val formattedText = yAxisFormatter?.format(value)
                 if (formattedText != null) {
                     Text(
-                        text = formattedText.asString(),
+                        text = uiTextStringResource(formattedText),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                         fontSize = MaterialTheme.typography.labelSmall.fontSize
@@ -109,7 +107,7 @@ fun CombinedGraph(
             if (!isSmallSize) {
                 Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = if (reportResult.yAxisType == YAxisTypes.DURATION) {
+                        text = if (reportResult.yAxisType == YAxisTypes.DURATION.name) {
                             stringResource(Res.string.duration) + getDurationUnitTitle(reportResult.yRange.endInclusive)
                         } else {
                             stringResource(Res.string.count)
@@ -170,13 +168,5 @@ private fun getDurationUnitTitle(max: Float): String {
     return when {
         max >= MS_IN_HOUR -> " (${stringResource(Res.string.hour_unit)})"
         else -> " (${stringResource(Res.string.minute_unit)})"
-    }
-}
-
-@Composable
-fun UiText.asString(): String {
-    return when (this) {
-        is StringUiText -> this.text
-        is StringResourceUiText -> stringResource(this.resource)
     }
 }

@@ -13,7 +13,6 @@ import world.respect.shared.domain.report.ext.asStatementReportRow
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportSeries
 import world.respect.shared.domain.report.model.StatementReportRow
-import world.respect.shared.domain.report.model.YAxisTypes
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -102,14 +101,14 @@ interface RunReportUseCase {
         val yRange: ClosedFloatingPointRange<Float> by lazy {
             val maxVal = maxYValue ?: 0.toDouble()
 
-            if(maxVal > 0) {
+            if (maxVal > 0) {
                 0.0f..(maxVal.toFloat() * Y_RANGE_BUFFER_FACTOR)
             } else {
                 0.0f..1.0f
             }
         }
 
-        val yAxisType: YAxisTypes by lazy {
+        val yAxisType: String by lazy {
             request.reportOptions.series.first().reportSeriesYAxis.type
         }
 
@@ -187,11 +186,14 @@ interface RunReportUseCase {
                 .toLocalDateTime(request.timeZone)
             val reportEndMs = request.reportOptions.period.periodEndMillis(request.timeZone)
 
-            while(fromDateTime.toInstant(request.timeZone).toEpochMilliseconds() < reportEndMs) {
+            while (fromDateTime.toInstant(request.timeZone).toEpochMilliseconds() < reportEndMs) {
                 val xAxisStr = fromDateTime.date.toString()
                 resultList.addAll(
                     allSubGroups.map { subgroup ->
-                        rowMap[Pair(xAxisStr, subgroup)] ?: StatementReportRow(xAxis = xAxisStr, subgroup = subgroup)
+                        rowMap[Pair(xAxisStr, subgroup)] ?: StatementReportRow(
+                            xAxis = xAxisStr,
+                            subgroup = subgroup
+                        )
                     }
                 )
 
@@ -207,7 +209,7 @@ interface RunReportUseCase {
             xAxisNameFn: (String) -> String = { it },
         ): List<List<StatementReportRow>> {
             val queryResultMap = queryResults.groupBy { it.rqrReportSeriesUid }
-                .map {  entry ->
+                .map { entry ->
                     entry.key to entry.value.map {
                         it.asStatementReportRow().let { reportRow ->
                             reportRow.copy(

@@ -1,4 +1,4 @@
-package world.respect.shared.viewmodel.report.indictor
+package world.respect.shared.viewmodel.report.indictor.edit
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.shared.domain.report.model.Indicator
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.indicator
+import world.respect.shared.navigation.IndicatorList
 import world.respect.shared.navigation.NavCommand
-import world.respect.shared.navigation.ReportEdit
-import world.respect.shared.navigation.ReportIndictorEdit
+import world.respect.shared.navigation.IndictorEdit
 import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
@@ -33,7 +33,7 @@ class IndicatorEditViewModel(
     private val _uiState = MutableStateFlow(IndicatorEditUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val route: ReportIndictorEdit = savedStateHandle.toRoute()
+    private val route: IndictorEdit = savedStateHandle.toRoute()
 
     init {
         viewModelScope.launch {
@@ -56,6 +56,7 @@ class IndicatorEditViewModel(
             }
         }
     }
+
     fun updateIndicator(updateFn: (Indicator) -> Indicator) {
         _uiState.update { state ->
             state.copy(indicatorData = updateFn(state.indicatorData))
@@ -66,10 +67,7 @@ class IndicatorEditViewModel(
     private fun onSaveIndicator() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportEdit.create(
-                    reportUid = route.reportUid,
-                    indicator = _uiState.value.indicatorData
-                )
+                IndicatorList
             )
         )
     }

@@ -25,7 +25,9 @@ import world.respect.app.view.manageuser.waitingforapproval.WaitingForApprovalSc
 import world.respect.app.view.report.detail.ReportDetailScreen
 import world.respect.app.view.report.edit.ReportEditScreen
 import world.respect.app.view.report.filteredit.ReportFilterEditScreen
-import world.respect.app.view.report.indictor.IndictorEditScreen
+import world.respect.app.view.report.indicator.detail.IndicatorDetailScreen
+import world.respect.app.view.report.indicator.edit.IndictorEditScreen
+import world.respect.app.view.report.indicator.list.IndicatorListScreen
 import world.respect.app.view.report.list.ReportListScreen
 import world.respect.app.view.report.list.ReportTemplateListScreen
 import world.respect.app.viewmodel.respectViewModel
@@ -36,6 +38,8 @@ import world.respect.shared.navigation.Clazz
 import world.respect.shared.navigation.ConfirmationScreen
 import world.respect.shared.navigation.CreateAccount
 import world.respect.shared.navigation.EnterLink
+import world.respect.shared.navigation.IndicatorDetail
+import world.respect.shared.navigation.IndicatorList
 import world.respect.shared.navigation.JoinClazzWithCode
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
@@ -44,7 +48,7 @@ import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
-import world.respect.shared.navigation.ReportIndictorEdit
+import world.respect.shared.navigation.IndictorEdit
 import world.respect.shared.navigation.ReportTemplateList
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
@@ -72,7 +76,9 @@ import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForAp
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.filteredit.ReportFilterEditViewModel
-import world.respect.shared.viewmodel.report.indictor.IndicatorEditViewModel
+import world.respect.shared.viewmodel.report.indictor.detail.IndicatorDetailViewModel
+import world.respect.shared.viewmodel.report.indictor.edit.IndicatorEditViewModel
+import world.respect.shared.viewmodel.report.indictor.list.IndicatorListViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
 import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
@@ -182,7 +188,7 @@ fun AppNavHost(
             )
             ReportTemplateListScreen(navController = navController, viewModel = viewModel)
         }
-        composable<ReportIndictorEdit> {
+        composable<IndictorEdit> {
             val viewModel: IndicatorEditViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
@@ -195,6 +201,20 @@ fun AppNavHost(
                 navController = respectNavController
             )
             ReportFilterEditScreen(navController = navController, viewModel = viewModel)
+        }
+        composable<IndicatorList> {
+            val viewModel: IndicatorListViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            IndicatorListScreen(navController = navController, viewModel = viewModel)
+        }
+        composable<IndicatorDetail> {
+            val viewModel: IndicatorDetailViewModel = respectViewModel(
+                onSetAppUiState = onSetAppUiState,
+                navController = respectNavController
+            )
+            IndicatorDetailScreen(navController = navController, viewModel = viewModel)
         }
 
         composable<RespectAppList> {

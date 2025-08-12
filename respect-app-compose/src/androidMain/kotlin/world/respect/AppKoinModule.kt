@@ -65,18 +65,18 @@ import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
 import org.koin.core.qualifier.named
-import world.respect.app.view.report.indictor.IndictorEditScreen
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.datalayer.respect.MockRespectReportDataSource
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
+import world.respect.shared.domain.report.query.MockRunReportUseCaseClientImpl
 import world.respect.shared.domain.report.query.RunReportUseCase
-import world.respect.shared.domain.report.query.RunReportUseCaseClientImpl
-import world.respect.shared.domain.report.query.RunReportUseCaseDatabaseImpl
 import world.respect.shared.viewmodel.report.detail.ReportDetailViewModel
 import world.respect.shared.viewmodel.report.edit.ReportEditViewModel
 import world.respect.shared.viewmodel.report.filteredit.ReportFilterEditViewModel
-import world.respect.shared.viewmodel.report.indictor.IndicatorEditViewModel
+import world.respect.shared.viewmodel.report.indictor.detail.IndicatorDetailViewModel
+import world.respect.shared.viewmodel.report.indictor.edit.IndicatorEditViewModel
+import world.respect.shared.viewmodel.report.indictor.list.IndicatorListViewModel
 import world.respect.shared.viewmodel.report.list.ReportListViewModel
 import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
@@ -160,6 +160,9 @@ val appKoinModule = module {
     viewModelOf(::ReportTemplateListViewModel)
     viewModelOf(::IndicatorEditViewModel)
     viewModelOf(::ReportFilterEditViewModel)
+    viewModelOf(::IndicatorListViewModel)
+    viewModelOf(::IndicatorDetailViewModel)
+
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
@@ -262,7 +265,7 @@ val appKoinModule = module {
         )
     }
     single<RunReportUseCase> {
-        RunReportUseCaseDatabaseImpl()
+        MockRunReportUseCaseClientImpl()
     }
     single<CreateGraphFormatterUseCase> {
         CreateGraphFormatterUseCase()

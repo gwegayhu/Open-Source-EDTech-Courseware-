@@ -105,73 +105,45 @@ class ReportDetailViewModel(
                                     _appUiState.update { prev ->
                                         prev.copy(title = reportState.data.title)
                                     }
-                                    // TODO: Replace with actual request parameters
                                     val request = RunReportUseCase.RunReportRequest(
-                                        reportUid = 0L,
+                                        reportUid = reportUid,
                                         reportOptions = parsedOptions,
-                                        accountPersonUid = 0L, // TODO: Get actual user ID
+                                        accountPersonUid = 0L,
                                         timeZone = TimeZone.currentSystemDefault()
                                     )
 
-                                    // TODO: Replace with actual report results from database
-                                    val mockReportResult = RunReportUseCase.RunReportResult(
-                                        results = listOf(
-                                            listOf(
-                                                StatementReportRow(120383.0, "2023-01-01", "2"),
-                                                StatementReportRow(183248.0, "2023-01-02", "1"),
-                                                StatementReportRow(9732.0, "2023-01-03", "1"),
-                                                StatementReportRow(2187324.0, "2023-01-04", "2"),
-                                                StatementReportRow(187423.0, "2023-01-05", "1"),
-                                                StatementReportRow(33033.0, "2023-01-06", "2"),
-                                                StatementReportRow(2362.0, "2023-01-07", "1")
-                                            ),
-                                            // Second series data
-                                            listOf(
-                                                StatementReportRow(6324.0, "2023-01-01", "1"),
-                                                StatementReportRow(9730.0, "2023-01-02", "1"),
-                                                StatementReportRow(43325.0, "2023-01-03", "2"),
-                                                StatementReportRow(18325.0, "2023-01-04", "1"),
-                                                StatementReportRow(753874.0, "2023-01-05", "2"),
-                                                StatementReportRow(03847.0, "2023-01-06", "2"),
-                                                StatementReportRow(023783.0, "2023-01-07", "2")
+                                    runReportUseCase(request).collect { reportResult ->
+                                        val xAxisFormatter = createGraphFormatterUseCase(
+                                            reportResult = reportResult,
+                                            options = CreateGraphFormatterUseCase.FormatterOptions(
+                                                paramType = String::class,
+                                                axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
                                             )
-                                        ),
-                                        timestamp = System.currentTimeMillis(),
-                                        request = request,
-                                        age = 0
-                                    )
+                                        )
+                                        val subgroupFormatter = createGraphFormatterUseCase(
+                                            reportResult = reportResult,
+                                            options = CreateGraphFormatterUseCase.FormatterOptions(
+                                                paramType = String::class,
+                                                axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES,
+                                                forSubgroup = true
+                                            )
+                                        )
+                                        val yAxisFormatter = createGraphFormatterUseCase(
+                                            reportResult = reportResult,
+                                            options = CreateGraphFormatterUseCase.FormatterOptions(
+                                                paramType = Double::class,
+                                                axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
+                                            )
+                                        )
 
-                                    // TODO: Consider caching formatters
-                                    val xAxisFormatter = createGraphFormatterUseCase(
-                                        reportResult = mockReportResult,
-                                        options = CreateGraphFormatterUseCase.FormatterOptions(
-                                            paramType = String::class,
-                                            axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
-                                        )
-                                    )
-                                    val subgroupFormatter = createGraphFormatterUseCase(
-                                        reportResult = mockReportResult,
-                                        options = CreateGraphFormatterUseCase.FormatterOptions(
-                                            paramType = String::class,
-                                            axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES,
-                                            forSubgroup = true
-                                        )
-                                    )
-                                    val yAxisFormatter = createGraphFormatterUseCase(
-                                        reportResult = mockReportResult,
-                                        options = CreateGraphFormatterUseCase.FormatterOptions(
-                                            paramType = Double::class,
-                                            axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
-                                        )
-                                    )
-
-                                    _uiState.update { prev ->
-                                        prev.copy(
-                                            reportResult = mockReportResult,
-                                            xAxisFormatter = xAxisFormatter,
-                                            yAxisFormatter = yAxisFormatter,
-                                            subgroupFormatter = subgroupFormatter
-                                        )
+                                        _uiState.update { prev ->
+                                            prev.copy(
+                                                reportResult = reportResult,
+                                                xAxisFormatter = xAxisFormatter,
+                                                yAxisFormatter = yAxisFormatter,
+                                                subgroupFormatter = subgroupFormatter
+                                            )
+                                        }
                                     }
 
                                 }

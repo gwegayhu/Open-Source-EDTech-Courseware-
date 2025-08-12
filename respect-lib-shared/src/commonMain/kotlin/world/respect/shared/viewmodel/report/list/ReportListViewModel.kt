@@ -10,22 +10,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.EmptyPagingSource
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
-import world.respect.shared.domain.report.model.Indicator
-import world.respect.shared.domain.report.model.IndicatorSerializer
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
-import world.respect.shared.domain.report.model.StatementReportRow
-import world.respect.shared.domain.report.model.StringResourceSerializer
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.report
@@ -86,80 +79,48 @@ class ReportListViewModel(
         }
     }
 
-    @OptIn(ExperimentalTime::class, ExperimentalSerializationApi::class)
+    @OptIn(ExperimentalTime::class)
     fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> = flow {
         try {
             val json = Json {
-                serializersModule = SerializersModule {
-                    contextual(StringResource::class, StringResourceSerializer)
-                    contextual(Indicator::class, IndicatorSerializer)
-                }
                 ignoreUnknownKeys = true
                 isLenient = true
-                allowTrailingComma = true
             }
             val reportOptions = json.decodeFromString<ReportOptions>(
                 ReportOptions.serializer(),
                 report.reportOptions
             )
-            // TODO: Replace with actual request parameters
             val request = RunReportUseCase.RunReportRequest(
-                reportUid = 0L,
+                reportUid = report.reportId.toLong(),
                 reportOptions = reportOptions,
                 accountPersonUid = 0L, // TODO: Get actual user ID
                 timeZone = TimeZone.currentSystemDefault()
             )
-            // TODO: Replace with actual report results from database
-            val mockReportResult = RunReportUseCase.RunReportResult(
-                results = listOf(
-                    listOf(
-                        StatementReportRow(120383.0, "2023-01-01", "2"),
-                        StatementReportRow(183248.0, "2023-01-02", "1"),
-                        StatementReportRow(9732.0, "2023-01-03", "1"),
-                        StatementReportRow(2187324.0, "2023-01-04", "2"),
-                        StatementReportRow(187423.0, "2023-01-05", "1"),
-                        StatementReportRow(33033.0, "2023-01-06", "2"),
-                        StatementReportRow(2362.0, "2023-01-07", "1")
-                    ),
-                    // Second series data
-                    listOf(
-                        StatementReportRow(6324.0, "2023-01-01", "1"),
-                        StatementReportRow(9730.0, "2023-01-02", "1"),
-                        StatementReportRow(43325.0, "2023-01-03", "2"),
-                        StatementReportRow(18325.0, "2023-01-04", "1"),
-                        StatementReportRow(753874.0, "2023-01-05", "2"),
-                        StatementReportRow(03847.0, "2023-01-06", "2"),
-                        StatementReportRow(023783.0, "2023-01-07", "2")
+            runReportUseCase(request).collect { reportResult ->
+                val xAxisFormatter = createGraphFormatterUseCase(
+                    reportResult = reportResult,
+                    options = CreateGraphFormatterUseCase.FormatterOptions(
+                        paramType = String::class,
+                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
                     )
-                ),
-                timestamp = System.currentTimeMillis(),
-                request = request,
-                age = 0
-            )
-
-            val xAxisFormatter = createGraphFormatterUseCase(
-                reportResult = mockReportResult,
-                options = CreateGraphFormatterUseCase.FormatterOptions(
-                    paramType = String::class,
-                    axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
                 )
-            )
 
-            val yAxisFormatter = createGraphFormatterUseCase(
-                reportResult = mockReportResult,
-                options = CreateGraphFormatterUseCase.FormatterOptions(
-                    paramType = Double::class,
-                    axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
+                val yAxisFormatter = createGraphFormatterUseCase(
+                    reportResult = reportResult,
+                    options = CreateGraphFormatterUseCase.FormatterOptions(
+                        paramType = Double::class,
+                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
+                    )
                 )
-            )
 
-            emit(
-                RunReportResultAndFormatters(
-                    reportResult = mockReportResult,
-                    xAxisFormatter = xAxisFormatter,
-                    yAxisFormatter = yAxisFormatter
+                emit(
+                    RunReportResultAndFormatters(
+                        reportResult = reportResult,
+                        xAxisFormatter = xAxisFormatter,
+                        yAxisFormatter = yAxisFormatter
+                    )
                 )
-            )
+            }
 
         } catch (e: Exception) {
             val errorResult = RunReportUseCase.RunReportResult(
@@ -203,6 +164,6 @@ class ReportListViewModel(
     }
 
     fun onRemoveReport(uid: Long) {
-        // Implement remove functionality
+        // TODO Implement remove functionality
     }
 }

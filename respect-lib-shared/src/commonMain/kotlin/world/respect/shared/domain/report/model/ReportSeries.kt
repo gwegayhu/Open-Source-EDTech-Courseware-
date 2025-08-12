@@ -1,9 +1,9 @@
 package world.respect.shared.domain.report.model
 
 import kotlinx.datetime.DatePeriod
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 
@@ -14,7 +14,6 @@ data class ReportSeries(
 
     val reportSeriesTitle: String = "Series 1",
 
-    @Contextual
     val reportSeriesYAxis: Indicator = DefaultIndicators.list.first(),
 
     val reportSeriesVisualType: ReportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
@@ -24,15 +23,6 @@ data class ReportSeries(
     val reportSeriesFilters: List<ReportFilter>? = null,
 
     )
-
-@Serializable(with = IndicatorSerializer::class)
-data class Indicator(
-    val name: String? = null,
-    val description: String? = null,
-    val sql: String? = null,
-    @Contextual override val label: StringResource = Res.string.bar_chart,
-    val type: YAxisTypes = YAxisTypes.PERCENTAGE
-) : OptionWithLabelStringResource
 
 enum class YAxisTypes(
     override val label: StringResource,
@@ -55,7 +45,6 @@ enum class ReportXAxis(
     override val label: StringResource,
     val personJoinRequired: Boolean = false,
     val datePeriod: DatePeriod? = null,
-    val requiresAdditionalJoin: Boolean = false,
 ) : OptionWithLabelStringResource {
     DAY(Res.string.day, datePeriod = DatePeriod(days = 1)),
     WEEK(Res.string.weekly, datePeriod = DatePeriod(days = 7)),
@@ -63,14 +52,14 @@ enum class ReportXAxis(
     QUARTER(Res.string.quarterly, datePeriod = DatePeriod(months = 3)),
     YEAR(Res.string.yearly, datePeriod = DatePeriod(years = 1)),
     TIME_OF_DAY(Res.string.time_of_day),
-    CLASS(Res.string.class_name, requiresAdditionalJoin = true),
-    SUBJECT(Res.string.subject, requiresAdditionalJoin = true),
-    SCHOOL(Res.string.school, requiresAdditionalJoin = true),
+    CLASS(Res.string.class_name),
+    SUBJECT(Res.string.subject),
+    SCHOOL(Res.string.school),
     ASSESSMENT_TYPE(Res.string.assessment_type),
-    GRADE_LEVEL(Res.string.grade_level, requiresAdditionalJoin = true),
+    GRADE_LEVEL(Res.string.grade_level),
     GENDER(Res.string.gender, personJoinRequired = true),
     AGE_GROUP(Res.string.age_group, personJoinRequired = true),
-    REGION(Res.string.region, requiresAdditionalJoin = true),
+    REGION(Res.string.region),
     LANGUAGE(Res.string.language, personJoinRequired = true),
     USER_ROLE(Res.string.user_role, personJoinRequired = true),
     ACTIVITY_VERB(Res.string.activity_verb),

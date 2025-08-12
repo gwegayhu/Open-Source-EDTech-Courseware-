@@ -10,6 +10,7 @@ import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.respect.model.RespectReport
 
 class MockRespectReportDataSource : RespectReportDataSource {
@@ -34,8 +35,6 @@ class MockRespectReportDataSource : RespectReportDataSource {
                                 "name": "Total Duration",
                                 "description": "Total content usage duration",
                                 "sql": "SUM(duration)",
-                                "isCustom": false,
-                                "label": "total_duration",
                                 "type": "DURATION"
                             },
                             "reportSeriesVisualType": "BAR_CHART",
@@ -66,8 +65,6 @@ class MockRespectReportDataSource : RespectReportDataSource {
                                 "name": "Total Duration",
                                 "description": "Total content usage duration",
                                 "sql": "SUM(duration)",
-                                "isCustom": false,
-                                "label": "total_duration",
                                 "type": "DURATION"
                             },
                             "reportSeriesVisualType": "BAR_CHART",
@@ -98,8 +95,6 @@ class MockRespectReportDataSource : RespectReportDataSource {
                                 "name": "Total Duration",
                                 "description": "Total content usage duration",
                                 "sql": "SUM(duration)",
-                                "isCustom": false,
-                                "label": "total_duration",
                                 "type": "DURATION"
                             },
                             "reportSeriesVisualType": "BAR_CHART",
@@ -111,6 +106,16 @@ class MockRespectReportDataSource : RespectReportDataSource {
             reportIsTemplate = true
         ),
     )
+
+    private val mockIndicators = mutableListOf(
+        Indicator(
+            name = "Total Duration",
+            description = "Total content usage duration",
+            sql = "SUM(duration)",
+            type = ""
+        ),
+    )
+
 
     override suspend fun putReport(report: RespectReport) {
         val existingIndex = mockReports.indexOfFirst { it.reportId == report.reportId }
@@ -165,6 +170,26 @@ class MockRespectReportDataSource : RespectReportDataSource {
                 }
             }
         }
+    }
+
+    override suspend fun saveIndicator(indicator: Indicator) {
+        val existingIndex = mockIndicators.indexOfFirst { it.name == indicator.name }
+        if (existingIndex >= 0) {
+            // Update existing indicator
+            mockIndicators[existingIndex] = indicator
+        } else {
+            // Add new indicator
+            mockIndicators.add(indicator)
+        }
+    }
+
+    override fun getAllIndicators(): Flow<List<Indicator>> {
+        return flowOf(mockIndicators.toList())
+    }
+
+    override suspend fun getIndicatorById(id: String): Indicator? {
+        return mockIndicators.firstOrNull { it.indicatorId == id }
+
     }
 
     override fun getAllReportsAsFlow(): Flow<DataLoadState<RespectReport>> {

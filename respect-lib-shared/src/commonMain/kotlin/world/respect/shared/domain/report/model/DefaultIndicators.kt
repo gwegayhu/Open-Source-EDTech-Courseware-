@@ -1,116 +1,107 @@
 package world.respect.shared.domain.report.model
 
-import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.absence_percentage
-import world.respect.shared.generated.resources.active_days_per_user
-import world.respect.shared.generated.resources.attendance_percentage
-import world.respect.shared.generated.resources.average_content_usage_duration_per_user
-import world.respect.shared.generated.resources.average_score
-import world.respect.shared.generated.resources.completion_rate
-import world.respect.shared.generated.resources.number_of_activities
-import world.respect.shared.generated.resources.offline_usage_percentage
-import world.respect.shared.generated.resources.percentage_fail
-import world.respect.shared.generated.resources.percentage_pass
-import world.respect.shared.generated.resources.retention_rate
-import world.respect.shared.generated.resources.task_completion_percentage
-import world.respect.shared.generated.resources.top_5_apps
-import world.respect.shared.generated.resources.top_5_languages
-import world.respect.shared.generated.resources.top_5_lessons
-import world.respect.shared.generated.resources.top_5_schools
-import world.respect.shared.generated.resources.top_5_students
-import world.respect.shared.generated.resources.total_content_usage_duration
-import world.respect.shared.generated.resources.total_score
+import world.respect.datalayer.respect.model.Indicator
 
+//TODO Need to change with string resource
 
 object DefaultIndicators {
     val list = listOf(
         // Duration Metrics
         Indicator(
-            label = Res.string.total_content_usage_duration,
-            type = YAxisTypes.DURATION
+            name = "Total content usage duration",
+            type = YAxisTypes.DURATION.name,
+            description = "description"
         ),
         Indicator(
-            label = Res.string.average_content_usage_duration_per_user,
-            type = YAxisTypes.DURATION
+            name = "Average content usage duration per user",
+            type = YAxisTypes.DURATION.name,
+            description = "description"
         ),
 
         // Percentage Metrics
         Indicator(
-            label = Res.string.percentage_pass,
-            type = YAxisTypes.PERCENTAGE
+            name = "% Pass",
+            type = YAxisTypes.PERCENTAGE.name,
+            description = "description"
         ),
         Indicator(
-            label = Res.string.percentage_fail,
-            type = YAxisTypes.PERCENTAGE
+            name = "% Fail",
+            type = YAxisTypes.PERCENTAGE.name,
+            description = "description"
         ),
         Indicator(
-            label = Res.string.attendance_percentage,
-            type = YAxisTypes.PERCENTAGE
+            name = "Attendance %",
+            type = YAxisTypes.PERCENTAGE.name,
+            description = "description"
         ),
         Indicator(
-            label = Res.string.absence_percentage,
-            type = YAxisTypes.PERCENTAGE
+            name = "Absence %",
+            type = YAxisTypes.PERCENTAGE.name,
+            description = "description"
         ),
         Indicator(
-
-            label = Res.string.completion_rate,
-            type = YAxisTypes.PERCENTAGE
+            name = "Completion Rate",
+            type = YAxisTypes.PERCENTAGE.name,
+            description = "description"
         ),
         Indicator(
-
-            label = Res.string.task_completion_percentage,
-            type = YAxisTypes.PERCENTAGE
+            name = "Completion per Assigned Task %",
+            type = YAxisTypes.PERCENTAGE.name,
+            description = "description"
         ),
         Indicator(
-
-            label = Res.string.retention_rate,
-            type = YAxisTypes.PERCENTAGE
+            name = "Retention Rate / Content Revisited Rate",
+            type = YAxisTypes.PERCENTAGE.name
         ),
         Indicator(
-            label = Res.string.offline_usage_percentage,
-            type = YAxisTypes.PERCENTAGE
+            name = "Offline Usage % vs. Online",
+            type = YAxisTypes.PERCENTAGE.name
         ),
 
         // Score Metrics
         Indicator(
-            label = Res.string.average_score,
-            type = YAxisTypes.COUNT
+            name = "Score (Average)",
+            type = YAxisTypes.COUNT.name
         ),
         Indicator(
-            label = Res.string.total_score,
-            type = YAxisTypes.COUNT
+            name = "Score (Total)",
+            type = YAxisTypes.COUNT.name
         ),
 
         // Count Metrics
         Indicator(
-            label = Res.string.number_of_activities,
-            type = YAxisTypes.COUNT
+            name = "Number of activities",
+            type = YAxisTypes.COUNT.name
         ),
         Indicator(
-            label = Res.string.active_days_per_user,
-            type = YAxisTypes.COUNT
+            name = "Average Time Spent",
+            type = YAxisTypes.COUNT.name
+        ),
+        Indicator(
+            name = "Active Days per User",
+            type = YAxisTypes.COUNT.name
         ),
 
         // Top 5 Metrics
         Indicator(
-            label = Res.string.top_5_apps,
-            type = YAxisTypes.COUNT
+            name = "Top 5: Apps",
+            type = YAxisTypes.COUNT.name
         ),
         Indicator(
-            label = Res.string.top_5_languages,
-            type = YAxisTypes.COUNT
+            name = "Top 5: Languages",
+            type = YAxisTypes.COUNT.name
         ),
         Indicator(
-            label = Res.string.top_5_lessons,
-            type = YAxisTypes.COUNT
+            name = "Top 5: Lessons",
+            type = YAxisTypes.COUNT.name
         ),
         Indicator(
-            label = Res.string.top_5_schools,
-            type = YAxisTypes.COUNT
+            name = "Top 5: Schools",
+            type = YAxisTypes.COUNT.name
         ),
         Indicator(
-            label = Res.string.top_5_students,
-            type = YAxisTypes.COUNT
+            name = "Top 5: Students",
+            type = YAxisTypes.COUNT.name
         )
     )
 }

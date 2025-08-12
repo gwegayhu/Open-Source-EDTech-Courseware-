@@ -8,8 +8,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
-import world.respect.shared.domain.report.model.Indicator
 import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -50,18 +50,26 @@ object Report : RespectAppRoute
 object ReportTemplateList : RespectAppRoute
 
 @Serializable
-class ReportIndictorEdit private constructor(
-    private val reportUidStr: String,
-    private val seriesIdStr: String,
-    private val indicatorJson: String? = null
+object IndicatorList : RespectAppRoute
+
+@Serializable
+class IndicatorDetail private constructor(
+    val indicatorUid: String,
 ) : RespectAppRoute {
 
-    @Transient
-    val reportUid = reportUidStr.toLong()
+    companion object {
+        fun create(indicatorUid: String): IndicatorDetail {
+            return IndicatorDetail(
+                indicatorUid = indicatorUid
+            )
+        }
+    }
+}
 
-    @Transient
-    val seriesId = seriesIdStr.toInt()
-
+@Serializable
+class IndictorEdit private constructor(
+    private val indicatorJson: String? = null
+) : RespectAppRoute {
     @Transient
     val indicatorData: Indicator? = indicatorJson?.let {
         Json.decodeFromString(it)
@@ -70,32 +78,21 @@ class ReportIndictorEdit private constructor(
     companion object {
         @OptIn(ExperimentalSerializationApi::class)
         fun create(
-            reportUid: Long,
-            seriesId: Int,
             indicator: Indicator? = null
-        ): ReportIndictorEdit {
+        ): IndictorEdit {
             val json = Json { allowTrailingComma = true }
-            return ReportIndictorEdit(
-                reportUidStr = reportUid.toString(),
-                seriesIdStr = seriesId.toString(),
-                indicatorJson = indicator?.let { json.encodeToString(Indicator.serializer(), it) }
-            )
+            return IndictorEdit(
+                indicatorJson = indicator?.let { json.encodeToString(Indicator.serializer(), it) })
         }
     }
 }
 
 @Serializable
 class ReportEditFilter private constructor(
-    private val reportUidStr: String,
-    private val seriesIdStr: String,
+    val reportUid: Long,
+    val seriesId: Int,
     private val filterJson: String? = null
 ) : RespectAppRoute {
-
-    @Transient
-    val reportUid = reportUidStr.toLong()
-
-    @Transient
-    val seriesId = seriesIdStr.toInt()
 
     @Transient
     val filter: ReportFilter? = filterJson?.let { Json.decodeFromString(it) }
@@ -103,15 +100,15 @@ class ReportEditFilter private constructor(
     companion object {
         fun create(reportUid: Long, seriesId: Int): ReportEditFilter {
             return ReportEditFilter(
-                reportUidStr = reportUid.toString(),
-                seriesIdStr = seriesId.toString()
+                reportUid = reportUid,
+                seriesId = seriesId
             )
         }
 
         fun create(reportUid: Long, seriesId: Int, filter: ReportFilter): ReportEditFilter {
             return ReportEditFilter(
-                reportUidStr = reportUid.toString(),
-                seriesIdStr = seriesId.toString(),
+                reportUid = reportUid,
+                seriesId = seriesId,
                 filterJson = Json.encodeToString(filter)
             )
         }
@@ -120,51 +117,36 @@ class ReportEditFilter private constructor(
 
 @Serializable
 class ReportEdit private constructor(
-    private val reportUidStr: String,
-    private val filterJson: String? = null,
-    private val indicatorJson: String? = null,
+    val reportUid: Long = 0,
+    val filterJson: String? = null,
 ) : RespectAppRoute {
 
-    @Transient
-    val reportUid = reportUidStr.toLong()
 
     @Transient
     val filter: ReportFilter? = filterJson?.let { Json.decodeFromString(it) }
 
-    @Transient
-    val indicator: Indicator? = indicatorJson?.let { Json.decodeFromString(Indicator.serializer(), it) }
-
     companion object {
         fun create(reportUid: Long): ReportEdit {
-            return ReportEdit(reportUid.toString())
+            return ReportEdit(reportUid)
         }
 
         fun create(reportUid: Long, filter: ReportFilter): ReportEdit {
             return ReportEdit(
-                reportUid.toString(),
+                reportUid,
                 Json.encodeToString(filter)
-            )
-        }
-
-        fun create(reportUid: Long, indicator: Indicator): ReportEdit {
-            return ReportEdit(
-                reportUid.toString(),
-                indicatorJson = Json.encodeToString(Indicator.serializer(), indicator)
             )
         }
     }
 }
+
 @Serializable
 class ReportDetail private constructor(
-    private val reportUidStr: String
+    val reportUid: Long
 ) : RespectAppRoute {
-
-    @Transient
-    val reportUid = reportUidStr.toLong()
 
     companion object {
         fun create(reportUid: Long): ReportDetail {
-            return ReportDetail(reportUid.toString())
+            return ReportDetail(reportUid)
         }
     }
 }

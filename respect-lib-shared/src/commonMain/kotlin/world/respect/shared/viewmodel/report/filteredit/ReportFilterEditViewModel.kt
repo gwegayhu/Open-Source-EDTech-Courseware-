@@ -100,8 +100,8 @@ class ReportFilterEditViewModel(
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
                     ReportEdit.create(
-                        route.reportUid,
-                        currentFilter
+                        reportUid = route.reportUid,
+                        filter = currentFilter
                     )
                 )
             )

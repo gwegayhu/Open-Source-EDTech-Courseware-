@@ -1,4 +1,4 @@
-package world.respect.app.view.report.indictor
+package world.respect.app.view.report.indicator.edit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +24,8 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.field
 import world.respect.shared.generated.resources.sql
-import world.respect.shared.viewmodel.report.indictor.IndicatorEditUiState
-import world.respect.shared.viewmodel.report.indictor.IndicatorEditViewModel
+import world.respect.shared.viewmodel.report.indictor.edit.IndicatorEditUiState
+import world.respect.shared.viewmodel.report.indictor.edit.IndicatorEditViewModel
 
 @Composable
 fun IndictorEditScreen(
@@ -45,7 +45,7 @@ fun IndictorEditScreen(
         item {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = uiState.indicatorData.name ?: "",
+                value = uiState.indicatorData.name,
                 label = { Text(stringResource(Res.string.field) + "*") },
                 singleLine = true,
                 onValueChange = { newName ->
@@ -58,7 +58,7 @@ fun IndictorEditScreen(
         item {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = uiState.indicatorData.description ?: "",
+                value = uiState.indicatorData.description,
                 label = { Text(stringResource(Res.string.description) + "*") },
                 singleLine = true,
                 onValueChange = { newDesc ->
@@ -73,7 +73,7 @@ fun IndictorEditScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 200.dp, max = 400.dp),
-                value = uiState.indicatorData.sql ?: "",
+                value = uiState.indicatorData.sql,
                 label = { Text(stringResource(Res.string.sql) + "*") },
                 onValueChange = { newSql ->
                     viewModel.updateIndicator { it.copy(sql = newSql) }

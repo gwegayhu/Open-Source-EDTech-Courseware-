@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectDateField
 import world.respect.app.components.uiTextStringResource
 import world.respect.app.util.ext.defaultItemPadding
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.domain.report.model.DefaultIndicators
 import world.respect.shared.domain.report.model.FixedReportTimeRange
 import world.respect.shared.domain.report.model.OptionWithLabelStringResource
@@ -84,7 +86,7 @@ fun ReportEditScreen(
         onAddFilter = viewModel::onAddFilter,
         onRemoveSeries = viewModel::onRemoveSeries,
         onRemoveFilter = viewModel::onRemoveFilter,
-        addIndictor = viewModel::addIndicator
+        manageIndicator = viewModel::manageIndicator
     )
 }
 
@@ -97,17 +99,18 @@ private fun ReportEditScreen(
     onSeriesChanged: (ReportSeries) -> Unit = {},
     onRemoveSeries: (Int) -> Unit = { },
     onRemoveFilter: (Int, Int) -> Unit = { _, _ -> },
-    addIndictor: (Int) -> Unit = { },
+    manageIndicator: () -> Unit = { },
 ) {
     val availableIndicators = remember { DefaultIndicators.list }
     val firstIndicatorType = uiState.reportOptions.series.firstOrNull()?.reportSeriesYAxis?.type
 
     // Calculate disabled indicators (those with different types than the first series)
-    val disabledIndicators = if (uiState.reportOptions.series.size > 1 && firstIndicatorType != null) {
-        availableIndicators.filter { it.type != firstIndicatorType }
-    } else {
-        emptyList()
-    }
+    val disabledIndicators =
+        if (uiState.reportOptions.series.size > 1 && firstIndicatorType != null) {
+            availableIndicators.filter { it.type != firstIndicatorType }
+        } else {
+            emptyList()
+        }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -286,7 +289,7 @@ private fun ReportEditScreen(
                     }
 
                     // Y Axis Dropdown
-                    ExposedDropdownMenu(
+                    IndicatorDropdownMenu(
                         label = { Text(stringResource(Res.string.y_axis) + "*") },
                         options = availableIndicators,
                         selectedValue = seriesItem.reportSeriesYAxis,
@@ -300,7 +303,8 @@ private fun ReportEditScreen(
                                 Text(uiTextStringResource(it))
                             }
                         },
-                        disabledOptions = disabledIndicators
+                        disabledOptions = disabledIndicators,
+                        onManageIndicators = { manageIndicator() }
                     )
 
 
@@ -372,16 +376,6 @@ private fun ReportEditScreen(
                 ) {
                     Text(
                         text = stringResource(Res.string.add_filter),
-                    )
-                }
-            }
-            item {
-                OutlinedButton(
-                    onClick = { addIndictor(seriesItem.reportSeriesUid) },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(Res.string.indicator),
                     )
                 }
             }
@@ -563,5 +557,78 @@ fun DatePickerButton(
             },
             supportingText = {}
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun IndicatorDropdownMenu(
+    options: List<Indicator>,
+    selectedValue: Indicator?,
+    disabledOptions: List<Indicator> = emptyList(),
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    isError: Boolean = false,
+    label: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    onOptionSelected: (Indicator) -> Unit,
+    onManageIndicators: () -> Unit
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = !isExpanded },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = selectedValue?.name ?: "",
+            onValueChange = {},
+            readOnly = true,
+            modifier = modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            supportingText = supportingText,
+            isError = isError,
+            label = label,
+        )
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false },
+            modifier = Modifier
+        ) {
+            options.forEach { option ->
+                val isDisabled = option in disabledOptions
+                DropdownMenuItem(
+                    onClick = {
+                        if (!isDisabled) {
+                            onOptionSelected(option)
+                            isExpanded = false
+                        }
+                    },
+                    text = {
+                        Text(
+                            option.name,
+                            color = if (isDisabled) Color.Gray else LocalContentColor.current
+                        )
+                    },
+                    enabled = !isDisabled
+                )
+            }
+            DropdownMenuItem(
+                onClick = {
+                    onManageIndicators()
+                    isExpanded = false
+                },
+                text = {
+                    Text(
+                        text = "manage_indicators",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            )
+        }
     }
 }

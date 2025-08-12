@@ -12,9 +12,9 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.RespectReportDataSource
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.model.DefaultIndicators
-import world.respect.shared.domain.report.model.Indicator
 import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
 import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.domain.report.model.ReportOptions
@@ -28,11 +28,11 @@ import world.respect.shared.generated.resources.edit_report
 import world.respect.shared.generated.resources.field_required_prompt
 import world.respect.shared.generated.resources.quantity_must_be_at_least_1
 import world.respect.shared.generated.resources.series
+import world.respect.shared.navigation.IndicatorList
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
-import world.respect.shared.navigation.ReportIndictorEdit
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
@@ -166,30 +166,16 @@ class ReportEditViewModel(
                     val seriesId = filter.reportFilterSeriesUid
                     onFilterChanged(filter, seriesId)
                 }
-                route.indicator?.let { indicator ->
-                    updateSeriesWithIndicator(indicator)
-                }
             }
         }
     }
 
-    fun addIndicator(seriesId: Int) {
-        val currentSeries = _uiState.value.reportOptions.series.firstOrNull {
-            it.reportSeriesUid == seriesId
-        }
-
-
-        currentSeries?.let { series ->
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    ReportIndictorEdit.create(
-                        reportUid = route.reportUid,
-                        seriesId = seriesId,
-                        indicator = series.reportSeriesYAxis
-                    )
-                )
+    fun manageIndicator() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                IndicatorList
             )
-        }
+        )
     }
 
     private fun updateSeriesWithIndicator(indicator: Indicator) {
