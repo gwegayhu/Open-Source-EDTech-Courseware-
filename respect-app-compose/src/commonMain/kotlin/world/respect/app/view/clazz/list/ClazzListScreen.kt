@@ -66,7 +66,8 @@ fun ClazzListScreen(
 
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = clazz.title                    )
+                        name = clazz.title
+                    )
                 },
 
                 headlineContent = {

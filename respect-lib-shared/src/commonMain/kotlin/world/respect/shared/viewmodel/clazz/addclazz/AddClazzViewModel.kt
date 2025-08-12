@@ -62,7 +62,6 @@ class AddClazzViewModel(
             it.copy(description = newValue)
         }
     }
-
     fun onStartDateChange(newValue: String) {
         _uiState.update {
             it.copy(startDate = newValue)

@@ -1,5 +1,6 @@
 package world.respect.app.view.clazz.addclazz
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,9 @@ import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.end_date_label
 import world.respect.shared.generated.resources.start_date_label
 import world.respect.shared.viewmodel.clazz.addclazz.AddClazzUiState
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 
 
 @Composable
@@ -103,6 +107,15 @@ fun AddClazzScreen(
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = stringResource(Res.string.start_date_label),
+                        modifier = Modifier.clickable {
+                            // Handle calendar picker click here
+                        }
+                    )
+                },
                 modifier = Modifier.weight(1f)
                     .padding(
                         start = 12.dp,
@@ -122,6 +135,15 @@ fun AddClazzScreen(
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = stringResource(Res.string.start_date_label),
+                        modifier = Modifier.clickable {
+                            // Handle calendar picker click here
+                        }
+                    )
+                },
                 modifier = Modifier.weight(1f)
                     .padding(
                         start = 6.dp,
