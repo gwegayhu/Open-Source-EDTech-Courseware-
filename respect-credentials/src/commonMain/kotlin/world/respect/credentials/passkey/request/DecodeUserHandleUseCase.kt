@@ -8,6 +8,6 @@ import io.ktor.http.Url
  */
 interface DecodeUserHandleUseCase {
 
-    operator fun invoke(encodedHandle: String): Pair<Url, Long>
+    operator fun invoke(encodedHandle: String): Long
 
 }

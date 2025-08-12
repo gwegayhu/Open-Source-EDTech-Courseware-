@@ -63,7 +63,7 @@ fun CreateAccountScreen(
             .fillMaxSize()
             .defaultItemPadding()
     ) {
-        uiState.passkeyError?.let {
+        uiState.signupError?.let {
             Text(it)
         }
 

@@ -1,6 +1,5 @@
 package world.respect.credentials.passkey.request
 
-import world.respect.credentials.passkey.username.CreateCredentialUsernameUseCase
 import io.ktor.http.Url
 import io.ktor.util.encodeBase64
 import world.respect.credentials.passkey.model.AuthenticatorSelectionCriteria
@@ -23,32 +22,31 @@ import world.respect.libutil.ext.randomString
  * UID and Learning Space URL - see EncodeUserHandleUseCase
  */
 class CreatePublicKeyCredentialCreationOptionsJsonUseCase(
-    private val url:Url,
-    private val createCredentialUsernameUseCase: CreateCredentialUsernameUseCase,
+    private val rpId:Url,
     private val encodeUserHandleUseCase : EncodeUserHandleUseCase,
 ) {
 
     operator fun invoke(
         username: String,
+        appName: String
     ): PublicKeyCredentialCreationOptionsJSON {
         val challenge = randomString(16) //TODO note: this should really take place on the server side
-        val credentialUsername = createCredentialUsernameUseCase(
-            username = username,
-        )
 
+        //will change this with actual uid of person who is going to
+        // signup when doing implementation with server
         val personPasskeyUid = 2745456645645645654
         val encodeUserHandle = encodeUserHandleUseCase(personPasskeyUid)
 
         return PublicKeyCredentialCreationOptionsJSON(
             rp = PublicKeyCredentialRpEntity(
-                id = url.host,
-                name = "Respect",
+                id = rpId.host,
+                name = appName,
                 icon = null,
             ),
             user = PublicKeyCredentialUserEntityJSON(
                 id = encodeUserHandle,
-                name = credentialUsername,
-                displayName = credentialUsername,
+                name = username,
+                displayName = username,
             ),
             //Important: timeout may be optional as per the spec, but if omitted, Google Password
             //Manager won't work as expected

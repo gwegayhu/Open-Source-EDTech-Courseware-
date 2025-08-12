@@ -12,6 +12,7 @@ import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.app_name
 import world.respect.shared.generated.resources.other_options
 import world.respect.shared.navigation.EnterPasswordSignup
 import world.respect.shared.navigation.HowPasskeyWorks
@@ -57,6 +58,7 @@ class OtherOptionsSignupViewModel(
 
                 val createPasskeyResult = createPasskeyUseCase(
                     username = route.username,
+                    appName = getString(Res.string.app_name)
                 )
                 when (createPasskeyResult) {
                     is CreatePasskeyUseCase.PasskeyCreatedResult -> {

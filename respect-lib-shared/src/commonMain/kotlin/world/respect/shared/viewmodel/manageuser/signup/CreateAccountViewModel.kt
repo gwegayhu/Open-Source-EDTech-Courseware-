@@ -11,7 +11,10 @@ import org.jetbrains.compose.resources.getString
 import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
+import world.respect.shared.domain.account.signup.SignupCredential
+import world.respect.shared.domain.account.signup.SignupUseCase
 import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.app_name
 import world.respect.shared.generated.resources.create_account
 import world.respect.shared.generated.resources.username_required
 import world.respect.shared.navigation.CreateAccount
@@ -28,14 +31,15 @@ data class CreateAccountViewModelUiState(
     val username: String = "",
     val usernameError: StringResourceUiText? = null,
     val generalError: StringResourceUiText? = null,
-    val passkeyError: String? = null
+    val signupError: String? = null
 )
 
 class CreateAccountViewModel(
     savedStateHandle: SavedStateHandle,
     private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
     private val createPasskeyUseCase: CreatePasskeyUseCase,
-    private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase
+    private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase,
+    private val signupUseCase: SignupUseCase
 ) : RespectViewModel(savedStateHandle) {
     private val route: CreateAccount = savedStateHandle.toRoute()
 
@@ -84,9 +88,15 @@ class CreateAccountViewModel(
 
                 val createPasskeyResult = createPasskeyUseCase(
                     username = username,
+                    appName = getString(Res.string.app_name)
                 )
                 when (createPasskeyResult) {
                     is CreatePasskeyUseCase.PasskeyCreatedResult -> {
+                        val signupCredential = SignupCredential.Passkey(
+                            username = username,
+                            authenticationResponseJSON = createPasskeyResult.authenticationResponseJSON
+                        )
+                        sendSignupCredential(signupCredential)
                         when (route.type) {
                             ProfileType.CHILD , ProfileType.STUDENT->{
                                 viewModelScope.launch {
@@ -108,7 +118,7 @@ class CreateAccountViewModel(
                     is CreatePasskeyUseCase.Error -> {
                         _uiState.update { prev ->
                             prev.copy(
-                                passkeyError = createPasskeyResult.message,
+                                signupError = createPasskeyResult.message,
                             )
                         }
                     }
@@ -123,7 +133,17 @@ class CreateAccountViewModel(
             }
         }
     }
-
+    private fun sendSignupCredential(credential: SignupCredential) {
+        viewModelScope.launch {
+            try {
+                signupUseCase(credential)
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(signupError = "${e.message}")
+                }
+            }
+        }
+    }
     fun onClickHowPasskeysWork() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(HowPasskeyWorks)

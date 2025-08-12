@@ -31,13 +31,12 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.credentials.passkey.CreatePasskeyUseCaseImpl
-import world.respect.credentials.passkey.EncodeUserHandleUseCaseImpl
+import passkey.EncodeUserHandleUseCaseImpl
 import world.respect.credentials.passkey.GetCredentialUseCase
 import world.respect.credentials.passkey.GetCredentialUseCaseImpl
 import world.respect.credentials.passkey.request.CreatePublicKeyCredentialCreationOptionsJsonUseCase
 import world.respect.credentials.passkey.request.CreatePublicKeyCredentialRequestOptionsJsonUseCase
 import world.respect.credentials.passkey.request.EncodeUserHandleUseCase
-import world.respect.credentials.passkey.username.CreateCredentialUsernameUseCase
 import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectDatabase
 import world.respect.datalayer.http.RespectAppDataSourceHttp
@@ -51,6 +50,7 @@ import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
+import world.respect.shared.domain.account.signup.SignupUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 import world.respect.shared.domain.mock.MockGetInviteInfoUseCase
@@ -69,13 +69,13 @@ import world.respect.shared.viewmodel.clazz.ClazzViewModel
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
+import world.respect.shared.viewmodel.manageuser.enterpasswordsignup.EnterPasswordSignupViewModel
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedViewModel
 import world.respect.shared.viewmodel.manageuser.howpasskeywork.HowPasskeyWorksViewModel
 import world.respect.shared.viewmodel.manageuser.joinclazzwithcode.JoinClazzWithCodeViewModel
 import world.respect.shared.viewmodel.manageuser.login.LoginViewModel
 import world.respect.shared.viewmodel.manageuser.otheroption.OtherOptionsViewModel
 import world.respect.shared.viewmodel.manageuser.otheroptionsignup.OtherOptionsSignupViewModel
-import world.respect.shared.viewmodel.manageuser.enterpasswordsignup.EnterPasswordSignupViewModel
 import world.respect.shared.viewmodel.manageuser.profile.SignupViewModel
 import world.respect.shared.viewmodel.manageuser.signup.CreateAccountViewModel
 import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndConditionViewModel
@@ -234,20 +234,17 @@ val appKoinModule = module {
         )
     }
 
+    single<SignupUseCase> {
+        SignupUseCase()
+    }
     single<EncodeUserHandleUseCase> {
-        EncodeUserHandleUseCaseImpl(url = Url("https://testproxy.devserver3.ustadmobile.com/"))
+        EncodeUserHandleUseCaseImpl()
     }
 
-    single {
-        CreateCredentialUsernameUseCase(
-            url = Url("https://testproxy.devserver3.ustadmobile.com/")
-        )
-    }
 
     single {
         CreatePublicKeyCredentialCreationOptionsJsonUseCase(
-            url = Url("https://testproxy.devserver3.ustadmobile.com/"),
-            createCredentialUsernameUseCase = get(),
+            rpId = Url("https://testproxy.devserver3.ustadmobile.com/"),
             encodeUserHandleUseCase = get()
         )
     }

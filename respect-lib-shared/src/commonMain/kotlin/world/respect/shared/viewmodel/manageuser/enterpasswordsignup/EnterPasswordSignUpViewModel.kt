@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
+import world.respect.shared.domain.account.signup.SignupCredential
+import world.respect.shared.domain.account.signup.SignupUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.create_account
 import world.respect.shared.generated.resources.password_required
@@ -30,7 +32,8 @@ data class EnterPasswordSignupUiState(
 class EnterPasswordSignupViewModel(
     savedStateHandle: SavedStateHandle,
     private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
-    private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase
+    private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase,
+    private val signupUseCase: SignupUseCase
 ) : RespectViewModel(savedStateHandle) {
     private val route: EnterPasswordSignup = savedStateHandle.toRoute()
 
@@ -70,7 +73,11 @@ class EnterPasswordSignupViewModel(
             }
 
             if (password.isBlank()) return@launch
-
+            val signupCredential = SignupCredential.Password(
+                username = route.username,
+                password = password
+            )
+            signupUseCase(signupCredential)
             val redeemRequest = respectRedeemInviteRequestUseCase(route.inviteInfo,route.username)
 
             val result = submitRedeemInviteRequestUseCase(redeemRequest)
