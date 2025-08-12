@@ -15,7 +15,7 @@ import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.clazz
 import world.respect.shared.generated.resources.first_name
 import world.respect.shared.generated.resources.last_name
-import world.respect.shared.navigation.AddClazz
+import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.ClazzList
 import world.respect.shared.navigation.NavCommand
@@ -80,7 +80,7 @@ class ClazzListViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    AddClazz
+                                    ClazzEdit
                                 )
                             )
                         }

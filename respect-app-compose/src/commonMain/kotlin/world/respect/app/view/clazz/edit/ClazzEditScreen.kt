@@ -1,4 +1,4 @@
-package world.respect.app.view.clazz.addclazz
+package world.respect.app.view.clazz.edit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
+import world.respect.shared.viewmodel.clazz.edit.ClazzEditViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -23,7 +23,7 @@ import world.respect.shared.generated.resources.class_name_label
 import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.end_date_label
 import world.respect.shared.generated.resources.start_date_label
-import world.respect.shared.viewmodel.clazz.addclazz.AddClazzUiState
+import world.respect.shared.viewmodel.clazz.edit.ClazzEditUiState
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
@@ -31,11 +31,11 @@ import world.respect.app.components.defaultItemPadding
 
 
 @Composable
-fun AddClazzScreen(
-    viewModel: AddClazzViewModel
+fun ClazzEditScreen(
+    viewModel: ClazzEditViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    AddClazzScreen(
+    ClazzEditScreen(
         uiState = uiState,
         onClassNameChange = viewModel::onClassNameChange,
         onClassDescriptionChange = viewModel::onClassDescriptionChange,
@@ -45,8 +45,8 @@ fun AddClazzScreen(
 }
 
 @Composable
-fun AddClazzScreen(
-    uiState: AddClazzUiState,
+fun ClazzEditScreen(
+    uiState: ClazzEditUiState,
     onClassNameChange: (String) -> Unit,
     onClassDescriptionChange: (String) -> Unit,
     onStartDateChange: (String) -> Unit,

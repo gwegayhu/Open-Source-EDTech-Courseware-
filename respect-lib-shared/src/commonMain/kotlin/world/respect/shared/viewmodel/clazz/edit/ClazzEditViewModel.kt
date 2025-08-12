@@ -1,4 +1,4 @@
-package world.respect.shared.viewmodel.clazz.addclazz
+package world.respect.shared.viewmodel.clazz.edit
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -18,18 +18,18 @@ import java.util.UUID
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-data class AddClazzUiState(
+data class ClazzEditUiState(
     var className: String = "",
     var description: String = "",
     var startDate: String = "",
     var endDate: String = "",
 )
 
-class AddClazzViewModel(
+class ClazzEditViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val _uiState = MutableStateFlow(AddClazzUiState())
+    private val _uiState = MutableStateFlow(ClazzEditUiState())
 
     val uiState = _uiState.asStateFlow()
 

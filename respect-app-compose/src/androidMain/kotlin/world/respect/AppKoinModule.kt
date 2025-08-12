@@ -59,7 +59,7 @@ import world.respect.shared.domain.launchapp.LaunchAppUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
-import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
+import world.respect.shared.viewmodel.clazz.edit.ClazzEditViewModel
 import world.respect.shared.domain.storage.CachePathsProviderAndroid
 import world.respect.shared.domain.storage.GetAndroidSdCardDirUseCase
 import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroid
@@ -132,7 +132,7 @@ val appKoinModule = module {
     viewModelOf(::AppListViewModel)
     viewModelOf(::AssignmentViewModel)
     viewModelOf(::ClazzListViewModel)
-    viewModelOf(::AddClazzViewModel)
+    viewModelOf(::ClazzEditViewModel)
     viewModelOf(::ClazzDetailViewModel)
     viewModelOf(::LearningUnitListViewModel)
     viewModelOf(::LearningUnitDetailViewModel)

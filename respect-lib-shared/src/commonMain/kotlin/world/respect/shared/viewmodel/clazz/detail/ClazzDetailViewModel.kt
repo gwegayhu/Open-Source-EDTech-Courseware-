@@ -17,7 +17,7 @@ import world.respect.shared.generated.resources.all
 import world.respect.shared.generated.resources.active
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.edit
-import world.respect.shared.navigation.AddClazz
+import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.FilterChipsOption
@@ -74,7 +74,7 @@ class ClazzDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    AddClazz
+                                    ClazzEdit
                                 )
                             )
                         }

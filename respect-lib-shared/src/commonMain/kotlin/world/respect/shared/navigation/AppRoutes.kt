@@ -41,7 +41,7 @@ object Assignment : RespectAppRoute
 object ClazzList : RespectAppRoute
 
 @Serializable
-object AddClazz : RespectAppRoute
+object ClazzEdit : RespectAppRoute
 
 @Serializable
 object ClazzDetail : RespectAppRoute
