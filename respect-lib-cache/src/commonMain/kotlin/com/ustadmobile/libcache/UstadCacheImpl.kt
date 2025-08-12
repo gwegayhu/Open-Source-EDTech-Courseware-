@@ -27,6 +27,7 @@ import com.ustadmobile.libcache.md5.urlKey
 import com.ustadmobile.ihttp.request.IHttpRequest
 import com.ustadmobile.libcache.response.CacheResponse
 import com.ustadmobile.ihttp.response.IHttpResponse
+import com.ustadmobile.libcache.downloader.EnqueuePinPublicationPrepareUseCase
 import com.ustadmobile.libcache.headers.integrity
 import com.ustadmobile.libcache.util.LruMap
 import com.ustadmobile.libcache.util.concurrentSafeMapOf
@@ -85,6 +86,7 @@ class UstadCacheImpl(
     ),
     override val storageCompressionFilter: CacheStorageCompressionFilter = DefaultCacheCompressionFilter(),
     private val xxStringHasher: XXStringHasher,
+    private val enqueuePinPublicationPrepareUseCase: EnqueuePinPublicationPrepareUseCase,
 ) : UstadCache {
 
     private val scope = CoroutineScope(Dispatchers.IO + Job())
@@ -866,7 +868,7 @@ class UstadCacheImpl(
     }
 
     override suspend fun pinPublication(manifestUrl: Url) {
-        //Do nothing yet
+        enqueuePinPublicationPrepareUseCase(manifestUrl)
     }
 
     override suspend fun unpinPublication(manifestUrl: Url) {

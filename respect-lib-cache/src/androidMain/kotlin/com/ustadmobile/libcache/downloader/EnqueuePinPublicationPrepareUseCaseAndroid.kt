@@ -25,7 +25,7 @@ class EnqueuePinPublicationPrepareUseCaseAndroid(
             .putInt(JOB_UID, transferJob.djUid)
             .build()
 
-        val workRequest = OneTimeWorkRequestBuilder<PinPublicationGetManifestInfoWorker>()
+        val workRequest = OneTimeWorkRequestBuilder<PinPublicationPrepareUseCaseWorker>()
             .setInputData(jobData)
             .setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
             .setConstraints(
