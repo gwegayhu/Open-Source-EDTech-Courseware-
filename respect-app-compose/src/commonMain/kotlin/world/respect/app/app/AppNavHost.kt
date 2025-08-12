@@ -43,7 +43,7 @@ import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.AppsDetail
 import world.respect.shared.navigation.Assignment
-import world.respect.shared.navigation.Clazz
+import world.respect.shared.navigation.ClazzList
 import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.ConfirmationScreen
 import world.respect.shared.navigation.EnterLink
@@ -142,7 +142,7 @@ fun AppNavHost(
             )
         }
 
-        composable<Clazz> {
+        composable<ClazzList> {
             val viewModel: ClazzListViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController

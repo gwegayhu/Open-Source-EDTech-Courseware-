@@ -27,7 +27,7 @@ fun ClazzListScreen(
 
     ClazzListScreen(
         uiState = uiState,
-        onClickClazz = viewModel::onClickClazz,
+        onClickClazz = { viewModel.onClickClazz(it) },
         onSortOrderChanged = viewModel::onSortOrderChanged,
     )
 }
@@ -35,7 +35,7 @@ fun ClazzListScreen(
 @Composable
 fun ClazzListScreen(
     uiState: ClazzListUiState,
-    onClickClazz: () -> Unit,
+    onClickClazz: (String) -> Unit,
     onSortOrderChanged: (SortOrderOption) -> Unit = { },
 ) {
 
@@ -61,7 +61,7 @@ fun ClazzListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onClickClazz()
+                        onClickClazz(clazz.sourcedId)
                     },
 
                 leadingContent = {

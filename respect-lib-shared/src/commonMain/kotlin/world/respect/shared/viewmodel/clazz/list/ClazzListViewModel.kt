@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.clazz.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,6 +17,7 @@ import world.respect.shared.generated.resources.first_name
 import world.respect.shared.generated.resources.last_name
 import world.respect.shared.navigation.AddClazz
 import world.respect.shared.navigation.ClazzDetail
+import world.respect.shared.navigation.ClazzList
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.RespectViewModel
@@ -38,6 +40,8 @@ class ClazzListViewModel(
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
+
+    private val route: ClazzList = savedStateHandle.toRoute()
 
     init {
         viewModelScope.launch {
@@ -92,7 +96,7 @@ class ClazzListViewModel(
         }
     }
 
-    fun onClickClazz() {
+    fun onClickClazz(sourceId: String) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 ClazzDetail

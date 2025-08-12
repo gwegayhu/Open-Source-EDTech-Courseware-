@@ -95,18 +95,36 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
             listOf(
                 OneRosterClass(
                     sourcedId = "1",
-                    title = "Math Class",
-                    dateLastModified = Instant.DISTANT_PAST
+                    title = "Class 1",
+                    dateLastModified = Instant.DISTANT_PAST,
+                    description = "The class helps " +
+                            "students build foundational skills in reading, writing, mathematics, " +
+                            "and basic sciences, while developing social, creative, " +
+                            "and problem-solving abilities through interactive learning.",
+                    startDate = "",
+                    endDate = ""
                 ),
                 OneRosterClass(
                     sourcedId = "2",
-                    title = "Science Class",
-                    dateLastModified = Instant.DISTANT_PAST
+                    title = "Class 2",
+                    dateLastModified = Instant.DISTANT_PAST,
+                    description = "The class helps " +
+                            "students build foundational skills in reading, writing, mathematics, " +
+                            "and basic sciences, while developing social, creative, " +
+                            "and problem-solving abilities through interactive learning.",
+                    startDate = "",
+                    endDate = ""
                 ),
                 OneRosterClass(
                     sourcedId = "3",
-                    title = "History Class",
-                    dateLastModified = Instant.DISTANT_PAST
+                    title = "Class 3",
+                    dateLastModified = Instant.DISTANT_PAST,
+                    description = "The class helps " +
+                            "students build foundational skills in reading, writing, mathematics, " +
+                            "and basic sciences, while developing social, creative, " +
+                            "and problem-solving abilities through interactive learning.",
+                    startDate = "",
+                    endDate = ""
                 )
             )
         )

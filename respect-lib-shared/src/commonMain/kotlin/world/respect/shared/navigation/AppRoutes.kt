@@ -38,7 +38,7 @@ object RespectAppLauncher : RespectAppRoute
 object Assignment : RespectAppRoute
 
 @Serializable
-object Clazz : RespectAppRoute
+object ClazzList : RespectAppRoute
 
 @Serializable
 object AddClazz : RespectAppRoute

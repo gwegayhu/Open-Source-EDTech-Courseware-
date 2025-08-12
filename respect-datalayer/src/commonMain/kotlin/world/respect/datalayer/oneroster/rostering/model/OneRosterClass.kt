@@ -19,4 +19,7 @@ data class OneRosterClass(
     override val metadata: JsonObject? = null,
     val title: String,
     val location: String? = null,
+    val description: String,
+    val startDate: String? = null,
+    val endDate: String? = null,
 ) : OneRosterBase

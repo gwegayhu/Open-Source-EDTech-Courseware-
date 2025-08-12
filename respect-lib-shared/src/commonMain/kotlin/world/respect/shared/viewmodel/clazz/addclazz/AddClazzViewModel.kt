@@ -81,7 +81,10 @@ class AddClazzViewModel(
                 sourcedId = UUID.randomUUID().toString(),
                 title = uiState.value.className,
                 dateLastModified = Clock.System.now(),
-                location = null
+                location = null,
+                description = uiState.value.description,
+                startDate = uiState.value.startDate,
+                endDate = uiState.value.endDate
             )
             FakeRosterDataSource().putClass(newClass)
 

@@ -41,7 +41,7 @@ import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.report
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.Assignment
-import world.respect.shared.navigation.Clazz
+import world.respect.shared.navigation.ClazzList
 import world.respect.shared.navigation.Report
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.FabUiState
@@ -65,7 +65,7 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
         label = Res.string.assignments
     ),
     TopNavigationItem(
-        destRoute = Clazz,
+        destRoute = ClazzList,
         icon = Icons.AutoMirrored.Filled.LibraryBooks,
         label = Res.string.classes
     ),
