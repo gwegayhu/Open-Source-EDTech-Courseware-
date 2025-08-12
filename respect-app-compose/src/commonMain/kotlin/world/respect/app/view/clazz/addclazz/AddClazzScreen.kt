@@ -1,12 +1,10 @@
 package world.respect.app.view.clazz.addclazz
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +27,7 @@ import world.respect.shared.viewmodel.clazz.addclazz.AddClazzUiState
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import world.respect.app.components.defaultItemPadding
 
 
 @Composable
@@ -69,10 +68,7 @@ fun AddClazzScreen(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth()
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 6.dp
-                ),
+                .defaultItemPadding()
         )
 
         OutlinedTextField(
@@ -86,10 +82,7 @@ fun AddClazzScreen(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth()
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 6.dp
-                ),
+                .defaultItemPadding()
         )
 
         Row(
@@ -111,18 +104,10 @@ fun AddClazzScreen(
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = stringResource(Res.string.start_date_label),
-                        modifier = Modifier.clickable {
-                            // Handle calendar picker click here
-                        }
                     )
                 },
                 modifier = Modifier.weight(1f)
-                    .padding(
-                        start = 12.dp,
-                        end = 6.dp,
-                        top = 6.dp,
-                        bottom = 6.dp
-                    ),
+                    .defaultItemPadding()
             )
 
             OutlinedTextField(
@@ -139,18 +124,10 @@ fun AddClazzScreen(
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = stringResource(Res.string.start_date_label),
-                        modifier = Modifier.clickable {
-                            // Handle calendar picker click here
-                        }
                     )
                 },
                 modifier = Modifier.weight(1f)
-                    .padding(
-                        start = 6.dp,
-                        end = 12.dp,
-                        top = 6.dp,
-                        bottom = 6.dp
-                    ),
+                    .defaultItemPadding()
             )
         }
     }

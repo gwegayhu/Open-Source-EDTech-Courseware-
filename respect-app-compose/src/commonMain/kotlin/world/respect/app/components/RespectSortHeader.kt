@@ -59,7 +59,6 @@ fun RespectListSortHeader(
 
             Spacer(Modifier.width(8.dp))
 
-
             Icon(
                 imageVector = if(activeSortOrderOption.order != false)
                     Icons.Default.ArrowDownward
