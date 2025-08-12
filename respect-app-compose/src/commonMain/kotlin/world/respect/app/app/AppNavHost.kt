@@ -13,7 +13,7 @@ import world.respect.app.view.apps.launcher.AppLauncherScreen
 import world.respect.app.view.apps.list.AppListScreen
 import world.respect.app.view.assignments.AssignmentScreen
 import world.respect.app.view.clazz.list.ClazzListScreen
-import world.respect.app.view.clazz.addclazz.AddClazzScreen
+import world.respect.app.view.clazz.edit.ClazzEditScreen
 import world.respect.app.view.clazz.detail.ClazzDetailScreen
 import world.respect.app.view.clazz.addperson.AddPersonToClazzScreen
 import world.respect.app.view.report.ReportScreen
@@ -37,7 +37,7 @@ import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewMode
 import world.respect.shared.viewmodel.report.ReportViewModel
 import world.respect.app.viewmodel.respectViewModel
 import world.respect.shared.navigation.Acknowledgement
-import world.respect.shared.navigation.AddClazz
+import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList
@@ -54,7 +54,7 @@ import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.RespectComposeNavController
-import world.respect.shared.viewmodel.clazz.addclazz.AddClazzViewModel
+import world.respect.shared.viewmodel.clazz.edit.ClazzEditViewModel
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel
 import world.respect.shared.viewmodel.clazz.addperson.AddPersonToClazzViewModel
@@ -152,12 +152,12 @@ fun AppNavHost(
             )
         }
 
-        composable<AddClazz> {
-            val viewModel: AddClazzViewModel = respectViewModel(
+        composable<ClazzEdit> {
+            val viewModel: ClazzEditViewModel = respectViewModel(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            AddClazzScreen(
+            ClazzEditScreen(
                 viewModel = viewModel
             )
         }
