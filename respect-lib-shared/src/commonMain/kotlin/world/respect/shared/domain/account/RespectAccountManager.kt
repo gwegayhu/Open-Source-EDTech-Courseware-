@@ -80,10 +80,6 @@ class RespectAccountManager(
         //now we can get the datalayer by creating a RespectAccount scope
         val mkDirUseCase: MakeRealmPathDirUseCase? = realmScope.getOrNull()
         mkDirUseCase?.invoke()
-
-
-
-
     }
 
 

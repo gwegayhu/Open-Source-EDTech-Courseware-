@@ -22,6 +22,8 @@ import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.server.domain.realm.add.AddRealmUseCase
 import world.respect.server.domain.realm.add.AddServerManagedDirectoryCallback
+import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPasswordDbImpl
+import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseDbImpl
 import world.respect.shared.domain.realm.RespectRealmPath
@@ -118,6 +120,15 @@ fun serverKoinModule(
 
         scoped<RespectRealmDataSource> {
             get<RespectRealmDataSourceLocal>()
+        }
+
+        scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
+            GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
+                realmDb = get(),
+                xxHash = get(),
+                personDataSource = get<RespectRealmDataSource>().personDataSource,
+            )
+
         }
     }
 

@@ -2,7 +2,7 @@ package world.respect.shared.viewmodel.manageuser.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import io.ktor.http.Url
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -12,6 +12,7 @@ import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.credentials.passkey.GetCredentialUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
+import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.resources.StringResourceUiText
@@ -32,7 +33,10 @@ class LoginViewModel(
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
+
     val uiState = _uiState.asStateFlow()
+
+    private val route: LoginScreen = savedStateHandle.toRoute()
 
     init {
         viewModelScope.launch {
@@ -120,14 +124,14 @@ class LoginViewModel(
             viewModelScope.launch {
                 try {
                     accountManager.login(
-                        username, password, Url("foo")
+                        username, password, route.realmUrl
                     )
 
                     _navCommandFlow.tryEmit(
                         NavCommand.Navigate(RespectAppLauncher)
                     )
                 }catch(e: Exception) {
-
+                    e.printStackTrace()
                 }
 
 

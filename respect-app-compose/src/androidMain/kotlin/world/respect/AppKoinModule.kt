@@ -82,13 +82,11 @@ import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndCondi
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
 import java.io.File
-import kotlinx.io.files.Path
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import world.respect.datalayer.realm.model.AuthToken
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
-import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.datalayer.AuthTokenProvider
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.libutil.ext.sanitizedForFilename
@@ -348,6 +346,7 @@ val appKoinModule = module {
 
             GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
                 realmUrl = scopeUrl(),
+                httpClient = get(),
             )
         }
 

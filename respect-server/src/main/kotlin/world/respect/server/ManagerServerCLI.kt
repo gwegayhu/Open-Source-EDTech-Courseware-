@@ -63,7 +63,7 @@ fun managerServerMain(ns: Namespace) {
             CMD_ADD_REALM -> {
                 val realmBaseUrl = Url(ns.getString("url"))
 
-                val response = httpClient.post(serverUrl.resolve("/directory/admin/add-realm")) {
+                val response = httpClient.post(serverUrl.resolve("api/directory/admin/add-realm")) {
                     header(HttpHeaders.Authorization, authHeader)
                     contentType(ContentType.Application.Json)
                     setBody(
