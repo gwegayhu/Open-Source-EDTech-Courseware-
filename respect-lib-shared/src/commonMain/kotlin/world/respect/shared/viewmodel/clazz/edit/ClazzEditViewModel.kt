@@ -74,7 +74,6 @@ class ClazzEditViewModel(
     fun onSaveClass() {
         val initEntity = _uiState.value.entity ?: return
         viewModelScope.launch {
-            // Validation
             if (initEntity.title.isBlank()) {
                 _uiState.update { prev ->
                     prev.copy(clazzNameError = getString(Res.string.required))
@@ -82,12 +81,11 @@ class ClazzEditViewModel(
                 return@launch
             }
 
-            // Update last modified time
             val updatedEntity = initEntity.copy(
-                dateLastModified = Clock.System.now()
+                dateLastModified = Clock.System.now(),
+                location = initEntity.location
             )
 
-            // Save to data source (update if exists, add if new)
             FakeRosterDataSource.putClass(updatedEntity)
         }
     }
