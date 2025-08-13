@@ -1,10 +1,10 @@
 package world.respect.shared.domain.account
 
-import world.respect.libutil.exceptionwithstatuscode.ExceptionWithStatusCode
+import world.respect.libutil.util.throwable.ExceptionWithHttpStatusCode
 
 class ForbiddenException(
     message: String?,
     cause: Throwable? = null
-): Exception(message, cause), ExceptionWithStatusCode {
+): Exception(message, cause), ExceptionWithHttpStatusCode {
     override val statusCode: Int = 403
 }
