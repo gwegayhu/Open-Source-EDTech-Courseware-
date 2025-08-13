@@ -14,7 +14,6 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
 import world.respect.shared.generated.resources.required
-import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
