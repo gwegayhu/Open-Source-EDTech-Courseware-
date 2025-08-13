@@ -47,8 +47,7 @@
     <string name="invalid_invite_code">Invalid code, try again</string>
     <string name="already_have_account">I already have an account</string>
     <string name="add_my_school">Add my school</string>
-    <string name="userid_required">UserId required</string>
-    <string name="password_required">Password is required</string>
+    <string name="required_field">Required field</string>
     <string name="login">Login</string>
     <string name="userId_label">UserId</string>
     <string name="userId_placeholder">user@school.example.org</string>

@@ -1,12 +1,11 @@
 package world.respect.app.view.manageuser.login
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.defaultScreenPadding
@@ -35,7 +33,7 @@ fun LoginScreen(
 
     LoginScreen(
         uiState = uiState,
-        onUserIdChanged = viewModel::onUserIdChanged,
+        onUsernameChanged = viewModel::onUsernameChanged,
         onPasswordChanged = viewModel::onPasswordChanged,
         onClickLogin = viewModel::onClickLogin
     )
@@ -44,7 +42,7 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     uiState: LoginUiState,
-    onUserIdChanged: (String) -> Unit,
+    onUsernameChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onClickLogin: () -> Unit
 ) {
@@ -53,23 +51,18 @@ fun LoginScreen(
             .fillMaxSize()
             .defaultScreenPadding()
     ) {
-        uiState.errorText?.let {
-            Text(it)
-        }
         OutlinedTextField(
-            value = uiState.userId,
-            onValueChange = onUserIdChanged,
+            value = uiState.username,
+            onValueChange = onUsernameChanged,
             label = { Text(stringResource(Res.string.userId_label)) },
             placeholder = { Text(stringResource(Res.string.userId_label)) },
             singleLine = true,
-            isError = uiState.userIdError != null,
-            supportingText = uiState.userIdError?.let {
+            isError = uiState.usernameError != null,
+            supportingText = uiState.usernameError?.let {
                 { Text(uiTextStringResource(it)) }
             },
             modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = uiState.password,
@@ -86,7 +79,6 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth().defaultItemPadding()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = onClickLogin,
@@ -94,6 +86,14 @@ fun LoginScreen(
                 .fillMaxWidth().defaultItemPadding()
         ) {
             Text(text = stringResource(Res.string.login))
+        }
+
+        uiState.errorText?.also {
+            Text(
+                uiTextStringResource(it),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.defaultItemPadding(),
+            )
         }
     }
 }
