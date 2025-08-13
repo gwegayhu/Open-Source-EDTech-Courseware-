@@ -11,11 +11,15 @@ interface ExceptionWithUiMessage {
     val uiText: UiText
 }
 
-class ExceptionUiMessageWrapper(
+class ExceptionUiMessageWrapper internal constructor(
     cause: Throwable?,
     message: String?,
     override val uiText: UiText
 ): Exception(message, cause), ExceptionWithUiMessage
+
+fun Throwable.withUiText(uiText: UiText): Exception {
+    return ExceptionUiMessageWrapper(this, message, uiText)
+}
 
 fun Throwable.getUiText(): UiText? {
     return getCauseOfType<ExceptionWithUiMessage>()?.uiText
