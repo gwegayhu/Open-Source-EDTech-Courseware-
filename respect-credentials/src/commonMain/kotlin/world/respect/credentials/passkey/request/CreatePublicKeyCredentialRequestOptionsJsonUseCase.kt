@@ -16,7 +16,7 @@ import world.respect.libutil.ext.randomString
  * handled.
  */
 class CreatePublicKeyCredentialRequestOptionsJsonUseCase(
-    private val url: Url,
+    private val rpId: String,
 ) {
 
     operator fun invoke(
@@ -27,7 +27,7 @@ class CreatePublicKeyCredentialRequestOptionsJsonUseCase(
         return PublicKeyCredentialRequestOptionsJSON(
             challenge = challenge.encodeBase64(),
             timeout = PublicKeyCredentialRequestOptionsJSON.TIME_OUT_VALUE,
-            rpId = url.host,
+            rpId = Url(rpId).host,
             allowCredentials = allowCredentials,
             userVerification = "required"
         )

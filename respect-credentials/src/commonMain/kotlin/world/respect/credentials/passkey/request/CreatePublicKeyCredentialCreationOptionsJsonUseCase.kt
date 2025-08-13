@@ -1,5 +1,6 @@
 package world.respect.credentials.passkey.request
 
+import io.ktor.http.Url
 import io.ktor.util.encodeBase64
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
@@ -8,6 +9,8 @@ import world.respect.credentials.passkey.model.PublicKeyCredentialCreationOption
 import world.respect.credentials.passkey.model.PublicKeyCredentialParameters
 import world.respect.credentials.passkey.model.PublicKeyCredentialRpEntity
 import world.respect.credentials.passkey.model.PublicKeyCredentialUserEntityJSON
+import world.respect.datalayer.db.opds.entities.PersonPasskeyEntity
+import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libutil.ext.randomString
 
 /**
@@ -26,6 +29,7 @@ class CreatePublicKeyCredentialCreationOptionsJsonUseCase(
     private val rpId: String,
     private val encodeUserHandleUseCase: EncodeUserHandleUseCase,
     private val name: StringResource,
+    private val primaryKeyGenerator: PrimaryKeyGenerator
 ) {
 
     suspend operator fun invoke(
@@ -34,14 +38,12 @@ class CreatePublicKeyCredentialCreationOptionsJsonUseCase(
     ): PublicKeyCredentialCreationOptionsJSON {
         val challenge = randomString(16) //TODO note: this should really take place on the server side
 
-        //will change this with actual uid of person who is going to
-        // signup when doing implementation with server
-        val personPasskeyUid = 2745456645645645654
+        val personPasskeyUid = primaryKeyGenerator.nextId(PersonPasskeyEntity.TABLE_ID)
         val encodeUserHandle = encodeUserHandleUseCase(personPasskeyUid)
 
         return PublicKeyCredentialCreationOptionsJSON(
             rp = PublicKeyCredentialRpEntity(
-                id = rpId,
+                id = Url(rpId).host,
                 name = getString(name),
                 icon = null,
             ),

@@ -248,15 +248,16 @@ val appKoinModule = module {
         CreatePublicKeyCredentialCreationOptionsJsonUseCase(
             rpId = "https://testproxy.devserver3.ustadmobile.com/",
             encodeUserHandleUseCase = get(),
-            name = Res.string.app_name
-        )
+            name = Res.string.app_name,
+            primaryKeyGenerator = PrimaryKeyGenerator(RespectDatabase.TABLE_IDS)
+            )
     }
     single {
         RespectRedeemInviteRequestUseCase()
     }
     single {
         CreatePublicKeyCredentialRequestOptionsJsonUseCase(
-            url = Url("https://testproxy.devserver3.ustadmobile.com/")
+            rpId = "https://testproxy.devserver3.ustadmobile.com/"
         )
     }
 
