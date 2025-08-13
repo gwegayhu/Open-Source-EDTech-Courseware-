@@ -2,11 +2,13 @@ package world.respect.shared.viewmodel.manageuser.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import world.respect.shared.navigation.NavCommand
@@ -22,7 +24,8 @@ data class LoginUiState(
 )
 
 class LoginViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val accountManager: RespectAccountManager,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -60,12 +63,12 @@ class LoginViewModel(
 
     fun onClickLogin() {
         viewModelScope.launch {
-            val userID = uiState.value.userId
+            val username = uiState.value.userId
             val password = uiState.value.password
 
             _uiState.update {
                 it.copy(
-                    userIdError = if (userID.isEmpty()) StringResourceUiText(Res.string.userid_required) else null,
+                    userIdError = if (username.isEmpty()) StringResourceUiText(Res.string.userid_required) else null,
                     passwordError = if (password.isEmpty()) StringResourceUiText(Res.string.password_required) else null
                 )
             }
@@ -73,10 +76,22 @@ class LoginViewModel(
             if (uiState.value.userIdError!=null || uiState.value.passwordError!=null) {
                 return@launch
             }
+
             viewModelScope.launch {
-                _navCommandFlow.tryEmit(
-                    NavCommand.Navigate(RespectAppLauncher)
-                )
+                try {
+                    accountManager.login(
+                        username, password, Url("foo")
+                    )
+
+                    _navCommandFlow.tryEmit(
+                        NavCommand.Navigate(RespectAppLauncher)
+                    )
+                }catch(e: Exception) {
+
+                }
+
+
+
             }
         }
     }

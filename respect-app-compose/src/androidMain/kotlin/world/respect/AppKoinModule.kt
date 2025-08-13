@@ -66,14 +66,18 @@ import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
 import java.io.File
 import kotlinx.io.files.Path
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import world.respect.datalayer.realm.model.AuthToken
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.datalayer.AuthTokenProvider
+import world.respect.datalayer.db.RespectRealmDatabase
+import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
+import world.respect.shared.domain.realm.RespectRealmPath
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -258,12 +262,45 @@ val appKoinModule = module {
         )
     }
 
+
+    /**
+     * The RespectRealm scope might be one instance per realm url or one instance per account per
+     * url.
+     *
+     * If the upstream server provides a list of grants/permission rules then the realm database
+     * can be shared; and scopeId
+     */
     scope<RespectRealm> {
+
+        fun Scope.scopeUrl(): Url {
+            val atIndex = id.lastIndexOf("@")
+            return if(atIndex < 0) {
+                Url(id)
+            }else {
+                Url(id.substring(atIndex + 1))
+            }
+        }
+
+
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
+
             GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
-                realmUrl = Url(id),
+                realmUrl = scopeUrl(),
             )
         }
+
+        scoped<RespectRealmPath> {
+            RespectRealmPath(
+                path = Path(
+                    File(
+                        androidContext().filesDir, scopeUrl().sanitizedForFilename()
+                    ).absolutePath
+                )
+            )
+        }
+
+
+
     }
 
     /**

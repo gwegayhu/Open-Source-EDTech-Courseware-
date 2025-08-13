@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
+import world.respect.shared.domain.realm.MakeRealmPathDirUseCase
 
 class RespectAccountManager(
     private val settings: Settings,
@@ -67,8 +68,8 @@ class RespectAccountManager(
         password: String,
         realmUrl: Url,
     ) {
-        val scope = getKoin().getOrCreateScope<RespectRealm>(realmUrl.toString())
-        val authUseCase: GetTokenAndUserProfileWithUsernameAndPasswordUseCase = scope.get()
+        val realmScope = getKoin().getOrCreateScope<RespectRealm>(realmUrl.toString())
+        val authUseCase: GetTokenAndUserProfileWithUsernameAndPasswordUseCase = realmScope.get()
         val authResponse = authUseCase(
             username = username,
             password = password,
@@ -77,6 +78,11 @@ class RespectAccountManager(
         tokenManager.storeToken("$username@$realmUrl", authResponse.token)
 
         //now we can get the datalayer by creating a RespectAccount scope
+        val mkDirUseCase: MakeRealmPathDirUseCase? = realmScope.getOrNull()
+        mkDirUseCase?.invoke()
+
+
+
 
     }
 
