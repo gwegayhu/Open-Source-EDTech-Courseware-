@@ -1,5 +1,6 @@
 package world.respect.shared.util.exception
 
+import world.respect.libutil.ext.getCauseOfType
 import world.respect.shared.resources.UiText
 
 /**

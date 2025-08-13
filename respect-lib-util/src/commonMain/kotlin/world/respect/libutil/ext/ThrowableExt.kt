@@ -1,4 +1,4 @@
-package world.respect.shared.util.exception
+package world.respect.libutil.ext
 
 const val EXCEPTION_CAUSE_MAX_DEPTH = 20
 
