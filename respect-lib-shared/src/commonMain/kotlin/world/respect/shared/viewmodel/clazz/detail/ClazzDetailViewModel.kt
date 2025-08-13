@@ -129,9 +129,9 @@ class ClazzDetailViewModel(
         _uiState.update { it.copy(selectedChip = chip) }
     }
 
-    fun onClickAcceptInvite() {}
+    fun onClickAcceptInvite(user: OneRosterUser) {}
 
-    fun onClickDismissInvite() {}
+    fun onClickDismissInvite(user: OneRosterUser) {}
 
 
     companion object {

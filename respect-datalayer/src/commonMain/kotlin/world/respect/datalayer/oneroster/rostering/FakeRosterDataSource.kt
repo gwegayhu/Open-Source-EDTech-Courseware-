@@ -96,35 +96,17 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
                 OneRosterClass(
                     sourcedId = "1",
                     title = "Class 1",
-                    dateLastModified = Instant.DISTANT_PAST,
-                    description = "The class helps " +
-                            "students build foundational skills in reading, writing, mathematics, " +
-                            "and basic sciences, while developing social, creative, " +
-                            "and problem-solving abilities through interactive learning.",
-                    startDate = "",
-                    endDate = ""
+                    dateLastModified = Instant.DISTANT_PAST
                 ),
                 OneRosterClass(
                     sourcedId = "2",
                     title = "Class 2",
-                    dateLastModified = Instant.DISTANT_PAST,
-                    description = "The class helps " +
-                            "students build foundational skills in reading, writing, mathematics, " +
-                            "and basic sciences, while developing social, creative, " +
-                            "and problem-solving abilities through interactive learning.",
-                    startDate = "",
-                    endDate = ""
+                    dateLastModified = Instant.DISTANT_PAST
                 ),
                 OneRosterClass(
                     sourcedId = "3",
                     title = "Class 3",
-                    dateLastModified = Instant.DISTANT_PAST,
-                    description = "The class helps " +
-                            "students build foundational skills in reading, writing, mathematics, " +
-                            "and basic sciences, while developing social, creative, " +
-                            "and problem-solving abilities through interactive learning.",
-                    startDate = "",
-                    endDate = ""
+                    dateLastModified = Instant.DISTANT_PAST
                 )
             )
         )

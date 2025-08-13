@@ -26,6 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectFilterChipsHeader
 import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
+import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
@@ -50,8 +51,8 @@ fun ClazzDetailScreen(
         onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
         onSortOrderChanged = viewModel::onSortOrderChanged,
         onSelectChip = { viewModel.onSelectChip(it) },
-        onClickAcceptInvite = viewModel::onClickAcceptInvite,
-        onClickDismissInvite = viewModel::onClickDismissInvite
+        onClickAcceptInvite = { viewModel.onClickAcceptInvite(it) },
+        onClickDismissInvite = { viewModel.onClickDismissInvite(it) }
     )
 }
 
@@ -61,8 +62,8 @@ fun ClazzDetailScreen(
     onClickAddPersonToClazz: () -> Unit,
     onSortOrderChanged: (SortOrderOption) -> Unit = { },
     onSelectChip: (String) -> Unit,
-    onClickAcceptInvite: () -> Unit,
-    onClickDismissInvite: () -> Unit
+    onClickAcceptInvite: (OneRosterUser) -> Unit,
+    onClickDismissInvite: (OneRosterUser) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -157,8 +158,8 @@ fun ClazzDetailScreen(
             uiState.listOfPending,
             key = { index, pendingUser ->
                 pendingUser.sourcedId
-            }) { index, pendingUser ->
-            val roleName = pendingUser.roles.firstOrNull()?.role?.name
+            }) { index, user ->
+            val roleName = user.roles.firstOrNull()?.role?.name
                 ?.lowercase()
                 ?.replaceFirstChar { it.uppercase() } ?: "Unknown"
 
@@ -167,24 +168,24 @@ fun ClazzDetailScreen(
                     .fillMaxWidth(),
                 leadingContent = {
                     RespectPersonAvatar(
-                        name = pendingUser.givenName
+                        name = user.givenName
                     )
                 },
                 headlineContent = {
-                    Text(text = pendingUser.givenName + "(" + roleName + ")")
+                    Text(text = user.givenName + "(" + roleName + ")")
                 },
                 trailingContent = {
                     Row {
                         Icon(
                             modifier = Modifier.size(24.dp).clickable {
-                                onClickAcceptInvite()
+                                onClickAcceptInvite(user)
                             },
                             imageVector = Icons.Outlined.CheckCircle,
                             contentDescription = null,
                         )
                         Icon(
                             modifier = Modifier.size(24.dp).clickable {
-                                onClickDismissInvite()
+                                onClickDismissInvite(user)
                             },
                             imageVector = Icons.Outlined.Cancel,
                             contentDescription = null,

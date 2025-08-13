@@ -62,6 +62,7 @@ class ClazzEditViewModel(
             it.copy(description = newValue)
         }
     }
+
     fun onStartDateChange(newValue: String) {
         _uiState.update {
             it.copy(startDate = newValue)
@@ -81,10 +82,7 @@ class ClazzEditViewModel(
                 sourcedId = UUID.randomUUID().toString(),
                 title = uiState.value.className,
                 dateLastModified = Clock.System.now(),
-                location = null,
-                description = uiState.value.description,
-                startDate = uiState.value.startDate,
-                endDate = uiState.value.endDate
+                location = null
             )
             FakeRosterDataSource().putClass(newClass)
 
