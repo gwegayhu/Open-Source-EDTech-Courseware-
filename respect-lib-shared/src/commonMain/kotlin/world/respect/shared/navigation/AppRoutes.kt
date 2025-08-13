@@ -44,7 +44,18 @@ object ClazzList : RespectAppRoute
 object ClazzEdit : RespectAppRoute
 
 @Serializable
-object ClazzDetail : RespectAppRoute
+class ClazzDetail(
+    val sourcedId: String,
+) : RespectAppRoute {
+
+    companion object {
+        fun create(
+            sourcedId: String
+        ) = ClazzDetail(
+            sourcedId = sourcedId
+        )
+    }
+}
 
 @Serializable
 object Report : RespectAppRoute

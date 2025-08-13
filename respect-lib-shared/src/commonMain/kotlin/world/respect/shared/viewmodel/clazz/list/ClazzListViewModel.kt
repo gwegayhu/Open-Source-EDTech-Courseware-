@@ -96,10 +96,10 @@ class ClazzListViewModel(
         }
     }
 
-    fun onClickClazz(sourceId: String) {
+    fun onClickClazz(sourcedId: String) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ClazzDetail
+                ClazzDetail.create(sourcedId)
             )
         )
     }

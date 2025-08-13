@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.clazz.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,6 +20,7 @@ import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.edit
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.AddPersonToClazz
+import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.FilterChipsOption
 import world.respect.shared.util.SortOrderOption
@@ -48,9 +50,13 @@ class ClazzDetailViewModel(
 
     val uiState = _uiState.asStateFlow()
 
+    private val route: ClazzDetail = savedStateHandle.toRoute()
+
     init {
         viewModelScope.launch {
             val users = fakeRosterDataSource.getAllUsers()
+
+            val clazzDetail =fakeRosterDataSource.getClassBySourcedId(route.sourcedId)
 
             val teachers = users.filter { user ->
                 user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
@@ -65,7 +71,7 @@ class ClazzDetailViewModel(
 
             _appUiState.update {
                 it.copy(
-                    title = getString(Res.string.classes),
+                    title = clazzDetail.title,
                     showBackButton = false,
                     fabState = FabUiState(
                         visible = true,
