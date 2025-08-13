@@ -28,6 +28,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import world.respect.app.components.defaultItemPadding
+import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
+import kotlin.time.ExperimentalTime
 
 
 @Composable
@@ -35,36 +37,38 @@ fun ClazzEditScreen(
     viewModel: ClazzEditViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
     ClazzEditScreen(
         uiState = uiState,
-        onClassNameChange = viewModel::onClassNameChange,
-        onClassDescriptionChange = viewModel::onClassDescriptionChange,
-        onStartDateChange = viewModel::onStartDateChange,
-        onEndDateChange = viewModel::onEndDateChange
+        onClazzChanged = viewModel::onClazzChanged,
     )
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ClazzEditScreen(
     uiState: ClazzEditUiState,
-    onClassNameChange: (String) -> Unit,
-    onClassDescriptionChange: (String) -> Unit,
-    onStartDateChange: (String) -> Unit,
-    onEndDateChange: (String) -> Unit
-) {
+    onClazzChanged: (OneRosterClass?) -> Unit = {},
+
+    ) {
     Column(
         modifier = Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
 
         OutlinedTextField(
-            value = uiState.className,
-            onValueChange = onClassNameChange,
+            value = uiState.entity?.title ?: "",
             label = {
                 Text(
                     text = stringResource(Res.string.class_name_label)
                 )
             },
+            onValueChange = {
+                onClazzChanged(uiState.entity?.copy(
+                    title = it
+                ))
+            },
+
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth()
@@ -73,7 +77,9 @@ fun ClazzEditScreen(
 
         OutlinedTextField(
             value = uiState.description,
-            onValueChange = onClassDescriptionChange,
+            onValueChange = {
+                onClazzChanged
+            },
             label = {
                 Text(
                     text = stringResource(Res.string.description)
@@ -92,7 +98,9 @@ fun ClazzEditScreen(
 
             OutlinedTextField(
                 value = uiState.startDate,
-                onValueChange = onStartDateChange,
+                onValueChange = {
+                    onClazzChanged
+                },
                 label = {
                     Text(
                         text = stringResource(Res.string.start_date_label)
@@ -112,7 +120,9 @@ fun ClazzEditScreen(
 
             OutlinedTextField(
                 value = uiState.endDate,
-                onValueChange = onEndDateChange,
+                onValueChange = {
+                    onClazzChanged
+                },
                 label = {
                     Text(
                         text = stringResource(Res.string.end_date_label)

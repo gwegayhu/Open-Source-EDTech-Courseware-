@@ -11,7 +11,7 @@ import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
-import world.respect.shared.generated.resources.classes
+import world.respect.shared.generated.resources.edit_clazz
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import java.util.UUID
@@ -23,7 +23,9 @@ data class ClazzEditUiState(
     var description: String = "",
     var startDate: String = "",
     var endDate: String = "",
-)
+    val entity: OneRosterClass? = null,
+
+    )
 
 class ClazzEditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -37,7 +39,7 @@ class ClazzEditViewModel(
         viewModelScope.launch {
             _appUiState.update { prev ->
                 prev.copy(
-                    title = getString(Res.string.classes),
+                    title = getString(Res.string.edit_clazz),
                     userAccountIconVisible = false,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
@@ -50,31 +52,6 @@ class ClazzEditViewModel(
             }
         }
     }
-
-    fun onClassNameChange(newValue: String) {
-        _uiState.update {
-            it.copy(className = newValue)
-        }
-    }
-
-    fun onClassDescriptionChange(newValue: String) {
-        _uiState.update {
-            it.copy(description = newValue)
-        }
-    }
-
-    fun onStartDateChange(newValue: String) {
-        _uiState.update {
-            it.copy(startDate = newValue)
-        }
-    }
-
-    fun onEndDateChange(newValue: String) {
-        _uiState.update {
-            it.copy(endDate = newValue)
-        }
-    }
-
     @OptIn(ExperimentalTime::class)
     fun onSaveClass() {
         viewModelScope.launch {
@@ -86,6 +63,16 @@ class ClazzEditViewModel(
             )
             FakeRosterDataSource().putClass(newClass)
 
+        }
+    }
+
+    fun onClazzChanged(
+        oneRoasterClass: OneRosterClass?
+    ) {
+        _uiState.update {
+            it.copy(
+                entity = oneRoasterClass
+            )
         }
     }
 }

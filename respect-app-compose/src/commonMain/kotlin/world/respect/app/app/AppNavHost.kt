@@ -83,7 +83,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Acknowledgement,
+        startDestination = RespectAppLauncher,
         modifier = modifier,
     ) {
 
