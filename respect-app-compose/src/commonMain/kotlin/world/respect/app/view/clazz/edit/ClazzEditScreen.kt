@@ -23,10 +23,8 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.class_name_label
 import world.respect.shared.viewmodel.clazz.edit.ClazzEditUiState
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.editScreenPadding
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.description
