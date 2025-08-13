@@ -124,6 +124,7 @@
     <string name="language">Language</string>
     <string name="edit">Edit</string>
     <string name="edit_clazz">Edit Class</string>
+    <string name="required">* Required</string>
 
 
 </resources>

@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class FakeRosterDataSource : OneRosterRosterDataSource {
+object FakeRosterDataSource : OneRosterRosterDataSource {
 
     override suspend fun getAllUsers(): List<OneRosterUser> {
         val now = Instant.DISTANT_PAST
@@ -96,7 +96,7 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
                 OneRosterClass(
                     sourcedId = "1",
                     title = "Class 1",
-                    dateLastModified = Instant.DISTANT_PAST
+                    dateLastModified = Instant.DISTANT_PAST,
                 ),
                 OneRosterClass(
                     sourcedId = "2",
@@ -120,8 +120,14 @@ class FakeRosterDataSource : OneRosterRosterDataSource {
         return classList.first { it.sourcedId == sourcedId }
     }
     override suspend fun putClass(clazz: OneRosterClass) {
-        classList.add(clazz)
+        val index = classList.indexOfFirst { it.sourcedId == clazz.sourcedId }
+        if (index != -1) {
+            classList[index] = clazz
+        } else {
+            classList.add(clazz)
+        }
     }
+
 
     override suspend fun getEnrolmentsByClass(classSourcedId: String) {}
 

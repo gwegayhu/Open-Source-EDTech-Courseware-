@@ -12,6 +12,7 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
+import world.respect.shared.generated.resources.required
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import java.util.UUID
@@ -19,14 +20,11 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 data class ClazzEditUiState(
-    var className: String = "",
-    var description: String = "",
-    var startDate: String = "",
-    var endDate: String = "",
     val entity: OneRosterClass? = null,
+    val clazzNameError: String? = null,
+)
 
-    )
-
+@OptIn(ExperimentalTime::class)
 class ClazzEditViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
@@ -35,8 +33,22 @@ class ClazzEditViewModel(
 
     val uiState = _uiState.asStateFlow()
 
+
     init {
+
         viewModelScope.launch {
+            val sourcedId: String? = savedStateHandle["sourcedId"]
+            val entity = if (sourcedId != null) {
+                FakeRosterDataSource.getClassBySourcedId(sourcedId)
+            } else {
+                OneRosterClass(
+                    sourcedId = UUID.randomUUID().toString(),
+                    dateLastModified = Clock.System.now(),
+                    title = ""
+                )
+            }
+
+            _uiState.update { it.copy(entity = entity) }
             _appUiState.update { prev ->
                 prev.copy(
                     title = getString(Res.string.edit_clazz),
@@ -52,27 +64,33 @@ class ClazzEditViewModel(
             }
         }
     }
+
+
     @OptIn(ExperimentalTime::class)
     fun onSaveClass() {
+        val initEntity = _uiState.value.entity ?: return
         viewModelScope.launch {
-            val newClass = OneRosterClass(
-                sourcedId = UUID.randomUUID().toString(),
-                title = uiState.value.className,
-                dateLastModified = Clock.System.now(),
-                location = null
-            )
-            FakeRosterDataSource().putClass(newClass)
+            // Validation
+            if (initEntity.title.isBlank()) {
+                _uiState.update { prev ->
+                    prev.copy(clazzNameError = getString(Res.string.required))
+                }
+                return@launch
+            }
 
+            // Update last modified time
+            val updatedEntity = initEntity.copy(
+                dateLastModified = Clock.System.now()
+            )
+
+            // Save to data source (update if exists, add if new)
+            FakeRosterDataSource.putClass(updatedEntity)
         }
     }
 
-    fun onClazzChanged(
-        oneRoasterClass: OneRosterClass?
-    ) {
+    fun onClazzChanged(entity: OneRosterClass?) {
         _uiState.update {
-            it.copy(
-                entity = oneRoasterClass
-            )
+            it.copy(entity = entity, clazzNameError = null) // reset error when editing
         }
     }
 }

@@ -36,7 +36,7 @@ class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val fakeRosterDataSource = FakeRosterDataSource()
+    private val fakeRosterDataSource = FakeRosterDataSource
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
