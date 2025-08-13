@@ -4,6 +4,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
@@ -21,6 +23,8 @@ kotlin {
             api(libs.uri.kmp)
             api(libs.ktor.client.core)
             implementation(projects.respectLibUtil)
+            implementation(compose.components.resources)
+            implementation(compose.runtime)
 
         }
 

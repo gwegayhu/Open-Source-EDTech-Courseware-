@@ -59,6 +59,8 @@ import world.respect.shared.domain.storage.CachePathsProviderAndroid
 import world.respect.shared.domain.storage.GetAndroidSdCardDirUseCase
 import world.respect.shared.domain.storage.GetOfflineStorageOptionsUseCaseAndroid
 import world.respect.shared.domain.storage.GetOfflineStorageSettingUseCase
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.app_name
 import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.shared.viewmodel.apps.detail.AppsDetailViewModel
 import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
@@ -244,8 +246,9 @@ val appKoinModule = module {
 
     single {
         CreatePublicKeyCredentialCreationOptionsJsonUseCase(
-            rpId = Url("https://testproxy.devserver3.ustadmobile.com/"),
-            encodeUserHandleUseCase = get()
+            rpId = "https://testproxy.devserver3.ustadmobile.com/",
+            encodeUserHandleUseCase = get(),
+            name = Res.string.app_name
         )
     }
     single {
