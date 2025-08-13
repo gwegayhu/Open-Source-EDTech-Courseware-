@@ -1,4 +1,6 @@
-package world.respect.shared.util.exception
+package world.respect.libutil.util.throwable
+
+import world.respect.libutil.ext.getCauseOfType
 
 /**
  * Some exceptions map to a particular http status code This interface makes it easier for http
