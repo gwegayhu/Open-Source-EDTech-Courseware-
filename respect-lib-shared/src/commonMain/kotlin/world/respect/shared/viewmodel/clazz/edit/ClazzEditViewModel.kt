@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.clazz.edit
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,6 +14,8 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
 import world.respect.shared.generated.resources.required
+import world.respect.shared.navigation.ClazzDetail
+import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import java.util.UUID
@@ -33,22 +36,23 @@ class ClazzEditViewModel(
 
     val uiState = _uiState.asStateFlow()
 
+    private val route: ClazzEdit = savedStateHandle.toRoute()
 
     init {
 
         viewModelScope.launch {
-            val sourcedId: String? = savedStateHandle["sourcedId"]
-            val entity = if (sourcedId != null) {
-                FakeRosterDataSource.getClassBySourcedId(sourcedId)
+            val entity = if (route.sourcedId != null) {
+                FakeRosterDataSource.getClassBySourcedId(route.sourcedId)
             } else {
                 OneRosterClass(
                     sourcedId = UUID.randomUUID().toString(),
-                    dateLastModified = Clock.System.now(),
-                    title = ""
+                    title = "",
+                    dateLastModified = Clock.System.now()
                 )
             }
 
             _uiState.update { it.copy(entity = entity) }
+
             _appUiState.update { prev ->
                 prev.copy(
                     title = getString(Res.string.edit_clazz),

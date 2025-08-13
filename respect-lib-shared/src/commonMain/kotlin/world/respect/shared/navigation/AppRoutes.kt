@@ -41,9 +41,6 @@ object Assignment : RespectAppRoute
 object ClazzList : RespectAppRoute
 
 @Serializable
-object ClazzEdit : RespectAppRoute
-
-@Serializable
 class ClazzDetail(
     val sourcedId: String,
 ) : RespectAppRoute {
@@ -52,6 +49,21 @@ class ClazzDetail(
         fun create(
             sourcedId: String
         ) = ClazzDetail(
+            sourcedId = sourcedId
+        )
+    }
+}
+
+
+@Serializable
+class ClazzEdit(
+    val sourcedId: String?,
+) : RespectAppRoute {
+
+    companion object {
+        fun create(
+            sourcedId: String?
+        ) = ClazzEdit(
             sourcedId = sourcedId
         )
     }

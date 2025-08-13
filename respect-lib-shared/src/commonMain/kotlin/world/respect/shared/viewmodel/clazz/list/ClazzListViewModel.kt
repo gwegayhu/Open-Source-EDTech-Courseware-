@@ -40,9 +40,7 @@ class ClazzListViewModel(
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
-
-    private val route: ClazzList = savedStateHandle.toRoute()
-
+    
     init {
         viewModelScope.launch {
 
@@ -80,7 +78,9 @@ class ClazzListViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ClazzEdit
+                                    ClazzEdit.create(
+                                        sourcedId = null
+                                    )
                                 )
                             )
                         }

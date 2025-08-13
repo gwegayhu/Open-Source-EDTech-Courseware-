@@ -16,7 +16,6 @@ import world.respect.shared.generated.resources.first_name
 import world.respect.shared.generated.resources.last_name
 import world.respect.shared.generated.resources.all
 import world.respect.shared.generated.resources.active
-import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.edit
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.AddPersonToClazz
@@ -80,7 +79,7 @@ class ClazzDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ClazzEdit
+                                    ClazzEdit.create(route.sourcedId)
                                 )
                             )
                         }
