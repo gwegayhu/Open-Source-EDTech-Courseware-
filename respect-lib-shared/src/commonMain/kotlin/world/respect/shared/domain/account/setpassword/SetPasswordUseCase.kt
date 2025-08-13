@@ -5,7 +5,7 @@ import world.respect.shared.domain.AuthenticatedUserPrincipalId
 interface SetPasswordUseCase {
 
     data class SetPasswordRequest(
-        val auth: AuthenticatedUserPrincipalId,
+        val authenticatedUserId: AuthenticatedUserPrincipalId,
         val userGuid: String,
         val password: String,
     )

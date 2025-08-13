@@ -54,7 +54,7 @@ class AddRealmUseCase(
 
         setPasswordUseCase(
             SetPasswordUseCase.SetPasswordRequest(
-                auth = AuthenticatedUserPrincipalId.directoryAdmin,
+                authenticatedUserId = AuthenticatedUserPrincipalId.directoryAdmin,
                 userGuid = adminPerson.guid,
                 password = request.adminPassword,
             )

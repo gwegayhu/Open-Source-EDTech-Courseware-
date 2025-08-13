@@ -75,7 +75,9 @@ class AuthWithPasswordIntegrationTest {
 
             setPasswordUseCase(
                 SetPasswordUseCase.SetPasswordRequest(
-                    auth = AuthenticatedUserPrincipalId("foo"),
+                    authenticatedUserId = AuthenticatedUserPrincipalId(
+                        AuthenticatedUserPrincipalId.DIRECTORY_ADMIN_GUID
+                    ),
                     userGuid = personGuid,
                     password = password,
                 )
@@ -107,7 +109,7 @@ class AuthWithPasswordIntegrationTest {
 
                 setPasswordUseCase(
                     SetPasswordUseCase.SetPasswordRequest(
-                        auth = AuthenticatedUserPrincipalId("foo"),
+                        authenticatedUserId = AuthenticatedUserPrincipalId("foo"),
                         userGuid = personGuid,
                         password = password,
                     )
