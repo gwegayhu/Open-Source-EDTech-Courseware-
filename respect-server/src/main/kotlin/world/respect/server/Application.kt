@@ -18,6 +18,7 @@ import world.respect.libutil.ext.randomString
 import world.respect.server.routes.AUTH_CONFIG_DIRECTORY_ADMIN_BASIC
 import world.respect.server.routes.AuthRoute
 import world.respect.server.routes.RespectRealmDirectoryRoute
+import world.respect.server.routes.getRespectRealmJson
 import java.io.File
 import java.util.Properties
 
@@ -72,6 +73,10 @@ fun Application.module() {
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
+        }
+
+        route(".well-known") {
+            getRespectRealmJson("respect-realm.json")
         }
 
         route("api") {

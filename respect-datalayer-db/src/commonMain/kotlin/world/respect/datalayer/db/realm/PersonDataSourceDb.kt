@@ -1,5 +1,10 @@
 package world.respect.datalayer.db.realm
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.datalayer.db.realm.adapters.PersonEntities
 import world.respect.datalayer.db.realm.adapters.toEntities
@@ -17,6 +22,26 @@ class PersonDataSourceDb(
         return realmDb.getPersonEntityDao().findByUsername(username)?.let {
             PersonEntities(it)
         }?.toModel()
+    }
+
+    override suspend fun findByGuid(guid: String): Person? {
+        return realmDb.getPersonEntityDao().findByGuidHash(xxHash.hash(guid))?.let {
+            PersonEntities(it)
+        }?.toModel()
+    }
+
+    override suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
+        return realmDb.getPersonEntityDao().findByGuidHashAsFlow(
+            xxHash.hash(guid)
+        ).map { personEntity ->
+            if(personEntity != null) {
+                DataReadyState(
+                    data = PersonEntities(personEntity).toModel()
+                )
+            } else {
+                NoDataLoadedState(NoDataLoadedState.Reason.NOT_FOUND)
+            }
+        }
     }
 
     override suspend fun addPerson(person: Person) {

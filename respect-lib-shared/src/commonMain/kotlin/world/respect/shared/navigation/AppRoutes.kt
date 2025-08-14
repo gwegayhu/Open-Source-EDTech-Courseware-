@@ -333,3 +333,6 @@ class LearningUnitViewer(
 
 }
 
+@Serializable
+object AccountList: RespectAppRoute
+

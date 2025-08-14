@@ -82,18 +82,20 @@ import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndCondi
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
 import java.io.File
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
-import world.respect.datalayer.realm.model.AuthToken
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.datalayer.AuthTokenProvider
+import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.RespectRealmDataSourceLocal
+import world.respect.datalayer.db.RespectRealmDataSourceDb
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
 import world.respect.shared.domain.realm.RespectRealmPath
+import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -173,6 +175,7 @@ val appKoinModule = module {
     viewModelOf(::OtherOptionsViewModel)
     viewModelOf(::OtherOptionsSignupViewModel)
     viewModelOf(::EnterPasswordSignupViewModel)
+    viewModelOf(::AccountListViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
@@ -244,6 +247,7 @@ val appKoinModule = module {
             settings = get(),
             json = get(),
             tokenManager = get(),
+            httpClient = get(),
         )
     }
 
@@ -343,7 +347,6 @@ val appKoinModule = module {
 
 
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
-
             GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
                 realmUrl = scopeUrl(),
                 httpClient = get(),
@@ -360,8 +363,12 @@ val appKoinModule = module {
             )
         }
 
-
-
+        scoped<RespectRealmDatabase> {
+            Room.databaseBuilder<RespectRealmDatabase>(
+                androidContext(),
+                scopeUrl().sanitizedForFilename()
+            ).build()
+        }
     }
 
     /**
@@ -370,12 +377,19 @@ val appKoinModule = module {
      *
      * The URL will never contain an '@' sign (e.g. user@email.com@https://school.example.org/),
      * the sourcedId may contain an @ sign. The realm url is after the LAST @ symbol.
+     *
+     * The RespectAccount scope will be linked to RespectRealm (the parent) scope.
      */
     scope<RespectAccount> {
         scoped<AuthTokenProvider> {
             get<RespectTokenManager>().providerFor(id)
         }
 
-        //Can now use the token provider for datasources
+        scoped<RespectRealmDataSource> {
+            RespectRealmDataSourceDb(
+                realmDb = get(),
+                xxStringHasher = get(),
+            )
+        }
     }
 }

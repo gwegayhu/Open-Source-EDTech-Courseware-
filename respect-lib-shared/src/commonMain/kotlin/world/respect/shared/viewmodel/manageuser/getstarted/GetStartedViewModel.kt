@@ -39,7 +39,6 @@ class GetStartedViewModel(
                     title = getString(Res.string.lets_get_started),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false,
-                    showBackButton = false
                 )
             }
         }

@@ -2,13 +2,16 @@ package world.respect.datalayer.db.realmdirectory
 
 import androidx.room.Transactor
 import androidx.room.useWriterConnection
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.db.RespectAppDatabase
+import world.respect.datalayer.db.realmdirectory.adapters.RespectRealmEntities
 import world.respect.datalayer.db.realmdirectory.adapters.toEntities
+import world.respect.datalayer.db.realmdirectory.adapters.toModel
 import world.respect.datalayer.db.realmdirectory.entities.RealmConfigEntity
 import world.respect.datalayer.db.shared.entities.LangMapEntity
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
@@ -58,6 +61,26 @@ class RealmDirectoryDataSourceDb(
                 )
             }
         }
+    }
+
+    override suspend fun getRealmByUrl(url: Url): DataReadyState<RespectRealm>? {
+        val realmEntity = respectAppDb.getRealmEntityDao().findByUid(
+            xxStringHasher.hash(url.toString())
+        )
+
+        if(realmEntity == null)
+            return null
+
+        val langMapEntities = respectAppDb.getLangMapEntityDao().selectAllByTableAndEntityId(
+            lmeTopParentType = LangMapEntity.TopParentType.RESPECT_REALM.id,
+            lmeEntityUid1 = realmEntity.reUid,
+            lmeEntityUid2 = 0L
+        )
+
+        return RespectRealmEntities(
+            realm = realmEntity,
+            langMapEntities = langMapEntities
+        ).toModel()
     }
 
     override suspend fun upsertRealm(

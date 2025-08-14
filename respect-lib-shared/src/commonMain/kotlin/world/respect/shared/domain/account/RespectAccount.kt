@@ -12,4 +12,12 @@ import world.respect.datalayer.respect.model.RespectRealm
 data class RespectAccount(
     val userSourcedId: String,
     val realm: RespectRealm,
-)
+) {
+
+    /**
+     * The ScopeId to use for dependency injection - always the userSourcedId@realmUrl
+     */
+    val scopeId: String
+        get() = "$userSourcedId@${realm.self}"
+
+}
