@@ -12,8 +12,9 @@ data class FabUiState(
     val onClick: () -> Unit = { },
 ) {
 
+    @Suppress("unused") //Reserved for future use
     enum class FabIcon {
-        NONE, ADD, EDIT,APP
+        NONE, ADD, EDIT
     }
 
 }
