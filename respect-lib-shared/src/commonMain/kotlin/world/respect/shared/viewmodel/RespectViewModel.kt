@@ -57,15 +57,5 @@ abstract class RespectViewModel(
             }
         }
 
-    /**
-     * Shorthand to set the title
-     */
-    protected var title: String?
-        get() = _appUiState.value.title
-        set(value) {
-            _appUiState.update {
-                it.copy(title = value)
-            }
-        }
 
 }

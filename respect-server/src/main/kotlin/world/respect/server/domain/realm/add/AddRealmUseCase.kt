@@ -5,6 +5,7 @@ import org.koin.core.component.KoinComponent
 import world.respect.datalayer.RespectRealmDataSourceLocal
 import world.respect.datalayer.db.realmdirectory.ext.virtualHostScopeId
 import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.realm.model.PersonRole
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.AuthenticatedUserPrincipalId
@@ -48,9 +49,15 @@ class AddRealmUseCase(
             username = request.adminUsername,
             givenName = "Admin",
             familyName = "Admin",
+            roles = listOf(
+                PersonRole(
+                    isPrimaryRole = true,
+                    roleType = PersonRole.RoleType.SYSTEM_ADMINISTRATOR,
+                )
+            )
         )
 
-        realmDataSource.personDataSource.addPerson(adminPerson)
+        realmDataSource.personDataSource.putPerson(adminPerson)
 
         setPasswordUseCase(
             SetPasswordUseCase.SetPasswordRequest(

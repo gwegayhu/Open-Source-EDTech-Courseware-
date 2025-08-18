@@ -20,6 +20,7 @@ import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.respect.model.LEARNING_UNIT_MIME_TYPES
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.app.appstate.getTitle
 
 data class LearningUnitDetailUiState(
@@ -58,7 +59,7 @@ class LearningUnitDetailViewModel(
                         }
                         _appUiState.update {
                             it.copy(
-                                title = result.data.metadata.title.getTitle()
+                                title = result.data.metadata.title.getTitle().asUiText()
                             )
                         }
                     }

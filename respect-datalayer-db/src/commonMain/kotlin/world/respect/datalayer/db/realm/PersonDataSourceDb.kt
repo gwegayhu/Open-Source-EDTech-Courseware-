@@ -1,5 +1,7 @@
 package world.respect.datalayer.db.realm
 
+import androidx.room.Transactor
+import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import world.respect.datalayer.DataLoadState
@@ -44,9 +46,17 @@ class PersonDataSourceDb(
         }
     }
 
-    override suspend fun addPerson(person: Person) {
-        realmDb.getPersonEntityDao().insert(
-            person.toEntities(xxHash).personEntity
-        )
+    override suspend fun putPerson(person: Person) {
+        val entities = person.toEntities(xxHash)
+
+        realmDb.useWriterConnection { con ->
+            con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                realmDb.getPersonEntityDao().insert(entities.personEntity)
+                realmDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
+                    entities.personEntity.pGuidHash
+                )
+                realmDb.getPersonRoleEntityDao().upsertList(entities.personRoleEntities)
+            }
+        }
     }
 }

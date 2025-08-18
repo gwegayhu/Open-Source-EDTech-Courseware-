@@ -310,4 +310,5 @@
     <!-- Actions -->
     <string name="delete">Delete</string>
 
+    <string name="accounts">Accounts</string>
 </resources>

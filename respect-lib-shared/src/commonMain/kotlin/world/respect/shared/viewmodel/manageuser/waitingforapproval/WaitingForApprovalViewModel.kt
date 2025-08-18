@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.waiting_title
 import world.respect.shared.navigation.WaitingForApproval
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 
@@ -32,7 +32,7 @@ class WaitingForApprovalViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(Res.string.waiting_title),
+                    title = Res.string.waiting_title.asUiText(),
                     hideBottomNavigation = true,
                     userAccountIconVisible = true
                 )
