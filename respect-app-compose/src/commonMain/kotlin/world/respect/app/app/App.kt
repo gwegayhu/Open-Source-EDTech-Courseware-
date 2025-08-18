@@ -33,6 +33,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.apps
 import world.respect.shared.generated.resources.assignments
@@ -150,7 +151,9 @@ fun App(
                         text = {
                             Text(
                                 modifier = Modifier.testTag("floating_action_button_text"),
-                                text = appUiStateVal.fabState.text ?: ""
+                                text = appUiStateVal.fabState.text?.let {
+                                    uiTextStringResource(it)
+                                } ?: ""
                             )
                         },
                         icon = {

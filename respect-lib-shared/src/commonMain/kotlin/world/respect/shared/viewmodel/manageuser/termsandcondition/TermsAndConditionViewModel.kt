@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.terms_and_conditions
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.TermsAndCondition
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class TermsAndConditionUiState(
@@ -32,7 +32,7 @@ class TermsAndConditionViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(Res.string.terms_and_conditions),
+                    title = Res.string.terms_and_conditions.asUiText(),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false
                 )

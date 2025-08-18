@@ -97,6 +97,8 @@ import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfil
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
 import world.respect.shared.domain.realm.RespectRealmPath
+import world.respect.shared.navigation.NavResultReturner
+import world.respect.shared.navigation.NavResultReturnerImpl
 import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
 
 @Suppress("unused")
@@ -330,6 +332,9 @@ val appKoinModule = module {
         )
     }
 
+    single<NavResultReturner> {
+        NavResultReturnerImpl()
+    }
 
     /**
      * The RespectRealm scope might be one instance per realm url or one instance per account per

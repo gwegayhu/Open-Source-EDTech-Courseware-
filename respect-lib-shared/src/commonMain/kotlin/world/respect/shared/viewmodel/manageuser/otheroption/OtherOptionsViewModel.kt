@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.invalid_code
@@ -16,6 +15,7 @@ import world.respect.shared.generated.resources.other_options
 import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 class OtherOptionsViewModel(
@@ -30,7 +30,7 @@ class OtherOptionsViewModel(
         viewModelScope.launch {
             _appUiState.update { prev ->
                 prev.copy(
-                    title = getString(Res.string.other_options),
+                    title = Res.string.other_options.asUiText(),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false,
                     showBackButton = true

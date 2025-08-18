@@ -34,6 +34,7 @@ import com.ustadmobile.libuicompose.theme.appBarSelectionModeContentColor
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import world.respect.app.components.RespectPersonAvatar
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.search
@@ -48,11 +49,8 @@ fun RespectAppBar(
     compactHeader: Boolean,
     appUiState: AppUiState,
     navController: NavController,
-    screenName: String? = null, // <-- Pass screen name if available
-    onProfileClick: () -> Unit = {}, // <-- Handle profile icon click
+    onProfileClick: () -> Unit = {},
 ) {
-
-    val title = appUiState.title ?: screenName ?: ""
     val defaultCanGoBack = navController.previousBackStackEntry != null
     val canGoBack = appUiState.showBackButton ?: defaultCanGoBack
 
@@ -77,7 +75,7 @@ fun RespectAppBar(
     TopAppBar(
         title = {
             Text(
-                text = title,
+                text = appUiState.title?.let { uiTextStringResource(it) } ?: "",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("app_title"),

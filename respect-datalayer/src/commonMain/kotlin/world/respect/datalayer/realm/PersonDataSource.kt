@@ -12,6 +12,6 @@ interface PersonDataSource {
 
     suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>>
 
-    suspend fun addPerson(person: Person)
+    suspend fun putPerson(person: Person)
 
 }

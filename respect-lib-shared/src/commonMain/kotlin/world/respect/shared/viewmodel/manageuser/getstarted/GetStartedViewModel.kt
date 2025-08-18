@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.lets_get_started
 import world.respect.shared.generated.resources.school_not_exist_error
@@ -16,6 +15,7 @@ import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.OtherOption
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 
@@ -33,14 +33,12 @@ class GetStartedViewModel(
         School("ustad school", "https://ustad.com"),
     )
     init {
-        viewModelScope.launch {
-            _appUiState.update { prev ->
-                prev.copy(
-                    title = getString(Res.string.lets_get_started),
-                    hideBottomNavigation = true,
-                    userAccountIconVisible = false,
-                )
-            }
+        _appUiState.update { prev ->
+            prev.copy(
+                title = Res.string.lets_get_started.asUiText(),
+                hideBottomNavigation = true,
+                userAccountIconVisible = false,
+            )
         }
     }
 

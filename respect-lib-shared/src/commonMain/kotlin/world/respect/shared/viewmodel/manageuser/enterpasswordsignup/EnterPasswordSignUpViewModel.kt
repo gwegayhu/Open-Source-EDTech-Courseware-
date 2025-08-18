@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.signup.SignupCredential
@@ -20,6 +19,7 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -41,14 +41,12 @@ class EnterPasswordSignupViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(Res.string.create_account),
-                    hideBottomNavigation = true,
-                    userAccountIconVisible = false
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.create_account.asUiText(),
+                hideBottomNavigation = true,
+                userAccountIconVisible = false
+            )
         }
     }
 

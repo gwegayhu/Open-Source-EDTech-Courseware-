@@ -32,6 +32,13 @@ class RespectComposeNavController(
                     navHostController.navigate(navCommand.destination)
                 }
             }
+
+            is NavCommand.Pop -> {
+                lastNavCommandTime = navCommand.timestamp
+                navHostController.popBackStack(
+                    navCommand.destination, navCommand.inclusive
+                )
+            }
         }
     }
 

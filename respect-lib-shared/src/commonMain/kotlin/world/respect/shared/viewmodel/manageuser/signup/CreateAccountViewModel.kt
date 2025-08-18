@@ -24,6 +24,7 @@ import world.respect.shared.navigation.OtherOptionsSignup
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -50,7 +51,7 @@ class CreateAccountViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 it.copy(
-                    title = getString(Res.string.create_account),
+                    title = Res.string.create_account.asUiText(),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false
                 )

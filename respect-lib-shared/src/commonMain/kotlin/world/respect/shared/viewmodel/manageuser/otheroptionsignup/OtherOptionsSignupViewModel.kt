@@ -20,8 +20,13 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.OtherOptionsSignup
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.WaitingForApproval
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
+
+data class OtherOptionsSignupUiState(
+    val passkeyError: String? = null
+)
 
 class OtherOptionsSignupViewModel(
     savedStateHandle: SavedStateHandle,
@@ -35,14 +40,12 @@ class OtherOptionsSignupViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(Res.string.other_options),
-                    hideBottomNavigation = true,
-                    userAccountIconVisible = false
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.other_options.asUiText(),
+                hideBottomNavigation = true,
+                userAccountIconVisible = false
+            )
         }
     }
 
@@ -104,6 +107,3 @@ class OtherOptionsSignupViewModel(
         _navCommandFlow.tryEmit(NavCommand.Navigate(HowPasskeyWorks))
     }
 }
-data class OtherOptionsSignupUiState(
-    val passkeyError: String? = null
-)
