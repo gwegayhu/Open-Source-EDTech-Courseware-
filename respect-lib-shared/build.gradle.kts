@@ -21,16 +21,22 @@ kotlin {
         }
     }
 
+    compilerOptions {
+        optIn.add("kotlin.time.ExperimentalTime")
+    }
+
     jvm()
 
     sourceSets {
         commonMain.dependencies {
             api(projects.respectDatalayer)
+            api(projects.respectCredentials)
             api(projects.respectLibUtil)
             api(projects.respectDatalayerDb)
             api(projects.respectDatalayerHttp)
 
             implementation(projects.respectLibCache)
+            implementation(projects.respectLibXxhash)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.savedstate)
@@ -55,6 +61,8 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation(projects.respectDatalayerDb)
+            implementation(libs.androidx.room.runtime)
             implementation(libs.json.schema.validator)
             implementation(libs.jsoup)
             implementation(libs.okhttp)
@@ -62,6 +70,7 @@ kotlin {
         }
 
         jvmTest.dependencies {
+            implementation(libs.androidx.sqlite.bundled)
             implementation(libs.ktor.server.core)
             implementation(libs.ktor.server.netty)
             implementation(libs.ktor.server.content.negotiation)

@@ -38,6 +38,7 @@ import world.respect.shared.generated.resources.apps
 import world.respect.shared.generated.resources.assignments
 import world.respect.shared.generated.resources.clazz
 import world.respect.shared.generated.resources.reports
+import world.respect.shared.navigation.AccountList
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.Assignment
 import world.respect.shared.navigation.Clazz
@@ -112,6 +113,9 @@ fun App(
                         compactHeader = (widthClass != SizeClass.EXPANDED),
                         appUiState = appUiStateVal,
                         navController = navController,
+                        onProfileClick = {
+                            navController.navigate(AccountList)
+                        }
                     )
                 }
             },

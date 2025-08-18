@@ -11,7 +11,7 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.NoDataLoadedState
-import world.respect.datalayer.db.RespectDatabase
+import world.respect.datalayer.db.RespectAppDatabase
 import world.respect.datalayer.db.opds.adapters.OpdsFeedEntities
 import world.respect.datalayer.db.opds.adapters.OpdsPublicationEntities
 import world.respect.datalayer.db.opds.adapters.asEntities
@@ -27,11 +27,11 @@ import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 
 class OpdsDataSourceDb(
-    private val respectDatabase: RespectDatabase,
+    private val respectDatabase: RespectAppDatabase,
     private val json: Json,
     private val xxStringHasher: XXStringHasher,
     private val primaryKeyGenerator: PrimaryKeyGenerator = PrimaryKeyGenerator(
-        RespectDatabase.TABLE_IDS
+        RespectAppDatabase.TABLE_IDS
     ),
 ): OpdsDataSourceLocal {
 

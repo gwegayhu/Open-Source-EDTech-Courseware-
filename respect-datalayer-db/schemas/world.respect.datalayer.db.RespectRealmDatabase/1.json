@@ -1,0 +1,172 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "4a20053eeca8b4c00889897e95378ae3",
+    "entities": [
+      {
+        "tableName": "PersonEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pGuid` TEXT NOT NULL, `pGuidHash` INTEGER NOT NULL, `pActive` INTEGER NOT NULL, `pLastModified` INTEGER NOT NULL, `pUsername` TEXT, `pGivenName` TEXT NOT NULL, `pFamilyName` TEXT NOT NULL, `pMiddleName` TEXT, PRIMARY KEY(`pGuidHash`))",
+        "fields": [
+          {
+            "fieldPath": "pGuid",
+            "columnName": "pGuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pGuidHash",
+            "columnName": "pGuidHash",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pActive",
+            "columnName": "pActive",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pLastModified",
+            "columnName": "pLastModified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pUsername",
+            "columnName": "pUsername",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pGivenName",
+            "columnName": "pGivenName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pFamilyName",
+            "columnName": "pFamilyName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pMiddleName",
+            "columnName": "pMiddleName",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pGuidHash"
+          ]
+        }
+      },
+      {
+        "tableName": "PersonPasswordEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pppGuid` INTEGER NOT NULL, `authAlgorithm` TEXT NOT NULL, `authEncoded` TEXT NOT NULL, `authSalt` TEXT NOT NULL, `authIterations` INTEGER NOT NULL, `authKeyLen` INTEGER NOT NULL, PRIMARY KEY(`pppGuid`))",
+        "fields": [
+          {
+            "fieldPath": "pppGuid",
+            "columnName": "pppGuid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authAlgorithm",
+            "columnName": "authAlgorithm",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authEncoded",
+            "columnName": "authEncoded",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authSalt",
+            "columnName": "authSalt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authIterations",
+            "columnName": "authIterations",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authKeyLen",
+            "columnName": "authKeyLen",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pppGuid"
+          ]
+        }
+      },
+      {
+        "tableName": "AuthTokenEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`atUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `atPGuidHash` INTEGER NOT NULL, `atPGuid` TEXT NOT NULL, `atCode` TEXT, `atToken` TEXT NOT NULL, `atTimeCreated` INTEGER NOT NULL, `atTtl` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "atUid",
+            "columnName": "atUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "atPGuidHash",
+            "columnName": "atPGuidHash",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "atPGuid",
+            "columnName": "atPGuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "atCode",
+            "columnName": "atCode",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "atToken",
+            "columnName": "atToken",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "atTimeCreated",
+            "columnName": "atTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "atTtl",
+            "columnName": "atTtl",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "atUid"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a20053eeca8b4c00889897e95378ae3')"
+    ]
+  }
+}

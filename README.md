@@ -1,16 +1,60 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop, Server.
+# RESPECT
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+## Development environment setup:
 
-* `/server` is for the Ktor server application.
+These instructions are intended for developers who wish to build/run from source code. Development
+tested on Ubuntu Linux, however it should work on Windows, other Linux versions, or MacOS. 
 
-* `/shared` is for the code that will be shared between all targets in the project.
-  The most important subfolder is `commonMain`. If preferred, you can add code to the platform-specific folders here too.
+This is a Kotlin Multiplatform project. This repository contains the Android app and
+backend server source code in its modules. Android Studio is the development environment for the
+entire project. 
 
+*  __Step 1: Download and install Android Studio__: If you don't already have the latest version, download
+   from [https://developer.android.com/studio](https://developer.android.com/studio).
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+* __Step 2: Install dependencies__
+    * JDK17 or JDK21
+
+Ubuntu/Debian Linux:
+```
+sudo apt-get install openjdk-21-jdk
+```
+
+Windows:
+Download and install the Microsoft OpenJDK build from 
+[https://learn.microsoft.com/en-us/java/openjdk/install#install-on-windows](https://learn.microsoft.com/en-us/java/openjdk/install#install-on-windows).
+
+* __Step 3: Import the project in Android Studio__: Select File, New, Project from Version Control. Enter
+  https://github.com/UstadMobile/Respect.git and wait for the project to import.
+
+* __Step 4: Run the server__: Run the server using Gradle:
+
+Run the server from source using Gradle:
+```
+./gradlew respect-server:run
+```
+_Note: On the windows command line the ./ should be omitted_
+
+* __Step 5: Add a [realm](ARCHITECTURE.md#realms)__ - in the context of network security, a realm is a
+  logical grouping of users, security rules, data, etc. In the context of RESPECT, one realm is 
+  typically (but not always) a school. 
+
+  RESPECT supports virtual hosting enabling multiple schools to run within a single JVM instance, eg
+  as school1.example.org, school2.example.org etc.
+
+e.g.
+```
+./gradlew respect-server:run --args='addrealm --url http://10.1.2.3:8098/ --name devschool --adminpassword secret' 
+```
+Note: localhost _won't_ work on Android emulators and devices because localhost refers to the 
+emulator/device itself _not_ the PC running on the server.
+
+To see all available command line options (including database options etc):
+```
+./gradlew respect-server:run --args='addrealm --help'
+```
+
+* __Step 6: Build/run and Android app__: In Android Studio use the run/debug button to run the 
+ ```respect-app-compose``` module. See [respect-app-compose](respect-app-compose/) for further
+ details on running via the command line etc.
+
