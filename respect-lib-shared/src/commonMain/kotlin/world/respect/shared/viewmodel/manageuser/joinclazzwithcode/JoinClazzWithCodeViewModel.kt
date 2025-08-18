@@ -36,8 +36,6 @@ class JoinClazzWithCodeViewModel(
                 title = Res.string.enter_code_label.asUiText(),
                 hideBottomNavigation = true,
                 userAccountIconVisible = false,
-                showBackButton = false
-
             )
         }
     }
