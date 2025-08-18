@@ -15,7 +15,6 @@ import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_filters
-import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
 import world.respect.shared.util.ext.asUiText
@@ -92,10 +91,10 @@ class ReportFilterEditViewModel(
     fun onClickSave() {
         val currentFilter = uiState.value.filters
         if (currentFilter != null && isValidFilter(currentFilter)) {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    ReportEdit(route.reportUid)
-                )
+            sendResultAndPop(
+                destKey = REPORT_FILTER_RESULT,
+                destScreen = ReportEdit(route.reportUid),
+                result = currentFilter
             )
         }
     }
@@ -125,5 +124,8 @@ class ReportFilterEditViewModel(
             FilterType.PERSON_GENDER -> ReportConditionFilterOptions.GenderConditionFilter()
             else -> null
         }
+    }
+    companion object {
+       const val REPORT_FILTER_RESULT = "report_filter_result"
     }
 }

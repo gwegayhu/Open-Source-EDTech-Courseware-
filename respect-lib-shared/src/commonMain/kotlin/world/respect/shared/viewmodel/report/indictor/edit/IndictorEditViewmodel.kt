@@ -70,6 +70,9 @@ class IndicatorEditViewModel(
 
 
     private fun onSaveIndicator() {
+        viewModelScope.launch {
+            respectReportDataSource.saveIndicator(_uiState.value.indicatorData)
+        }
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 IndicatorList

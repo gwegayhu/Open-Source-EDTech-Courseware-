@@ -30,6 +30,7 @@ import world.respect.shared.generated.resources.quantity_must_be_at_least_1
 import world.respect.shared.generated.resources.series
 import world.respect.shared.navigation.IndicatorList
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
@@ -59,6 +60,7 @@ class ReportEditViewModel(
     savedStateHandle: SavedStateHandle,
     private val respectReportDataSource: RespectReportDataSource,
     private val json: Json,
+    private val navResultReturner: NavResultReturner
 ) : RespectViewModel(savedStateHandle) {
 
     private val route: ReportEdit = savedStateHandle.toRoute()
@@ -163,6 +165,15 @@ class ReportEditViewModel(
                 }
             } catch (e: Exception) {
                 println("Exception $e")
+            }
+
+            viewModelScope.launch {
+                navResultReturner.filteredResultFlowForKey(REPORT_FILTER_RESULT).collect { result ->
+                    val filter = result.result as? ReportFilter
+                    filter?.let {
+                        onFilterChanged(filter, filter.reportFilterSeriesUid.toInt())
+                    }
+                }
             }
         }
     }
@@ -395,5 +406,8 @@ class ReportEditViewModel(
     fun ReportEditUiState.hasErrors(): Boolean {
         if (!submitted) return false
         return reportTitleError != null || xAxisError != null || seriesTitleErrors.isNotEmpty() || yAxisErrors.isNotEmpty() || subGroupError != null || chartTypeError.isNotEmpty() || timeRangeError != null || quantityError != null
+    }
+    companion object {
+        const val REPORT_FILTER_RESULT = "report_filter_result"
     }
 }
