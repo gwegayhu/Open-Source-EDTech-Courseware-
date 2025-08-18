@@ -92,7 +92,7 @@ class ClazzEditViewModel(
 
     fun onClazzChanged(entity: OneRosterClass?) {
         _uiState.update {
-            it.copy(entity = entity, clazzNameError = null) // reset error when editing
+            it.copy(entity = entity, clazzNameError = null)
         }
     }
 }

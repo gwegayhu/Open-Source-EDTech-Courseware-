@@ -97,19 +97,16 @@ object FakeRosterDataSource : OneRosterRosterDataSource {
                     sourcedId = "1",
                     title = "Class 1",
                     dateLastModified = Instant.DISTANT_PAST,
-                    location = "Dummy Description of Class "
                 ),
                 OneRosterClass(
                     sourcedId = "2",
                     title = "Class 2",
-                    dateLastModified = Instant.DISTANT_PAST,
-                    location = "Dummy Description of Class "
+                    dateLastModified = Instant.DISTANT_PAST
                 ),
                 OneRosterClass(
                     sourcedId = "3",
                     title = "Class 3",
-                    dateLastModified = Instant.DISTANT_PAST,
-                    location = "Dummy Description of Class "
+                    dateLastModified = Instant.DISTANT_PAST
                 )
             )
         )

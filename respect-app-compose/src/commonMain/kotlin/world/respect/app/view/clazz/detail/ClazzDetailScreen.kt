@@ -1,7 +1,6 @@
 package world.respect.app.view.clazz.detail
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,9 +31,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.description
-import world.respect.shared.generated.resources.end_date_label
 import world.respect.shared.generated.resources.pending_invite
-import world.respect.shared.generated.resources.start_date_label
 import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
 import world.respect.shared.util.SortOrderOption
@@ -79,47 +76,17 @@ fun ClazzDetailScreen(
                         )
                     )
                 },
-                supportingContent = {
-                    uiState.clazzDetail?.location?.let {
-                        Text(
-                            it
-                        )
-                    }
-                }
+
+                /**Description field needed**/
+
+                /* supportingContent = {
+                     Text(
+                        uiState.clazzDetail?.description
+                     )
+                 }*/
             )
         }
 
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.start_date_label),
-                        )
-                    },
-                    supportingContent = {
-                        Text(text = "21/07/2025") // your dynamic date value here
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.end_date_label),
-                        )
-                    },
-                    supportingContent = {
-                        Text(text = "21/07/2026") // your dynamic date value here
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
         item {
             RespectFilterChipsHeader(
                 options = uiState.chipOptions.map { it.option },
