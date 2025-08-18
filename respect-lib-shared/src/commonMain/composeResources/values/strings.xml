@@ -80,12 +80,9 @@
     <string name="full_name_required">Full name is required</string>
     <string name="gender_required">Gender is required</string>
     <string name="dob_required">Date of birth is required</string>
-
-
     <string name="create_account">Create account</string>
     <string name="username_label">Username</string>
     <string name="username_required">Username is required</string>
-    <string name="required">Required*</string>
     <string name="signup_with_passkey">Sign-up with passkey</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>

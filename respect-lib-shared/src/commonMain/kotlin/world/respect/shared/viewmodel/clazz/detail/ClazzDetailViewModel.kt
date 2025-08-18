@@ -24,6 +24,7 @@ import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.FilterChipsOption
 import world.respect.shared.util.SortOrderOption
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.ALL
@@ -72,12 +73,12 @@ class ClazzDetailViewModel(
 
             _appUiState.update {
                 it.copy(
-                    title = clazzDetail.title,
+                    title = clazzDetail.title.asUiText(),
                     showBackButton = false,
                     fabState = FabUiState(
                         visible = true,
                         icon = FabUiState.FabIcon.EDIT,
-                        text = getString(resource = Res.string.edit),
+                        text = Res.string.edit.asUiText(),
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(

@@ -15,6 +15,7 @@ import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
 import world.respect.shared.generated.resources.required
 import world.respect.shared.navigation.ClazzEdit
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import java.util.UUID
@@ -54,7 +55,7 @@ class ClazzEditViewModel(
 
             _appUiState.update { prev ->
                 prev.copy(
-                    title = getString(Res.string.edit_clazz),
+                    title = Res.string.edit_clazz.asUiText(),
                     userAccountIconVisible = false,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,

@@ -15,6 +15,7 @@ import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.navigation.AddPersonToClazz
 import world.respect.shared.navigation.ClazzDetail
+import world.respect.shared.util.ext.asUiText
 
 
 data class AddPersonToClazzUIState(
@@ -37,11 +38,11 @@ class AddPersonToClazzViewModel(
             _appUiState.update {
                 if (route.roleType == OneRosterRoleEnum.STUDENT) {
                     it.copy(
-                        title = getString(Res.string.add_student)
+                        title = Res.string.add_student.asUiText()
                     )
                 } else {
                     it.copy(
-                        title = getString(Res.string.add_teacher)
+                        title = Res.string.add_teacher.asUiText()
                     )
                 }
 
