@@ -176,7 +176,6 @@
     <string name="unit">Unit</string>
     <string name="from">From</string>
     <string name="to_">To</string>
-    <string name="required">Required</string>
     <string name="at_least_one_series_required">At least one series required</string>
     <string name="field_required_prompt">Field required prompt</string>
     <string name="quantity_must_be_at_least_1">Quantity must be at least 1</string>
