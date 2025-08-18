@@ -57,8 +57,7 @@ class OtherOptionsSignupViewModel(
                 val result = submitRedeemInviteRequestUseCase(redeemRequest)
 
                 val createPasskeyResult = createPasskeyUseCase(
-                    username = route.username,
-                    appName = getString(Res.string.app_name)
+                    username = route.username
                 )
                 when (createPasskeyResult) {
                     is CreatePasskeyUseCase.PasskeyCreatedResult -> {

@@ -87,8 +87,7 @@ class CreateAccountViewModel(
                 val result = submitRedeemInviteRequestUseCase(redeemRequest)
 
                 val createPasskeyResult = createPasskeyUseCase(
-                    username = username,
-                    appName = getString(Res.string.app_name)
+                    username = username
                 )
                 when (createPasskeyResult) {
                     is CreatePasskeyUseCase.PasskeyCreatedResult -> {

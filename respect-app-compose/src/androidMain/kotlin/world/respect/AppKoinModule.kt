@@ -272,8 +272,8 @@ val appKoinModule = module {
         CreatePublicKeyCredentialCreationOptionsJsonUseCase(
             rpId = "https://testproxy.devserver3.ustadmobile.com/",
             encodeUserHandleUseCase = get(),
-            name = Res.string.app_name,
-            primaryKeyGenerator = PrimaryKeyGenerator(RespectDatabase.TABLE_IDS)
+            appName = Res.string.app_name,
+            primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS)
             )
     }
     single {
