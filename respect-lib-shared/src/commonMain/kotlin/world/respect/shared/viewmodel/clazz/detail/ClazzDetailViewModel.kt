@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.shared.generated.resources.Res
@@ -37,7 +38,8 @@ data class ClazzDetailUiState(
     val activeSortOrderOption: SortOrderOption = SortOrderOption(
         Res.string.first_name, 1, true
     ),
-    val fieldsEnabled: Boolean = true
+    val fieldsEnabled: Boolean = true,
+    val clazzDetail: OneRosterClass? = null
 )
 
 class ClazzDetailViewModel(
@@ -111,15 +113,16 @@ class ClazzDetailViewModel(
                         FilterChipsOption(getString(Res.string.all)),
                         FilterChipsOption(getString(Res.string.active))
                     ),
+                    clazzDetail = clazzDetail
                 )
             }
         }
     }
 
-    fun onClickAddPersonToClazz() {
+    fun onClickAddPersonToClazz(roleType: OneRosterRoleEnum) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                AddPersonToClazz
+                AddPersonToClazz.create(roleType)
             )
         )
     }

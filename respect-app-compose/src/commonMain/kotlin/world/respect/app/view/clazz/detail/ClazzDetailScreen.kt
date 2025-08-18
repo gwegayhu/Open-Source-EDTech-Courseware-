@@ -26,6 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectFilterChipsHeader
 import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
+import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
@@ -48,7 +49,7 @@ fun ClazzDetailScreen(
 
     ClazzDetailScreen(
         uiState = uiState,
-        onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
+        onClickAddPersonToClazz = { viewModel.onClickAddPersonToClazz(it) },
         onSortOrderChanged = viewModel::onSortOrderChanged,
         onSelectChip = { viewModel.onSelectChip(it) },
         onClickAcceptInvite = { viewModel.onClickAcceptInvite(it) },
@@ -59,7 +60,7 @@ fun ClazzDetailScreen(
 @Composable
 fun ClazzDetailScreen(
     uiState: ClazzDetailUiState,
-    onClickAddPersonToClazz: () -> Unit,
+    onClickAddPersonToClazz: (OneRosterRoleEnum) -> Unit,
     onSortOrderChanged: (SortOrderOption) -> Unit = { },
     onSelectChip: (String) -> Unit,
     onClickAcceptInvite: (OneRosterUser) -> Unit,
@@ -79,11 +80,11 @@ fun ClazzDetailScreen(
                     )
                 },
                 supportingContent = {
-                    Text(
-                        text = stringResource(
-                            resource = Res.string.description
+                    uiState.clazzDetail?.location?.let {
+                        Text(
+                            it
                         )
-                    )
+                    }
                 }
             )
         }
@@ -161,7 +162,7 @@ fun ClazzDetailScreen(
             }) { index, user ->
             val roleName = user.roles.firstOrNull()?.role?.name
                 ?.lowercase()
-                ?.replaceFirstChar { it.uppercase() } ?: "Unknown"
+                ?.replaceFirstChar { it.uppercase() } ?: ""
 
             ListItem(
                 modifier = Modifier
@@ -219,7 +220,7 @@ fun ClazzDetailScreen(
         item {
             ListItem(
                 modifier = Modifier.clickable {
-                    onClickAddPersonToClazz()
+                    onClickAddPersonToClazz(OneRosterRoleEnum.TEACHER)
                 },
                 leadingContent = {
                     Icon(
@@ -279,7 +280,7 @@ fun ClazzDetailScreen(
         item {
             ListItem(
                 modifier = Modifier.clickable {
-                    onClickAddPersonToClazz()
+                    onClickAddPersonToClazz(OneRosterRoleEnum.STUDENT)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = null)

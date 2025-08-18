@@ -7,6 +7,7 @@ import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
+import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -54,6 +55,19 @@ class ClazzDetail(
     }
 }
 
+@Serializable
+class AddPersonToClazz(
+    val roleType: OneRosterRoleEnum
+) : RespectAppRoute {
+    companion object{
+        fun create(
+            roleType: OneRosterRoleEnum
+        ) = AddPersonToClazz(
+            roleType = roleType
+        )
+    }
+}
+
 
 @Serializable
 class ClazzEdit(
@@ -77,9 +91,6 @@ object RespectAppList : RespectAppRoute
 
 @Serializable
 object EnterLink : RespectAppRoute
-
-@Serializable
-object AddPersonToClazz : RespectAppRoute
 
 /**
  * @property manifestUrl the URL to the RespectAppManifest for the given Respect compatible app
@@ -156,15 +167,21 @@ class WaitingForApproval(
 
     @Transient
     val type = profileType
+
     @Transient
     val uid = pendingInviteStateUid
+
     @Transient
     val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
 
     companion object {
-        fun create(profileType: ProfileType, inviteInfo: RespectInviteInfo,pendingInviteStateUid:String): WaitingForApproval {
+        fun create(
+            profileType: ProfileType,
+            inviteInfo: RespectInviteInfo,
+            pendingInviteStateUid: String
+        ): WaitingForApproval {
             val inviteJson = Json.encodeToString(inviteInfo)
-            return WaitingForApproval(profileType, inviteJson,pendingInviteStateUid)
+            return WaitingForApproval(profileType, inviteJson, pendingInviteStateUid)
         }
     }
 }
@@ -178,6 +195,7 @@ class SignupScreen(
 
     @Transient
     val type = profileType
+
     @Transient
     val inviteInfo: RespectInviteInfo = Json.decodeFromString(inviteInfoJson)
 
@@ -278,7 +296,7 @@ class LearningUnitDetail(
 @Serializable
 class LearningUnitViewer(
     private val learningUnitIdStr: String,
-): RespectAppRoute {
+) : RespectAppRoute {
 
     @Transient
     val learningUnitId = Url(learningUnitIdStr)
