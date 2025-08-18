@@ -44,7 +44,8 @@ class AuthWithPasswordIntegrationTest {
         guid = "42",
         username = "testuser",
         givenName = "John",
-        familyName = "Doe"
+        familyName = "Doe",
+        roles = emptyList(),
     )
 
     @BeforeTest
