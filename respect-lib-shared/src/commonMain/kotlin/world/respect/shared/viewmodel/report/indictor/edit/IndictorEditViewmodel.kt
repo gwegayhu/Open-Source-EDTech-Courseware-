@@ -8,13 +8,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.indicator
 import world.respect.shared.navigation.IndicatorList
-import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.IndictorEdit
+import world.respect.shared.navigation.NavCommand
 import world.respect.shared.resources.UiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
@@ -27,7 +28,8 @@ data class IndicatorEditUiState(
 )
 
 class IndicatorEditViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val respectReportDataSource: RespectReportDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(IndicatorEditUiState())
@@ -37,9 +39,11 @@ class IndicatorEditViewModel(
 
     init {
         viewModelScope.launch {
-            // Initialize with existing indicator data if available
-            route.indicatorData?.let { indicator ->
-                _uiState.update { it.copy(indicatorData = indicator) }
+            route.indicatorId.let { indicatorId ->
+                val indicators = respectReportDataSource.getIndicatorById(indicatorId)
+                indicators?.let {
+                    _uiState.update { it.copy(indicatorData = indicators) }
+                }
             }
 
             _appUiState.update { prev ->

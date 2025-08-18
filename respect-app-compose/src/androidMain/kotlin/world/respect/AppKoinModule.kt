@@ -273,4 +273,10 @@ val appKoinModule = module {
     single<RespectReportDataSource> {
         MockRespectReportDataSource()
     }
+    single<Json> {
+        Json {
+            encodeDefaults = false
+            ignoreUnknownKeys = true
+        }
+    }
 }

@@ -108,7 +108,7 @@ class IndicatorListViewModel(
     fun onClickAdd() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                IndictorEdit.create()
+                IndictorEdit("0")
             )
         )
     }
@@ -117,7 +117,7 @@ class IndicatorListViewModel(
     fun onIndicatorSelected(indicator: Indicator) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                IndicatorDetail.create(
+                IndicatorDetail(
                     indicator.indicatorId
                 )
             )

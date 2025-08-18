@@ -34,13 +34,14 @@ data class ReportTemplateListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val activeUserPersonUid: Long = 0L,
-    )
+)
 
 class ReportTemplateListViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
     private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
-    private val respectReportDataSource: RespectReportDataSource
+    private val respectReportDataSource: RespectReportDataSource,
+    private val json: Json
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ReportTemplateListUiState())
@@ -92,7 +93,7 @@ class ReportTemplateListViewModel(
                     )
                 )
             } else {
-                val reportOptions = Json.decodeFromString<ReportOptions>(
+                val reportOptions = json.decodeFromString<ReportOptions>(
                     ReportOptions.serializer(),
                     report.reportOptions
                 )
@@ -175,16 +176,18 @@ class ReportTemplateListViewModel(
             _appUiState.update { it.copy(loadingState = NOT_LOADING) }
         }
     }
+
     fun onTemplateSelected(template: RespectReport) {
         if (template.reportId == "0") { // blank template
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    ReportEdit.create(0L)
+                    ReportEdit(0L)
                 )
-            )        } else {
+            )
+        } else {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    ReportEdit.create(template.reportId.toLong())
+                    ReportEdit(template.reportId.toLong())
                 )
             )
         }

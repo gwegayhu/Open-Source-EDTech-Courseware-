@@ -56,7 +56,8 @@ data class ReportEditUiState(
 
 class ReportEditViewModel(
     savedStateHandle: SavedStateHandle,
-    private val respectReportDataSource: RespectReportDataSource
+    private val respectReportDataSource: RespectReportDataSource,
+    private val json: Json,
 ) : RespectViewModel(savedStateHandle) {
 
     private val route: ReportEdit = savedStateHandle.toRoute()
@@ -94,6 +95,7 @@ class ReportEditViewModel(
                 )
             }
 
+
             try {
                 val reportFlow = respectReportDataSource.getReportAsFlow(entityUid.toString())
                 launch {
@@ -104,7 +106,7 @@ class ReportEditViewModel(
                                 val optionsJson = report.reportOptions
 
                                 val parsedOptions = try {
-                                    Json.decodeFromString(
+                                    json.decodeFromString(
                                         ReportOptions.serializer(), optionsJson.trim()
                                     )
                                 } catch (e: Exception) {
@@ -161,12 +163,6 @@ class ReportEditViewModel(
             } catch (e: Exception) {
                 println("Exception $e")
             }
-            viewModelScope.launch {
-                route.filter?.let { filter ->
-                    val seriesId = filter.reportFilterSeriesUid
-                    onFilterChanged(filter, seriesId)
-                }
-            }
         }
     }
 
@@ -209,7 +205,7 @@ class ReportEditViewModel(
                 val report = RespectReport(
                     reportId = entityUid.toString(),
                     title = newState.reportOptions.title,
-                    reportOptions = Json.encodeToString(newState.reportOptions),
+                    reportOptions = json.encodeToString(newState.reportOptions),
                 )
 
                 if (entityUid == 0L) {
@@ -220,12 +216,11 @@ class ReportEditViewModel(
                 }
 
                 _navCommandFlow.tryEmit(
-                    NavCommand.Navigate(ReportDetail.create(entityUid))
+                    NavCommand.Navigate(ReportDetail(entityUid))
                 )
+
             } catch (e: Exception) {
                 println("Error updating report options: ${e.message}")
-            } finally {
-                loadingState = LoadingUiState.NOT_LOADING
             }
         }
     }
@@ -339,7 +334,7 @@ class ReportEditViewModel(
     fun onAddFilter(seriesId: Int) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportEditFilter.create(
+                ReportEditFilter(
                     reportUid = entityUid, seriesId = seriesId
                 )
             )

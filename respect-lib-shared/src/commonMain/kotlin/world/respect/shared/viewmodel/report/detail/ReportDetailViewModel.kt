@@ -20,7 +20,6 @@ import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
 import world.respect.shared.domain.report.model.ReportOptions
-import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.edit
@@ -49,7 +48,8 @@ class ReportDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
     private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
-    private val respectReportDataSource: RespectReportDataSource
+    private val respectReportDataSource: RespectReportDataSource,
+    private val json: Json,
 ) : RespectViewModel(savedStateHandle) {
 
     private val route: ReportDetail = savedStateHandle.toRoute()
@@ -70,7 +70,7 @@ class ReportDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ReportEdit.create(reportUid = reportUid)
+                                    ReportEdit(reportUid = reportUid)
                                 )
                             )
                         },
@@ -87,7 +87,7 @@ class ReportDetailViewModel(
                                 is DataReadyState -> {
                                     val optionsJson = reportState.data.reportOptions
                                     val parsedOptions = try {
-                                        Json.decodeFromString(
+                                        json.decodeFromString(
                                             ReportOptions.serializer(),
                                             optionsJson.trim()
                                         )

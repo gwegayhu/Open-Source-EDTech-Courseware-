@@ -40,6 +40,7 @@ import world.respect.shared.navigation.CreateAccount
 import world.respect.shared.navigation.EnterLink
 import world.respect.shared.navigation.IndicatorDetail
 import world.respect.shared.navigation.IndicatorList
+import world.respect.shared.navigation.IndictorEdit
 import world.respect.shared.navigation.JoinClazzWithCode
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
@@ -48,7 +49,6 @@ import world.respect.shared.navigation.Report
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
-import world.respect.shared.navigation.IndictorEdit
 import world.respect.shared.navigation.ReportTemplateList
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.RespectAppList

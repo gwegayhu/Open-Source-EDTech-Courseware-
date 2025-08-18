@@ -27,7 +27,7 @@ data class IndicatorDetailUiState(
 
 class IndicatorDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    private val respectReportDataSource: RespectReportDataSource
+    private val respectReportDataSource: RespectReportDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(IndicatorDetailUiState())
@@ -46,7 +46,7 @@ class IndicatorDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    IndictorEdit.create(uiState.value.indicator)
+                                    IndictorEdit(uiState.value.indicator?.indicatorId ?: "0")
                                 )
                             )
                         },

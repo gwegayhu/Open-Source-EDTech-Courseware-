@@ -43,7 +43,8 @@ class ReportListViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
     private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
-    private val respectReportDataSource: RespectReportDataSource
+    private val respectReportDataSource: RespectReportDataSource,
+    private val json: Json
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ReportListUiState())
@@ -82,10 +83,6 @@ class ReportListViewModel(
     @OptIn(ExperimentalTime::class)
     fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> = flow {
         try {
-            val json = Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            }
             val reportOptions = json.decodeFromString<ReportOptions>(
                 ReportOptions.serializer(),
                 report.reportOptions
@@ -158,7 +155,7 @@ class ReportListViewModel(
     fun onClickEntry(entry: RespectReport) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportDetail.create(entry.reportId.toLong())
+                ReportDetail(entry.reportId.toLong())
             )
         )
     }

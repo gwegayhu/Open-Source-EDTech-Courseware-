@@ -20,9 +20,8 @@ data class ReportSeries(
 
     val reportSeriesSubGroup: ReportXAxis? = ReportXAxis.DAY,
 
-    val reportSeriesFilters: List<ReportFilter>? = null,
-
-    )
+    val reportSeriesFilters: List<ReportFilter>? = null
+)
 
 enum class YAxisTypes(
     override val label: StringResource,

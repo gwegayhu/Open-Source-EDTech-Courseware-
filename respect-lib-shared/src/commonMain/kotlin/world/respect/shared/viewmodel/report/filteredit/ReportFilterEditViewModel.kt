@@ -54,13 +54,7 @@ class ReportFilterEditViewModel(
                 )
             }
         }
-        val existingFilter = route.filter
-        if (existingFilter != null) {
-            handleExistingFilter(existingFilter)
-        } else {
-            handleNewFilter(savedStateHandle)
-        }
-
+        handleNewFilter(savedStateHandle)
     }
 
     private fun handleExistingFilter(existingFilter: ReportFilter) {
@@ -78,7 +72,7 @@ class ReportFilterEditViewModel(
     }
 
     private fun handleNewFilter(savedStateHandle: SavedStateHandle) {
-        val tempFilterUid = route.filter?.reportFilterUid ?: 0
+        val tempFilterUid = 0
         val seriesUid = route.seriesId
 
         // Assign the temp UID to the new filter
@@ -99,10 +93,7 @@ class ReportFilterEditViewModel(
         if (currentFilter != null && isValidFilter(currentFilter)) {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    ReportEdit.create(
-                        reportUid = route.reportUid,
-                        filter = currentFilter
-                    )
+                    ReportEdit(route.reportUid)
                 )
             )
         }
