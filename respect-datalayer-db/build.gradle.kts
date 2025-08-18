@@ -17,11 +17,16 @@ kotlin {
 
     jvm()
 
+    compilerOptions {
+        optIn.add("kotlin.time.ExperimentalTime")
+    }
+
     sourceSets {
         commonMain.dependencies {
             api(projects.respectDatalayer)
             implementation(projects.respectLibPrimarykeygen)
             implementation(projects.respectLibXxhash)
+            implementation(projects.respectLibUtil)
             implementation(libs.kotlinx.serialization.json)
             api(libs.uri.kmp)
             api(libs.kotlinx.date.time)

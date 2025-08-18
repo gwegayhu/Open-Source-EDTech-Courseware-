@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.apps_detail
 import world.respect.shared.navigation.AppsDetail
@@ -27,6 +26,7 @@ import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.libutil.ext.resolve
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.ext.asUiText
 
 data class AppsDetailUiState(
     val appDetail: DataLoadState<RespectAppManifest>? = null,
@@ -51,13 +51,13 @@ class AppsDetailViewModel(
     private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(resource = Res.string.apps_detail)
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.apps_detail.asUiText()
+            )
+        }
 
+        viewModelScope.launch {
             dataSource.compatibleAppsDataSource.getAppAsFlow(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
