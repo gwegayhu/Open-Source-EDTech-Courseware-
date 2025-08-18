@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.EmptyPagingSource
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
@@ -26,6 +25,7 @@ import world.respect.shared.generated.resources.reports
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportTemplateList
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
@@ -60,9 +60,9 @@ class ReportListViewModel(
             _appUiState.update { prev ->
                 prev.copy(
                     navigationVisible = true,
-                    title = getString(resource = Res.string.reports),
+                    title = Res.string.reports.asUiText(),
                     fabState = FabUiState(
-                        text = getString(resource = Res.string.report),
+                        text = Res.string.report.asUiText(),
                         icon = FabUiState.FabIcon.ADD,
                         onClick = { this@ReportListViewModel.onClickAdd() },
                         visible = true

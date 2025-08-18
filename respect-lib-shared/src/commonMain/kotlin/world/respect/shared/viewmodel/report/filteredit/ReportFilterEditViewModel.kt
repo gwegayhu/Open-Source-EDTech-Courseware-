@@ -18,6 +18,7 @@ import world.respect.shared.generated.resources.edit_filters
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -43,7 +44,7 @@ class ReportFilterEditViewModel(
         viewModelScope.launch {
             _appUiState.update {
                 AppUiState(
-                    title = getString(resource = Res.string.edit_filters),
+                    title = Res.string.edit_filters.asUiText(),
                     hideBottomNavigation = true,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,

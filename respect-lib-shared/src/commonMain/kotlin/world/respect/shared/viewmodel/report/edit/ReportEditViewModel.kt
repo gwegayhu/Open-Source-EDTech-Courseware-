@@ -35,6 +35,7 @@ import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -79,7 +80,7 @@ class ReportEditViewModel(
 
             _appUiState.update {
                 AppUiState(
-                    title = title, hideBottomNavigation = false
+                    title = title.asUiText(), hideBottomNavigation = false
                 )
             }
 

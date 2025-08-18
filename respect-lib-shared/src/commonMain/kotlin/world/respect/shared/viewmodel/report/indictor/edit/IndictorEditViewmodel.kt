@@ -17,6 +17,7 @@ import world.respect.shared.navigation.IndicatorList
 import world.respect.shared.navigation.IndictorEdit
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.resources.UiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
@@ -49,7 +50,7 @@ class IndicatorEditViewModel(
             _appUiState.update { prev ->
                 prev.copy(
                     navigationVisible = true,
-                    title = getString(resource = Res.string.indicator),
+                    title = Res.string.indicator.asUiText(),
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
                         text = getString(resource = Res.string.done),

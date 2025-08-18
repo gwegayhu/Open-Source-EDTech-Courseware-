@@ -29,6 +29,7 @@ import world.respect.shared.generated.resources.unknown_error
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportDetail
 import world.respect.shared.navigation.ReportEdit
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
@@ -65,7 +66,7 @@ class ReportDetailViewModel(
                 prev.copy(
                     fabState = FabUiState(
                         visible = true,
-                        text = getString(resource = Res.string.edit),
+                        text = Res.string.edit.asUiText(),
                         icon = FabUiState.FabIcon.EDIT,
                         onClick = {
                             _navCommandFlow.tryEmit(
@@ -103,7 +104,7 @@ class ReportDetailViewModel(
                                         )
                                     }
                                     _appUiState.update { prev ->
-                                        prev.copy(title = reportState.data.title)
+                                        prev.copy(title = reportState.data.title.asUiText())
                                     }
                                     val request = RunReportUseCase.RunReportRequest(
                                         reportUid = reportUid,

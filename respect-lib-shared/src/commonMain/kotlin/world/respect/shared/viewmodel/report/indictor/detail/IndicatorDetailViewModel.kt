@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.generated.resources.Res
@@ -16,6 +15,7 @@ import world.respect.shared.generated.resources.indicator_detail
 import world.respect.shared.navigation.IndicatorDetail
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.IndictorEdit
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 
@@ -39,9 +39,9 @@ class IndicatorDetailViewModel(
             _appUiState.update { prev ->
                 prev.copy(
                     navigationVisible = true,
-                    title = getString(resource = Res.string.indicator_detail),
+                    title = Res.string.indicator_detail.asUiText(),
                     fabState = FabUiState(
-                        text = getString(resource = Res.string.edit),
+                        text = Res.string.edit.asUiText(),
                         icon = FabUiState.FabIcon.EDIT,
                         onClick = {
                             _navCommandFlow.tryEmit(

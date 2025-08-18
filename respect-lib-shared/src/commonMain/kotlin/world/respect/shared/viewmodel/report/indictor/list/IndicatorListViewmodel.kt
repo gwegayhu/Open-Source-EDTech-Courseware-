@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.domain.report.model.DefaultIndicators
@@ -19,6 +18,7 @@ import world.respect.shared.generated.resources.indicators
 import world.respect.shared.navigation.IndicatorDetail
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.IndictorEdit
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
@@ -48,9 +48,9 @@ class IndicatorListViewModel(
             _appUiState.update { prev ->
                 prev.copy(
                     navigationVisible = true,
-                    title = getString(resource = Res.string.indicators),
+                    title = Res.string.indicators.asUiText(),
                     fabState = FabUiState(
-                        text = getString(resource = Res.string.indicator),
+                        text = Res.string.indicator.asUiText(),
                         icon = FabUiState.FabIcon.ADD,
                         onClick = { this@IndicatorListViewModel.onClickAdd() },
                         visible = true
