@@ -20,6 +20,7 @@ import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.ext.asUiText
 
 data class EnterLinkUiState(
     val linkUrl: String = "",
@@ -38,12 +39,10 @@ class EnterLinkViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(Res.string.enter_link)
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.enter_link.asUiText()
+            )
         }
     }
 

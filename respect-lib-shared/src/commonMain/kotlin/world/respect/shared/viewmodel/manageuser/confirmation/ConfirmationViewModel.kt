@@ -19,6 +19,7 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -39,15 +40,15 @@ class ConfirmationViewModel(
     private val route: ConfirmationScreen = savedStateHandle.toRoute()
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(Res.string.invitation),
-                    hideBottomNavigation = true,
-                    userAccountIconVisible = false
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.invitation.asUiText(),
+                hideBottomNavigation = true,
+                userAccountIconVisible = false
+            )
+        }
 
+        viewModelScope.launch {
             val inviteInfo = getInviteInfoUseCase.invoke(route.code)
             try {
                 _uiState.update {

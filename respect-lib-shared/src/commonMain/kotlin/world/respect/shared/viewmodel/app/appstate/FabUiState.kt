@@ -1,11 +1,13 @@
 package world.respect.shared.viewmodel.app.appstate
 
+import world.respect.shared.resources.UiText
+
 /**
  * Represents the Floating Action Button.
  */
 data class FabUiState(
     val visible: Boolean = false,
-    val text: String? = null,
+    val text: UiText? = null,
     val icon: FabIcon = FabIcon.NONE,
     val onClick: () -> Unit = { },
 ) {

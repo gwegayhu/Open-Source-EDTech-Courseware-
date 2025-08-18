@@ -5,12 +5,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
+import world.respect.datalayer.db.realm.RealmTypeConverters
 import world.respect.datalayer.db.realm.daos.AuthTokenEntityDao
 import world.respect.datalayer.db.realm.daos.PersonEntityDao
 import world.respect.datalayer.db.realm.daos.PersonPasswordEntityDao
+import world.respect.datalayer.db.realm.daos.PersonRoleEntityDao
 import world.respect.datalayer.db.realm.entities.AuthTokenEntity
 import world.respect.datalayer.db.realm.entities.PersonEntity
 import world.respect.datalayer.db.realm.entities.PersonPasswordEntity
+import world.respect.datalayer.db.realm.entities.PersonRoleEntity
 import world.respect.datalayer.db.shared.SharedConverters
 
 /**
@@ -19,13 +22,14 @@ import world.respect.datalayer.db.shared.SharedConverters
 @Database(
     entities = [
         PersonEntity::class,
+        PersonRoleEntity::class,
         PersonPasswordEntity::class,
         AuthTokenEntity::class,
     ],
     version = 1,
 
 )
-@TypeConverters(SharedConverters::class)
+@TypeConverters(SharedConverters::class, RealmTypeConverters::class)
 @ConstructedBy(RespectRealmDatabaseConstructor::class)
 abstract class RespectRealmDatabase: RoomDatabase() {
 
@@ -34,6 +38,8 @@ abstract class RespectRealmDatabase: RoomDatabase() {
     abstract fun getPersonPasswordEntityDao(): PersonPasswordEntityDao
 
     abstract fun getAuthTokenEntityDao(): AuthTokenEntityDao
+
+    abstract fun getPersonRoleEntityDao(): PersonRoleEntityDao
 
 }
 

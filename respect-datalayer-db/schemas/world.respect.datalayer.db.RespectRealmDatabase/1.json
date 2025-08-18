@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4a20053eeca8b4c00889897e95378ae3",
+    "identityHash": "92bd440e12029a2d299de88e04665b0d",
     "entities": [
       {
         "tableName": "PersonEntity",
@@ -59,6 +59,52 @@
           "autoGenerate": false,
           "columnNames": [
             "pGuidHash"
+          ]
+        }
+      },
+      {
+        "tableName": "PersonRoleEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`prUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `prPersonGuidHash` INTEGER NOT NULL, `prIsPrimaryRole` INTEGER NOT NULL, `prRoleType` INTEGER NOT NULL, `prBeginDate` INTEGER, `prEndDate` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "prUid",
+            "columnName": "prUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prPersonGuidHash",
+            "columnName": "prPersonGuidHash",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prIsPrimaryRole",
+            "columnName": "prIsPrimaryRole",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prRoleType",
+            "columnName": "prRoleType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prBeginDate",
+            "columnName": "prBeginDate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "prEndDate",
+            "columnName": "prEndDate",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "prUid"
           ]
         }
       },
@@ -166,7 +212,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a20053eeca8b4c00889897e95378ae3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '92bd440e12029a2d299de88e04665b0d')"
     ]
   }
 }

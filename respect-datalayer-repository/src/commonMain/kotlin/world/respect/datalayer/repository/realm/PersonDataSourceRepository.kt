@@ -19,7 +19,7 @@ class PersonDataSourceRepository(
         TODO("Not yet implemented")
     }
 
-    override suspend fun addPerson(person: Person) {
+    override suspend fun putPerson(person: Person) {
         TODO("Not yet implemented")
     }
 

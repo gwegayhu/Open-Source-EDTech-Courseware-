@@ -21,6 +21,7 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.ext.asUiText
 
 data class AppLauncherUiState(
     val appList: List<DataLoadState<RespectAppManifest>> = emptyList(),
@@ -41,27 +42,29 @@ class AppLauncherViewModel(
     var errorMessage: String = ""
 
     init {
+        _appUiState.update {
+            it.copy(
+                title = Res.string.apps.asUiText(),
+                showBackButton = false,
+                fabState = FabUiState(
+                    visible = true,
+                    icon = FabUiState.FabIcon.ADD,
+                    text = Res.string.app.asUiText(),
+                    onClick = {
+                        _navCommandFlow.tryEmit(
+                            NavCommand.Navigate(
+                                RespectAppList
+                            )
+                        )
+                    }
+                )
+            )
+        }
+
         viewModelScope.launch {
             errorMessage = getString(resource = Res.string.invalid_url)
 
-            _appUiState.update {
-                it.copy(
-                    title = getString(resource = Res.string.apps),
-                    showBackButton = false,
-                    fabState = FabUiState(
-                        visible = true,
-                        icon = FabUiState.FabIcon.ADD,
-                        text = getString(resource = Res.string.app),
-                        onClick = {
-                            _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(
-                                    RespectAppList
-                                )
-                            )
-                        }
-                    )
-                )
-            }
+
 
             dataSource.compatibleAppsDataSource.getLaunchpadApps(
                 loadParams = DataLoadParams()

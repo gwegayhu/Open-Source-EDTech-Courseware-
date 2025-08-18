@@ -126,7 +126,7 @@ class RespectAccountManager(
         val accountScope = getOrCreateAccountScope(respectAccount)
 
         val realmDataSource: RespectRealmDataSource = accountScope.get()
-        realmDataSource.personDataSource.addPerson(authResponse.person)
+        realmDataSource.personDataSource.putPerson(authResponse.person)
 
         //now we can get the datalayer by creating a RespectAccount scope
         val mkDirUseCase: MakeRealmPathDirUseCase? = realmScope.getOrNull()

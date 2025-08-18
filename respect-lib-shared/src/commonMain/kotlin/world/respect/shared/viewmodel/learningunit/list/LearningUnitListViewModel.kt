@@ -21,6 +21,7 @@ import world.respect.datalayer.opds.model.OpdsPublication
 import world.respect.datalayer.opds.model.ReadiumLink
 import world.respect.libutil.ext.resolve
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.ext.asUiText
 
 data class LearningUnitListUiState(
     val publications: List<OpdsPublication> = emptyList(),
@@ -64,7 +65,7 @@ class LearningUnitListViewModel(
 
                         _appUiState.update {
                             it.copy(
-                                title = appBarTitle,
+                                title = appBarTitle.asUiText(),
                                 searchState = AppBarSearchUiState(visible = true)
                             )
                         }

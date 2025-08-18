@@ -14,9 +14,12 @@ import world.respect.libutil.ext.replaceOrAppend
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.domain.account.RespectAccountAndPerson
 import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.accounts
 import world.respect.shared.navigation.GetStartedScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.RespectAppLauncher
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class AccountListUiState(
@@ -36,7 +39,7 @@ class AccountListViewModel(
     init {
         _appUiState.update {
             it.copy(
-                title = "Accounts",
+                title = Res.string.accounts.asUiText(),
                 hideBottomNavigation = true,
                 userAccountIconVisible = false,
             )
@@ -59,6 +62,7 @@ class AccountListViewModel(
                                     guid = it.userSourcedId,
                                     givenName = "",
                                     familyName = "",
+                                    roles = emptyList(),
                                 )
                             )
                         }
@@ -81,6 +85,7 @@ class AccountListViewModel(
                                                 guid = account.userSourcedId,
                                                 givenName = "",
                                                 familyName = "",
+                                                roles = emptyList(),
                                             )
                                         )
                                     ) {

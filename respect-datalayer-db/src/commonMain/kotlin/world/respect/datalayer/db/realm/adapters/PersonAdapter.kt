@@ -1,6 +1,7 @@
 package world.respect.datalayer.db.realm.adapters
 
 import world.respect.datalayer.db.realm.entities.PersonEntity
+import world.respect.datalayer.db.realm.entities.PersonRoleEntity
 import world.respect.datalayer.realm.model.Person
 import world.respect.libxxhash.XXStringHasher
 import kotlin.time.ExperimentalTime
@@ -8,7 +9,8 @@ import kotlin.time.Instant
 
 
 data class PersonEntities(
-    val personEntity: PersonEntity
+    val personEntity: PersonEntity,
+    val personRoleEntities: List<PersonRoleEntity> = emptyList()
 )
 
 @OptIn(ExperimentalTime::class)
@@ -20,7 +22,8 @@ fun PersonEntities.toModel(): Person {
         username = personEntity.pUsername,
         givenName = personEntity.pGivenName,
         familyName = personEntity.pFamilyName,
-        middleName = personEntity.pMiddleName
+        middleName = personEntity.pMiddleName,
+        roles = emptyList(),
     )
 }
 
