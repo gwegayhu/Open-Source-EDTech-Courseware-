@@ -22,13 +22,14 @@ import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.realm.MakeRealmPathDirUseCase
+import world.respect.shared.util.ext.isSameAccount
 
 /**
  *
- * @property storedAccounts The Stored Accounts is the list of all the accounts that the user has
- *           signed in. The user can use the account switcher to switch between them.
- * @property activeAccount The Active Account is the stored account that the user has currently
- *           selected (eg the one normally displayed in the top right). The activeAccount is null
+ * @property accounts all the accounts that the user has signed in. The user can use the account
+ *           switcher to switch between them.
+ * @property selectedAccount The selected account is the stored account that the user has currently
+ *           selected (eg the one normally displayed in the top right). The selectedAccount is null
  *           if the user has not signed in yet.
  */
 class RespectAccountManager(
@@ -44,13 +45,13 @@ class RespectAccountManager(
         } ?: emptyList()
     )
 
-    val storedAccounts = _storedAccounts.asStateFlow()
+    val accounts = _storedAccounts.asStateFlow()
 
     private val _activeAccountSourcedId = MutableStateFlow(
         settings.getStringOrNull(SETTINGS_KEY_ACTIVE_ACCOUNT)
     )
 
-    var activeAccount: RespectAccount?
+    var selectedAccount: RespectAccount?
         get() = _storedAccounts.value.firstOrNull {
             it.userSourcedId == _activeAccountSourcedId.value
         }
@@ -97,7 +98,7 @@ class RespectAccountManager(
     }
 
     /**
-     *
+     * Login a user with the given credentials
      */
     suspend fun login(
         username: String,
@@ -121,7 +122,17 @@ class RespectAccountManager(
             realm = realm,
         )
 
-        tokenManager.storeToken("$username@$realmUrl", authResponse.token)
+        initSession(authResponse, respectAccount)
+    }
+
+    private suspend fun initSession(
+        authResponse: AuthResponse,
+        respectAccount: RespectAccount,
+    ) {
+        val realmScope: Scope = getKoin().getOrCreateScope<RespectRealm>(
+            respectAccount.realm.self.toString()
+        )
+        tokenManager.storeToken(respectAccount.scopeId, authResponse.token)
 
         val accountScope = getOrCreateAccountScope(respectAccount)
 
@@ -132,9 +143,39 @@ class RespectAccountManager(
         val mkDirUseCase: MakeRealmPathDirUseCase? = realmScope.getOrNull()
         mkDirUseCase?.invoke()
 
-        //Put in person data source
-        //Set active user
-        activeAccount = respectAccount
+        selectedAccount = respectAccount
+    }
+
+
+    @Suppress("RedundantSuspendModifier") //Likely needs to be suspended to communicate to server
+    suspend fun endSession(account: RespectAccount) {
+        if(selectedAccount?.isSameAccount(account) == true) {
+            selectedAccount = null
+        }
+
+        val accountScope = getOrCreateAccountScope(account)
+        accountScope.close()
+
+        tokenManager.removeToken(account.scopeId)
+
+        val storedAccountsToCommit = _storedAccounts.updateAndGet { prev ->
+            prev.filterNot {
+                it.isSameAccount(account)
+            }
+        }
+
+        settings[SETTINGS_KEY_STORED_ACCOUNTS] = json.encodeToString(storedAccountsToCommit)
+
+        val accountsOnRealmScope = accounts.value.count {
+            it.realm.self == account.realm.self
+        }
+
+        if(accountsOnRealmScope == 0) {
+            //close it
+            val realmScope = getKoin().getScope(account.realm.self.toString())
+            realmScope.close()
+        }
+
     }
 
     /**

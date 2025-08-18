@@ -44,6 +44,16 @@ class RespectTokenManager(
         settings.putString(SETTINGS_KEY, json.encodeToString(newTokenMap))
     }
 
+    fun removeToken(accountId: String) {
+        val newTokenMap = tokenFlow.updateAndGet { prev ->
+            prev.toMutableMap().apply {
+                remove(accountId)
+            }
+        }
+
+        settings.putString(SETTINGS_KEY, json.encodeToString(newTokenMap))
+    }
+
     companion object {
 
         const val SETTINGS_KEY = "token-manager-"

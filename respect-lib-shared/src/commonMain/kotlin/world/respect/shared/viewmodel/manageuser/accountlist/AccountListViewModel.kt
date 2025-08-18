@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.datalayer.RespectRealmDataSource
@@ -20,10 +21,16 @@ import world.respect.shared.navigation.GetStartedScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.util.ext.asUiText
+import world.respect.shared.util.ext.isSameAccount
 import world.respect.shared.viewmodel.RespectViewModel
 
+/**
+ * @property selectedAccount if not null, the currently selected account
+ * @property accounts other accounts that are signed-in, available, and the user can switch to (
+ *           (not including the selectedAccount)
+ */
 data class AccountListUiState(
-    val activeAccount: RespectAccountAndPerson? = null,
+    val selectedAccount: RespectAccountAndPerson? = null,
     val accounts: List<RespectAccountAndPerson> = emptyList(),
 )
 
@@ -35,6 +42,8 @@ class AccountListViewModel(
     private val _uiState = MutableStateFlow(AccountListUiState())
 
     val uiState = _uiState.asStateFlow()
+
+    private var emittedNavToGetStartedCommand = false
 
     init {
         _appUiState.update {
@@ -48,14 +57,42 @@ class AccountListViewModel(
         viewModelScope.launch {
             respectAccountManager.activeAccountAndPersonFlow.collect { accountAndPerson ->
                 _uiState.update { prev ->
-                    prev.copy(activeAccount = accountAndPerson)
+                    prev.copy(selectedAccount = accountAndPerson)
                 }
             }
+        }
 
-            respectAccountManager.storedAccounts.collectLatest { accountList ->
+        viewModelScope.launch {
+            respectAccountManager.accounts.combine(
+                respectAccountManager.activeAccountFlow
+            ) { storedAccounts, activeAccount ->
+                Pair(storedAccounts, activeAccount)
+            }.collectLatest { (storedAccounts, activeAccount) ->
+                /*
+                 * If there are no stored accounts (eg because they have logged out of all accounts),
+                 * or if a session is terminated remotely (eg password reset), then must go to
+                 * GetStarted screen.
+                 */
+                if(storedAccounts.isEmpty() && !emittedNavToGetStartedCommand) {
+                    emittedNavToGetStartedCommand = true
+                    _navCommandFlow.tryEmit(
+                        NavCommand.Navigate(
+                            GetStartedScreen, clearBackStack = true
+                        )
+                    )
+
+                    return@collectLatest
+                }
+
+                //As noted on UiState - the active account is removed from the list of other
+                //accounts
+                val storedAccountList = storedAccounts.filterNot {
+                    activeAccount?.isSameAccount(it) == true
+                }
+
                 _uiState.update { prev ->
                     prev.copy(
-                        accounts = accountList.map {
+                        accounts = storedAccountList.map {
                             RespectAccountAndPerson(
                                 account = it,
                                 person = Person(
@@ -69,7 +106,7 @@ class AccountListViewModel(
                     )
                 }
 
-                accountList.forEach { account ->
+                storedAccountList.forEach { account ->
                     launch {
                         val accountScope = respectAccountManager.getOrCreateAccountScope(account)
                         val dataSource: RespectRealmDataSource = accountScope.get()
@@ -89,8 +126,7 @@ class AccountListViewModel(
                                             )
                                         )
                                     ) {
-                                        it.account.realm.self == account.realm.self &&
-                                            it.account.userSourcedId == account.userSourcedId
+                                        it.account.isSameAccount(account)
                                     }
                                 )
                             }
@@ -102,7 +138,7 @@ class AccountListViewModel(
     }
 
     fun onClickAccount(account: RespectAccount) {
-        respectAccountManager.activeAccount = account
+        respectAccountManager.selectedAccount = account
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(RespectAppLauncher, clearBackStack = true)
         )
@@ -112,5 +148,13 @@ class AccountListViewModel(
         _navCommandFlow.tryEmit(NavCommand.Navigate(GetStartedScreen))
     }
 
+
+    fun onClickLogout() {
+        uiState.value.selectedAccount?.also {
+            viewModelScope.launch {
+                respectAccountManager.endSession(it.account)
+            }
+        }
+    }
 
 }
