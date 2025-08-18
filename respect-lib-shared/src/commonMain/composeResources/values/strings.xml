@@ -47,8 +47,7 @@
     <string name="invalid_invite_code">Invalid code, try again</string>
     <string name="already_have_account">I already have an account</string>
     <string name="add_my_school">Add my school</string>
-    <string name="userid_required">UserId required</string>
-    <string name="password_required">Password is required</string>
+    <string name="required_field">Required field</string>
     <string name="login">Login</string>
     <string name="userId_label">UserId</string>
     <string name="userId_placeholder">user@school.example.org</string>
@@ -138,5 +137,10 @@
     <string name="sign_in_faster">Sign in faster next time</string>
     <string name="sign_in_faster_description">You can sign in securely with your passkey using your fingerprints, face or other screen-lock method.</string>
     <string name="sign_up_with_passkey">Sign up with a passkey</string>
+
+
+    <string name="add_account">Add account</string>
+    <string name="logout">Logout</string>
+    <string name="profile">Profile</string>
 
 </resources>

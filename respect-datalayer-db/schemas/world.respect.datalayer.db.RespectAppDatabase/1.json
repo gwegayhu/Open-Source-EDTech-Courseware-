@@ -2,87 +2,8 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "84517b3f25cfbc2fd260425e175607ee",
+    "identityHash": "38e80447aafcd1b4a4bfb3d007aba188",
     "entities": [
-      {
-        "tableName": "CompatibleAppEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`caeUid` INTEGER NOT NULL, `caeUrl` TEXT NOT NULL, `caeIcon` TEXT, `caeLastModified` INTEGER NOT NULL, `caeEtag` TEXT, `caeLicense` TEXT NOT NULL, `caeWebsite` TEXT NOT NULL, `caeLearningUnits` TEXT NOT NULL, `caeDefaultLaunchUri` TEXT NOT NULL, `caeAndroidPackageId` TEXT, `caeAndroidStoreList` TEXT, `caeAndroidSourceCode` TEXT, PRIMARY KEY(`caeUid`))",
-        "fields": [
-          {
-            "fieldPath": "caeUid",
-            "columnName": "caeUid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeUrl",
-            "columnName": "caeUrl",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeIcon",
-            "columnName": "caeIcon",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "caeLastModified",
-            "columnName": "caeLastModified",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeEtag",
-            "columnName": "caeEtag",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "caeLicense",
-            "columnName": "caeLicense",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeWebsite",
-            "columnName": "caeWebsite",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeLearningUnits",
-            "columnName": "caeLearningUnits",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeDefaultLaunchUri",
-            "columnName": "caeDefaultLaunchUri",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "caeAndroidPackageId",
-            "columnName": "caeAndroidPackageId",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "caeAndroidStoreList",
-            "columnName": "caeAndroidStoreList",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "caeAndroidSourceCode",
-            "columnName": "caeAndroidSourceCode",
-            "affinity": "TEXT"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "caeUid"
-          ]
-        }
-      },
       {
         "tableName": "LangMapEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lmeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lmeTopParentType` INTEGER NOT NULL, `lmeTopParentUid1` INTEGER NOT NULL, `lmeTopParentUid2` INTEGER NOT NULL, `lmePropType` INTEGER NOT NULL, `lmePropFk` INTEGER NOT NULL, `lmeLang` TEXT NOT NULL, `lmeRegion` TEXT, `lmeValue` TEXT NOT NULL)",
@@ -593,6 +514,85 @@
         }
       },
       {
+        "tableName": "CompatibleAppEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`caeUid` INTEGER NOT NULL, `caeUrl` TEXT NOT NULL, `caeIcon` TEXT, `caeLastModified` INTEGER NOT NULL, `caeEtag` TEXT, `caeLicense` TEXT NOT NULL, `caeWebsite` TEXT NOT NULL, `caeLearningUnits` TEXT NOT NULL, `caeDefaultLaunchUri` TEXT NOT NULL, `caeAndroidPackageId` TEXT, `caeAndroidStoreList` TEXT, `caeAndroidSourceCode` TEXT, PRIMARY KEY(`caeUid`))",
+        "fields": [
+          {
+            "fieldPath": "caeUid",
+            "columnName": "caeUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeUrl",
+            "columnName": "caeUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeIcon",
+            "columnName": "caeIcon",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeLastModified",
+            "columnName": "caeLastModified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeEtag",
+            "columnName": "caeEtag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeLicense",
+            "columnName": "caeLicense",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeWebsite",
+            "columnName": "caeWebsite",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeLearningUnits",
+            "columnName": "caeLearningUnits",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeDefaultLaunchUri",
+            "columnName": "caeDefaultLaunchUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caeAndroidPackageId",
+            "columnName": "caeAndroidPackageId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeAndroidStoreList",
+            "columnName": "caeAndroidStoreList",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caeAndroidSourceCode",
+            "columnName": "caeAndroidSourceCode",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "caeUid"
+          ]
+        }
+      },
+      {
         "tableName": "CompatibleAppAddJoin",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appCaeUid` INTEGER NOT NULL, `added` INTEGER NOT NULL, PRIMARY KEY(`appCaeUid`))",
         "fields": [
@@ -617,69 +617,115 @@
         }
       },
       {
-        "tableName": "PersonPasskeyEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`personPasskeyUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ppPersonUid` INTEGER NOT NULL, `ppAttestationObj` TEXT, `ppClientDataJson` TEXT, `ppOriginString` TEXT, `ppId` TEXT, `ppChallengeString` TEXT, `ppPublicKey` TEXT, `isRevoked` INTEGER NOT NULL)",
+        "tableName": "RealmDirectoryEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rdUid` INTEGER NOT NULL, `rdUrl` TEXT NOT NULL, `rdInvitePrefix` TEXT NOT NULL, PRIMARY KEY(`rdUid`))",
         "fields": [
           {
-            "fieldPath": "personPasskeyUid",
-            "columnName": "personPasskeyUid",
+            "fieldPath": "rdUid",
+            "columnName": "rdUid",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "ppPersonUid",
-            "columnName": "ppPersonUid",
-            "affinity": "INTEGER",
+            "fieldPath": "rdUrl",
+            "columnName": "rdUrl",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "ppAttestationObj",
-            "columnName": "ppAttestationObj",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "ppClientDataJson",
-            "columnName": "ppClientDataJson",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "ppOriginString",
-            "columnName": "ppOriginString",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "ppId",
-            "columnName": "ppId",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "ppChallengeString",
-            "columnName": "ppChallengeString",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "ppPublicKey",
-            "columnName": "ppPublicKey",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "isRevoked",
-            "columnName": "isRevoked",
-            "affinity": "INTEGER",
+            "fieldPath": "rdInvitePrefix",
+            "columnName": "rdInvitePrefix",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "personPasskeyUid"
+            "rdUid"
+          ]
+        }
+      },
+      {
+        "tableName": "RealmEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reUid` INTEGER NOT NULL, `reLastMod` INTEGER NOT NULL, `reEtag` TEXT, `reSelf` TEXT NOT NULL, `reXapi` TEXT NOT NULL, `reOneRoster` TEXT NOT NULL, `reRespectExt` TEXT, PRIMARY KEY(`reUid`))",
+        "fields": [
+          {
+            "fieldPath": "reUid",
+            "columnName": "reUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reLastMod",
+            "columnName": "reLastMod",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reEtag",
+            "columnName": "reEtag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "reSelf",
+            "columnName": "reSelf",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reXapi",
+            "columnName": "reXapi",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reOneRoster",
+            "columnName": "reOneRoster",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reRespectExt",
+            "columnName": "reRespectExt",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "reUid"
+          ]
+        }
+      },
+      {
+        "tableName": "RealmConfigEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rcUid` INTEGER NOT NULL, `dbUrl` TEXT NOT NULL, PRIMARY KEY(`rcUid`))",
+        "fields": [
+          {
+            "fieldPath": "rcUid",
+            "columnName": "rcUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbUrl",
+            "columnName": "dbUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "rcUid"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '84517b3f25cfbc2fd260425e175607ee')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38e80447aafcd1b4a4bfb3d007aba188')"
     ]
   }
 }

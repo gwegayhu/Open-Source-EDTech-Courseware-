@@ -2,34 +2,44 @@ package world.respect.shared.viewmodel.manageuser.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.credentials.passkey.GetCredentialUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
+import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.resources.StringUiText
+import world.respect.shared.resources.UiText
+import world.respect.shared.util.exception.getUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 data class LoginUiState(
-    val userId: String = "",
+    val username: String = "",
     val password: String = "",
-    val errorText: String ? = null,
-    val userIdError: StringResourceUiText? = null,
+    val errorText: UiText? = null,
+    val usernameError: StringResourceUiText? = null,
     val passwordError: StringResourceUiText? = null,
 )
 
 class LoginViewModel(
     savedStateHandle: SavedStateHandle,
+    private val accountManager: RespectAccountManager,
     getCredentialUseCase: GetCredentialUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
+
     val uiState = _uiState.asStateFlow()
+
+    private val route: LoginScreen = savedStateHandle.toRoute()
 
     init {
         viewModelScope.launch {
@@ -61,10 +71,9 @@ class LoginViewModel(
                         is GetCredentialUseCase.Error -> {
                             _uiState.update { prev ->
                                 prev.copy(
-                                    errorText = (credentialResult.message),
+                                    errorText = StringUiText(credentialResult.message ?: ""),
                                 )
                             }
-                            println ( "Error occurred: ${credentialResult.message}")
                         }
 
                         is GetCredentialUseCase.NoCredentialAvailableResult,
@@ -80,11 +89,11 @@ class LoginViewModel(
         }
     }
 
-    fun onUserIdChanged(userId: String) {
+    fun onUsernameChanged(userId: String) {
         _uiState.update {
             it.copy(
-                userId = userId,
-                userIdError = null
+                username = userId,
+                usernameError = null
             )
         }
     }
@@ -100,23 +109,45 @@ class LoginViewModel(
 
     fun onClickLogin() {
         viewModelScope.launch {
-            val userID = uiState.value.userId
+            val username = uiState.value.username
             val password = uiState.value.password
 
             _uiState.update {
                 it.copy(
-                    userIdError = if (userID.isEmpty()) StringResourceUiText(Res.string.userid_required) else null,
-                    passwordError = if (password.isEmpty()) StringResourceUiText(Res.string.password_required) else null
+                    usernameError = if (username.isEmpty())
+                        StringResourceUiText(Res.string.required_field)
+                    else
+                        null,
+                    passwordError = if (password.isEmpty())
+                        StringResourceUiText(Res.string.required_field)
+                    else
+                        null
                 )
             }
 
-            if (uiState.value.userIdError!=null || uiState.value.passwordError!=null) {
+            if (uiState.value.usernameError!=null || uiState.value.passwordError!=null) {
                 return@launch
             }
+
             viewModelScope.launch {
-                _navCommandFlow.tryEmit(
-                    NavCommand.Navigate(RespectAppLauncher)
-                )
+                try {
+                    accountManager.login(
+                        username, password, route.realmUrl
+                    )
+
+                    _navCommandFlow.tryEmit(
+                        NavCommand.Navigate(RespectAppLauncher)
+                    )
+                }catch(e: Exception) {
+                    _uiState.update { prev ->
+                        prev.copy(
+                            errorText = e.getUiText() ?: StringResourceUiText(Res.string.something_went_wrong)
+                        )
+                    }
+                }
+
+
+
             }
         }
     }

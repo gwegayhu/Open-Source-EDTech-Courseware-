@@ -7,6 +7,7 @@ import world.respect.datalayer.http.compatibleapps.CompatibleAppDataSourceHttp
 import world.respect.datalayer.http.opds.OpdsDataSourceHttp
 import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
 import world.respect.datalayer.opds.OpdsDataSource
+import world.respect.datalayer.realmdirectory.RealmDirectoryDataSource
 
 class RespectAppDataSourceHttp(
     private val httpClient: HttpClient,
@@ -28,4 +29,6 @@ class RespectAppDataSourceHttp(
         )
     }
 
+    override val realmDirectoryDataSource: RealmDirectoryDataSource
+        get() = TODO("Not yet implemented")
 }

@@ -11,3 +11,17 @@ import io.ktor.http.toURI
 fun Url.resolve(href: String): Url {
     return Url(toURI().resolve(href).toString())
 }
+
+/**
+ * Sanitize a URL for use in a filename (e.g. a database name). Replaces anything that is not
+ * a letter, digit, _, or - with an underscore
+ */
+fun Url.sanitizedForFilename(): String {
+    return toString().map {
+        if(it.isLetter() || it.isDigit() || it == '_' || it == '-') {
+            it
+        }else {
+            '_'
+        }
+    }.toCharArray().concatToString()
+}

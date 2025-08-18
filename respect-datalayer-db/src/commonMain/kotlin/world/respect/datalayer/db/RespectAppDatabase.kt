@@ -24,14 +24,22 @@ import world.respect.datalayer.db.opds.entities.OpdsPublicationEntity
 import world.respect.datalayer.db.opds.entities.PersonPasskeyEntity
 import world.respect.datalayer.db.opds.entities.ReadiumLinkEntity
 import world.respect.datalayer.db.opds.entities.ReadiumSubjectEntity
+import world.respect.datalayer.db.realmdirectory.daos.RealmConfigEntityDao
+import world.respect.datalayer.db.realmdirectory.daos.RealmDirectoryEntityDao
+import world.respect.datalayer.db.realmdirectory.daos.RealmEntityDao
+import world.respect.datalayer.db.realmdirectory.entities.RealmConfigEntity
+import world.respect.datalayer.db.realmdirectory.entities.RealmDirectoryEntity
+import world.respect.datalayer.db.realmdirectory.entities.RealmEntity
 import world.respect.datalayer.db.shared.SharedConverters
 import world.respect.datalayer.db.shared.daos.LangMapEntityDao
 import world.respect.datalayer.db.shared.entities.LangMapEntity
 
 @Database(
     entities = [
-        CompatibleAppEntity::class,
+        //Shared
         LangMapEntity::class,
+
+        //OPDS
         ReadiumLinkEntity::class,
         OpdsPublicationEntity::class,
         ReadiumSubjectEntity::class,
@@ -39,14 +47,22 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         OpdsGroupEntity::class,
         OpdsFeedEntity::class,
         OpdsFeedMetadataEntity::class,
+
+        //Compatible apps
+        CompatibleAppEntity::class,
         CompatibleAppAddJoin::class,
+
+        //realmdirectory
+        RealmDirectoryEntity::class,
+        RealmEntity::class,
+        RealmConfigEntity::class,
         PersonPasskeyEntity::class,
     ],
     version = 1,
 )
 @TypeConverters(SharedConverters::class, OpdsTypeConverters::class)
-@ConstructedBy(AppDatabaseConstructor::class)
-abstract class RespectDatabase: RoomDatabase() {
+@ConstructedBy(RespectAppDatabaseConstructor::class)
+abstract class RespectAppDatabase: RoomDatabase() {
 
     abstract fun getCompatibleAppEntityDao(): CompatibleAppEntityDao
 
@@ -66,6 +82,12 @@ abstract class RespectDatabase: RoomDatabase() {
 
     abstract fun getPersonPasskeyDao(): PersonPasskeyEntityDao
 
+    abstract fun getRealmEntityDao(): RealmEntityDao
+
+    abstract fun getRealmConfigEntityDao(): RealmConfigEntityDao
+
+    abstract fun getRealmDirectoryEntityDao(): RealmDirectoryEntityDao
+
     companion object {
 
         val TABLE_IDS = listOf(
@@ -84,6 +106,6 @@ abstract class RespectDatabase: RoomDatabase() {
 @Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING",
     "KotlinNoActualForExpect"
 )
-expect object AppDatabaseConstructor : RoomDatabaseConstructor<RespectDatabase> {
-    override fun initialize(): RespectDatabase
+expect object RespectAppDatabaseConstructor : RoomDatabaseConstructor<RespectAppDatabase> {
+    override fun initialize(): RespectAppDatabase
 }

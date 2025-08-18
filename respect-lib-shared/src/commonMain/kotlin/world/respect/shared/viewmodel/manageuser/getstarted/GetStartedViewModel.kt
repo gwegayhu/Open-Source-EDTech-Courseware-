@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.manageuser.getstarted
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -38,7 +39,6 @@ class GetStartedViewModel(
                     title = getString(Res.string.lets_get_started),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false,
-                    showBackButton = false
                 )
             }
         }
@@ -69,12 +69,17 @@ class GetStartedViewModel(
     }
 
     fun onSchoolSelected(school: School) {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(LoginScreen)
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                LoginScreen.create(Url(school.url))
             )
+        )
     }
+
     fun onClickOtherOptions() {
+        viewModelScope.launch {
             _navCommandFlow.tryEmit(NavCommand.Navigate(OtherOption))
+        }
     }
 
 }

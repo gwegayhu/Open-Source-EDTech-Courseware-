@@ -2,6 +2,7 @@ package world.respect.shared.viewmodel.manageuser.otheroption
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -10,13 +11,12 @@ import org.jetbrains.compose.resources.getString
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.invalid_code
-import world.respect.shared.generated.resources.next
+import world.respect.shared.generated.resources.invalid_url
 import world.respect.shared.generated.resources.other_options
-import world.respect.shared.navigation.ConfirmationScreen
+import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.viewmodel.RespectViewModel
-import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
 class OtherOptionsViewModel(
     savedStateHandle: SavedStateHandle,
@@ -49,22 +49,25 @@ class OtherOptionsViewModel(
     }
 
      fun onClickNext() {
-        val link = uiState.value.link
-        if (link.isBlank()) {
-            _uiState.update {
-                it.copy(errorMessage = StringResourceUiText(Res.string.invalid_code))
-            }
-            return
-        }
+         val link = uiState.value.link
+         if (link.isBlank()) {
+             _uiState.update {
+                 it.copy(errorMessage = StringResourceUiText(Res.string.invalid_code))
+             }
+             return
+         }
 
-        viewModelScope.launch {
-            val inviteInfo = getInviteInfoUseCase(uiState.value.link)
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    ConfirmationScreen.create(inviteInfo.code)
-                )
-            )
-        }
+         try {
+             _navCommandFlow.tryEmit(
+                 NavCommand.Navigate(
+                     LoginScreen.create(Url(link))
+                 )
+             )
+         }catch(e: Throwable){
+             _uiState.update {
+                 it.copy(errorMessage = StringResourceUiText(Res.string.invalid_url))
+             }
+         }
     }
 }
 

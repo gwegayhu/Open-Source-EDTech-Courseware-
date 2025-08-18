@@ -29,7 +29,18 @@ object Acknowledgement : RespectAppRoute
 object JoinClazzWithCode : RespectAppRoute
 
 @Serializable
-object LoginScreen : RespectAppRoute
+data class LoginScreen (
+    val realmUrlStr: String,
+) : RespectAppRoute {
+
+    @Transient
+    val realmUrl = Url(realmUrlStr)
+
+    companion object {
+        fun create(realmUrl: Url) = LoginScreen(realmUrl.toString())
+    }
+
+}
 
 @Serializable
 object RespectAppLauncher : RespectAppRoute
@@ -321,4 +332,7 @@ class LearningUnitViewer(
     }
 
 }
+
+@Serializable
+object AccountList: RespectAppRoute
 
