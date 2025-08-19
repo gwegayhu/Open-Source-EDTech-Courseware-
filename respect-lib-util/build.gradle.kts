@@ -15,6 +15,10 @@ kotlin {
 
     jvm()
 
+    /*
+     * This module MUST NOT depend on any other module within this project to avoid circular
+     * dependencies. It provides utility functions that may be used in any other module.
+     */
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
@@ -24,6 +24,7 @@ import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.FilterChipsOption
 import world.respect.shared.util.SortOrderOption
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companion.ALL
@@ -39,14 +40,17 @@ data class ClazzDetailUiState(
         Res.string.first_name, 1, true
     ),
     val fieldsEnabled: Boolean = true,
-    val clazzDetail: OneRosterClass? = null
+    val clazzDetail: OneRosterClass? = null,
+    val isPendingExpanded: Boolean = true,
+    val isTeachersExpanded: Boolean = true,
+    val isStudentsExpanded: Boolean = true
 )
 
 class ClazzDetailViewModel(
     savedStateHandle: SavedStateHandle,
+    private val oneRosterDataSource: OneRosterRosterDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val fakeRosterDataSource = FakeRosterDataSource
     private val _uiState = MutableStateFlow(ClazzDetailUiState())
 
     val uiState = _uiState.asStateFlow()
@@ -55,9 +59,9 @@ class ClazzDetailViewModel(
 
     init {
         viewModelScope.launch {
-            val users = fakeRosterDataSource.getAllUsers()
+            val users = oneRosterDataSource.getAllUsers()
 
-            val clazzDetail =fakeRosterDataSource.getClassBySourcedId(route.sourcedId)
+            val clazzDetail = oneRosterDataSource.getClassBySourcedId(route.sourcedId)
 
             val teachers = users.filter { user ->
                 user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
@@ -72,16 +76,19 @@ class ClazzDetailViewModel(
 
             _appUiState.update {
                 it.copy(
-                    title = clazzDetail.title,
+                    title = clazzDetail.title.asUiText(),
                     showBackButton = false,
                     fabState = FabUiState(
                         visible = true,
                         icon = FabUiState.FabIcon.EDIT,
-                        text = getString(resource = Res.string.edit),
+                        text = Res.string.edit.asUiText(),
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ClazzEdit.create(route.sourcedId)
+                                    ClazzEdit.create(
+                                        route.sourcedId,
+                                        modeEdit = true
+                                    )
                                 )
                             )
                         }
@@ -141,6 +148,18 @@ class ClazzDetailViewModel(
 
     fun onClickDismissInvite(user: OneRosterUser) {}
 
+
+    fun onTogglePendingSection() {
+        _uiState.update { it.copy(isPendingExpanded = !it.isPendingExpanded) }
+    }
+
+    fun onToggleTeachersSection() {
+        _uiState.update { it.copy(isTeachersExpanded = !it.isTeachersExpanded) }
+    }
+
+    fun onToggleStudentsSection() {
+        _uiState.update { it.copy(isStudentsExpanded = !it.isStudentsExpanded) }
+    }
 
     companion object {
         const val ALL = "All"

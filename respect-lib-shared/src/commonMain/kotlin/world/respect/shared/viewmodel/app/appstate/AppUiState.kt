@@ -1,8 +1,10 @@
 package world.respect.shared.viewmodel.app.appstate
 
+import world.respect.shared.resources.UiText
+
 data class AppUiState(
     val fabState: FabUiState = FabUiState(),
-    val title: String? = null,
+    val title: UiText? = null,
     val navigationVisible: Boolean = true,
     val hideBottomNavigation: Boolean = false,
     val hideSettingsIcon: Boolean = false,
@@ -13,5 +15,5 @@ data class AppUiState(
     val loadingState: LoadingUiState = LoadingUiState(),
     val showBackButton: Boolean? = true,
     val searchState: AppBarSearchUiState = AppBarSearchUiState(),
-    val actionBarButtonState: ActionBarButtonUiState = ActionBarButtonUiState(),
-    )
+    val actionBarButtonState: ActionBarButtonUiState = ActionBarButtonUiState()
+)

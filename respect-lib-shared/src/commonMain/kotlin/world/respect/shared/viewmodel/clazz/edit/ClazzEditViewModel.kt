@@ -9,12 +9,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
+import world.respect.shared.generated.resources.add_clazz
 import world.respect.shared.generated.resources.required
 import world.respect.shared.navigation.ClazzEdit
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import java.util.UUID
@@ -29,6 +32,7 @@ data class ClazzEditUiState(
 @OptIn(ExperimentalTime::class)
 class ClazzEditViewModel(
     savedStateHandle: SavedStateHandle,
+    private val oneRosterDataSource: OneRosterRosterDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ClazzEditUiState())
@@ -41,7 +45,7 @@ class ClazzEditViewModel(
 
         viewModelScope.launch {
             val entity = if (route.sourcedId != null) {
-                FakeRosterDataSource.getClassBySourcedId(route.sourcedId)
+                oneRosterDataSource.getClassBySourcedId(route.sourcedId)
             } else {
                 OneRosterClass(
                     sourcedId = UUID.randomUUID().toString(),
@@ -54,7 +58,11 @@ class ClazzEditViewModel(
 
             _appUiState.update { prev ->
                 prev.copy(
-                    title = getString(Res.string.edit_clazz),
+                    title = if (route.modeEdit) {
+                        Res.string.edit_clazz.asUiText()
+                    } else {
+                        Res.string.add_clazz.asUiText()
+                    },
                     userAccountIconVisible = false,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
@@ -81,17 +89,16 @@ class ClazzEditViewModel(
             }
 
             val updatedEntity = initEntity.copy(
-                dateLastModified = Clock.System.now(),
-                location = initEntity.location
+                dateLastModified = Clock.System.now()
             )
 
-            FakeRosterDataSource.putClass(updatedEntity)
+            oneRosterDataSource.putClass(updatedEntity)
         }
     }
 
     fun onClazzChanged(entity: OneRosterClass?) {
         _uiState.update {
-            it.copy(entity = entity, clazzNameError = null) // reset error when editing
+            it.copy(entity = entity, clazzNameError = null)
         }
     }
 }

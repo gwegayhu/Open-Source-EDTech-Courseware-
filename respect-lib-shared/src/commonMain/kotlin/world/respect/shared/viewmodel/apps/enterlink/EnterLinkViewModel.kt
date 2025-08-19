@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.enter_link
 import world.respect.shared.generated.resources.invalid_url
@@ -20,6 +19,7 @@ import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.util.ext.asUiText
 
 data class EnterLinkUiState(
     val linkUrl: String = "",
@@ -38,12 +38,10 @@ class EnterLinkViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(Res.string.enter_link)
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.enter_link.asUiText()
+            )
         }
     }
 

@@ -1,7 +1,6 @@
 package world.respect.app.view.clazz.detail
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectFilterChipsHeader
@@ -32,9 +32,9 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.description
-import world.respect.shared.generated.resources.end_date_label
 import world.respect.shared.generated.resources.pending_invite
-import world.respect.shared.generated.resources.start_date_label
+import world.respect.shared.generated.resources.accept_invite
+import world.respect.shared.generated.resources.dismiss_invite
 import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
 import world.respect.shared.util.SortOrderOption
@@ -53,7 +53,11 @@ fun ClazzDetailScreen(
         onSortOrderChanged = viewModel::onSortOrderChanged,
         onSelectChip = { viewModel.onSelectChip(it) },
         onClickAcceptInvite = { viewModel.onClickAcceptInvite(it) },
-        onClickDismissInvite = { viewModel.onClickDismissInvite(it) }
+        onClickDismissInvite = { viewModel.onClickDismissInvite(it) },
+        onTogglePendingSection = viewModel::onTogglePendingSection,
+        onToggleTeachersSection = viewModel::onToggleTeachersSection,
+        onToggleStudentsSection = viewModel::onToggleStudentsSection
+
     )
 }
 
@@ -64,7 +68,11 @@ fun ClazzDetailScreen(
     onSortOrderChanged: (SortOrderOption) -> Unit = { },
     onSelectChip: (String) -> Unit,
     onClickAcceptInvite: (OneRosterUser) -> Unit,
-    onClickDismissInvite: (OneRosterUser) -> Unit
+    onClickDismissInvite: (OneRosterUser) -> Unit,
+    onTogglePendingSection: () -> Unit,
+    onToggleTeachersSection: () -> Unit,
+    onToggleStudentsSection: () -> Unit
+
 ) {
     LazyColumn(
         modifier = Modifier
@@ -79,47 +87,17 @@ fun ClazzDetailScreen(
                         )
                     )
                 },
-                supportingContent = {
-                    uiState.clazzDetail?.location?.let {
-                        Text(
-                            it
-                        )
-                    }
-                }
+
+                /**Description field needed**/
+
+                /* supportingContent = {
+                     Text(
+                        uiState.clazzDetail?.description
+                     )
+                 }*/
             )
         }
 
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.start_date_label),
-                        )
-                    },
-                    supportingContent = {
-                        Text(text = "21/07/2025") // your dynamic date value here
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.end_date_label),
-                        )
-                    },
-                    supportingContent = {
-                        Text(text = "21/07/2026") // your dynamic date value here
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
         item {
             RespectFilterChipsHeader(
                 options = uiState.chipOptions.map { it.option },
@@ -138,6 +116,8 @@ fun ClazzDetailScreen(
 
         item {
             ListItem(
+                modifier = Modifier
+                    .clickable { onTogglePendingSection() },
                 headlineContent = {
                     Text(
                         text = stringResource(
@@ -149,56 +129,62 @@ fun ClazzDetailScreen(
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowDown,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
+                        modifier = Modifier.size(24.dp)
+                            .rotate(if (uiState.isPendingExpanded) 0f else -90f),
+
+                        )
                 }
             )
         }
 
-        itemsIndexed(
-            uiState.listOfPending,
-            key = { index, pendingUser ->
-                pendingUser.sourcedId
-            }) { index, user ->
-            val roleName = user.roles.firstOrNull()?.role?.name
-                ?.lowercase()
-                ?.replaceFirstChar { it.uppercase() } ?: ""
+        if (uiState.isPendingExpanded) {
+            itemsIndexed(
+                uiState.listOfPending,
+                key = { index, pendingUser ->
+                    pendingUser.sourcedId
+                }) { index, user ->
+                val roleName = user.roles.firstOrNull()?.role?.name
+                    ?.lowercase()
+                    ?.replaceFirstChar { it.uppercase() } ?: ""
 
-            ListItem(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                leadingContent = {
-                    RespectPersonAvatar(
-                        name = user.givenName
-                    )
-                },
-                headlineContent = {
-                    Text(text = user.givenName + "(" + roleName + ")")
-                },
-                trailingContent = {
-                    Row {
-                        Icon(
-                            modifier = Modifier.size(24.dp).clickable {
-                                onClickAcceptInvite(user)
-                            },
-                            imageVector = Icons.Outlined.CheckCircle,
-                            contentDescription = null,
+                ListItem(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    leadingContent = {
+                        RespectPersonAvatar(
+                            name = user.givenName
                         )
-                        Icon(
-                            modifier = Modifier.size(24.dp).clickable {
-                                onClickDismissInvite(user)
-                            },
-                            imageVector = Icons.Outlined.Cancel,
-                            contentDescription = null,
-                        )
+                    },
+                    headlineContent = {
+                        Text(text = user.givenName + "(" + roleName + ")")
+                    },
+                    trailingContent = {
+                        Row {
+                            Icon(
+                                modifier = Modifier.size(24.dp).clickable {
+                                    onClickAcceptInvite(user)
+                                },
+                                imageVector = Icons.Outlined.CheckCircle,
+                                contentDescription = stringResource(resource = Res.string.accept_invite)
+                            )
+                            Icon(
+                                modifier = Modifier.size(24.dp).clickable {
+                                    onClickDismissInvite(user)
+                                },
+                                imageVector = Icons.Outlined.Cancel,
+                                contentDescription = stringResource(resource = Res.string.dismiss_invite)
+                            )
+                        }
                     }
-                }
-            )
+                )
+            }
         }
 
 
         item {
             ListItem(
+                modifier = Modifier
+                    .clickable { onToggleTeachersSection() },
                 headlineContent = {
                     Text(
                         modifier = Modifier.padding(top = 24.dp),
@@ -211,54 +197,59 @@ fun ClazzDetailScreen(
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowDown,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
+                        modifier = Modifier.size(24.dp)
+                            .rotate(if (uiState.isTeachersExpanded) 0f else -90f),
+
+                        )
                 }
             )
+        }
+        if (uiState.isTeachersExpanded) {
+
+            item {
+                ListItem(
+                    modifier = Modifier.clickable {
+                        onClickAddPersonToClazz(OneRosterRoleEnum.TEACHER)
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = stringResource(resource = Res.string.add_teacher)
+                        )
+                    },
+                    headlineContent = {
+                        Text(
+                            text =
+                                stringResource(resource = Res.string.add_teacher)
+                        )
+                    }
+                )
+            }
+
+            itemsIndexed(
+                uiState.listOfTeachers,
+                key = { index, teacher ->
+                    teacher.sourcedId
+                }) { index, teacher ->
+                ListItem(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    leadingContent = {
+                        RespectPersonAvatar(
+                            name = teacher.givenName
+                        )
+                    },
+                    headlineContent = {
+                        Text(text = teacher.givenName)
+                    }
+                )
+            }
         }
 
         item {
-            ListItem(
-                modifier = Modifier.clickable {
-                    onClickAddPersonToClazz(OneRosterRoleEnum.TEACHER)
-                },
-                leadingContent = {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null
-                    )
-                },
-                headlineContent = {
-                    Text(
-                        text =
-                            stringResource(resource = Res.string.add_teacher)
-                    )
-                }
-            )
-        }
-
-
-        itemsIndexed(
-            uiState.listOfTeachers,
-            key = { index, teacher ->
-                teacher.sourcedId
-            }) { index, teacher ->
             ListItem(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                leadingContent = {
-                    RespectPersonAvatar(
-                        name = teacher.givenName
-                    )
-                },
-                headlineContent = {
-                    Text(text = teacher.givenName)
-                }
-            )
-        }
-
-        item {
-            ListItem(
+                    .clickable { onToggleStudentsSection() },
                 headlineContent = {
                     Text(
                         modifier = Modifier.padding(top = 24.dp),
@@ -271,49 +262,56 @@ fun ClazzDetailScreen(
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowDown,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(24.dp)
+                            .rotate(if (uiState.isStudentsExpanded) 0f else -90f),
                     )
                 }
             )
         }
 
-        item {
-            ListItem(
-                modifier = Modifier.clickable {
-                    onClickAddPersonToClazz(OneRosterRoleEnum.STUDENT)
-                },
-                leadingContent = {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = null)
-                },
-                headlineContent = {
-                    Text(
-                        text =
-                            stringResource(resource = Res.string.add_student)
-                    )
-                }
-            )
-        }
+        if (uiState.isStudentsExpanded) {
 
-        itemsIndexed(
-            uiState.listOfStudents,
-            key = { index, student ->
-                student.sourcedId
-            }) { index, student ->
-            ListItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { },
-                leadingContent = {
-                    RespectPersonAvatar(
-                        name = student.givenName
-                    )
-                },
-                headlineContent = {
-                    Text(
-                        text = student.givenName
-                    )
-                }
-            )
+            item {
+                ListItem(
+                    modifier = Modifier.clickable {
+                        onClickAddPersonToClazz(OneRosterRoleEnum.STUDENT)
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = stringResource(resource = Res.string.add_student)
+                        )
+                    },
+                    headlineContent = {
+                        Text(
+                            text =
+                                stringResource(resource = Res.string.add_student)
+                        )
+                    }
+                )
+            }
+
+            itemsIndexed(
+                uiState.listOfStudents,
+                key = { index, student ->
+                    student.sourcedId
+                }) { index, student ->
+                ListItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { },
+                    leadingContent = {
+                        RespectPersonAvatar(
+                            name = student.givenName
+                        )
+                    },
+                    headlineContent = {
+                        Text(
+                            text = student.givenName
+                        )
+                    }
+                )
+            }
         }
     }
 }

@@ -34,11 +34,13 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import world.respect.app.components.uiTextStringResource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.apps
 import world.respect.shared.generated.resources.assignments
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.report
+import world.respect.shared.navigation.AccountList
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.Assignment
 import world.respect.shared.navigation.ClazzList
@@ -113,6 +115,9 @@ fun App(
                         compactHeader = (widthClass != SizeClass.EXPANDED),
                         appUiState = appUiStateVal,
                         navController = navController,
+                        onProfileClick = {
+                            navController.navigate(AccountList)
+                        }
                     )
                 }
             },
@@ -130,7 +135,9 @@ fun App(
                                    label = { Text(label) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
-                                        navController.navigate(item.destRoute)
+                                        navController.navigate(item.destRoute)  {
+                                            popUpTo(0) { inclusive = true }
+                                        }
                                         selectedTopLevelItemIndex = index
                                     }
                                 )
@@ -147,7 +154,9 @@ fun App(
                         text = {
                             Text(
                                 modifier = Modifier.testTag("floating_action_button_text"),
-                                text = appUiStateVal.fabState.text ?: ""
+                                text = appUiStateVal.fabState.text?.let {
+                                    uiTextStringResource(it)
+                                } ?: ""
                             )
                         },
                         icon = {

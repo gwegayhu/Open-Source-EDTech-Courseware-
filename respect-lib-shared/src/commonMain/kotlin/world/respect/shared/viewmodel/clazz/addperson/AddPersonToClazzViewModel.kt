@@ -7,14 +7,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.navigation.AddPersonToClazz
-import world.respect.shared.navigation.ClazzDetail
+import world.respect.shared.util.ext.asUiText
 
 
 data class AddPersonToClazzUIState(
@@ -37,11 +36,11 @@ class AddPersonToClazzViewModel(
             _appUiState.update {
                 if (route.roleType == OneRosterRoleEnum.STUDENT) {
                     it.copy(
-                        title = getString(Res.string.add_student)
+                        title = Res.string.add_student.asUiText()
                     )
                 } else {
                     it.copy(
-                        title = getString(Res.string.add_teacher)
+                        title = Res.string.add_teacher.asUiText()
                     )
                 }
 

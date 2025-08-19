@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,8 +32,14 @@ import androidx.navigation.NavController
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeBackgroundColor
 import com.ustadmobile.libuicompose.theme.appBarSelectionModeContentColor
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import world.respect.app.components.RespectPersonAvatar
+import world.respect.app.components.uiTextStringResource
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.back
 import world.respect.shared.generated.resources.search
+import world.respect.shared.util.ext.fullName
 import world.respect.shared.viewmodel.app.appstate.AppBarColors
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 
@@ -44,13 +50,20 @@ fun RespectAppBar(
     compactHeader: Boolean,
     appUiState: AppUiState,
     navController: NavController,
-    screenName: String? = null, // <-- Pass screen name if available
-    onProfileClick: () -> Unit = {}, // <-- Handle profile icon click
+    onProfileClick: () -> Unit = {},
 ) {
+    val currentBackStack by navController.currentBackStack.collectAsState()
+    val currentRoute = currentBackStack.lastOrNull()?.destination?.route
+    val isRootDest = remember(currentRoute) {
+        APP_TOP_LEVEL_NAV_ITEMS.any {
+            it.destRoute::class.qualifiedName == currentRoute
+        }
+    }
 
-    val title = appUiState.title ?: screenName ?: ""
-    val defaultCanGoBack = navController.previousBackStackEntry != null
-    val canGoBack = appUiState.showBackButton ?: defaultCanGoBack
+    val canGoBack = appUiState.showBackButton ?: !isRootDest && currentBackStack.size > 1
+
+    val accountManager: RespectAccountManager = koinInject()
+    val activeAccount by accountManager.activeAccountAndPersonFlow.collectAsState(null)
 
     var searchActive by remember {
         mutableStateOf(false)
@@ -70,7 +83,7 @@ fun RespectAppBar(
     TopAppBar(
         title = {
             Text(
-                text = title,
+                text = appUiState.title?.let { uiTextStringResource(it) } ?: "",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("app_title"),
@@ -79,7 +92,10 @@ fun RespectAppBar(
         navigationIcon = {
             if (canGoBack) {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                    Icon(
+                        Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = stringResource(Res.string.back)
+                    )
                 }
             }
         },
@@ -144,16 +160,13 @@ fun RespectAppBar(
                     Text(appUiState.actionBarButtonState.text ?: "")
                 }
             }
-
             if(appUiState.userAccountIconVisible) {
-                IconButton(
-                    onClick = onProfileClick,
-                    modifier = Modifier.testTag("profile_icon")
-                ) {
-                    Icon(
-                        Icons.Default.Person,
-                        contentDescription = null
-                    )
+                activeAccount?.also {
+                    IconButton(
+                        onClick = onProfileClick,
+                    ) {
+                        RespectPersonAvatar(name = it.person.fullName())
+                    }
                 }
             }
         },

@@ -2,13 +2,11 @@ package world.respect.shared.viewmodel.clazz.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
@@ -17,9 +15,9 @@ import world.respect.shared.generated.resources.first_name
 import world.respect.shared.generated.resources.last_name
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.ClazzDetail
-import world.respect.shared.navigation.ClazzList
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.SortOrderOption
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 
@@ -34,17 +32,16 @@ data class ClazzListUiState(
 
 class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
+    private val oneRosterDataSource: OneRosterRosterDataSource,
 ) : RespectViewModel(savedStateHandle) {
-
-    private val fakeRosterDataSource = FakeRosterDataSource
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
-    
+
     init {
         viewModelScope.launch {
 
-            val classes = fakeRosterDataSource.getAllClasses()
+            val classes = oneRosterDataSource.getAllClasses()
 
             _uiState.update {
                 val sortOptions = listOf(
@@ -69,17 +66,18 @@ class ClazzListViewModel(
 
             _appUiState.update {
                 it.copy(
-                    title = getString(Res.string.classes),
+                    title = Res.string.classes.asUiText(),
                     showBackButton = false,
                     fabState = FabUiState(
                         visible = true,
                         icon = FabUiState.FabIcon.ADD,
-                        text = getString(resource = Res.string.clazz),
+                        text = Res.string.clazz.asUiText(),
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
                                     ClazzEdit.create(
-                                        sourcedId = null
+                                        sourcedId = null,
+                                        modeEdit = false
                                     )
                                 )
                             )

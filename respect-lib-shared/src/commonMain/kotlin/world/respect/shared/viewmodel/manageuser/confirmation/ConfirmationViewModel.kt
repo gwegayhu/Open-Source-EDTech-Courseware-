@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.generated.resources.Res
@@ -16,8 +15,10 @@ import world.respect.shared.generated.resources.invalid_invite_code
 import world.respect.shared.generated.resources.invitation
 import world.respect.shared.navigation.ConfirmationScreen
 import world.respect.shared.navigation.NavCommand
+import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
@@ -38,15 +39,15 @@ class ConfirmationViewModel(
     private val route: ConfirmationScreen = savedStateHandle.toRoute()
 
     init {
-        viewModelScope.launch {
-            _appUiState.update {
-                it.copy(
-                    title = getString(Res.string.invitation),
-                    hideBottomNavigation = true,
-                    userAccountIconVisible = false
-                )
-            }
+        _appUiState.update {
+            it.copy(
+                title = Res.string.invitation.asUiText(),
+                hideBottomNavigation = true,
+                userAccountIconVisible = false
+            )
+        }
 
+        viewModelScope.launch {
             val inviteInfo = getInviteInfoUseCase.invoke(route.code)
             try {
                 _uiState.update {
@@ -62,14 +63,14 @@ class ConfirmationViewModel(
     }
 
     fun onClickStudent() {
-        navigateToTermsAndCondition(ProfileType.STUDENT)
+        navigateToAppropriateScreen(ProfileType.STUDENT)
     }
 
     fun onClickParent() {
-        navigateToTermsAndCondition(ProfileType.PARENT)
+        navigateToAppropriateScreen(ProfileType.PARENT)
     }
 
-    private fun navigateToTermsAndCondition(profileType: ProfileType){
+    private fun navigateToAppropriateScreen(profileType: ProfileType){
         viewModelScope.launch {
             val inviteInfo= uiState.value.inviteInfo
             if (inviteInfo==null) {
@@ -78,9 +79,16 @@ class ConfirmationViewModel(
                 }
                 return@launch
             }
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(TermsAndCondition.create(profileType,inviteInfo))
-            )
+            if (profileType==ProfileType.STUDENT) {
+                _navCommandFlow.tryEmit(
+                    NavCommand.Navigate(SignupScreen.create(profileType,inviteInfo))
+                )
+            }
+            else if (profileType==ProfileType.PARENT) {
+                _navCommandFlow.tryEmit(
+                    NavCommand.Navigate(TermsAndCondition.create(profileType,inviteInfo))
+                )
+            }
         }
     }
 

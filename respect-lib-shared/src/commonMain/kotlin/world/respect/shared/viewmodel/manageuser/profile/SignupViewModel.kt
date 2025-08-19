@@ -15,8 +15,10 @@ import world.respect.shared.generated.resources.*
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.SignupScreen
 import world.respect.shared.navigation.CreateAccount
+import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
+import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 
@@ -73,7 +75,7 @@ class SignupViewModel(
                         text = uiState.value.actionBarButtonName,
                         onClick = { onClickSave() }
                     ),
-                    title = uiState.value.screenTitle,
+                    title = uiState.value.screenTitle.asUiText(),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false
                 )
@@ -155,12 +157,11 @@ class SignupViewModel(
                         }
                     }
                     ProfileType.CHILD ->{
-                        // not cleared where to navigate
-//                        viewModelScope.launch {
-//                            _navCommandFlow.tryEmit(
-//                                NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,))
-//                            )
-//                        }
+                        viewModelScope.launch {
+                            _navCommandFlow.tryEmit(
+                                NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,route.uid?:""))
+                            )
+                        }
                     }
                 }
             }

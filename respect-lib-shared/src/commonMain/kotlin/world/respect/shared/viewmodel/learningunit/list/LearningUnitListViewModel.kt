@@ -24,6 +24,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.language
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.SortOrderOption
+import world.respect.shared.util.ext.asUiText
 
 data class LearningUnitListUiState(
     val publications: List<OpdsPublication> = emptyList(),
@@ -80,7 +81,7 @@ class LearningUnitListViewModel(
 
                         _appUiState.update {
                             it.copy(
-                                title = appBarTitle,
+                                title = appBarTitle.asUiText(),
                                 searchState = AppBarSearchUiState(visible = true)
                             )
                         }
