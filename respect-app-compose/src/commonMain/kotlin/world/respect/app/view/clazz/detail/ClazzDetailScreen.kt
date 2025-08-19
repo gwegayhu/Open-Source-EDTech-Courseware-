@@ -270,6 +270,7 @@ fun ClazzDetailScreen(
         }
 
         if (uiState.isStudentsExpanded) {
+
             item {
                 ListItem(
                     modifier = Modifier.clickable {
