@@ -101,6 +101,7 @@
     <string name="add_teacher">Add Teacher</string>">
     <string name="add_student">Add Student</string>">
     <string name="accept_invite">Accept Invite</string>">
+    <string name="dismiss_invite">Dismiss invite</string>
     <string name="pending_invite">Pending invites</string>">
     <string name="copy_invite_code">Copy invite code : </string>">
     <string name="share_with_link_or_qr_code">Invite with link or QR code</string>">
@@ -124,7 +125,6 @@
     <string name="edit_clazz">Edit class</string>
     <string name="add_clazz">Add class</string>
     <string name="required">* Required</string>
-
 
     <string name="lets_get_started">Let's get started</string>
     <string name="enter_school_name">School name</string>

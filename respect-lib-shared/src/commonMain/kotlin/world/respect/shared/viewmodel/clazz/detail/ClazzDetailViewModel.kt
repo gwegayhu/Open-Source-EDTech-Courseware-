@@ -40,7 +40,10 @@ data class ClazzDetailUiState(
         Res.string.first_name, 1, true
     ),
     val fieldsEnabled: Boolean = true,
-    val clazzDetail: OneRosterClass? = null
+    val clazzDetail: OneRosterClass? = null,
+    val isPendingExpanded: Boolean = true,
+    val isTeachersExpanded: Boolean = true,
+    val isStudentsExpanded: Boolean = true
 )
 
 class ClazzDetailViewModel(
@@ -145,6 +148,18 @@ class ClazzDetailViewModel(
 
     fun onClickDismissInvite(user: OneRosterUser) {}
 
+
+    fun onTogglePendingSection() {
+        _uiState.update { it.copy(isPendingExpanded = !it.isPendingExpanded) }
+    }
+
+    fun onToggleTeachersSection() {
+        _uiState.update { it.copy(isTeachersExpanded = !it.isTeachersExpanded) }
+    }
+
+    fun onToggleStudentsSection() {
+        _uiState.update { it.copy(isStudentsExpanded = !it.isStudentsExpanded) }
+    }
 
     companion object {
         const val ALL = "All"
