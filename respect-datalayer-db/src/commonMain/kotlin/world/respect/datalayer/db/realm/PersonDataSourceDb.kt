@@ -4,6 +4,7 @@ import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
@@ -13,6 +14,7 @@ import world.respect.datalayer.db.realm.adapters.toEntities
 import world.respect.datalayer.db.realm.adapters.toModel
 import world.respect.datalayer.realm.PersonDataSourceLocal
 import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.realm.model.composites.PersonListDetails
 import world.respect.libxxhash.XXStringHasher
 
 class PersonDataSourceDb(
@@ -59,4 +61,14 @@ class PersonDataSourceDb(
             }
         }
     }
+
+    override suspend fun findAll(
+        loadParams: DataLoadParams,
+        searchQuery: String?
+    ): Flow<DataLoadState<List<PersonListDetails>>> {
+        return realmDb.getPersonEntityDao().findAllListDetailsAsFlow().map {
+            DataReadyState(it)
+        }
+    }
+
 }

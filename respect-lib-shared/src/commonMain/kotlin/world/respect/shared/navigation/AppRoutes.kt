@@ -336,3 +336,5 @@ class LearningUnitViewer(
 @Serializable
 object AccountList: RespectAppRoute
 
+@Serializable
+object PersonList: RespectAppRoute

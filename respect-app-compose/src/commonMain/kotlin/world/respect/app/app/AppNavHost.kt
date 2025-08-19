@@ -28,6 +28,7 @@ import world.respect.app.view.manageuser.howpasskeywork.HowPasskeyWorksScreen
 import world.respect.app.view.manageuser.otheroption.OtherOptionsScreen
 import world.respect.app.view.manageuser.otheroptionsignup.OtherOptionsSignupScreen
 import world.respect.app.view.manageuser.termsandcondition.TermsAndConditionScreen
+import world.respect.app.view.person.list.PersonListScreen
 import world.respect.app.view.report.ReportScreen
 import world.respect.shared.viewmodel.acknowledgement.AcknowledgementViewModel
 import world.respect.app.viewmodel.respectViewModel
@@ -53,6 +54,7 @@ import world.respect.shared.navigation.GetStartedScreen
 import world.respect.shared.navigation.HowPasskeyWorks
 import world.respect.shared.navigation.OtherOption
 import world.respect.shared.navigation.OtherOptionsSignup
+import world.respect.shared.navigation.PersonList
 import world.respect.shared.navigation.TermsAndCondition
 import world.respect.shared.navigation.WaitingForApproval
 import world.respect.shared.viewmodel.app.appstate.AppUiState
@@ -279,6 +281,15 @@ fun AppNavHost(
 
         composable<AccountList> {
             AccountListScreen(
+                viewModel = respectViewModel(
+                    onSetAppUiState = onSetAppUiState,
+                    navController = respectNavController
+                )
+            )
+        }
+
+        composable<PersonList> {
+            PersonListScreen(
                 viewModel = respectViewModel(
                     onSetAppUiState = onSetAppUiState,
                     navController = respectNavController

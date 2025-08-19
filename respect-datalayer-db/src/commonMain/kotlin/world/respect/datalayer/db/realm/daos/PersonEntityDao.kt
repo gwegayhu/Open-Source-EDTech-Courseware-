@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.db.realm.entities.PersonEntity
+import world.respect.datalayer.realm.model.composites.PersonListDetails
 
 @Dao
 interface PersonEntityDao {
@@ -33,5 +34,15 @@ interface PersonEntityDao {
         WHERE pGuidHash = :guidHash
     """)
     fun findByGuidHashAsFlow(guidHash: Long): Flow<PersonEntity?>
+
+    @Query("""
+        SELECT PersonEntity.pGuidHash AS guid, 
+               PersonEntity.pGivenName AS givenName, 
+               PersonEntity.pFamilyName AS lastName, 
+               PersonEntity.pUsername AS username
+          FROM PersonEntity
+    """)
+    fun findAllListDetailsAsFlow(): Flow<List<PersonListDetails>>
+
 
 }

@@ -98,6 +98,7 @@ import world.respect.shared.domain.realm.RespectRealmPath
 import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.NavResultReturnerImpl
 import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
+import world.respect.shared.viewmodel.person.list.PersonListViewModel
 
 @Suppress("unused")
 const val DEFAULT_COMPATIBLE_APP_LIST_URL = "https://respect.world/respect-ds/manifestlist.json"
@@ -178,6 +179,7 @@ val appKoinModule = module {
     viewModelOf(::OtherOptionsSignupViewModel)
     viewModelOf(::EnterPasswordSignupViewModel)
     viewModelOf(::AccountListViewModel)
+    viewModelOf(::PersonListViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

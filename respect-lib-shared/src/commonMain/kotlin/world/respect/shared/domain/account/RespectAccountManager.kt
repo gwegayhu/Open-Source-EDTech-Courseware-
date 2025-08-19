@@ -192,6 +192,12 @@ class RespectAccountManager(
         return accountScope
     }
 
+    fun requireSelectedAccountScope(): Scope {
+        return selectedAccount?.let { getOrCreateAccountScope(it) }
+            ?: throw IllegalStateException("require scope for selected account: no account selected")
+    }
+
+
 
     companion object {
 

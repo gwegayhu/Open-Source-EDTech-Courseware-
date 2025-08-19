@@ -1,10 +1,12 @@
 package world.respect.datalayer.repository.realm
 
 import kotlinx.coroutines.flow.Flow
+import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.realm.PersonDataSource
 import world.respect.datalayer.realm.PersonDataSourceLocal
 import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.realm.model.composites.PersonListDetails
 
 class PersonDataSourceRepository(
     private val local: PersonDataSourceLocal,
@@ -24,6 +26,13 @@ class PersonDataSourceRepository(
     }
 
     override suspend fun findByGuid(guid: String): Person? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun findAll(
+        loadParams: DataLoadParams,
+        searchQuery: String?
+    ): Flow<DataLoadState<List<PersonListDetails>>> {
         TODO("Not yet implemented")
     }
 }

@@ -143,4 +143,6 @@
     <string name="logout">Logout</string>
     <string name="profile">Profile</string>
     <string name="accounts">Accounts</string>
+
+    <string name="people">People</string>
 </resources>

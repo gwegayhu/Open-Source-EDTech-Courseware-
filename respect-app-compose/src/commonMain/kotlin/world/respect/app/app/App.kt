@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ImportContacts
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
@@ -38,11 +39,13 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.apps
 import world.respect.shared.generated.resources.assignments
 import world.respect.shared.generated.resources.clazz
+import world.respect.shared.generated.resources.people
 import world.respect.shared.generated.resources.report
 import world.respect.shared.navigation.AccountList
 import world.respect.shared.navigation.RespectAppLauncher
 import world.respect.shared.navigation.Assignment
 import world.respect.shared.navigation.Clazz
+import world.respect.shared.navigation.PersonList
 import world.respect.shared.navigation.Report
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.FabUiState
@@ -74,7 +77,12 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
         destRoute = Report,
         icon = Icons.Filled.BarChart,
         label = Res.string.report
-    )
+    ),
+    TopNavigationItem(
+        destRoute = PersonList,
+        icon = Icons.Filled.Person,
+        label = Res.string.people,
+    ),
 )
 
 @OptIn(ExperimentalLayoutApi::class)
