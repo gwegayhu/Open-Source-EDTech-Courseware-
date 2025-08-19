@@ -77,7 +77,8 @@ class ClazzListViewModel(
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
                                     ClazzEdit.create(
-                                        sourcedId = null
+                                        sourcedId = null,
+                                        modeEdit = false
                                     )
                                 )
                             )

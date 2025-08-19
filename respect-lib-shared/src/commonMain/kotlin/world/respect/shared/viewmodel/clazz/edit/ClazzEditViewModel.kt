@@ -13,6 +13,7 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
+import world.respect.shared.generated.resources.add_clazz
 import world.respect.shared.generated.resources.required
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.util.ext.asUiText
@@ -55,7 +56,11 @@ class ClazzEditViewModel(
 
             _appUiState.update { prev ->
                 prev.copy(
-                    title = Res.string.edit_clazz.asUiText(),
+                    title = if (route.modeEdit) {
+                        Res.string.edit_clazz.asUiText()
+                    } else {
+                        Res.string.add_clazz.asUiText()
+                    },
                     userAccountIconVisible = false,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,

@@ -58,7 +58,7 @@ class ClazzDetailViewModel(
         viewModelScope.launch {
             val users = fakeRosterDataSource.getAllUsers()
 
-            val clazzDetail =fakeRosterDataSource.getClassBySourcedId(route.sourcedId)
+            val clazzDetail = fakeRosterDataSource.getClassBySourcedId(route.sourcedId)
 
             val teachers = users.filter { user ->
                 user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
@@ -82,7 +82,10 @@ class ClazzDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    ClazzEdit.create(route.sourcedId)
+                                    ClazzEdit.create(
+                                        route.sourcedId,
+                                        modeEdit = true
+                                    )
                                 )
                             )
                         }
