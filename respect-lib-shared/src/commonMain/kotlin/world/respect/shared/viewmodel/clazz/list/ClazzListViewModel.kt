@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
@@ -32,17 +32,16 @@ data class ClazzListUiState(
 
 class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
+    private val oneRosterDataSource: OneRosterRosterDataSource,
 ) : RespectViewModel(savedStateHandle) {
-
-    private val fakeRosterDataSource = FakeRosterDataSource
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
-    
+
     init {
         viewModelScope.launch {
 
-            val classes = fakeRosterDataSource.getAllClasses()
+            val classes = oneRosterDataSource.getAllClasses()
 
             _uiState.update {
                 val sortOptions = listOf(

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
@@ -31,6 +32,7 @@ data class ClazzEditUiState(
 @OptIn(ExperimentalTime::class)
 class ClazzEditViewModel(
     savedStateHandle: SavedStateHandle,
+    private val oneRosterDataSource: OneRosterRosterDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ClazzEditUiState())
@@ -43,7 +45,7 @@ class ClazzEditViewModel(
 
         viewModelScope.launch {
             val entity = if (route.sourcedId != null) {
-                FakeRosterDataSource.getClassBySourcedId(route.sourcedId)
+                oneRosterDataSource.getClassBySourcedId(route.sourcedId)
             } else {
                 OneRosterClass(
                     sourcedId = UUID.randomUUID().toString(),
@@ -90,7 +92,7 @@ class ClazzEditViewModel(
                 dateLastModified = Clock.System.now()
             )
 
-            FakeRosterDataSource.putClass(updatedEntity)
+            oneRosterDataSource.putClass(updatedEntity)
         }
     }
 

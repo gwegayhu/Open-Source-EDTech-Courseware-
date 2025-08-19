@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
@@ -45,9 +45,9 @@ data class ClazzDetailUiState(
 
 class ClazzDetailViewModel(
     savedStateHandle: SavedStateHandle,
+    private val oneRosterDataSource: OneRosterRosterDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
-    private val fakeRosterDataSource = FakeRosterDataSource
     private val _uiState = MutableStateFlow(ClazzDetailUiState())
 
     val uiState = _uiState.asStateFlow()
@@ -56,9 +56,9 @@ class ClazzDetailViewModel(
 
     init {
         viewModelScope.launch {
-            val users = fakeRosterDataSource.getAllUsers()
+            val users = oneRosterDataSource.getAllUsers()
 
-            val clazzDetail = fakeRosterDataSource.getClassBySourcedId(route.sourcedId)
+            val clazzDetail = oneRosterDataSource.getClassBySourcedId(route.sourcedId)
 
             val teachers = users.filter { user ->
                 user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }

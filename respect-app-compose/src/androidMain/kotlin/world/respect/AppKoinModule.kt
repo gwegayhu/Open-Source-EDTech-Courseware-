@@ -94,6 +94,8 @@ import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.RespectRealmDataSourceLocal
 import world.respect.datalayer.db.RespectRealmDataSourceDb
 import world.respect.datalayer.db.RespectRealmDatabase
+import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
@@ -185,6 +187,8 @@ val appKoinModule = module {
     viewModelOf(::OtherOptionsSignupViewModel)
     viewModelOf(::EnterPasswordSignupViewModel)
     viewModelOf(::AccountListViewModel)
+
+    single<OneRosterRosterDataSource> { FakeRosterDataSource() }
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
