@@ -87,8 +87,7 @@ class ClazzEditViewModel(
             }
 
             val updatedEntity = initEntity.copy(
-                dateLastModified = Clock.System.now(),
-                location = initEntity.location
+                dateLastModified = Clock.System.now()
             )
 
             FakeRosterDataSource.putClass(updatedEntity)

@@ -21,7 +21,6 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -37,16 +36,6 @@ import world.respect.credentials.passkey.GetCredentialUseCaseImpl
 import world.respect.credentials.passkey.request.CreatePublicKeyCredentialCreationOptionsJsonUseCase
 import world.respect.credentials.passkey.request.CreatePublicKeyCredentialRequestOptionsJsonUseCase
 import world.respect.credentials.passkey.request.EncodeUserHandleUseCase
-import world.respect.shared.datasource.RespectAppDataSourceProvider
-import world.respect.shared.datasource.SingleDataSourceProvider
-import world.respect.shared.viewmodel.apps.detail.AppsDetailViewModel
-import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
-import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
-import world.respect.shared.viewmodel.apps.list.AppListViewModel
-import world.respect.shared.viewmodel.assignments.AssignmentViewModel
-import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
-import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
-import world.respect.shared.viewmodel.report.ReportViewModel
 import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectAppDatabase
 import world.respect.datalayer.http.RespectAppDataSourceHttp
@@ -61,8 +50,6 @@ import world.respect.shared.domain.account.createinviteredeemrequest.RespectRede
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.signup.SignupUseCase
-import world.respect.shared.domain.launchapp.LaunchAppUseCase
-import world.respect.shared.domain.launchapp.LaunchAppUseCaseAndroid
 import world.respect.shared.domain.mock.MockGetInviteInfoUseCase
 import world.respect.shared.domain.mock.MockSubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.launchapp.LaunchAppUseCase
@@ -80,7 +67,6 @@ import world.respect.shared.viewmodel.apps.enterlink.EnterLinkViewModel
 import world.respect.shared.viewmodel.apps.launcher.AppLauncherViewModel
 import world.respect.shared.viewmodel.apps.list.AppListViewModel
 import world.respect.shared.viewmodel.assignments.AssignmentViewModel
-import world.respect.shared.viewmodel.clazz.ClazzViewModel
 import world.respect.shared.viewmodel.learningunit.detail.LearningUnitDetailViewModel
 import world.respect.shared.viewmodel.learningunit.list.LearningUnitListViewModel
 import world.respect.shared.viewmodel.manageuser.confirmation.ConfirmationViewModel
@@ -100,7 +86,6 @@ import java.io.File
 import kotlinx.io.files.Path
 import world.respect.shared.viewmodel.clazz.addperson.AddPersonToClazzViewModel
 import org.koin.core.qualifier.named
-import world.respect.shared.domain.account.RespectAccountManager
 import org.koin.core.scope.Scope
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
