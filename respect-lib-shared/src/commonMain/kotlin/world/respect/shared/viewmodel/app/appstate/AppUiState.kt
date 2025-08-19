@@ -16,4 +16,4 @@ data class AppUiState(
     val showBackButton: Boolean? = true,
     val searchState: AppBarSearchUiState = AppBarSearchUiState(),
     val actionBarButtonState: ActionBarButtonUiState = ActionBarButtonUiState()
-    )
+)

@@ -15,7 +15,6 @@ class ReportViewModel(
         _appUiState.update {
             it.copy(
                 title = Res.string.report.asUiText(),
-                showBackButton = false,
             )
         }
     }
