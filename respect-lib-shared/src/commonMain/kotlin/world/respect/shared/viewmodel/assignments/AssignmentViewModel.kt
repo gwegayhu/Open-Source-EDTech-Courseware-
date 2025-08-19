@@ -15,7 +15,6 @@ class AssignmentViewModel(
         _appUiState.update {
             it.copy(
                 title = Res.string.assignments.asUiText(),
-                showBackButton = false,
             )
         }
     }
