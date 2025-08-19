@@ -6,7 +6,7 @@ import app.cash.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -28,8 +28,6 @@ import world.respect.shared.navigation.ReportTemplateList
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
-import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 data class ReportListUiState(
@@ -81,66 +79,40 @@ class ReportListViewModel(
     }
 
     @OptIn(ExperimentalTime::class)
-    fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> = flow {
-        try {
-            val reportOptions = json.decodeFromString<ReportOptions>(
-                ReportOptions.serializer(),
-                report.reportOptions
-            )
-            val request = RunReportUseCase.RunReportRequest(
-                reportUid = report.reportId.toLong(),
-                reportOptions = reportOptions,
-                accountPersonUid = 0L, // TODO: Get actual user ID
-                timeZone = TimeZone.currentSystemDefault()
-            )
-            runReportUseCase(request).collect { reportResult ->
-                val xAxisFormatter = createGraphFormatterUseCase(
-                    reportResult = reportResult,
-                    options = CreateGraphFormatterUseCase.FormatterOptions(
-                        paramType = String::class,
-                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
-                    )
-                )
+    fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> {
+        val reportOptions = json.decodeFromString<ReportOptions>(
+            ReportOptions.serializer(),
+            report.reportOptions
+        )
+        val request = RunReportUseCase.RunReportRequest(
+            reportUid = report.reportId.toLong(),
+            reportOptions = reportOptions,
+            accountPersonUid = 0L, // TODO: Get actual user ID
+            timeZone = TimeZone.currentSystemDefault()
+        )
 
-                val yAxisFormatter = createGraphFormatterUseCase(
-                    reportResult = reportResult,
-                    options = CreateGraphFormatterUseCase.FormatterOptions(
-                        paramType = Double::class,
-                        axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
-                    )
-                )
-
-                emit(
-                    RunReportResultAndFormatters(
-                        reportResult = reportResult,
-                        xAxisFormatter = xAxisFormatter,
-                        yAxisFormatter = yAxisFormatter
-                    )
-                )
-            }
-
-        } catch (e: Exception) {
-            val errorResult = RunReportUseCase.RunReportResult(
-                timestamp = Clock.System.now().toEpochMilliseconds(),
-                request = RunReportUseCase.RunReportRequest(
-                    reportUid = report.reportId.toLong(),
-                    reportOptions = ReportOptions(),
-                    accountPersonUid = activeUserPersonUid,
-                    timeZone = TimeZone.currentSystemDefault()
-                ),
-                results = emptyList()
-            )
-
-            emit(
-                RunReportResultAndFormatters(
-                    reportResult = errorResult,
-                    xAxisFormatter = null,
-                    yAxisFormatter = null
+        return runReportUseCase(request).map { reportResult ->
+            val xAxisFormatter = createGraphFormatterUseCase(
+                reportResult = reportResult,
+                options = CreateGraphFormatterUseCase.FormatterOptions(
+                    paramType = String::class,
+                    axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
                 )
             )
-            throw e
-        } finally {
-            _appUiState.update { it.copy(loadingState = NOT_LOADING) }
+
+            val yAxisFormatter = createGraphFormatterUseCase(
+                reportResult = reportResult,
+                options = CreateGraphFormatterUseCase.FormatterOptions(
+                    paramType = Double::class,
+                    axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
+                )
+            )
+
+            RunReportResultAndFormatters(
+                reportResult = reportResult,
+                xAxisFormatter = xAxisFormatter,
+                yAxisFormatter = yAxisFormatter
+            )
         }
     }
 
