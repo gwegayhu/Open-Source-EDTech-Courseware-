@@ -135,7 +135,9 @@ fun App(
                                    label = { Text(label) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
-                                        navController.navigate(item.destRoute)
+                                        navController.navigate(item.destRoute)  {
+                                            popUpTo(0) { inclusive = true }
+                                        }
                                         selectedTopLevelItemIndex = index
                                     }
                                 )

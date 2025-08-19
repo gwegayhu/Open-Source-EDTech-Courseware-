@@ -37,7 +37,7 @@ class AcknowledgementViewModel(
 
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    destination = if(accountManager.activeAccount != null) {
+                    destination = if(accountManager.selectedAccount != null) {
                         RespectAppLauncher
                     }else {
                         GetStartedScreen

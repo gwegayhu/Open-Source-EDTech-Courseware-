@@ -37,6 +37,7 @@ import world.respect.app.components.RespectPersonAvatar
 import world.respect.app.components.uiTextStringResource
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
+import world.respect.shared.generated.resources.back
 import world.respect.shared.generated.resources.search
 import world.respect.shared.util.ext.fullName
 import world.respect.shared.viewmodel.app.appstate.AppBarColors
@@ -51,8 +52,15 @@ fun RespectAppBar(
     navController: NavController,
     onProfileClick: () -> Unit = {},
 ) {
-    val defaultCanGoBack = navController.previousBackStackEntry != null
-    val canGoBack = appUiState.showBackButton ?: defaultCanGoBack
+    val currentBackStack by navController.currentBackStack.collectAsState()
+    val currentRoute = currentBackStack.lastOrNull()?.destination?.route
+    val isRootDest = remember(currentRoute) {
+        APP_TOP_LEVEL_NAV_ITEMS.any {
+            it.destRoute::class.qualifiedName == currentRoute
+        }
+    }
+
+    val canGoBack = appUiState.showBackButton ?: !isRootDest && currentBackStack.size > 1
 
     val accountManager: RespectAccountManager = koinInject()
     val activeAccount by accountManager.activeAccountAndPersonFlow.collectAsState(null)
@@ -84,7 +92,10 @@ fun RespectAppBar(
         navigationIcon = {
             if (canGoBack) {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                    Icon(
+                        Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = stringResource(Res.string.back)
+                    )
                 }
             }
         },

@@ -36,6 +36,7 @@ fun AccountListScreen(
         uiState = uiState,
         onClickAccount = viewModel::onClickAccount,
         onClickAddAccount = viewModel::onClickAddAccount,
+        onClickLogout = viewModel::onClickLogout,
     )
 }
 
@@ -44,11 +45,12 @@ fun AccountListScreen(
     uiState: AccountListUiState,
     onClickAccount: (RespectAccount) -> Unit,
     onClickAddAccount: () -> Unit,
+    onClickLogout: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        uiState.activeAccount?.also { activeAccount ->
+        uiState.selectedAccount?.also { activeAccount ->
             AccountListItem(
                 account = activeAccount,
                 onClickAccount = null,
@@ -62,7 +64,7 @@ fun AccountListScreen(
 
                         Spacer(Modifier.width(16.dp))
 
-                        OutlinedButton(onClick = {}) {
+                        OutlinedButton(onClick = onClickLogout) {
                             Text(stringResource(Res.string.logout))
                         }
                     }
