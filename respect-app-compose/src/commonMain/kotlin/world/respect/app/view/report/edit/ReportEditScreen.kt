@@ -44,6 +44,7 @@ import world.respect.shared.domain.report.model.DefaultIndicators
 import world.respect.shared.domain.report.model.FixedReportTimeRange
 import world.respect.shared.domain.report.model.OptionWithLabelStringResource
 import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
+import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportPeriodOption
 import world.respect.shared.domain.report.model.ReportSeries
@@ -56,7 +57,6 @@ import world.respect.shared.generated.resources.add_series
 import world.respect.shared.generated.resources.chart_type
 import world.respect.shared.generated.resources.filters
 import world.respect.shared.generated.resources.from
-import world.respect.shared.generated.resources.indicator
 import world.respect.shared.generated.resources.quantity
 import world.respect.shared.generated.resources.remove
 import world.respect.shared.generated.resources.series_title
@@ -86,7 +86,8 @@ fun ReportEditScreen(
         onAddFilter = viewModel::onAddFilter,
         onRemoveSeries = viewModel::onRemoveSeries,
         onRemoveFilter = viewModel::onRemoveFilter,
-        manageIndicator = viewModel::manageIndicator
+        manageIndicator = viewModel::onClickManageIndicator,
+        onEditFilter = viewModel::onEditFilter
     )
 }
 
@@ -100,6 +101,7 @@ private fun ReportEditScreen(
     onRemoveSeries: (Int) -> Unit = { },
     onRemoveFilter: (Int, Int) -> Unit = { _, _ -> },
     manageIndicator: () -> Unit = { },
+    onEditFilter: (ReportFilter) -> Unit = { },
 ) {
     val availableIndicators = remember { DefaultIndicators.list }
     val firstIndicatorType = uiState.reportOptions.series.firstOrNull()?.reportSeriesYAxis?.type
@@ -175,16 +177,6 @@ private fun ReportEditScreen(
                         onReportChanged
                     )
                 },
-                isError = uiState.submitted && uiState.timeRangeError != null && selected == null,
-                supportingText = {
-                    if (selected == null) {
-                        uiState.timeRangeError?.let {
-                            Text(uiTextStringResource(it))
-                        }
-                    } else {
-                        Text("")
-                    }
-                }
             )
 
             // Show CustomPeriodInputs only if selected is CUSTOM_PERIOD
@@ -197,9 +189,7 @@ private fun ReportEditScreen(
                         val updatedOptions = uiState.reportOptions.copy(period = newRange)
                         onReportChanged(updatedOptions)
                     },
-                    quantityError = uiState.quantityError?.let {
-                        uiTextStringResource(it)
-                    }
+                    quantityError = null
                 )
             }
 
@@ -224,17 +214,12 @@ private fun ReportEditScreen(
                 onOptionSelected = {
                     val updatedOptions = uiState.reportOptions.copy(xAxis = it)
                     onReportChanged(updatedOptions)
-                },
-                isError = uiState.submitted && uiState.xAxisError != null,
-                supportingText = {
-                    uiState.xAxisError?.let {
-                        Text(uiTextStringResource(it))
-                    }
                 }
             )
         }
 
         // Dynamically iterate over the series
+        println("hjgejweh${ uiState.reportOptions.series}")
         uiState.reportOptions.series.forEach { seriesItem ->
             item {
                 HorizontalDivider(
@@ -267,13 +252,7 @@ private fun ReportEditScreen(
                             onValueChange = { newTitle ->
                                 val updatedSeries = seriesItem.copy(reportSeriesTitle = newTitle)
                                 onSeriesChanged(updatedSeries)
-                            },
-                            isError = uiState.submitted && uiState.seriesTitleErrors[seriesItem.reportSeriesUid] != null,
-                            supportingText = {
-                                uiState.seriesTitleErrors[seriesItem.reportSeriesUid]?.let {
-                                    Text(uiTextStringResource(it))
-                                }
-                            },
+                            }
                         )
                         if (!uiState.hasSingleSeries) {
                             Icon(
@@ -296,12 +275,6 @@ private fun ReportEditScreen(
                         onOptionSelected = { selectedYAxis ->
                             val updatedSeries = seriesItem.copy(reportSeriesYAxis = selectedYAxis)
                             onSeriesChanged(updatedSeries)
-                        },
-                        isError = uiState.submitted && uiState.yAxisErrors[seriesItem.reportSeriesUid] != null,
-                        supportingText = {
-                            uiState.yAxisErrors[seriesItem.reportSeriesUid]?.let {
-                                Text(uiTextStringResource(it))
-                            }
                         },
                         disabledOptions = disabledIndicators,
                         onManageIndicators = { manageIndicator() }
@@ -340,12 +313,6 @@ private fun ReportEditScreen(
                                 seriesItem.copy(reportSeriesVisualType = selectedVisualType)
                             onSeriesChanged(updatedSeries)
                         },
-                        supportingText = {
-                            uiState.chartTypeError[seriesItem.reportSeriesUid]?.let {
-                                Text(uiTextStringResource(it))
-                            }
-                        },
-                        isError = uiState.submitted && uiState.chartTypeError[seriesItem.reportSeriesUid] != null,
                     )
                     if (!seriesItem.reportSeriesFilters.isNullOrEmpty()) {
                         Text(stringResource(Res.string.filters))
@@ -353,7 +320,11 @@ private fun ReportEditScreen(
 
                     seriesItem.reportSeriesFilters?.forEachIndexed { index, value ->
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .clickable {
+                                    onEditFilter(value)
+                                }
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text("${value.reportFilterField?.let { stringResource(it.label) }} ${value.reportFilterCondition?.symbol} ${value.reportFilterValue}")

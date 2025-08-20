@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -17,7 +18,6 @@ import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
-import world.respect.shared.domain.report.model.StatementReportRow
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.select_template
@@ -25,7 +25,6 @@ import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
-import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -70,16 +69,14 @@ class ReportTemplateListViewModel(
             }
         }
     }
-
-
     @OptIn(ExperimentalTime::class)
-    fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> = flow {
-        try {
-            if (report.reportId == "0") {
+    fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> {
+        if (report.reportId == "0") {
+            return flow {
                 emit(
                     RunReportResultAndFormatters(
                         reportResult = RunReportUseCase.RunReportResult(
-                            timestamp = System.currentTimeMillis(),
+                            timestamp = Clock.System.now().toEpochMilliseconds(),
                             request = RunReportUseCase.RunReportRequest(
                                 reportUid = 0L,
                                 reportOptions = ReportOptions(),
@@ -92,47 +89,23 @@ class ReportTemplateListViewModel(
                         yAxisFormatter = null
                     )
                 )
-            } else {
-                val reportOptions = json.decodeFromString<ReportOptions>(
-                    ReportOptions.serializer(),
-                    report.reportOptions
-                )
+            }
+        } else {
+            val reportOptions = json.decodeFromString<ReportOptions>(
+                ReportOptions.serializer(),
+                report.reportOptions
+            )
 
-                val request = RunReportUseCase.RunReportRequest(
-                    reportUid = report.reportId.toLong(),
-                    reportOptions = reportOptions,
-                    accountPersonUid = activeUserPersonUid,
-                    timeZone = TimeZone.currentSystemDefault()
-                )
+            val request = RunReportUseCase.RunReportRequest(
+                reportUid = report.reportId.toLong(),
+                reportOptions = reportOptions,
+                accountPersonUid = activeUserPersonUid,
+                timeZone = TimeZone.currentSystemDefault()
+            )
 
-                val mockReportResult = RunReportUseCase.RunReportResult(
-                    results = listOf(
-                        listOf(
-                            StatementReportRow(120383.0, "2023-01-01", "2"),
-                            StatementReportRow(183248.0, "2023-01-02", "1"),
-                            StatementReportRow(9732.0, "2023-01-03", "1"),
-                            StatementReportRow(2187324.0, "2023-01-04", "2"),
-                            StatementReportRow(187423.0, "2023-01-05", "1"),
-                            StatementReportRow(33033.0, "2023-01-06", "2"),
-                            StatementReportRow(2362.0, "2023-01-07", "1")
-                        ),
-                        listOf(
-                            StatementReportRow(6324.0, "2023-01-01", "1"),
-                            StatementReportRow(9730.0, "2023-01-02", "1"),
-                            StatementReportRow(43325.0, "2023-01-03", "2"),
-                            StatementReportRow(18325.0, "2023-01-04", "1"),
-                            StatementReportRow(753874.0, "2023-01-05", "2"),
-                            StatementReportRow(03847.0, "2023-01-06", "2"),
-                            StatementReportRow(023783.0, "2023-01-07", "2")
-                        )
-                    ),
-                    timestamp = System.currentTimeMillis(),
-                    request = request,
-                    age = 0
-                )
-
+            return runReportUseCase(request).map { reportResult ->
                 val xAxisFormatter = createGraphFormatterUseCase(
-                    reportResult = mockReportResult,
+                    reportResult = reportResult,
                     options = CreateGraphFormatterUseCase.FormatterOptions(
                         paramType = String::class,
                         axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.X_AXIS_VALUES
@@ -140,40 +113,19 @@ class ReportTemplateListViewModel(
                 )
 
                 val yAxisFormatter = createGraphFormatterUseCase(
-                    reportResult = mockReportResult,
+                    reportResult = reportResult,
                     options = CreateGraphFormatterUseCase.FormatterOptions(
                         paramType = Double::class,
                         axis = CreateGraphFormatterUseCase.FormatterOptions.Axis.Y_AXIS_VALUES
                     )
                 )
 
-                emit(
-                    RunReportResultAndFormatters(
-                        reportResult = mockReportResult,
-                        xAxisFormatter = xAxisFormatter,
-                        yAxisFormatter = yAxisFormatter
-                    )
+                RunReportResultAndFormatters(
+                    reportResult = reportResult,
+                    xAxisFormatter = xAxisFormatter,
+                    yAxisFormatter = yAxisFormatter
                 )
             }
-        } catch (e: Exception) {
-            emit(
-                RunReportResultAndFormatters(
-                    reportResult = RunReportUseCase.RunReportResult(
-                        timestamp = Clock.System.now().toEpochMilliseconds(),
-                        request = RunReportUseCase.RunReportRequest(
-                            reportUid = report.reportId.toLong(),
-                            reportOptions = ReportOptions(),
-                            accountPersonUid = activeUserPersonUid,
-                            timeZone = TimeZone.currentSystemDefault()
-                        ),
-                        results = emptyList()
-                    ),
-                    xAxisFormatter = null,
-                    yAxisFormatter = null
-                )
-            )
-        } finally {
-            _appUiState.update { it.copy(loadingState = NOT_LOADING) }
         }
     }
 

@@ -37,6 +37,7 @@ class ReportFilterEditViewModel(
     val uiState: StateFlow<ReportFilterEditUiState> = _uiState
 
     private val route: ReportEditFilter = savedStateHandle.toRoute()
+    private val reportFilter: ReportFilter = route.getReportFilter()
 
     init {
         loadingState = LoadingUiState.INDETERMINATE
@@ -54,38 +55,10 @@ class ReportFilterEditViewModel(
                 )
             }
         }
-        handleNewFilter(savedStateHandle)
-    }
-
-    private fun handleExistingFilter(existingFilter: ReportFilter) {
-        try {
-            _uiState.value = ReportFilterEditUiState(
-                filters = existingFilter,
-                filterConditionOptions = getConditionOptionsForField(existingFilter.reportFilterField)
-            )
-        } catch (e: Exception) {
-            _uiState.value = ReportFilterEditUiState(
-                filters = null,
-                filterConditionOptions = null
-            )
-        }
-    }
-
-    private fun handleNewFilter(savedStateHandle: SavedStateHandle) {
-        val tempFilterUid = 0
-        val seriesUid = route.seriesId
-
-        // Assign the temp UID to the new filter
-        _uiState.value = if (tempFilterUid != null && seriesUid != null) {
-            ReportFilterEditUiState(
-                filters = ReportFilter(
-                    reportFilterUid = tempFilterUid,
-                    reportFilterSeriesUid = seriesUid
-                )
-            )
-        } else {
-            ReportFilterEditUiState(filters = null)
-        }
+        _uiState.value = ReportFilterEditUiState(
+            filters = reportFilter,
+            filterConditionOptions = getConditionOptionsForField(reportFilter.reportFilterField)
+        )
     }
 
     fun onClickSave() {
@@ -125,7 +98,8 @@ class ReportFilterEditViewModel(
             else -> null
         }
     }
+
     companion object {
-       const val REPORT_FILTER_RESULT = "report_filter_result"
+        const val REPORT_FILTER_RESULT = "report_filter_result"
     }
 }

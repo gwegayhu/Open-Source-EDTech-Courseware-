@@ -12,10 +12,9 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.RespectReportDataSource
-import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.respect.model.RespectReport
+import world.respect.libutil.ext.replaceOrAppend
 import world.respect.shared.domain.report.model.DefaultIndicators
-import world.respect.shared.domain.report.model.RelativeRangeReportPeriod
 import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.domain.report.model.ReportOptions
 import world.respect.shared.domain.report.model.ReportSeries
@@ -26,7 +25,6 @@ import world.respect.shared.generated.resources.add_a_new_report
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_report
 import world.respect.shared.generated.resources.field_required_prompt
-import world.respect.shared.generated.resources.quantity_must_be_at_least_1
 import world.respect.shared.generated.resources.series
 import world.respect.shared.navigation.IndicatorList
 import world.respect.shared.navigation.NavCommand
@@ -45,16 +43,11 @@ import world.respect.shared.viewmodel.app.appstate.LoadingUiState
 data class ReportEditUiState(
     val reportOptions: ReportOptions = ReportOptions(),
     val reportTitleError: UiText? = null,
-    val xAxisError: UiText? = null,
-    val seriesTitleErrors: Map<Int, UiText> = emptyMap(),
-    val yAxisErrors: Map<Int, UiText> = emptyMap(),
-    val subGroupError: UiText? = null,
-    val chartTypeError: Map<Int, UiText> = emptyMap(),
-    val timeRangeError: UiText? = null,
-    val quantityError: UiText? = null,
-    val submitted: Boolean = false,
-    val hasSingleSeries: Boolean = true,
-)
+    val submitted: Boolean = false
+) {
+    val hasSingleSeries: Boolean
+        get() = reportOptions.series.size == 1
+}
 
 class ReportEditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -69,6 +62,7 @@ class ReportEditViewModel(
     private val _uiState: MutableStateFlow<ReportEditUiState> =
         MutableStateFlow(ReportEditUiState())
     val uiState: Flow<ReportEditUiState> = _uiState.asStateFlow()
+    private var nextTempFilterUid = -1
 
 
     init {
@@ -97,109 +91,68 @@ class ReportEditViewModel(
                     navigationVisible = true,
                 )
             }
+        }
 
-
-            try {
+        viewModelScope.launch {
+            if (entityUid == 0L) {
+                val newReport = ReportOptions(
+                    title = "",
+                    series = listOf(
+                        ReportSeries()
+                    )
+                )
+                _uiState.update { prev ->
+                    prev.copy(
+                        reportOptions = newReport
+                    )
+                }
+            } else {
                 val reportFlow = respectReportDataSource.getReportAsFlow(entityUid.toString())
-                launch {
-                    reportFlow.collect { reportState ->
-                        when (reportState) {
-                            is DataReadyState -> {
-                                val report = reportState.data
-                                val optionsJson = report.reportOptions
+                reportFlow.collect { reportState ->
+                    when (reportState) {
+                        is DataReadyState -> {
+                            val report = reportState.data
+                            val optionsJson = report.reportOptions
 
-                                val parsedOptions = try {
-                                    json.decodeFromString(
-                                        ReportOptions.serializer(), optionsJson.trim()
-                                    )
-                                } catch (e: Exception) {
-                                    println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
-                                    throw IllegalArgumentException("Invalid report options format: ${e.message}")
-                                }
-                                if (entityUid == 0L) {
-                                    val mockedReport = ReportOptions(
-                                        title = "", series = listOf(
-                                            ReportSeries(
-                                                reportSeriesUid = 1,
-                                                reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
-                                                reportSeriesSubGroup = null,
-                                                reportSeriesYAxis = DefaultIndicators.list.first(),
-                                                reportSeriesFilters = emptyList()
-                                            )
-                                        )
-                                    )
-                                    _uiState.update { prev ->
-                                        prev.copy(
-                                            reportOptions = mockedReport
-                                        )
-                                    }
-                                } else {
-                                    _uiState.update { currentState ->
-                                        currentState.copy(
-                                            reportOptions = parsedOptions,
-                                        )
-                                    }
-                                }
+                            val parsedOptions = try {
+                                json.decodeFromString(
+                                    ReportOptions.serializer(), optionsJson.trim()
+                                )
+                            } catch (e: Exception) {
+                                println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
+                                throw IllegalArgumentException("Invalid report options format: ${e.message}")
                             }
 
-                            else -> {
-                                val mockedReport = ReportOptions(
-                                    series = listOf(
-                                        ReportSeries(
-                                            reportSeriesUid = 1,
-                                            reportSeriesVisualType = ReportSeriesVisualType.BAR_CHART,
-                                            reportSeriesSubGroup = null,
-                                            reportSeriesYAxis = DefaultIndicators.list.first(),
-                                            reportSeriesFilters = emptyList()
-                                        )
-                                    )
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    reportOptions = parsedOptions,
                                 )
-                                _uiState.update { prev ->
-                                    prev.copy(
-                                        reportOptions = mockedReport
-                                    )
-                                }
                             }
                         }
+
+                        else -> {}
                     }
                 }
-            } catch (e: Exception) {
-                println("Exception $e")
             }
+        }
 
-            viewModelScope.launch {
-                navResultReturner.filteredResultFlowForKey(REPORT_FILTER_RESULT).collect { result ->
-                    val filter = result.result as? ReportFilter
-                    filter?.let {
-                        onFilterChanged(filter, filter.reportFilterSeriesUid.toInt())
-                    }
+
+        viewModelScope.launch {
+            navResultReturner.filteredResultFlowForKey(REPORT_FILTER_RESULT).collect { result ->
+                val filter = result.result as? ReportFilter
+                filter?.let {
+                    onFilterChanged(filter, filter.reportFilterSeriesUid.toInt())
                 }
             }
         }
     }
 
-    fun manageIndicator() {
+    fun onClickManageIndicator() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 IndicatorList
             )
         )
-    }
-
-    private fun updateSeriesWithIndicator(indicator: Indicator) {
-        _uiState.update { currentState ->
-            val seriesId = 0 // TODO need to update Indicators as per series/ report
-            val updatedSeries = currentState.reportOptions.series.map { series ->
-                if (series.reportSeriesUid == seriesId) {
-                    series.copy(reportSeriesYAxis = indicator)
-                } else {
-                    series
-                }
-            }
-            currentState.copy(
-                reportOptions = currentState.reportOptions.copy(series = updatedSeries)
-            )
-        }
     }
 
     fun onClickSave() {
@@ -241,12 +194,12 @@ class ReportEditViewModel(
         viewModelScope.launch {
             _uiState.update { currentState ->
                 val baseUpdate = currentState.copy(
-                    reportOptions = newOptions, hasSingleSeries = newOptions.series.size == 1
+                    reportOptions = newOptions
                 )
 
                 if (!baseUpdate.submitted) baseUpdate
                 else validateCurrentState().copy(
-                    reportOptions = newOptions, hasSingleSeries = newOptions.series.size == 1
+                    reportOptions = newOptions
                 )
             }
         }
@@ -255,38 +208,10 @@ class ReportEditViewModel(
     private fun validateCurrentState(): ReportEditUiState {
         val currentReport = _uiState.value.reportOptions
         val requiredFieldMessage = StringResourceUiText(resource = Res.string.field_required_prompt)
-
-        val quantityError = when (val timeRange = currentReport.period) {
-            is RelativeRangeReportPeriod -> {
-                if (timeRange.rangeQuantity < 1) StringResourceUiText(resource = Res.string.quantity_must_be_at_least_1) else null
-            }
-
-            else -> null
-        }
-
-        val seriesTitleErrors = currentReport.series.associate { series ->
-            series.reportSeriesUid to if (series.reportSeriesTitle.isEmpty()) requiredFieldMessage else null
-        }.filterValues { it != null }.mapValues { it.value as UiText }
-
-        val yAxisErrors = currentReport.series.associate { series ->
-            series.reportSeriesUid to if (series.reportSeriesYAxis == null) requiredFieldMessage else null
-        }.filterValues { it != null }.mapValues { it.value as UiText }
-
-        val chartTypeErrors = currentReport.series.associate { series ->
-            series.reportSeriesUid to if (series.reportSeriesVisualType == null) requiredFieldMessage else null
-        }.filterValues { it != null }.mapValues { it.value as UiText }
-
         return ReportEditUiState(
             submitted = true,
             reportOptions = currentReport,
-            reportTitleError = if (currentReport.title.isNullOrEmpty()) requiredFieldMessage else null,
-            xAxisError = if (currentReport.xAxis == null) requiredFieldMessage else null,
-            timeRangeError = if (currentReport.period == null) requiredFieldMessage else null,
-            quantityError = quantityError,
-            seriesTitleErrors = seriesTitleErrors,
-            yAxisErrors = yAxisErrors,
-            chartTypeError = chartTypeErrors,
-            hasSingleSeries = currentReport.series.size == 1
+            reportTitleError = if (currentReport.title.isEmpty()) requiredFieldMessage else null,
         )
     }
 
@@ -296,8 +221,10 @@ class ReportEditViewModel(
                 reportOptions.copy(
                     series = reportOptions.series.replace(updatedSeries) {
                         it.reportSeriesUid == updatedSeries.reportSeriesUid
-                    })
-            })
+                    }
+                )
+            }
+        )
     }
 
     fun onAddSeries() {
@@ -325,7 +252,7 @@ class ReportEditViewModel(
                             reportSeriesSubGroup = null,
                             reportSeriesYAxis = defaultIndicator // Use the type-matched default
                         ),
-                    ), hasSingleSeries = false
+                    )
                 )
             }
         }
@@ -338,18 +265,26 @@ class ReportEditViewModel(
             prev.copy(
                 reportOptions = prev.reportOptions.copy(
                     series = updatedSeriesList
-                ), hasSingleSeries = updatedSeriesList.size == 1
+                )
             )
         }
     }
 
     fun onAddFilter(seriesId: Int) {
+        val tempFilterUid = nextTempFilterUid--
+        val newFilter = ReportFilter(
+            reportFilterUid = tempFilterUid,
+            reportFilterSeriesUid = seriesId
+        )
+
         _navCommandFlow.tryEmit(
-            NavCommand.Navigate(
-                ReportEditFilter(
-                    reportUid = entityUid, seriesId = seriesId
-                )
-            )
+            NavCommand.Navigate(ReportEditFilter.create(entityUid, newFilter))
+        )
+    }
+
+    fun onEditFilter(reportFilter: ReportFilter) {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(ReportEditFilter.create(entityUid, reportFilter))
         )
     }
 
@@ -357,19 +292,12 @@ class ReportEditViewModel(
         _uiState.update { prevState ->
             val updatedSeries = prevState.reportOptions.series.map { series ->
                 if (series.reportSeriesUid == seriesId) {
-                    val currentFilters = series.reportSeriesFilters.orEmpty().toMutableList()
-                    // Check if the filter already exists by UID
-                    val existingIndex = currentFilters.indexOfFirst {
-                        it.reportFilterUid == newFilter?.reportFilterUid
-                    }
-                    if (existingIndex != -1) {
-                        // Replace existing filter
-                        currentFilters[existingIndex] = newFilter ?: ReportFilter()
-                    } else {
-                        // Append new filter
-                        currentFilters.add(newFilter ?: ReportFilter())
-                    }
-                    series.copy(reportSeriesFilters = currentFilters)
+                    val currentFilters = series.reportSeriesFilters.orEmpty()
+                    val updatedFilters = currentFilters.replaceOrAppend(
+                        element = newFilter ?: ReportFilter(),
+                        replacePredicate = { it.reportFilterUid == newFilter?.reportFilterUid }
+                    )
+                    series.copy(reportSeriesFilters = updatedFilters)
                 } else {
                     series
                 }
@@ -405,8 +333,9 @@ class ReportEditViewModel(
 
     fun ReportEditUiState.hasErrors(): Boolean {
         if (!submitted) return false
-        return reportTitleError != null || xAxisError != null || seriesTitleErrors.isNotEmpty() || yAxisErrors.isNotEmpty() || subGroupError != null || chartTypeError.isNotEmpty() || timeRangeError != null || quantityError != null
+        return reportTitleError != null
     }
+
     companion object {
         const val REPORT_FILTER_RESULT = "report_filter_result"
     }

@@ -88,23 +88,6 @@ class IndicatorListViewModel(
         }
     }
 
-    fun addIndicator(indicator: Indicator) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                respectReportDataSource.saveIndicator(indicator)
-                // State will update automatically through the flow
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Failed to add indicator: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
-
     fun onClickAdd() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(

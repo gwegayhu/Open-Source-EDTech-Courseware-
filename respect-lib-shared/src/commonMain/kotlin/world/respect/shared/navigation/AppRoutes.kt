@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
+import world.respect.shared.domain.report.model.ReportFilter
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
 /**
@@ -61,7 +62,19 @@ class ReportEdit(val reportUid: Long = 0) : RespectAppRoute
 class ReportDetail(val reportUid: Long) : RespectAppRoute
 
 @Serializable
-class ReportEditFilter(val reportUid: Long, val seriesId: Int) : RespectAppRoute
+class ReportEditFilter(val reportUid: Long, val reportFilterJson: String) : RespectAppRoute {
+    companion object {
+        fun create(reportUid: Long, reportFilter: ReportFilter): ReportEditFilter {
+            val json = Json { encodeDefaults = true }
+            return ReportEditFilter(reportUid, json.encodeToString(ReportFilter.serializer(), reportFilter))
+        }
+    }
+
+    fun getReportFilter(): ReportFilter {
+        val json = Json { encodeDefaults = true }
+        return json.decodeFromString(ReportFilter.serializer(), reportFilterJson)
+    }
+}
 
 @Serializable
 object ReportTemplateList : RespectAppRoute
