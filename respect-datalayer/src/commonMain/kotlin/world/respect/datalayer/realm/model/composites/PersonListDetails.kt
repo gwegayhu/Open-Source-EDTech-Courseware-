@@ -8,6 +8,6 @@ package world.respect.datalayer.realm.model.composites
 data class PersonListDetails(
     val guid: String,
     val givenName: String,
-    val lastName: String,
+    val familyName: String,
     val userName: String?
 )

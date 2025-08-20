@@ -98,6 +98,8 @@ import world.respect.shared.domain.realm.RespectRealmPath
 import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.NavResultReturnerImpl
 import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
+import world.respect.shared.viewmodel.person.detail.PersonDetailViewModel
+import world.respect.shared.viewmodel.person.edit.PersonEditViewModel
 import world.respect.shared.viewmodel.person.list.PersonListViewModel
 
 @Suppress("unused")
@@ -180,6 +182,8 @@ val appKoinModule = module {
     viewModelOf(::EnterPasswordSignupViewModel)
     viewModelOf(::AccountListViewModel)
     viewModelOf(::PersonListViewModel)
+    viewModelOf(::PersonEditViewModel)
+    viewModelOf(::PersonDetailViewModel)
 
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(

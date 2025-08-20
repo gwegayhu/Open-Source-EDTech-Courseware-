@@ -38,7 +38,7 @@ interface PersonEntityDao {
     @Query("""
         SELECT PersonEntity.pGuidHash AS guid, 
                PersonEntity.pGivenName AS givenName, 
-               PersonEntity.pFamilyName AS lastName, 
+               PersonEntity.pFamilyName AS familyName, 
                PersonEntity.pUsername AS username
           FROM PersonEntity
     """)

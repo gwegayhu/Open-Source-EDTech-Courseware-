@@ -25,7 +25,10 @@ class PersonDataSourceRepository(
         TODO("Not yet implemented")
     }
 
-    override suspend fun findByGuid(guid: String): Person? {
+    override suspend fun findByGuid(
+        loadParams: DataLoadParams,
+        guid: String
+    ): DataLoadState<Person> {
         TODO("Not yet implemented")
     }
 

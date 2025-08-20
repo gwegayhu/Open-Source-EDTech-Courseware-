@@ -10,7 +10,7 @@ interface PersonDataSource {
 
     suspend fun findByUsername(username: String): Person?
 
-    suspend fun findByGuid(guid: String): Person?
+    suspend fun findByGuid(loadParams: DataLoadParams, guid: String): DataLoadState<Person>
 
     suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>>
 

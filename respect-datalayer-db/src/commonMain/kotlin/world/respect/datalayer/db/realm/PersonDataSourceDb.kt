@@ -28,10 +28,13 @@ class PersonDataSourceDb(
         }?.toModel()
     }
 
-    override suspend fun findByGuid(guid: String): Person? {
+    override suspend fun findByGuid(
+        loadParams: DataLoadParams,
+        guid: String
+    ): DataLoadState<Person> {
         return realmDb.getPersonEntityDao().findByGuidHash(xxHash.hash(guid))?.let {
             PersonEntities(it)
-        }?.toModel()
+        }?.toModel()?.let { DataReadyState(it) } ?: NoDataLoadedState.notFound()
     }
 
     override suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {

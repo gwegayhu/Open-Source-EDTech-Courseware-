@@ -16,7 +16,9 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.scope.Scope
+import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.respect.model.RESPECT_REALM_JSON_PATH
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.libutil.ext.resolve
@@ -84,7 +86,9 @@ class RespectAccountManager(
             val person = if(account != null) {
                 val accountScope = getOrCreateAccountScope(account)
                 val realmDataSource: RespectRealmDataSource = accountScope.get()
-                realmDataSource.personDataSource.findByGuid(account.userSourcedId)
+                realmDataSource.personDataSource.findByGuid(
+                    DataLoadParams(onlyIfCached = true), account.userSourcedId
+                ).dataOrNull()
             }else {
                 null
             }
