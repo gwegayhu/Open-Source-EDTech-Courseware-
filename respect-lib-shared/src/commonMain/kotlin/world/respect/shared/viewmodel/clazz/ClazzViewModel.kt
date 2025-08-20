@@ -14,7 +14,6 @@ class ClazzViewModel(
         _appUiState.update {
             it.copy(
                 title = Res.string.clazz.asUiText(),
-                showBackButton = false,
             )
         }
     }

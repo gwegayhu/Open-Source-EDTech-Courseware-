@@ -17,7 +17,6 @@ class HowPasskeyWorksViewModel(
                 title = Res.string.how_passkey_works.asUiText(),
                 hideBottomNavigation = true,
                 userAccountIconVisible = false,
-                showBackButton = true
             )
         }
     }
