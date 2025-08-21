@@ -177,8 +177,6 @@ class ReportDetailViewModel(
                     it.copy(errorMessage = errorMsg)
                 }
 
-            } finally {
-                _appUiState.update { it.copy(loadingState = NOT_LOADING) }
             }
         }
     }

@@ -31,8 +31,7 @@ data class IndicatorListUiState(
 
 class IndicatorListViewModel(
     savedStateHandle: SavedStateHandle,
-    private val respectReportDataSource: RespectReportDataSource,
-    private val runReportUseCase: RunReportUseCase
+    respectReportDataSource: RespectReportDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(IndicatorListUiState())
@@ -82,8 +81,6 @@ class IndicatorListViewModel(
                         errorMessage = e.message ?: "Failed to load indicators"
                     )
                 }
-            } finally {
-                _appUiState.update { it.copy(loadingState = NOT_LOADING) }
             }
         }
     }

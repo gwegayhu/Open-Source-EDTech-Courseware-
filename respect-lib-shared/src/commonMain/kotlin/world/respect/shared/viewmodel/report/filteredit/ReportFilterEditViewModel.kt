@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.shared.domain.report.model.FilterType
 import world.respect.shared.domain.report.model.ReportConditionFilterOptions
 import world.respect.shared.domain.report.model.ReportFilter
@@ -30,7 +29,6 @@ data class ReportFilterEditUiState(
 
 class ReportFilterEditViewModel(
     savedStateHandle: SavedStateHandle,
-    private val respectReportDataSource: RespectReportDataSource
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(ReportFilterEditUiState())
