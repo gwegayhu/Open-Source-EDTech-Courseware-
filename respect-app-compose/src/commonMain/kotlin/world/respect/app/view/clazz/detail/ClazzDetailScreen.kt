@@ -34,7 +34,13 @@ import world.respect.shared.generated.resources.add_student
 import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.pending_invite
 import world.respect.shared.generated.resources.accept_invite
+import world.respect.shared.generated.resources.collapse_pending_invites
+import world.respect.shared.generated.resources.collapse_students
+import world.respect.shared.generated.resources.collapse_teachers
 import world.respect.shared.generated.resources.dismiss_invite
+import world.respect.shared.generated.resources.expand_pending_invites
+import world.respect.shared.generated.resources.expand_students
+import world.respect.shared.generated.resources.expand_teachers
 import world.respect.shared.generated.resources.students
 import world.respect.shared.generated.resources.teachers
 import world.respect.shared.util.SortOrderOption
@@ -128,7 +134,11 @@ fun ClazzDetailScreen(
                 trailingContent = {
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = null,
+                        contentDescription = if (uiState.isPendingExpanded) {
+                            stringResource(Res.string.collapse_pending_invites)
+                        } else {
+                            stringResource(Res.string.expand_pending_invites)
+                        },
                         modifier = Modifier.size(24.dp)
                             .rotate(if (uiState.isPendingExpanded) 0f else -90f),
 
@@ -196,7 +206,11 @@ fun ClazzDetailScreen(
                 trailingContent = {
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = null,
+                        contentDescription = if (uiState.isTeachersExpanded) {
+                            stringResource(Res.string.collapse_teachers)
+                        } else {
+                            stringResource(Res.string.expand_teachers)
+                        },
                         modifier = Modifier.size(24.dp)
                             .rotate(if (uiState.isTeachersExpanded) 0f else -90f),
 
@@ -261,7 +275,11 @@ fun ClazzDetailScreen(
                 trailingContent = {
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = null,
+                        contentDescription = if (uiState.isStudentsExpanded) {
+                            stringResource(Res.string.collapse_students)
+                        } else {
+                            stringResource(Res.string.expand_students)
+                        },
                         modifier = Modifier.size(24.dp)
                             .rotate(if (uiState.isStudentsExpanded) 0f else -90f),
                     )

@@ -163,4 +163,14 @@
     <string name="profile">Profile</string>
     <string name="accounts">Accounts</string>
     <string name="back">Back</string>
+
+    <string name="expand_pending_invites">Expand Pending invites list</string>
+    <string name="collapse_pending_invites">Collapse pending invites list</string>
+
+    <string name="expand_teachers">Expand teachers list</string>
+    <string name="collapse_teachers">Collapse teachers list</string>
+
+    <string name="expand_students">Expand students list</string>
+    <string name="collapse_students">Collapse students list</string>
+
 </resources>
