@@ -2,9 +2,10 @@ appId: world.respect.app
 ---
 - clearState:  world.respect.app
 - launchApp
-- tapOn: "School name"
-- inputText: "respect"
-- tapOn: "respect school"   #choose from school list
+- tapOn: "Other options"
+- tapOn: "Enter invite link"
+- inputText: "http://192.168.0.168:8087"
+- tapOn: "Next"
 - tapOn: "UserId"
 - inputText: "admin"
 - tapOn: "Password"
