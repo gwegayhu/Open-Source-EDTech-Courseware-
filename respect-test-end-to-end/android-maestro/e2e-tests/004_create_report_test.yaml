@@ -4,7 +4,10 @@ tags:
 ---
 - clearState:  world.respect.app
 - launchApp
-- tapOn: "I already have an account"
+- tapOn: "Other options"
+- tapOn: "Enter link"
+- inputText: "http://192.168.0.168:8087/"
+- tapOn: "Next"
 - tapOn: "UserId"
 - inputText: "admin"
 - tapOn: "Password"
@@ -27,7 +30,7 @@ tags:
 - tapOn: "Blank Report"
 - assertVisible:
     id: "app_title"
-    text: "Add a new report"
+    text: "Add report"
 - tapOn: "Title*"
 - inputText: "Test Report"
 - hideKeyboard
@@ -36,8 +39,54 @@ tags:
     id: "app_title"
     text: "Test Report"
 - tapOn: "Reports"
-#- scrollUntilVisible:
-#    element:
-#       text: "Test Report"
-#    direction: DOWN
-#    timeout: 50000
+- scrollUntilVisible:
+    element:
+       text: "Test Report"
+- tapOn: "Test Report"
+- assertVisible:
+    id: "app_title"
+    text: "Test Report"
+- tapOn:
+      id: "floating_action_button"  #Edit button
+- assertVisible:
+    id: "app_title"
+    text: "Edit Report"
+- tapOn: "Time range"
+- tapOn: "Custom date range"
+- tapOn: "From"
+- inputText: "2025-01-01"
+- tapOn: "To"
+- inputText: "Today"
+- tapOn: "X-axis"
+- tapOn: "Weekly"
+- tapOn: "Y-axis"
+- tapOn: "Manage Indicators"
+- tapOn: "Total content usage duration"
+- assertVisible:
+      id: "app_title"
+      text: "Indicator detail"
+- tapOn:
+      id: "floating_action_button"  #Edit button
+- assertVisible:
+      id: "app_title"
+      text: "Edit indicator"
+- tapOn: "Description*"
+- inputText: "Edit description"
+- tapOn: "Save"
+- tapOn:
+      id: "floating_action_button"  # +Indicator button
+- assertVisible:
+      id: "app_title"
+      text: "Add indicator"
+- tapOn: "Indicator name"
+- inputText: "Assignment completion %"
+- tapOn: "Description*"
+- inputText: "Edit description"
+- tapOn: "Save"
+- back
+- tapOn: "Y axis"
+- tapOn: "Assignment completion %"
+- tapOn: "Done"
+
+
+
