@@ -33,7 +33,6 @@ class OtherOptionsViewModel(
                     title = Res.string.other_options.asUiText(),
                     hideBottomNavigation = true,
                     userAccountIconVisible = false,
-                    showBackButton = true
                 )
             }
         }

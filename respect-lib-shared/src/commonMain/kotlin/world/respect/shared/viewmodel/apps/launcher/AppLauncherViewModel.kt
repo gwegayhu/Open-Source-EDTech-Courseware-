@@ -45,7 +45,6 @@ class AppLauncherViewModel(
         _appUiState.update {
             it.copy(
                 title = Res.string.apps.asUiText(),
-                showBackButton = false,
                 fabState = FabUiState(
                     visible = true,
                     icon = FabUiState.FabIcon.ADD,
