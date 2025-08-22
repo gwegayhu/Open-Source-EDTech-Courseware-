@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d18c6129fefbc006a77ca8dc87c2a555",
+    "identityHash": "c2536b88997e8a4d0c693f2d5234c370",
     "entities": [
       {
         "tableName": "LangMapEntity",
@@ -648,7 +648,7 @@
       },
       {
         "tableName": "RealmEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reUid` INTEGER NOT NULL, `reLastMod` INTEGER NOT NULL, `reEtag` TEXT, `reSelf` TEXT NOT NULL, `reXapi` TEXT NOT NULL, `reOneRoster` TEXT NOT NULL, `reRespectExt` TEXT, PRIMARY KEY(`reUid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reUid` INTEGER NOT NULL, `reLastMod` INTEGER NOT NULL, `reEtag` TEXT, `reSelf` TEXT NOT NULL, `reXapi` TEXT NOT NULL, `reOneRoster` TEXT NOT NULL, `reRespectExt` TEXT, `reRpId` TEXT, PRIMARY KEY(`reUid`))",
         "fields": [
           {
             "fieldPath": "reUid",
@@ -688,6 +688,11 @@
           {
             "fieldPath": "reRespectExt",
             "columnName": "reRespectExt",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "reRpId",
+            "columnName": "reRpId",
             "affinity": "TEXT"
           }
         ],
@@ -785,7 +790,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd18c6129fefbc006a77ca8dc87c2a555')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c2536b88997e8a4d0c693f2d5234c370')"
     ]
   }
 }

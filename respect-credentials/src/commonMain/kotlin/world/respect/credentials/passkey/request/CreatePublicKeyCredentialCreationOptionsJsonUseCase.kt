@@ -26,14 +26,14 @@ import world.respect.libutil.ext.randomString
  * UID and Learning Space URL - see EncodeUserHandleUseCase
  */
 class CreatePublicKeyCredentialCreationOptionsJsonUseCase(
-    private val rpId: String,
     private val encodeUserHandleUseCase: EncodeUserHandleUseCase,
     private val appName: StringResource,
     private val primaryKeyGenerator: PrimaryKeyGenerator
 ) {
 
     suspend operator fun invoke(
-        username: String
+        username: String,
+        rpId: String,
     ): PublicKeyCredentialCreationOptionsJSON {
         val challenge = randomString(16) //TODO note: this should really take place on the server side
 
@@ -42,7 +42,7 @@ class CreatePublicKeyCredentialCreationOptionsJsonUseCase(
 
         return PublicKeyCredentialCreationOptionsJSON(
             rp = PublicKeyCredentialRpEntity(
-                id = Url(rpId).host,
+                id = rpId,
                 name = getString(appName),
                 icon = null,
             ),

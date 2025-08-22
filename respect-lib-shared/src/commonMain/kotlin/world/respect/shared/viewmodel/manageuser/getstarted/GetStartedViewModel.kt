@@ -61,9 +61,9 @@ class GetStartedViewModel(
     }
 
     fun onClickIHaveCode() {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(JoinClazzWithCode)
-            )
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(JoinClazzWithCode)
+        )
     }
 
     fun onSchoolSelected(school: School) {
@@ -75,9 +75,7 @@ class GetStartedViewModel(
     }
 
     fun onClickOtherOptions() {
-        viewModelScope.launch {
-            _navCommandFlow.tryEmit(NavCommand.Navigate(OtherOption))
-        }
+        _navCommandFlow.tryEmit(NavCommand.Navigate(OtherOption))
     }
 
 }

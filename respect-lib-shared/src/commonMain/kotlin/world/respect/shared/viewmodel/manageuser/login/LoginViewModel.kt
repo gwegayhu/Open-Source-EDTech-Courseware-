@@ -53,38 +53,34 @@ class LoginViewModel(
         }
         viewModelScope.launch {
 
-            viewModelScope.launch {
-                try {
-                    when (val credentialResult = getCredentialUseCase()) {
-                        is GetCredentialUseCase.PasskeyCredentialResult -> {
-                            viewModelScope.launch {
-                                _navCommandFlow.tryEmit(
-                                    NavCommand.Navigate(RespectAppLauncher)
-                                )
-                            }
-                        }
+            try {
+                when (val credentialResult = getCredentialUseCase()) {
+                    is GetCredentialUseCase.PasskeyCredentialResult -> {
+                        _navCommandFlow.tryEmit(
+                            NavCommand.Navigate(RespectAppLauncher)
+                        )
+                    }
 
-                        is GetCredentialUseCase.PasswordCredentialResult -> {
-
-                        }
-
-                        is GetCredentialUseCase.Error -> {
-                            _uiState.update { prev ->
-                                prev.copy(
-                                    errorText = StringUiText(credentialResult.message ?: ""),
-                                )
-                            }
-                        }
-
-                        is GetCredentialUseCase.NoCredentialAvailableResult,
-                        is GetCredentialUseCase.UserCanceledResult-> {
-                            //do nothing
-                        }
+                    is GetCredentialUseCase.PasswordCredentialResult -> {
 
                     }
-                } catch (e: Exception) {
-                   println( "Error occurred: ${e.message}")
+
+                    is GetCredentialUseCase.Error -> {
+                        _uiState.update { prev ->
+                            prev.copy(
+                                errorText = StringUiText(credentialResult.message ?: ""),
+                            )
+                        }
+                    }
+
+                    is GetCredentialUseCase.NoCredentialAvailableResult,
+                    is GetCredentialUseCase.UserCanceledResult -> {
+                        //do nothing
+                    }
+
                 }
+            } catch (e: Exception) {
+                println("Error occurred: ${e.message}")
             }
         }
     }

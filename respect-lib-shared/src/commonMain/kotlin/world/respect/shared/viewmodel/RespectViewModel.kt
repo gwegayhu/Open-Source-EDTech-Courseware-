@@ -48,6 +48,7 @@ abstract class RespectViewModel(
             xapi = Url("https://example.org/xapi"),
             oneRoster = Url("https://example.org/oneroster"),
             respectExt = Url("https://example.org/respect-ext"),
+            rpId = null,
         )
     )
 
