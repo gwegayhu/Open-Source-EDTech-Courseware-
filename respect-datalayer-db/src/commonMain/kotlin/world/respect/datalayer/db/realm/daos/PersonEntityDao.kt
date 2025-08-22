@@ -36,7 +36,7 @@ interface PersonEntityDao {
     fun findByGuidHashAsFlow(guidHash: Long): Flow<PersonEntity?>
 
     @Query("""
-        SELECT PersonEntity.pGuidHash AS guid, 
+        SELECT PersonEntity.pGuid AS guid, 
                PersonEntity.pGivenName AS givenName, 
                PersonEntity.pFamilyName AS familyName, 
                PersonEntity.pUsername AS username
