@@ -12,10 +12,10 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.select_app
 import world.respect.shared.navigation.AppsDetail
 import world.respect.shared.navigation.EnterLink
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.ext.asUiText
@@ -27,11 +27,9 @@ data class AppListUiState(
 
 class AppListViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider,
+    private val appDataSource: RespectAppDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
-
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
     private val _uiState = MutableStateFlow(AppListUiState())
 
     val uiState = _uiState.asStateFlow()
@@ -44,7 +42,7 @@ class AppListViewModel(
         }
 
         viewModelScope.launch {
-            dataSource.compatibleAppsDataSource.getAddableApps(
+            appDataSource.compatibleAppsDataSource.getAddableApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {

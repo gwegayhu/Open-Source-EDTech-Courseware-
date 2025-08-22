@@ -14,11 +14,11 @@ import world.respect.shared.generated.resources.apps_detail
 import world.respect.shared.navigation.AppsDetail
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.datalayer.opds.model.OpdsGroup
 import world.respect.datalayer.opds.model.OpdsPublication
@@ -39,7 +39,7 @@ data class AppsDetailUiState(
 
 class AppsDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider,
+    private val appDataSource: RespectAppDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(AppsDetailUiState())
@@ -47,8 +47,6 @@ class AppsDetailViewModel(
     val uiState = _uiState.asStateFlow()
 
     private val route: AppsDetail = savedStateHandle.toRoute()
-
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     init {
         _appUiState.update {
@@ -58,7 +56,7 @@ class AppsDetailViewModel(
         }
 
         viewModelScope.launch {
-            dataSource.compatibleAppsDataSource.getAppAsFlow(
+            appDataSource.compatibleAppsDataSource.getAppAsFlow(
                 manifestUrl = route.manifestUrl,
                 loadParams = DataLoadParams()
             ).collectLatest { result ->
@@ -75,7 +73,7 @@ class AppsDetailViewModel(
                 }
 
                 result.dataOrNull()?.learningUnits?.also { learningUnitsUri ->
-                    dataSource.opdsDataSource.loadOpdsFeed(
+                    appDataSource.opdsDataSource.loadOpdsFeed(
                         url = route.manifestUrl.resolve(
                             learningUnitsUri.toString()
                         ),
@@ -100,7 +98,7 @@ class AppsDetailViewModel(
         }
 
         viewModelScope.launch {
-            dataSource.compatibleAppsDataSource.appIsAddedToLaunchpadAsFlow(
+            appDataSource.compatibleAppsDataSource.appIsAddedToLaunchpadAsFlow(
                 manifestUrl = route.manifestUrl
             ).collect { isAdded ->
                 _uiState.update {
@@ -166,7 +164,7 @@ class AppsDetailViewModel(
 
     fun onClickAdd() {
         viewModelScope.launch {
-            dataSource.compatibleAppsDataSource.addAppToLaunchpad(route.manifestUrl)
+            appDataSource.compatibleAppsDataSource.addAppToLaunchpad(route.manifestUrl)
         }
     }
 

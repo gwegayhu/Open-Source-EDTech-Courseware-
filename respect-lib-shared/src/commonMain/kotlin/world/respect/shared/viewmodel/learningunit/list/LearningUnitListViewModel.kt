@@ -11,10 +11,10 @@ import kotlinx.coroutines.launch
 import world.respect.shared.navigation.LearningUnitDetail
 import world.respect.shared.navigation.LearningUnitList
 import world.respect.shared.viewmodel.app.appstate.AppBarSearchUiState
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.opds.model.OpdsFacet
 import world.respect.datalayer.opds.model.OpdsGroup
 import world.respect.datalayer.opds.model.OpdsPublication
@@ -33,14 +33,12 @@ data class LearningUnitListUiState(
 
 class LearningUnitListViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider
+    private val appDataSource: RespectAppDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LearningUnitListUiState())
 
     val uiState = _uiState.asStateFlow()
-
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     private val route: LearningUnitList = savedStateHandle.toRoute()
 
@@ -54,7 +52,7 @@ class LearningUnitListViewModel(
                 )
             }
 
-            dataSource.opdsDataSource.loadOpdsFeed(
+            appDataSource.opdsDataSource.loadOpdsFeed(
                 url = route.opdsFeedUrl,
                 params = DataLoadParams()
             ).collect { result ->

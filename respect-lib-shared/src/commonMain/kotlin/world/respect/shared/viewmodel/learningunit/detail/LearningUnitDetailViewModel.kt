@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.shared.navigation.LearningUnitDetail
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.opds.model.OpdsPublication
@@ -30,11 +30,9 @@ data class LearningUnitDetailUiState(
 
 class LearningUnitDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider,
+    private val appDataSource: RespectAppDataSource,
     private val launchAppUseCase: LaunchAppUseCase,
 ) : RespectViewModel(savedStateHandle) {
-
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     private val _uiState = MutableStateFlow(LearningUnitDetailUiState())
 
@@ -44,7 +42,7 @@ class LearningUnitDetailViewModel(
 
     init {
         viewModelScope.launch {
-            dataSource.opdsDataSource.loadOpdsPublication(
+            appDataSource.opdsDataSource.loadOpdsPublication(
                 url = route.learningUnitManifestUrl,
                 params = DataLoadParams(),
                 referrerUrl = route.learningUnitManifestUrl,
@@ -70,7 +68,7 @@ class LearningUnitDetailViewModel(
         }
 
         viewModelScope.launch {
-            dataSource.compatibleAppsDataSource.getAppAsFlow(
+            appDataSource.compatibleAppsDataSource.getAppAsFlow(
                 manifestUrl = route.appManifestUrl,
                 loadParams = DataLoadParams()
             ).collect { app ->

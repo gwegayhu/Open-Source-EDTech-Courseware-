@@ -44,8 +44,6 @@ import world.respect.datalayer.repository.RespectAppDataSourceRepository
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
-import world.respect.shared.datasource.RespectAppDataSourceProvider
-import world.respect.shared.datasource.SingleDataSourceProvider
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
@@ -86,6 +84,7 @@ import org.koin.core.scope.Scope
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.datalayer.AuthTokenProvider
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.RespectRealmDataSourceLocal
 import world.respect.datalayer.db.RespectRealmDataSourceDb
@@ -314,23 +313,22 @@ val appKoinModule = module {
         MockSubmitRedeemInviteRequestUseCase()
     }
 
-    single<RespectAppDataSourceProvider> {
+    single<RespectAppDataSource> {
         val appContext = androidContext().applicationContext
-        SingleDataSourceProvider(
-            datasource = RespectAppDataSourceRepository(
-                local = RespectAppDataSourceDb(
-                    respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
-                        appContext, appContext.getDatabasePath("respect.db").absolutePath
-                    ).setDriver(BundledSQLiteDriver())
+
+        RespectAppDataSourceRepository(
+            local = RespectAppDataSourceDb(
+                respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
+                    appContext, appContext.getDatabasePath("respect.db").absolutePath
+                ).setDriver(BundledSQLiteDriver())
                     .build(),
-                    json = get(),
-                    xxStringHasher = get(),
-                    primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS),
-                ),
-                remote = RespectAppDataSourceHttp(
-                    httpClient = get(),
-                    defaultCompatibleAppListUrl = DEFAULT_COMPATIBLE_APP_LIST_URL,
-                )
+                json = get(),
+                xxStringHasher = get(),
+                primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS),
+            ),
+            remote = RespectAppDataSourceHttp(
+                httpClient = get(),
+                defaultCompatibleAppListUrl = DEFAULT_COMPATIBLE_APP_LIST_URL,
             )
         )
     }
