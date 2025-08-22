@@ -94,6 +94,7 @@ import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
+import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
 import world.respect.shared.domain.realm.RespectRealmPath
 import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.NavResultReturnerImpl
@@ -379,6 +380,12 @@ val appKoinModule = module {
                 androidContext(),
                 scopeUrl().sanitizedForFilename()
             ).build()
+        }
+
+        scoped<RealmPrimaryKeyGenerator> {
+            RealmPrimaryKeyGenerator(
+                primaryKeyGenerator = PrimaryKeyGenerator(RealmPrimaryKeyGenerator.TABLE_IDS)
+            )
         }
     }
 

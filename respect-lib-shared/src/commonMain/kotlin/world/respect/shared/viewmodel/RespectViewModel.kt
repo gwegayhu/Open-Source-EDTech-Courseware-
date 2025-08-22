@@ -17,6 +17,7 @@ import org.koin.mp.KoinPlatform.getKoin
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.opds.model.LangMapStringValue
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
@@ -175,10 +176,16 @@ abstract class RespectViewModel(
             null
         }
 
-        val remoteEntity = loadFn(DataLoadParams())
-        uiUpdateFn(remoteEntity)
+        val remoteEntity = try {
+            loadFn(DataLoadParams()).also {
+                uiUpdateFn(it)
+            }
+        }catch(e: Throwable) {
+            //Log it
+            null
+        }
 
-        return remoteEntity
+        return remoteEntity ?: localEntity ?: NoDataLoadedState.notFound()
     }
 
 

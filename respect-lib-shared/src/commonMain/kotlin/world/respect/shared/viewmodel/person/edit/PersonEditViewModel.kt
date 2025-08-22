@@ -6,6 +6,7 @@ import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinScopeComponent
@@ -15,9 +16,11 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.ext.isReadyAndSettled
 import world.respect.datalayer.realm.model.Person
 import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_person
 import world.respect.shared.generated.resources.edit_person
@@ -25,6 +28,7 @@ import world.respect.shared.generated.resources.save
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.PersonDetail
 import world.respect.shared.navigation.PersonEdit
+import world.respect.shared.util.LaunchDebouncer
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
@@ -40,7 +44,7 @@ data class PersonEditUiState(
 class PersonEditViewModel(
     savedStateHandle: SavedStateHandle,
     accountManager: RespectAccountManager,
-    json: Json,
+    private val json: Json,
 ) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
@@ -49,11 +53,17 @@ class PersonEditViewModel(
 
     val route: PersonEdit = savedStateHandle.toRoute()
 
-    private val guid = route.guid ?: "generated-guid"
+    private val realmPrimaryKeyGenerator: RealmPrimaryKeyGenerator by inject()
+
+    private val guid = route.guid ?: realmPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+        Person.TABLE_ID
+    ).toString()
 
     private val _uiState = MutableStateFlow(PersonEditUiState())
 
     val uiState = _uiState.asStateFlow()
+
+    private val debouncer = LaunchDebouncer(viewModelScope)
 
     init {
         _appUiState.update { prev ->
@@ -108,20 +118,35 @@ class PersonEditViewModel(
     }
 
     fun onEntityChanged(person: Person) {
-        _uiState.update { prev ->
+        val personToCommit = _uiState.updateAndGet { prev ->
             prev.copy(person = DataReadyState(person))
+        }.person.dataOrNull() ?: return
+
+        debouncer.launch(DEFAULT_SAVED_STATE_KEY) {
+            savedStateHandle[DEFAULT_SAVED_STATE_KEY] = json.encodeToString(personToCommit)
         }
     }
 
     fun onClickSave() {
-        if(route.guid == null) {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    PersonDetail(guid), popUpTo = route, popUpToInclusive = true
-                )
-            )
-        }else {
-            _navCommandFlow.tryEmit(NavCommand.PopUp())
+        val person = _uiState.value.person.dataOrNull() ?: return
+        viewModelScope.launch {
+            try {
+                realmDataSource.personDataSource.putPerson(person)
+
+                if(route.guid == null) {
+                    _navCommandFlow.tryEmit(
+                        NavCommand.Navigate(
+                            PersonDetail(guid), popUpTo = route, popUpToInclusive = true
+                        )
+                    )
+                }else {
+                    _navCommandFlow.tryEmit(NavCommand.PopUp())
+                }
+            }catch(e: Throwable) {
+                //needs to display snack bar here
+            }
+
+
         }
     }
 
