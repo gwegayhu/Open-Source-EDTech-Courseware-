@@ -14,11 +14,11 @@ import world.respect.shared.generated.resources.invalid_url
 import world.respect.shared.navigation.RespectAppList
 import world.respect.shared.navigation.AppsDetail
 import world.respect.shared.viewmodel.app.appstate.FabUiState
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.compatibleapps.model.RespectAppManifest
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.ext.asUiText
@@ -30,14 +30,12 @@ data class AppLauncherUiState(
 
 class AppLauncherViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider,
+    private val appDataSource: RespectAppDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(AppLauncherUiState())
 
     val uiState = _uiState.asStateFlow()
-
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     var errorMessage: String = ""
 
@@ -65,7 +63,7 @@ class AppLauncherViewModel(
 
 
 
-            dataSource.compatibleAppsDataSource.getLaunchpadApps(
+            appDataSource.compatibleAppsDataSource.getLaunchpadApps(
                 loadParams = DataLoadParams()
             ).collect { result ->
                 when (result) {
@@ -98,7 +96,7 @@ class AppLauncherViewModel(
     fun onClickRemove(app: DataLoadState<RespectAppManifest>) {
         val manifestUrl = app.metaInfo.url ?: return
         viewModelScope.launch {
-            dataSource.compatibleAppsDataSource.removeAppFromLaunchpad(
+            appDataSource.compatibleAppsDataSource.removeAppFromLaunchpad(
                 manifestUrl
             )
         }
