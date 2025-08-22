@@ -29,7 +29,11 @@ class RespectComposeNavController(
                         popUpTo(0) { inclusive = true }
                     }
                 } else {
-                    navHostController.navigate(navCommand.destination)
+                    navHostController.navigate(navCommand.destination) {
+                        navCommand.popUpTo?.also {
+                            popUpTo(it) { inclusive = navCommand.popUpToInclusive }
+                        }
+                    }
                 }
             }
 
@@ -38,6 +42,11 @@ class RespectComposeNavController(
                 navHostController.popBackStack(
                     navCommand.destination, navCommand.inclusive
                 )
+            }
+
+            is NavCommand.PopUp -> {
+                lastNavCommandTime = navCommand.timestamp
+                navHostController.popBackStack()
             }
         }
     }

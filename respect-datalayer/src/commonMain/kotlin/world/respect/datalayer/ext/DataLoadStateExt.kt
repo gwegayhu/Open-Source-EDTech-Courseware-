@@ -52,3 +52,14 @@ fun <T: Any> DataLoadState<T>.dataOrNull(): T? {
     return (this as? DataReadyState)?.data
 }
 
+
+/**
+ *  A DataReadyState may be provided when local data is available, however update checks are still
+ *  going on in the background. In the case of an edit screen, we may want to show local data to
+ *  a user but not allow editing until the remote data is check is done (if possible).
+ *
+ *  @return true if the DataLoadState is DataReadyState and there are no pending remote updates.
+ */
+fun DataLoadState<*>.isReadyAndSettled(): Boolean {
+    return this is DataReadyState && this.remoteState !is DataLoadingState
+}

@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ImportContacts
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.navigation.compose.rememberNavController
@@ -75,7 +76,12 @@ val APP_TOP_LEVEL_NAV_ITEMS = listOf(
         destRoute = Report,
         icon = Icons.Filled.BarChart,
         label = Res.string.report
-    )
+    ),
+    TopNavigationItem(
+        destRoute = PersonList,
+        icon = Icons.Filled.Person,
+        label = Res.string.people,
+    ),
 )
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -132,7 +138,7 @@ fun App(
                                     icon = {
                                         Icon(item.icon, contentDescription = null)
                                     },
-                                   label = { Text(label) },
+                                    label = { Text(label) },
                                     selected = selectedTopLevelItemIndex == index,
                                     onClick = {
                                         navController.navigate(item.destRoute)  {

@@ -62,6 +62,8 @@ fun RespectAppBar(
 
     val canGoBack = appUiState.showBackButton ?: !isRootDest && currentBackStack.size > 1
 
+    val showUserAccountIcon = appUiState.userAccountIconVisible ?: !appUiState.actionBarButtonState.visible
+
     val accountManager: RespectAccountManager = koinInject()
     val activeAccount by accountManager.activeAccountAndPersonFlow.collectAsState(null)
 
@@ -157,10 +159,14 @@ fun RespectAppBar(
                     enabled = appUiState.actionBarButtonState.enabled,
                     modifier = Modifier.testTag("action_bar_button"),
                 ) {
-                    Text(appUiState.actionBarButtonState.text ?: "")
+                    Text(
+                        text = appUiState.actionBarButtonState.text?.let {
+                            uiTextStringResource(it)
+                        } ?: ""
+                    )
                 }
             }
-            if(appUiState.userAccountIconVisible) {
+            if(showUserAccountIcon) {
                 activeAccount?.also {
                     IconButton(
                         onClick = onProfileClick,
