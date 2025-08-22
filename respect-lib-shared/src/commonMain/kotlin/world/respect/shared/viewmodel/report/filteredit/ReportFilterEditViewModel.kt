@@ -7,10 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
-import world.respect.shared.domain.report.model.FilterType
-import world.respect.shared.domain.report.model.ReportConditionFilterOptions
-import world.respect.shared.domain.report.model.ReportFilter
+import world.respect.datalayer.realm.model.report.FilterType
+import world.respect.datalayer.realm.model.report.ReportConditionFilterOptions
+import world.respect.datalayer.realm.model.report.ReportFilter
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_filters

@@ -29,11 +29,10 @@ import io.github.koalaplot.core.xygraph.rememberFloatLinearAxisModel
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.uiTextStringResource
 import world.respect.shared.domain.report.formatter.GraphFormatter
-import world.respect.shared.domain.report.model.ReportSeriesVisualType
-import world.respect.shared.domain.report.model.YAxisTypes
+import world.respect.datalayer.realm.model.report.ReportSeriesVisualType
+import world.respect.datalayer.realm.model.report.YAxisTypes
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.count
 import world.respect.shared.generated.resources.duration
 import world.respect.shared.generated.resources.hour_unit
 import world.respect.shared.generated.resources.minute_unit

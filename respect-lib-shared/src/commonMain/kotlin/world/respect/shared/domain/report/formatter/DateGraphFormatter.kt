@@ -2,8 +2,7 @@ package world.respect.shared.domain.report.formatter
 
 import io.ktor.util.toLowerCasePreservingASCIIRules
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toLocalDate
-import world.respect.shared.domain.report.model.ReportXAxis
+import world.respect.datalayer.realm.model.report.ReportXAxis
 import world.respect.shared.resources.StringUiText
 import world.respect.shared.resources.UiText
 

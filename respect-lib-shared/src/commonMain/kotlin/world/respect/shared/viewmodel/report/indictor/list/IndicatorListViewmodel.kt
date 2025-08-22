@@ -10,8 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.Indicator
-import world.respect.shared.domain.report.model.DefaultIndicators
-import world.respect.shared.domain.report.query.RunReportUseCase
+import world.respect.datalayer.realm.model.report.DefaultIndicators
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.indicator
 import world.respect.shared.generated.resources.indicators
@@ -21,7 +20,6 @@ import world.respect.shared.navigation.IndictorEdit
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
-import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
 
 data class IndicatorListUiState(
     val indicators: List<Indicator> = emptyList(),

@@ -2,7 +2,7 @@ package world.respect.shared.domain.report.query
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import world.respect.shared.domain.report.model.StatementReportRow
+import world.respect.datalayer.realm.model.report.StatementReportRow
 
 class MockRunReportUseCaseClientImpl(): RunReportUseCase  {
     override fun invoke(request: RunReportUseCase.RunReportRequest): Flow<RunReportUseCase.RunReportResult> {

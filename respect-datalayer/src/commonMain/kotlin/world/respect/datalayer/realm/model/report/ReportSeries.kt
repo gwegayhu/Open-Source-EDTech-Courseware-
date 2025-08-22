@@ -1,4 +1,4 @@
-package world.respect.shared.domain.report.model
+package world.respect.datalayer.realm.model.report
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.serialization.Serializable
