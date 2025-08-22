@@ -42,6 +42,7 @@ class CreateGraphFormatterUseCase() {
                 when (reportResult.request.reportOptions.series.first().reportSeriesYAxis.type) {
                     YAxisTypes.DURATION.name -> DurationGraphFormatter(reportResult)
                     YAxisTypes.COUNT.name -> CountGraphFormatter()
+                    YAxisTypes.PERCENTAGE.name -> CountGraphFormatter()
                     else -> throw IllegalArgumentException("Unsupported Y-axis type")
                 }
             }
@@ -54,18 +55,13 @@ class CreateGraphFormatterUseCase() {
                 } else {
                     reportResult.request.reportOptions.xAxis
                 }
-
                 when (axisType) {
                     ReportXAxis.DAY,
                     ReportXAxis.WEEK,
                     ReportXAxis.MONTH,
                     ReportXAxis.YEAR -> DateGraphFormatter(axisType)
-
                     ReportXAxis.GENDER -> GenderGraphFormatter()
-
-                    ReportXAxis.CLASS -> NoOpGraphFormatter()
-
-                    else -> throw IllegalArgumentException("Unsupported X-axis type")
+                    else -> NoOpGraphFormatter()
                 }
             }
 
