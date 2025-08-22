@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.oneroster.rostering.FakeRosterDataSource
 import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.Res
@@ -66,7 +65,7 @@ class ClazzEditViewModel(
                     userAccountIconVisible = false,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
-                        text = getString(Res.string.save),
+                        text = Res.string.save.asUiText(),
                         onClick = {
                             onSaveClass()
                         }

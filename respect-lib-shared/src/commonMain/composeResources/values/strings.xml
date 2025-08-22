@@ -181,8 +181,4 @@
     <string name="edit_person">Edit person</string>
 
     <string name="first_names">First names</string>
-    <string name="last_name">Last name</string>
-
-    <string name="save">Save</string>
-    <string name="edit">Edit</string>
 </resources>
