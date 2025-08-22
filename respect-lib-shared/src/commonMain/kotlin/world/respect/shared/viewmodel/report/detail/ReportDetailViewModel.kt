@@ -19,7 +19,7 @@ import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
-import world.respect.shared.domain.report.model.ReportOptions
+import world.respect.datalayer.realm.model.report.ReportOptions
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.edit
@@ -32,7 +32,6 @@ import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
-import world.respect.shared.viewmodel.app.appstate.LoadingUiState.Companion.NOT_LOADING
 
 data class ReportDetailUiState(
     val report: RespectReport? = null,

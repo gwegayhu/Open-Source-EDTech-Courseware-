@@ -34,7 +34,7 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.view.report.graph.CombinedGraph
 import world.respect.datalayer.respect.model.RespectReport
-import world.respect.shared.domain.report.model.ReportOptions
+import world.respect.datalayer.realm.model.report.ReportOptions
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.No_data_available

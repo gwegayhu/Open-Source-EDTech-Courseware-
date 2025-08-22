@@ -1,4 +1,4 @@
-package world.respect.shared.domain.report.model
+package world.respect.datalayer.realm.model.report
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.DateTimeUnit
@@ -19,6 +19,17 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import world.respect.shared.generated.resources.*
+
+
+/**
+ * TODO: @anugraha - remove StringResources from classes in datalayer; then in respect-lib-shared
+ * create extension functions
+ *
+ * e.g.
+ *
+ * val ReportTimeRangeUnit.label: StringResource
+ *     get() = when(this) ...
+ */
 
 /**
  * Enum of the relative units that can be selected for a report e.g. last x days, last x months, etc.

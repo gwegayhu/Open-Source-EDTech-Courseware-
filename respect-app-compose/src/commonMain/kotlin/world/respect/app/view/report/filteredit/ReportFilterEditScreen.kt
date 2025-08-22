@@ -19,8 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.view.report.edit.ExposedDropdownMenu
-import world.respect.shared.domain.report.model.FilterType
-import world.respect.shared.domain.report.model.GenderType
+import world.respect.datalayer.realm.model.report.FilterType
+import world.respect.datalayer.realm.model.report.GenderType
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.condition
 import world.respect.shared.generated.resources.field

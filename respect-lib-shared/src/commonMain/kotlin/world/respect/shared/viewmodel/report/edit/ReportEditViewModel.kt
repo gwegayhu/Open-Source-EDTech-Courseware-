@@ -14,11 +14,11 @@ import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.libutil.ext.replaceOrAppend
-import world.respect.shared.domain.report.model.DefaultIndicators
-import world.respect.shared.domain.report.model.ReportFilter
-import world.respect.shared.domain.report.model.ReportOptions
-import world.respect.shared.domain.report.model.ReportSeries
-import world.respect.shared.domain.report.model.ReportSeriesVisualType
+import world.respect.datalayer.realm.model.report.DefaultIndicators
+import world.respect.datalayer.realm.model.report.ReportFilter
+import world.respect.datalayer.realm.model.report.ReportOptions
+import world.respect.datalayer.realm.model.report.ReportSeries
+import world.respect.datalayer.realm.model.report.ReportSeriesVisualType
 import world.respect.shared.ext.replace
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_a_new_report
