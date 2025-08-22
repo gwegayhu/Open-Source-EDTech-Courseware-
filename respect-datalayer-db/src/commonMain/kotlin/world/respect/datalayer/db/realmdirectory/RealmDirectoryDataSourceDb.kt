@@ -108,7 +108,7 @@ class RealmDirectoryDataSourceDb(
     }
 
     override suspend fun searchRealms(text: String): Flow<DataLoadState<List<RespectRealm>>> {
-        TODO("Not yet implemented")
+        TODO("Add a query to the DAO @Nikunj")
     }
 
     override suspend fun getInviteInfo(inviteCode: String): RespectInviteInfo {

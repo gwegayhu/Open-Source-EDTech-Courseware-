@@ -13,11 +13,11 @@ import world.respect.shared.generated.resources.invalid_url
 import world.respect.shared.resources.UiText
 import world.respect.shared.navigation.AppsDetail
 import world.respect.shared.resources.StringResourceUiText
-import world.respect.shared.datasource.RespectAppDataSourceProvider
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.ext.asUiText
 
@@ -28,12 +28,10 @@ data class EnterLinkUiState(
 
 class EnterLinkViewModel(
     savedStateHandle: SavedStateHandle,
-    dataSourceProvider: RespectAppDataSourceProvider,
+    private val appDataSource: RespectAppDataSource,
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(EnterLinkUiState())
-
-    private val dataSource = dataSourceProvider.getDataSource(activeAccount)
 
     val uiState = _uiState.asStateFlow()
 
@@ -58,7 +56,7 @@ class EnterLinkViewModel(
         viewModelScope.launch {
             try {
                 val linkUrl = Url(uiState.value.linkUrl)
-                val appResult = dataSource.compatibleAppsDataSource.getApp(
+                val appResult = appDataSource.compatibleAppsDataSource.getApp(
                     manifestUrl = linkUrl, loadParams = DataLoadParams()
                 )
 
