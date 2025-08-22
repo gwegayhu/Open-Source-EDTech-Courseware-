@@ -340,3 +340,15 @@ class LearningUnitViewer(
 @Serializable
 object AccountList: RespectAppRoute
 
+@Serializable
+object PersonList: RespectAppRoute
+
+@Serializable
+data class PersonDetail(
+    val guid: String,
+): RespectAppRoute
+
+@Serializable
+data class PersonEdit(
+    val guid: String?,
+): RespectAppRoute

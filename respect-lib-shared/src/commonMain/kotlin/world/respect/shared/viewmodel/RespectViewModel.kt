@@ -11,7 +11,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
 import org.koin.mp.KoinPlatform.getKoin
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.opds.model.LangMapStringValue
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.domain.account.RespectAccount
@@ -135,12 +141,63 @@ abstract class RespectViewModel(
         }
     }
 
+    /**
+     * Load an entity for use in edit screens. Strategy:
+     * a) Check the SavedState - this is where we will find the entity if the user was editing it but
+     *    did not save it yet (can happen when app is destroyed or when user is moving between
+     *    screens).
+     * b) Try loading locally (using DataLoadParams) so we can (immediately) show the entity to the
+     *    user.
+     * c) Check/refresh the entity from the remote server.
+     */
+    suspend fun <T: Any> loadEntity(
+        json: Json,
+        serializer: KSerializer<T>,
+        savedStateKey: String = DEFAULT_SAVED_STATE_KEY,
+        loadFn: suspend (DataLoadParams) -> DataLoadState<T>,
+        uiUpdateFn: (DataLoadState<T>) -> Unit,
+    ): DataLoadState<T> {
+        val entityInSavedState = savedStateHandle.get<String>(savedStateKey)?.let {
+            json.decodeFromString(serializer, it)
+        }
+
+        if(entityInSavedState != null) {
+            val dataState = DataReadyState(entityInSavedState)
+            uiUpdateFn(dataState)
+            return dataState
+        }
+
+        //try and get a local version first if available
+        val localEntity = try {
+            loadFn(DataLoadParams(onlyIfCached = true)).also {
+                uiUpdateFn(it)
+            }
+        }catch(e: Throwable) {
+            //Log it
+            null
+        }
+
+        val remoteEntity = try {
+            loadFn(DataLoadParams()).also {
+                uiUpdateFn(it)
+            }
+        }catch(e: Throwable) {
+            //Log it
+            null
+        }
+
+        return remoteEntity ?: localEntity ?: NoDataLoadedState.notFound()
+    }
+
+
     init {
         if(lastNavResultTimestampCollected == 0L)
             lastNavResultTimestampCollected = systemTimeInMillis()
     }
 
     companion object {
+
+        const val DEFAULT_SAVED_STATE_KEY = "entity"
 
         const val KEY_LAST_COLLECTED_TS = "collectedTs"
 

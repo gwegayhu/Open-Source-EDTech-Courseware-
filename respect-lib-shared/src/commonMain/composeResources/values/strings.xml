@@ -144,5 +144,17 @@
     <string name="logout">Logout</string>
     <string name="profile">Profile</string>
     <string name="accounts">Accounts</string>
+
+    <string name="people">People</string>
+    <string name="person">Person</string>
     <string name="back">Back</string>
+
+    <string name="add_person">Add person</string>
+    <string name="edit_person">Edit person</string>
+
+    <string name="first_names">First names</string>
+    <string name="last_name">Last name</string>
+
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
 </resources>

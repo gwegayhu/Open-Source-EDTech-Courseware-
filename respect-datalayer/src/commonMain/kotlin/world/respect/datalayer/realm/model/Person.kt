@@ -28,4 +28,8 @@ data class Person(
     val preferredLastName: String? = null,
     val pronouns: String? = null,
     val roles: List<PersonRole>,
-)
+) {
+    companion object {
+        const val TABLE_ID = 2
+    }
+}
