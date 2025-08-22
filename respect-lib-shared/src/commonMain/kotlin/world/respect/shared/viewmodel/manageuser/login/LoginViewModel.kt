@@ -54,28 +54,32 @@ class LoginViewModel(
         viewModelScope.launch {
 
             try {
-                when (val credentialResult = getCredentialUseCase()) {
-                    is GetCredentialUseCase.PasskeyCredentialResult -> {
-                        _navCommandFlow.tryEmit(
-                            NavCommand.Navigate(RespectAppLauncher)
-                        )
-                    }
-
-                    is GetCredentialUseCase.PasswordCredentialResult -> {
-
-                    }
-
-                    is GetCredentialUseCase.Error -> {
-                        _uiState.update { prev ->
-                            prev.copy(
-                                errorText = StringUiText(credentialResult.message ?: ""),
+                val rpId =route.rpId
+                if (rpId!=null){
+                    when (val credentialResult = getCredentialUseCase(rpId)) {
+                        is GetCredentialUseCase.PasskeyCredentialResult -> {
+                            _navCommandFlow.tryEmit(
+                                NavCommand.Navigate(RespectAppLauncher)
                             )
                         }
-                    }
 
-                    is GetCredentialUseCase.NoCredentialAvailableResult,
-                    is GetCredentialUseCase.UserCanceledResult -> {
-                        //do nothing
+                        is GetCredentialUseCase.PasswordCredentialResult -> {
+
+                        }
+
+                        is GetCredentialUseCase.Error -> {
+                            _uiState.update { prev ->
+                                prev.copy(
+                                    errorText = StringUiText(credentialResult.message ?: ""),
+                                )
+                            }
+                        }
+
+                        is GetCredentialUseCase.NoCredentialAvailableResult,
+                        is GetCredentialUseCase.UserCanceledResult -> {
+                            //do nothing
+                        }
+
                     }
 
                 }

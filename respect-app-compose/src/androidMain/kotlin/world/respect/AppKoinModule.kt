@@ -281,9 +281,7 @@ val appKoinModule = module {
         RespectRedeemInviteRequestUseCase()
     }
     single {
-        CreatePublicKeyCredentialRequestOptionsJsonUseCase(
-            rpId = "https://ustadtesting.ustadmobile.com/"
-        )
+        CreatePublicKeyCredentialRequestOptionsJsonUseCase()
     }
 
     single<CreatePasskeyUseCase> {

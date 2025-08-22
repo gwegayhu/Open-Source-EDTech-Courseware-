@@ -15,19 +15,18 @@ import world.respect.libutil.ext.randomString
  * See CreatePublicKeyCredentialCreationOptionsJsonUseCase for further details on how passkeys are
  * handled.
  */
-class CreatePublicKeyCredentialRequestOptionsJsonUseCase(
-    private val rpId: String,
-) {
+class CreatePublicKeyCredentialRequestOptionsJsonUseCase() {
 
     operator fun invoke(
-        allowCredentials: List<PublicKeyCredentialDescriptorJSON> = emptyList()
+        allowCredentials: List<PublicKeyCredentialDescriptorJSON> = emptyList(),
+        rpId: String
     ): PublicKeyCredentialRequestOptionsJSON {
         val challenge = randomString(16)
 
         return PublicKeyCredentialRequestOptionsJSON(
             challenge = challenge.encodeBase64(),
             timeout = PublicKeyCredentialRequestOptionsJSON.TIME_OUT_VALUE,
-            rpId = Url(rpId).host,
+            rpId = rpId,
             allowCredentials = allowCredentials,
             userVerification = "required"
         )
