@@ -53,7 +53,7 @@ class IndicatorEditViewModel(
                     title = Res.string.indicator.asUiText(),
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
-                        text = getString(resource = Res.string.done),
+                        text = Res.string.done.asUiText(),
                         onClick = this@IndicatorEditViewModel::onSaveIndicator
                     ),
                     userAccountIconVisible = false,

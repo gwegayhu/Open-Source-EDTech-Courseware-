@@ -147,7 +147,6 @@
 
     <!-- Edit Report -->
     <string name="edit_report">Edit report</string>
-    <string name="edit">Edit</string>
     <string name="add_a_new_report">Add a new report</string>
     <string name="field">Field</string>
     <string name="condition">Condition</string>

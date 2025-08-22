@@ -27,7 +27,7 @@ class DateGraphFormatter(
                     StringUiText("$monthShortName - ${date.year}")
                 }
 
-                ReportXAxis.YEAR -> StringUiText(value.toLocalDate().year.toString())
+                ReportXAxis.YEAR -> StringUiText(LocalDate.parse(value).year.toString())
                 else -> StringUiText(value)
             }
         } catch (e: Exception) {

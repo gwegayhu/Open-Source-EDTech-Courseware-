@@ -46,7 +46,7 @@ class ReportFilterEditViewModel(
                     hideBottomNavigation = true,
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
-                        text = getString(resource = Res.string.done),
+                        text = Res.string.done.asUiText(),
                         onClick = ::onClickSave
                     ),
                     userAccountIconVisible = false

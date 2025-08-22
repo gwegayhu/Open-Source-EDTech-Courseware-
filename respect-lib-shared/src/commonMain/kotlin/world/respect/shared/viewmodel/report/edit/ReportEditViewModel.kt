@@ -84,7 +84,7 @@ class ReportEditViewModel(
                 prev.copy(
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
-                        text = getString(resource = Res.string.done),
+                        text = Res.string.done.asUiText(),
                         onClick = this@ReportEditViewModel::onClickSave
                     ),
                     userAccountIconVisible = false,

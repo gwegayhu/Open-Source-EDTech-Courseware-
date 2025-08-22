@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
@@ -144,7 +145,7 @@ class RelativeRangeReportPeriod(
 
             ReportTimeRangeUnit.MONTH -> {
                 nowDateTime.date.minus(rangeQuantity - 1, DateTimeUnit.MONTH).let {
-                    LocalDate(it.year, it.monthNumber, 1)
+                    LocalDate(it.year, it.month.number, 1)
                 }
             }
 

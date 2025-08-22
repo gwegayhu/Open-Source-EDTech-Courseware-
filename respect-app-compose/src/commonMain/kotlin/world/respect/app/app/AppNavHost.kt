@@ -31,7 +31,6 @@ import world.respect.app.view.manageuser.termsandcondition.TermsAndConditionScre
 import world.respect.app.view.person.detail.PersonDetailScreen
 import world.respect.app.view.person.edit.PersonEditScreen
 import world.respect.app.view.person.list.PersonListScreen
-import world.respect.app.view.report.ReportScreen
 import world.respect.app.view.report.detail.ReportDetailScreen
 import world.respect.app.view.report.edit.ReportEditScreen
 import world.respect.app.view.report.filteredit.ReportFilterEditScreen
