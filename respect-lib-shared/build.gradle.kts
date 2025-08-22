@@ -37,6 +37,7 @@ kotlin {
 
             implementation(projects.respectLibCache)
             implementation(projects.respectLibXxhash)
+            implementation(projects.respectLibPrimarykeygen)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.savedstate)

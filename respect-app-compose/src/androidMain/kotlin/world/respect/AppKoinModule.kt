@@ -94,10 +94,14 @@ import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
+import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
 import world.respect.shared.domain.realm.RespectRealmPath
 import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.NavResultReturnerImpl
 import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
+import world.respect.shared.viewmodel.person.detail.PersonDetailViewModel
+import world.respect.shared.viewmodel.person.edit.PersonEditViewModel
+import world.respect.shared.viewmodel.person.list.PersonListViewModel
 import org.koin.core.qualifier.named
 import world.respect.datalayer.respect.MockRespectReportDataSource
 import world.respect.datalayer.respect.RespectReportDataSource
@@ -193,6 +197,9 @@ val appKoinModule = module {
     viewModelOf(::OtherOptionsSignupViewModel)
     viewModelOf(::EnterPasswordSignupViewModel)
     viewModelOf(::AccountListViewModel)
+    viewModelOf(::PersonListViewModel)
+    viewModelOf(::PersonEditViewModel)
+    viewModelOf(::PersonDetailViewModel)
     viewModelOf(::ReportDetailViewModel)
     viewModelOf(::ReportEditViewModel)
     viewModelOf(::ReportListViewModel)
@@ -397,6 +404,12 @@ val appKoinModule = module {
                 androidContext(),
                 scopeUrl().sanitizedForFilename()
             ).build()
+        }
+
+        scoped<RealmPrimaryKeyGenerator> {
+            RealmPrimaryKeyGenerator(
+                primaryKeyGenerator = PrimaryKeyGenerator(RealmPrimaryKeyGenerator.TABLE_IDS)
+            )
         }
     }
 

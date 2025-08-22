@@ -72,7 +72,7 @@ class SignupViewModel(
                 prev.copy(
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
-                        text = uiState.value.actionBarButtonName,
+                        text = uiState.value.actionBarButtonName.asUiText(),
                         onClick = { onClickSave() }
                     ),
                     title = uiState.value.screenTitle.asUiText(),

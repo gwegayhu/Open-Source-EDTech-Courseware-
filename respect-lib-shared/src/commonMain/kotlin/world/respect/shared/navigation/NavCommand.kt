@@ -8,6 +8,8 @@ sealed class NavCommand(
     class Navigate(
         val destination: RespectAppRoute,
         val clearBackStack: Boolean = false,
+        val popUpTo: RespectAppRoute? = null,
+        val popUpToInclusive: Boolean = false,
         timestamp: Long = systemTimeInMillis(),
     ) : NavCommand(timestamp)
 
@@ -16,6 +18,11 @@ sealed class NavCommand(
         val inclusive: Boolean,
         timestamp: Long = systemTimeInMillis(),
     ): NavCommand(timestamp)
+
+    class PopUp(
+        timestamp: Long = systemTimeInMillis(),
+    ): NavCommand(timestamp)
+
 
 }
 

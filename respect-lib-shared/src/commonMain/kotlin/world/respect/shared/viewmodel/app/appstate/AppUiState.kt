@@ -10,6 +10,8 @@ import world.respect.shared.resources.UiText
  *           first screen the user sees (no back button) or it might come after clicking the add
  *           account button the Account List screen (back button is needed). Will have no effect on
  *           the web platform.
+ * @property userAccountIconVisible when null (default) the profile icon will be shown unless the
+ *           actionbar button is visible.
  */
 data class AppUiState(
     val fabState: FabUiState = FabUiState(),
@@ -17,7 +19,7 @@ data class AppUiState(
     val navigationVisible: Boolean = true,
     val hideBottomNavigation: Boolean = false,
     val hideSettingsIcon: Boolean = false,
-    val userAccountIconVisible: Boolean = true,
+    val userAccountIconVisible: Boolean? = null,
     val hideAppBar: Boolean = false,
     val appBarColors: AppBarColors = AppBarColors.STANDARD,
     val leadingActionButton: AppActionButton? = null,
