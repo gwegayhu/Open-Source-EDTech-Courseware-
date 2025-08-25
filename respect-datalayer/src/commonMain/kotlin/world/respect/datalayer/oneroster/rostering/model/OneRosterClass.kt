@@ -11,6 +11,7 @@ import kotlin.time.Instant
  * https://www.imsglobal.org/sites/default/files/spec/oneroster/v1p2/rostering-informationmodel/OneRosterv1p2RosteringService_InfoModelv1p0.html#Data_Class
  */
 @OptIn(ExperimentalTime::class)
+@Serializable
 data class OneRosterClass(
     override val sourcedId: String,
     override val status: OneRosterBaseStatusEnum = OneRosterBaseStatusEnum.ACTIVE,
@@ -20,3 +21,8 @@ data class OneRosterClass(
     val title: String,
     val location: String? = null,
 ) : OneRosterBase
+{
+    companion object{
+        const val TABLE_ID = 23
+    }
+}

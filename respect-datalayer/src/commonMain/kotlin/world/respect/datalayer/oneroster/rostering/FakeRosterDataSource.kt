@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class FakeRosterDataSource : OneRosterRosterDataSource {
+abstract class FakeRosterDataSource : OneRosterRosterDataSource {
 
     override suspend fun getAllUsers(): List<OneRosterUser> {
         val now = Instant.DISTANT_PAST

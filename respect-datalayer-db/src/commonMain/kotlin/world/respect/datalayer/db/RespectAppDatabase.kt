@@ -9,6 +9,8 @@ import world.respect.datalayer.db.compatibleapps.daos.CompatibleAppAddJoinDao
 import world.respect.datalayer.db.compatibleapps.daos.CompatibleAppEntityDao
 import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppAddJoin
 import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppEntity
+import world.respect.datalayer.db.oneroaster.dao.OneRoasterClassEntityDao
+import world.respect.datalayer.db.oneroster.entities.OneRosterClassEntity
 import world.respect.datalayer.db.opds.OpdsTypeConverters
 import world.respect.datalayer.db.opds.daos.OpdsFeedEntityDao
 import world.respect.datalayer.db.opds.daos.OpdsFeedMetadataEntityDao
@@ -54,6 +56,8 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         RealmDirectoryEntity::class,
         RealmEntity::class,
         RealmConfigEntity::class,
+
+        OneRosterClassEntity::class,
     ],
     version = 1,
 )
@@ -82,6 +86,9 @@ abstract class RespectAppDatabase: RoomDatabase() {
     abstract fun getRealmConfigEntityDao(): RealmConfigEntityDao
 
     abstract fun getRealmDirectoryEntityDao(): RealmDirectoryEntityDao
+
+    abstract fun getOneRoasterClassEntityDao(): OneRoasterClassEntityDao
+
 
     companion object {
 

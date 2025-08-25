@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "38e80447aafcd1b4a4bfb3d007aba188",
+    "identityHash": "33eac4a624cc06c8ed39e9efa87817c5",
     "entities": [
       {
         "tableName": "LangMapEntity",
@@ -721,11 +721,57 @@
             "rcUid"
           ]
         }
+      },
+      {
+        "tableName": "OneRosterClassEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`classSourcedId` TEXT NOT NULL, `classStatus` TEXT NOT NULL, `classDateLastModified` INTEGER NOT NULL, `classTitle` TEXT NOT NULL, `classLocation` TEXT, `classMetadata` TEXT, PRIMARY KEY(`classSourcedId`))",
+        "fields": [
+          {
+            "fieldPath": "classSourcedId",
+            "columnName": "classSourcedId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classStatus",
+            "columnName": "classStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classDateLastModified",
+            "columnName": "classDateLastModified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classTitle",
+            "columnName": "classTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classLocation",
+            "columnName": "classLocation",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "classMetadata",
+            "columnName": "classMetadata",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "classSourcedId"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38e80447aafcd1b4a4bfb3d007aba188')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '33eac4a624cc06c8ed39e9efa87817c5')"
     ]
   }
 }

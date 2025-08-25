@@ -30,7 +30,7 @@ fun ClazzEditScreen(
 
     ClazzEditScreen(
         uiState = uiState,
-        onClazzChanged = viewModel::onClazzChanged,
+        onClazzChanged = viewModel::onEntityChanged,
     )
 }
 

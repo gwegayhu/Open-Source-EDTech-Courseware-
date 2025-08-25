@@ -1,5 +1,6 @@
 package world.respect.shared.domain.realm
 
+import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.realm.model.Person
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 
@@ -11,7 +12,9 @@ data class RealmPrimaryKeyGenerator(
 ) {
     companion object {
 
-        val TABLE_IDS = listOf(Person.TABLE_ID)
-
+        val TABLE_IDS = listOf(
+            Person.TABLE_ID,
+            OneRosterClass.TABLE_ID
+        )
     }
 }

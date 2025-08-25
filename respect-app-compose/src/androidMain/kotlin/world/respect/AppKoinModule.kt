@@ -194,9 +194,7 @@ val appKoinModule = module {
     viewModelOf(::PersonListViewModel)
     viewModelOf(::PersonEditViewModel)
     viewModelOf(::PersonDetailViewModel)
-
-    single<OneRosterRosterDataSource> { FakeRosterDataSource() }
-
+    
     single<GetOfflineStorageOptionsUseCase> {
         GetOfflineStorageOptionsUseCaseAndroid(
             getAndroidSdCardDirUseCase = get()
