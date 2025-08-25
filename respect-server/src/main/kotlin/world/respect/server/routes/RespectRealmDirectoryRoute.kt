@@ -7,7 +7,9 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import kotlinx.coroutines.flow.first
 import org.koin.ktor.ext.inject
+import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
 import world.respect.server.domain.realm.add.AddRealmUseCase
 
 const val AUTH_CONFIG_DIRECTORY_ADMIN_BASIC = "auth-directory-admin-basic"
@@ -29,7 +31,11 @@ fun Route.RespectRealmDirectoryRoute() {
     }
 
     get("realms") {
-
+        //TODO: @Nikunj Check/implement this
+        val directoryDataSource: RealmDirectoryDataSourceLocal by inject()
+        val query = call.request.queryParameters["q"]
+        val realmsFound = directoryDataSource.searchRealms(query ?: "").first()
+        call.respond(realmsFound)
     }
 
     post("getinviteinfo") {
