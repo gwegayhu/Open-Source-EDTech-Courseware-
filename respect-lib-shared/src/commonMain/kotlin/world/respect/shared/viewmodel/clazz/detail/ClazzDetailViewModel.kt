@@ -82,16 +82,7 @@ class ClazzDetailViewModel(
                         visible = true,
                         icon = FabUiState.FabIcon.EDIT,
                         text = Res.string.edit.asUiText(),
-                        onClick = {
-                            _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(
-                                    ClazzEdit.create(
-                                        route.sourcedId,
-                                        modeEdit = true
-                                    )
-                                )
-                            )
-                        }
+                        onClick = ::onClickEdit
                     )
                 )
             }
@@ -159,6 +150,17 @@ class ClazzDetailViewModel(
 
     fun onToggleStudentsSection() {
         _uiState.update { it.copy(isStudentsExpanded = !it.isStudentsExpanded) }
+    }
+
+    fun onClickEdit() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(
+                ClazzEdit.create(
+                    route.sourcedId,
+                    modeEdit = true
+                )
+            )
+        )
     }
 
     companion object {

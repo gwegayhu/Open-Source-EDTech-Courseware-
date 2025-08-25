@@ -66,9 +66,7 @@ class ClazzEditViewModel(
                     actionBarButtonState = ActionBarButtonUiState(
                         visible = true,
                         text = Res.string.save.asUiText(),
-                        onClick = {
-                            onSaveClass()
-                        }
+                        onClick = ::onClickSave
                     ),
                 )
             }
@@ -77,7 +75,7 @@ class ClazzEditViewModel(
 
 
     @OptIn(ExperimentalTime::class)
-    fun onSaveClass() {
+    fun onClickSave() {
         val initEntity = _uiState.value.entity ?: return
         viewModelScope.launch {
             if (initEntity.title.isBlank()) {

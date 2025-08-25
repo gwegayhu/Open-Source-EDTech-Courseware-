@@ -41,6 +41,18 @@ class ClazzListViewModel(
     init {
         viewModelScope.launch {
 
+            _appUiState.update {
+                it.copy(
+                    title = Res.string.classes.asUiText(),
+                    fabState = FabUiState(
+                        visible = true,
+                        icon = FabUiState.FabIcon.ADD,
+                        text = Res.string.clazz.asUiText(),
+                        onClick = ::onClickAdd
+                    )
+                )
+            }
+
             val classes = oneRosterDataSource.getAllClasses()
 
             _uiState.update {
@@ -64,27 +76,6 @@ class ClazzListViewModel(
                 )
             }
 
-            _appUiState.update {
-                it.copy(
-                    title = Res.string.classes.asUiText(),
-                    showBackButton = false,
-                    fabState = FabUiState(
-                        visible = true,
-                        icon = FabUiState.FabIcon.ADD,
-                        text = Res.string.clazz.asUiText(),
-                        onClick = {
-                            _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(
-                                    ClazzEdit.create(
-                                        sourcedId = null,
-                                        modeEdit = false
-                                    )
-                                )
-                            )
-                        }
-                    )
-                )
-            }
         }
     }
 
@@ -101,5 +92,18 @@ class ClazzListViewModel(
             )
         )
     }
+    fun onClickAdd() {
+        {
+            _navCommandFlow.tryEmit(
+                NavCommand.Navigate(
+                    ClazzEdit.create(
+                        sourcedId = null,
+                        modeEdit = false
+                    )
+                )
+            )
+        }
+    }
+
 }
 
