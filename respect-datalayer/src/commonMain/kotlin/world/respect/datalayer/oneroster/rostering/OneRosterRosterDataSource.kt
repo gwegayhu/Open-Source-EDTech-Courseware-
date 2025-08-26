@@ -7,8 +7,6 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
-import world.respect.datalayer.realm.model.Person
-import world.respect.datalayer.realm.model.composites.PersonListDetails
 
 interface OneRosterRosterDataSource {
 
@@ -36,7 +34,5 @@ interface OneRosterRosterDataSource {
         loadParams: DataLoadParams,
         searchQuery: String? = null,
     ): Flow<DataLoadState<List<ClazzListDetails>>>
-
-    suspend fun searchByTitle(searchQuery: String?): List<OneRosterClass>
 
 }
