@@ -1,0 +1,151 @@
+openapi: "3.1.0"
+info:
+  title: RESPECT HTTP API
+  summary: RESPECT API for school directory and school
+  version: "1.0"
+
+tags:
+  - name: directory
+    description: Provides a list of schools e.g. for a country/area
+  - name: school
+    description: Provides API endpoints for a specific school
+
+paths:
+  /api/directory/school:
+    put:
+      tags:
+        - directory
+      description: Add a new school to the directory
+      security:
+        - directory_auth:
+            - write
+      requestBody:
+        description: School config to add
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SchoolConfig"
+
+      responses:
+        '204':
+          description: No content
+    get:
+      tags:
+        - directory
+      description: Get a list of schools in directory
+      parameters:
+        - name: name
+          in: query
+          description: Name text to filter by
+          required: false
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SchoolDirectoryEntry"
+  /api/directory/invite:
+    get:
+      tags:
+        - directory
+      description: |-
+        Retrieves information about a specific invite. Users can be invited using a numerical invite 
+        code. Each directory server has an invite code prefix, and each school also has an invite
+        code prefix (similar to a country code and area code when using phone numbers). The RESPECT
+        client will send the code to a known directory server based on the prefix, which will then
+        return the invite information (including school API url) to the client.
+      parameters:
+        - name: code
+          in: query
+          description: The invite code
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RespectInviteInfo"
+        '404':
+          description: Not found
+
+components:
+  schemas:
+    LangMap:
+      description: |-
+        LangMap map of language codes to string. See 
+        [Readium Json Schema](https://readium.org/webpub-manifest/schema/language-map.schema.json)
+      anyOf:
+        - type: string
+        - type: object
+          properties:
+            patternProperties:
+              minProperties: 1
+    SchoolDirectoryEntry:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/LangMap'
+          description: School name
+        self:
+          type: string
+          example: "https://schoolname.example.org/"
+        inviteCode:
+          type: string
+          example: "90210"
+        xapi:
+          type: string
+          example: "https://schoolname.example.org/api/school/xapi"
+        oneRoster:
+          type: string
+          example: "https://schoolname.example.org/api/school/oneroster"
+        respectExt:
+          type: string
+          example: "https://schoolname.example.org/api/respect"
+
+    SchoolConfig:
+      type: object
+      properties:
+        school:
+          $ref: '#/components/schemas/SchoolDirectoryEntry'
+        dburl:
+          type: string
+          example: "jdbc:postgresql://localhost:5432/respect"
+        adminusername:
+          type: string
+          example: "admin"
+        adminpassword:
+          type: string
+          example: "secret"
+
+    RespectInviteInfo:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "1234567890"
+        school:
+          $ref: '#/components/schemas/SchoolDirectoryEntry'
+        className:
+          type: string
+        schoolName:
+          type: string
+        userInviteType:
+          type: string
+          enum:
+            - TEACHER
+            - STUDENT_OR_PARENT
+
+  securitySchemes:
+    directory_auth:
+      type: apiKey
+      in: header
+      name: Directory administrator auth
