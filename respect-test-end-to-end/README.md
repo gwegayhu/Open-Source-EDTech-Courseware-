@@ -16,12 +16,16 @@ maestro test <TEST_NAME>.yaml
 
 ## Scenarios
 
-### 1 : Apps
+### 1 : Login to Respect
 
-1.1 [User Can Browse Apps and lessons ](test-description/001_browse_lessons_test_description.md)
+### 2 : Apps
 
-### 2 : Assignments
+2.1 [User Can Browse Apps and lessons ](test-description/002_browse_lessons_test_description.md)
 
-### 3 : Classes
+### 3 : Assignments
 
-### 4 : Reports
+### 4 : Classes
+
+### 5 : Reports
+
+### 6 : People
