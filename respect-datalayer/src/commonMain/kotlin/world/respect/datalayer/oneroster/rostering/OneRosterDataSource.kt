@@ -8,7 +8,7 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
 
-interface OneRosterRosterDataSource {
+interface OneRosterDataSource {
 
     suspend fun getAllUsers(): List<OneRosterUser>
 

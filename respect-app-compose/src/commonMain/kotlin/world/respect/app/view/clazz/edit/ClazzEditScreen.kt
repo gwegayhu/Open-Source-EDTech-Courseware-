@@ -12,11 +12,14 @@ import androidx.compose.runtime.getValue
 import world.respect.shared.viewmodel.clazz.edit.ClazzEditViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
+import world.respect.app.components.defaultItemPadding
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.class_name_label
 import world.respect.shared.viewmodel.clazz.edit.ClazzEditUiState
-import world.respect.app.components.editScreenPadding
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.required
 import kotlin.time.ExperimentalTime
@@ -26,45 +29,45 @@ import kotlin.time.ExperimentalTime
 fun ClazzEditScreen(
     viewModel: ClazzEditViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
+    val uiState by viewModel.uiState.collectAsState(Dispatchers.Main.immediate)
     ClazzEditScreen(
         uiState = uiState,
-        onClazzChanged = viewModel::onEntityChanged,
+        onEntityChanged = viewModel::onEntityChanged,
     )
 }
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun ClazzEditScreen(
     uiState: ClazzEditUiState,
-    onClazzChanged: (OneRosterClass) -> Unit = {},
+    onEntityChanged: (OneRosterClass) -> Unit = {},
+) {
 
-    ) {
+    val clazz = uiState.clazz.dataOrNull()
+    val fieldsEnabled = uiState.fieldsEnabled
+
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
 
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth().editScreenPadding(),
-            value = uiState.entity?.title ?: "",
+            modifier = Modifier.fillMaxWidth().defaultItemPadding(top = 16.dp),
+            value = clazz?.title ?: "",
             label = {
                 Text(
                     stringResource(Res.string.class_name_label)
                 )
             },
-            isError = uiState.clazzNameError != null,
+            onValueChange = { value ->
+                clazz?.also {
+                    onEntityChanged(it.copy(title = value))
+                }
+            },
             singleLine = true,
             supportingText = {
-                Text(uiState.clazzNameError ?: stringResource(Res.string.required))
+                Text(stringResource(Res.string.required))
             },
-            onValueChange = { newValue ->
-                uiState.entity?.let { current ->
-                    onClazzChanged(
-                        current.copy(title = newValue)
-                    )
-                }
-            }
+            enabled=fieldsEnabled
         )
         /**Description field needed**/
 

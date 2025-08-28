@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
 import world.respect.app.components.defaultItemPadding
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.shared.util.SortOrderOption
 import world.respect.shared.viewmodel.clazz.list.ClazzListUiState
 import world.respect.shared.viewmodel.clazz.list.ClazzListViewModel
@@ -54,7 +55,7 @@ fun ClazzListScreen(
         }
 
         itemsIndexed(
-            uiState.oneRoasterClass,
+            items = uiState.clazz.dataOrNull() ?: emptyList(),
             key = { index, clazz -> index }
         ) { index, clazz ->
             ListItem(

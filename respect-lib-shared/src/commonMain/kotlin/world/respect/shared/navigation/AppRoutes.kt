@@ -81,21 +81,9 @@ class AddPersonToClazz(
 
 
 @Serializable
-class ClazzEdit(
-    val sourcedId: String?,
-    val modeEdit: Boolean
-) : RespectAppRoute {
-
-    companion object {
-        fun create(
-            sourcedId: String?,
-            modeEdit: Boolean
-        ) = ClazzEdit(
-            sourcedId = sourcedId,
-            modeEdit = modeEdit
-        )
-    }
-}
+data class ClazzEdit(
+    val sourcedId: String?
+) : RespectAppRoute
 
 @Serializable
 object Report : RespectAppRoute
@@ -406,18 +394,15 @@ class LearningUnitViewer(
 object AccountList : RespectAppRoute
 
 
-
-
-
 @Serializable
-object PersonList: RespectAppRoute
+object PersonList : RespectAppRoute
 
 @Serializable
 data class PersonDetail(
     val guid: String,
-): RespectAppRoute
+) : RespectAppRoute
 
 @Serializable
 data class PersonEdit(
     val guid: String?,
-): RespectAppRoute
+) : RespectAppRoute

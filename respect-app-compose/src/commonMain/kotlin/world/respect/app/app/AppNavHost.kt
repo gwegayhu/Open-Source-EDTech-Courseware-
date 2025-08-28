@@ -261,7 +261,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            OtherOptionsSignupScreen( viewModel = viewModel)
+            OtherOptionsSignupScreen(viewModel = viewModel)
         }
 
         composable<EnterPasswordSignup> {
@@ -269,7 +269,7 @@ fun AppNavHost(
                 onSetAppUiState = onSetAppUiState,
                 navController = respectNavController
             )
-            EnterPasswordSignupScreen( viewModel = viewModel)
+            EnterPasswordSignupScreen(viewModel = viewModel)
         }
 
         composable<LearningUnitDetail> {

@@ -6,8 +6,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
+import org.koin.core.scope.Scope
+import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataLoadingState
+import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
+import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.classes
 import world.respect.shared.generated.resources.clazz
@@ -20,9 +28,10 @@ import world.respect.shared.util.SortOrderOption
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
+import kotlin.getValue
 
 data class ClazzListUiState(
-    val oneRoasterClass: List<OneRosterClass> = emptyList(),
+    val clazz: DataLoadState<List<ClazzListDetails>> = DataLoadingState(),
     val sortOptions: List<SortOrderOption> = emptyList(),
     val activeSortOrderOption: SortOrderOption = SortOrderOption(
         Res.string.first_name, 1, true
@@ -32,49 +41,60 @@ data class ClazzListUiState(
 
 class ClazzListViewModel(
     savedStateHandle: SavedStateHandle,
-    private val oneRosterDataSource: OneRosterRosterDataSource,
-) : RespectViewModel(savedStateHandle) {
+    accountManager: RespectAccountManager,
+) : RespectViewModel(savedStateHandle), KoinScopeComponent {
+
+    override val scope: Scope = accountManager.requireSelectedAccountScope()
+    private val realmDataSource: RespectRealmDataSource by inject()
+
     private val _uiState = MutableStateFlow(ClazzListUiState())
 
     val uiState = _uiState.asStateFlow()
 
     init {
+        _appUiState.update {
+            it.copy(
+                title = Res.string.classes.asUiText(),
+                fabState = FabUiState(
+                    visible = true,
+                    icon = FabUiState.FabIcon.ADD,
+                    text = Res.string.clazz.asUiText(),
+                    onClick = ::onClickAdd
+                )
+            )
+        }
+
         viewModelScope.launch {
 
-            _appUiState.update {
-                it.copy(
-                    title = Res.string.classes.asUiText(),
-                    fabState = FabUiState(
-                        visible = true,
-                        icon = FabUiState.FabIcon.ADD,
-                        text = Res.string.clazz.asUiText(),
-                        onClick = ::onClickAdd
-                    )
-                )
+            realmDataSource.onRoasterDataSource.findAll(DataLoadParams()).collect {
+                viewModelScope.launch {
+                    realmDataSource.onRoasterDataSource.findAll(DataLoadParams())
+                        .collect { dataState ->
+                            _uiState.update { state ->
+                                val sortOptions = listOf(
+                                    SortOrderOption(
+                                        Res.string.first_name,
+                                        flag = 1,
+                                        order = true
+                                    ),
+                                    SortOrderOption(
+                                        Res.string.last_name,
+                                        flag = 2,
+                                        order = true
+                                    )
+                                )
+
+                                state.copy(
+                                    clazz = dataState,
+                                    sortOptions = sortOptions,
+                                    activeSortOrderOption = sortOptions.first()
+                                )
+                            }
+                        }
+                }
+
             }
 
-            val classes = oneRosterDataSource.getAllClasses()
-
-            _uiState.update {
-                val sortOptions = listOf(
-                    SortOrderOption(
-                        Res.string.first_name,
-                        flag = 1,
-                        order = true
-                    ),
-                    SortOrderOption(
-                        Res.string.last_name,
-                        flag = 2,
-                        order = true
-                    )
-                )
-
-                it.copy(
-                    oneRoasterClass = classes,
-                    sortOptions = sortOptions,
-                    activeSortOrderOption = sortOptions.first()
-                )
-            }
 
         }
     }
@@ -92,18 +112,11 @@ class ClazzListViewModel(
             )
         )
     }
-    fun onClickAdd() {
-        {
-            _navCommandFlow.tryEmit(
-                NavCommand.Navigate(
-                    ClazzEdit.create(
-                        sourcedId = null,
-                        modeEdit = false
-                    )
-                )
-            )
-        }
-    }
 
+    fun onClickAdd() {
+        _navCommandFlow.tryEmit(
+            NavCommand.Navigate(ClazzEdit(sourcedId = null))
+        )
+    }
 }
 

@@ -6,12 +6,20 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.db.oneroster.entities.OneRosterClassEntity
+import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
 
 @Dao
 interface OneRoasterClassEntityDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(oneRosterClassEntity: OneRosterClassEntity)
+
+    @Query("""
+        DELETE FROM OneRosterClassEntity
+         WHERE classSourcedId = :sourcedId
+    """)
+    suspend fun deleteBySourcedId(sourcedId: String)
+
 
     @Query("SELECT * FROM OneRosterClassEntity")
     suspend fun getAllClasses(): List<OneRosterClassEntity>
@@ -23,7 +31,7 @@ interface OneRoasterClassEntityDao {
         WHERE classSourcedId = :sourcedId
     """
     )
-    suspend fun findClassBySourcedId(sourcedId: String): OneRosterClassEntity?
+    suspend fun findClassBySourcedId(sourcedId: String): OneRosterClassEntity
 
     @Query(
         """
@@ -33,5 +41,11 @@ interface OneRoasterClassEntityDao {
     """
     )
     fun findClassBySourcedIdAsFlow(sourcedId: String): Flow<OneRosterClassEntity?>
-
+    @Query("""
+        SELECT OneRosterClassEntity.classSourcedId AS sourcedId, 
+               OneRosterClassEntity.classTitle AS title, 
+               OneRosterClassEntity.classStatus AS status
+          FROM OneRosterClassEntity
+    """)
+    fun findAllListDetailsAsFlow(): Flow<List<ClazzListDetails>>
 }

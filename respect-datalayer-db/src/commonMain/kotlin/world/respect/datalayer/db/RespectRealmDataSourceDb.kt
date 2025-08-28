@@ -1,8 +1,10 @@
 package world.respect.datalayer.db
 
 import world.respect.datalayer.RespectRealmDataSourceLocal
+import world.respect.datalayer.db.oneroaster.OneRoasterDataSourceDb
 import world.respect.datalayer.db.realm.PersonDataSourceDb
-import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRoasterDataSourceLocal
+import world.respect.datalayer.oneroster.rostering.OneRosterDataSource
 import world.respect.datalayer.realm.PersonDataSourceLocal
 import world.respect.libxxhash.XXStringHasher
 
@@ -14,8 +16,7 @@ class RespectRealmDataSourceDb(
     override val personDataSource: PersonDataSourceLocal by lazy {
         PersonDataSourceDb(realmDb, xxStringHasher)
     }
-    override val onRoasterDataSource: OneRosterRosterDataSource
-        get() = TODO("Not yet implemented")
-
-
+    override val onRoasterDataSource: OneRosterDataSource by lazy {
+        OneRoasterDataSourceDb(realmDb, xxStringHasher)
+    }
 }

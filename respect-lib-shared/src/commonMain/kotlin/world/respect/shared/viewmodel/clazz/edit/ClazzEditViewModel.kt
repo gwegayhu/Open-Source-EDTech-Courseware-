@@ -9,13 +9,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.RespectRealmDataSource
-import world.respect.datalayer.oneroster.rostering.OneRosterRosterDataSource
+import world.respect.datalayer.oneroster.rostering.OneRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
@@ -27,11 +26,9 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
 import world.respect.shared.generated.resources.add_clazz
-import world.respect.shared.generated.resources.required
 import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.NavCommand
-import world.respect.shared.navigation.PersonDetail
 import world.respect.shared.util.LaunchDebouncer
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
@@ -55,7 +52,6 @@ data class ClazzEditUiState(
 class ClazzEditViewModel(
     savedStateHandle: SavedStateHandle,
     accountManager: RespectAccountManager,
-    private val oneRosterDataSource: OneRosterRosterDataSource,
     private val json: Json,
 ) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
@@ -79,10 +75,10 @@ class ClazzEditViewModel(
     init {
         _appUiState.update { prev ->
             prev.copy(
-                title = if (route.modeEdit) {
-                    Res.string.edit_clazz.asUiText()
-                } else {
+                title = if (route.sourcedId == null) {
                     Res.string.add_clazz.asUiText()
+                } else {
+                    Res.string.edit_clazz.asUiText()
                 },
                 userAccountIconVisible = false,
                 actionBarButtonState = ActionBarButtonUiState(
@@ -144,11 +140,13 @@ class ClazzEditViewModel(
                             ClazzDetail(sourcedId), popUpTo = route, popUpToInclusive = true
                         )
                     )
+                } else {
+                    _navCommandFlow.tryEmit(NavCommand.PopUp())
                 }
             } catch (e: Throwable) {
+                //needs to display snack bar here
 
             }
         }
     }
-
 }
