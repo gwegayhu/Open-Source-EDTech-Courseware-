@@ -2,10 +2,10 @@
 
 # Set environment variables
 DIRECTORY_URL="http://your-directory-url"
-REALM_URL="http://your-realm-url"
-REALM_NAME="your-realm-name"
-REALM_ADMIN_USER="your-admin-user"
-REALM_ADMIN_PASS="your-admin-pass"
+SCHOOL_URL="http://your-school-url"
+SCHOOL_NAME="your-realm-name"
+SCHOOL_ADMIN_USER="your-admin-user"
+SCHOOL_ADMIN_PASS="your-admin-pass"
 TESTCONTROLLER_URL="http://192.168.0.168:8075/"
 
 # Set the test folder path

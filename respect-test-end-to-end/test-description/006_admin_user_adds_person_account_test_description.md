@@ -1,7 +1,7 @@
 # A school admin can add classes in Respect App
 
 ## Description:
-A school admin want to add classes in Respect app,So that they can students and teachers to that class.
+As a teacher/admin,they want to add and manage people in the class or school so that I can  users easily.
 
 ## Step-by-step procedure:
 
@@ -9,31 +9,25 @@ A school admin want to add classes in Respect app,So that they can students and 
 2. Click on Other options.
 3. Enter the link provided by the school admin.
 4. Click on Next.
-5. Enter username in the User ID field.
+5. Enter admin's username in the User ID field.
 6. Enter password in the Password field.
 7. Click on Login.
 8. Verify the home screen is displayed with title Apps.
-9. Click on Classes.
-10. Verify the screen title is Classes.
-11. Click on the + Class floating action button.
-12. Verify the screen title is Add class.
-13. Enter a class name in the Class name field.
-14. Enter description in the Description field.
-15. Enter start date in the Start date field.
-16. Enter end date in the End date field.
-17. Click on Save.
-18. Verify the screen title is Classes.
-19. Verify the newly created class name is visible in the list.
-20. Click on the newly created class.
-21. Verify the screen title shows the class name.
-22. Click on the Edit floating action button.
-23. Verify the screen title is Edit class.
-24. Update the class name in the Class name field.
-25. Click on Save.
-26. Verify the updated class name is visible in the list.``
-27. Click on the updated class name.
-28. Verify Description is visible.
-29. Verify Start date is visible.
-30. Verify End date is visible.
-31. Verify Teachers section with + Add teacher is visible.
-32. Verify Students section with + Add student is visible.
+9. Click on People.
+10. Verify the screen title is People.
+11. Click on the + Person floating action button.
+12. Verify the screen title is Add person.
+13. Enter a First name in the First names field.
+14. Enter last name  in the Last name field.
+15. Select Gender in the Gender drop down.
+16. Click on Save.
+17. Verify the newly created person name is visible in the list.
+18. Click on the newly created person.
+19. Verify the screen title shows the person details name.
+20. Click on the Edit floating action button.
+21. Verify the screen title is Edit person.
+22. Update the first name in the person first name field.
+23. Click on Save.
+24. Verify the updated person name is visible in the list.
+25. Click on the updated person name.
+26. Verify the person details are visible.

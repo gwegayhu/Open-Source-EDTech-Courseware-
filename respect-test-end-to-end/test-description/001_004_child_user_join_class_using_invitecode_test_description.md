@@ -8,13 +8,25 @@ Admin Sends Invite Code, Child Creates Account, Admin Approves Child, and Child 
 # Part A: Admin sends invite code to student
 
 1. Launch the application as **Admin**.
-2. Log in with admin credentials.
-3. Navigate to **Classes**.
-4. Open *Class A*.
-5. Click on **+ Add student**.
-6. Select **Invite via code**.
-7. Generate an invite code.
-8. Share the invite code with the student.
+2. Tap on the **School name** field.
+3. Enter the school URL.
+4. Select the entered school URL from the list.
+5. Verify the screen title is **Login**.
+6. Tap on the **User ID** field and enter the username.
+7. Tap on the **Password** field and enter the password.
+8. Tap on the **Login** button.
+9. Navigate to **Classes**.
+10. Tap **+ Class**.
+11. Enter *Class Name* (e.g., *Class A*).
+12. Enter *Description*.
+13. Set *Start Date* and *End Date*.
+14. Tap **Save**.
+15. Verify *Class A* is created and listed in Classes.
+16. Open *Class A*.
+17. Click on **+ Add student**.
+18. Select **Invite via code**.
+19. Generate an invite code. 
+20. Share the invite code with the student.
 
 ---
 
@@ -51,19 +63,23 @@ Admin Sends Invite Code, Child Creates Account, Admin Approves Child, and Child 
 3. Navigate to **Classes**.
 4. Open *Class A*.
 5. Go to the **Students** section.
-6. Locate the pending approval request for the new student profile.
-7. Approve the request.
-8. Verify the student profile is added under the list of students in *Class A*.
-
+6. Pending requests to join Class A are displayed.
+7. Locate the pending approval request for the new child profile.
+8. Select the request and approve it.
+9. Verify the child profile is added under the list of students in *Class A*.
 ---
 
 # Part D: Student verifies access after approval
 
 1. Launch the application as **Student**.
-2. Log in with the student credentials created earlier.
-3. Navigate to **Classes**.
-4. Verify *Class A* is visible in the student’s class list.
-5. Open *Class A*.
-6. Verify the student profile is displayed under enrolled students.
-7. Verify the student can access class details, lessons, and announcements.
+2. Tap on the **School name** field.
+3. Enter the school URL.
+4. Select the entered school URL from the list.
+5. Log in with the child credentials created earlier.
+6. Navigate to **Classes**.
+7. Verify *Class A* is visible in the child’s class list.
+8. Open *Class A*.
+9. Verify the child profile is displayed under the enrolled students.
+
+
 
