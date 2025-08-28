@@ -28,9 +28,7 @@ fun OneRoasterClassEntities.toModel(): OneRosterClass {
 }
 
 @OptIn(ExperimentalTime::class)
-fun OneRosterClass.toEntities(
-    xxStringHasher: XXStringHasher
-): OneRoasterClassEntities {
+fun OneRosterClass.toEntities(): OneRoasterClassEntities {
     return OneRoasterClassEntities(
         oneRoasterClassEntity = OneRosterClassEntity(
             classSourcedId = sourcedId,

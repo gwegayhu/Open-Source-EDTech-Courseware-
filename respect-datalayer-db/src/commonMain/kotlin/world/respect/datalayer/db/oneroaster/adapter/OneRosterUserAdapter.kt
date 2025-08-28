@@ -54,9 +54,7 @@ fun OneRoasterUserEntities.toModel(): OneRosterUser {
         )
 }
 
-fun OneRosterUser.toEntities(
-    xxStringHasher: XXStringHasher
-): OneRoasterUserEntities {
+fun OneRosterUser.toEntities(): OneRoasterUserEntities {
     return OneRoasterUserEntities(
         oneRosterUserEntity = OneRosterUserEntity(
             userSourcedId = sourcedId,
