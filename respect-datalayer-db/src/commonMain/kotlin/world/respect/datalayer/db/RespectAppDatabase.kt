@@ -50,7 +50,7 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         CompatibleAppEntity::class,
         CompatibleAppAddJoin::class,
 
-        //schooldirectory
+        //SchoolDirectory
         SchoolDirectoryEntity::class,
         SchoolDirectoryEntryEntity::class,
         SchoolConfigEntity::class,

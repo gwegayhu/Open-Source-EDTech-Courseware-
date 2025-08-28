@@ -50,7 +50,7 @@ abstract class RespectViewModel(
         userSourcedId = "testacct",
         school = SchoolDirectoryEntry(
             name = LangMapStringValue("School"),
-            self = Url("https://example.org/respect-realm.json"),
+            self = Url("https://example.org/respect-school.json"),
             xapi = Url("https://example.org/xapi"),
             oneRoster = Url("https://example.org/oneroster"),
             respectExt = Url("https://example.org/respect-ext"),

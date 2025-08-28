@@ -8,7 +8,7 @@ import world.respect.libxxhash.XXStringHasher
 import kotlin.random.Random
 
 /**
- * Used on the server side: Create a RealmDirectoryEntity RESPECT Directory that is managed on this
+ * Used on the server side: Create a SchoolDirectoryEntity RESPECT Directory that is managed on this
  * server.
  */
 class AddServerManagedDirectoryCallback(
@@ -22,7 +22,7 @@ class AddServerManagedDirectoryCallback(
         )
 
         connection.execSQL("""
-            INSERT INTO RealmDirectoryEntity(rdUid, rdUrl, rdInvitePrefix) 
+            INSERT INTO SchoolDirectoryEntity(rdUid, rdUrl, rdInvitePrefix) 
             VALUES(
                 ${xxStringHasher.hash(RespectSchoolDirectory.SERVER_MANAGED_DIRECTORY_URL)},
                 '${RespectSchoolDirectory.SERVER_MANAGED_DIRECTORY_URL}',

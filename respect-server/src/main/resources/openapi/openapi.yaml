@@ -24,7 +24,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SchoolConfig"
+              $ref: "#/components/schemas/AddSchoolRequest"
 
       responses:
         '204':
@@ -111,7 +111,7 @@ components:
           type: string
           example: "https://schoolname.example.org/api/respect"
 
-    SchoolConfig:
+    AddSchoolRequest:
       type: object
       properties:
         school:

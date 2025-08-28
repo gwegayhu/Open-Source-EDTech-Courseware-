@@ -85,7 +85,7 @@ fun Application.module() {
         }
 
         route(".well-known") {
-            getRespectSchoolJson("respect-realm.json")
+            getRespectSchoolJson("respect-school.json")
         }
 
         swaggerUI(
