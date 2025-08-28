@@ -16,11 +16,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import net.sourceforge.argparse4j.inf.Namespace
 import world.respect.datalayer.opds.model.LangMapStringValue
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.libutil.ext.resolve
 import world.respect.libutil.ext.sanitizedForFilename
-import world.respect.server.domain.realm.add.AddRealmUseCase
-import world.respect.server.domain.realm.add.AddRealmUseCase.Companion.DEFAULT_ADMIN_USERNAME
+import world.respect.server.domain.school.add.AddSchoolUseCase
+import world.respect.server.domain.school.add.AddSchoolUseCase.Companion.DEFAULT_ADMIN_USERNAME
 import java.io.File
 import java.util.Properties
 import kotlin.system.exitProcess
@@ -60,22 +60,22 @@ fun managerServerMain(ns: Namespace) {
 
     runBlocking {
         when(ns.getString("subparser_name")) {
-            CMD_ADD_REALM -> {
-                val realmBaseUrl = Url(ns.getString("url"))
+            CMD_ADD_SCHOOL -> {
+                val schoolBaseUrl = Url(ns.getString("url"))
 
                 val response = httpClient.post(serverUrl.resolve("api/directory/admin/add-realm")) {
                     header(HttpHeaders.Authorization, authHeader)
                     contentType(ContentType.Application.Json)
                     setBody(
-                        AddRealmUseCase.AddRealmRequest(
-                            realm = RespectRealm(
+                        AddSchoolUseCase.AddSchoolRequest(
+                            school = SchoolDirectoryEntry(
                                 name = LangMapStringValue(ns.getString("name")),
-                                self = realmBaseUrl,
-                                xapi = realmBaseUrl.resolve("api/xapi"),
-                                oneRoster = realmBaseUrl.resolve("api/oneroster"),
-                                respectExt = realmBaseUrl.resolve("api/respect-ext"),
+                                self = schoolBaseUrl,
+                                xapi = schoolBaseUrl.resolve("api/xapi"),
+                                oneRoster = schoolBaseUrl.resolve("api/oneroster"),
+                                respectExt = schoolBaseUrl.resolve("api/respect-ext"),
                             ),
-                            dbUrl = ns.getString("dburl") ?: realmBaseUrl.sanitizedForFilename(),
+                            dbUrl = ns.getString("dburl") ?: schoolBaseUrl.sanitizedForFilename(),
                             adminUsername = ns.getString("adminusername") ?: DEFAULT_ADMIN_USERNAME,
                             adminPassword = ns.getString("adminpassword"),
                         )

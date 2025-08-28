@@ -5,10 +5,10 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import world.respect.datalayer.db.RespectRealmDatabase
-import world.respect.datalayer.db.realm.PersonDataSourceDb
-import world.respect.datalayer.db.realm.adapters.toEntities
-import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.db.RespectSchoolDatabase
+import world.respect.datalayer.db.school.PersonDataSourceDb
+import world.respect.datalayer.db.school.adapters.toEntities
+import world.respect.datalayer.school.model.Person
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.shared.domain.AuthenticatedUserPrincipalId
@@ -30,7 +30,7 @@ class AuthWithPasswordIntegrationTest {
     @Rule
     val temporaryFolder = TemporaryFolder()
 
-    private lateinit var realmDb: RespectRealmDatabase
+    private lateinit var schoolDb: RespectSchoolDatabase
 
     private lateinit var xxHash: XXStringHasher
 
@@ -51,17 +51,17 @@ class AuthWithPasswordIntegrationTest {
     @BeforeTest
     fun setup() {
         val dbDir = temporaryFolder.newFolder("dbdir")
-        realmDb = Room.databaseBuilder<RespectRealmDatabase>(
+        schoolDb = Room.databaseBuilder<RespectSchoolDatabase>(
             File(dbDir, "realm-test.db").absolutePath
         ).setDriver(BundledSQLiteDriver())
             .build()
         xxHash = XXStringHasherCommonJvm()
-        setPasswordUseCase = SetPasswordUseDbImpl(realmDb, xxHash)
+        setPasswordUseCase = SetPasswordUseDbImpl(schoolDb, xxHash)
         getTokenUseCase = GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
-            realmDb, xxHash, PersonDataSourceDb(realmDb, xxHash)
+            schoolDb, xxHash, PersonDataSourceDb(schoolDb, xxHash)
         )
 
-        validateAuthUseCase = ValidateAuthorizationUseCaseDbImpl(realmDb)
+        validateAuthUseCase = ValidateAuthorizationUseCaseDbImpl(schoolDb)
     }
 
     @Test
@@ -70,7 +70,7 @@ class AuthWithPasswordIntegrationTest {
             val personGuid = "42"
             val password = "password"
 
-            realmDb.getPersonEntityDao().insert(
+            schoolDb.getPersonEntityDao().insert(
                 defaultTestPerson.toEntities(xxHash).personEntity
             )
 
@@ -104,7 +104,7 @@ class AuthWithPasswordIntegrationTest {
             try {
                 val personGuid = "42"
                 val password = "password"
-                realmDb.getPersonEntityDao().insert(
+                schoolDb.getPersonEntityDao().insert(
                     defaultTestPerson.toEntities(xxHash).personEntity
                 )
 

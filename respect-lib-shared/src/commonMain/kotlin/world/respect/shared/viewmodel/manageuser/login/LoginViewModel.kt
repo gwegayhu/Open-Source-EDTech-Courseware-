@@ -132,7 +132,7 @@ class LoginViewModel(
             viewModelScope.launch {
                 try {
                     accountManager.login(
-                        username, password, route.realmUrl
+                        username, password, route.schoolUrl
                     )
 
                     _navCommandFlow.tryEmit(

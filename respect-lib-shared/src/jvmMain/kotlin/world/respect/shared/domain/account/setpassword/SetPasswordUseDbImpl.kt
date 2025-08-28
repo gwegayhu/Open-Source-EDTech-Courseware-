@@ -1,8 +1,8 @@
 package world.respect.shared.domain.account.setpassword
 
 import io.ktor.util.encodeBase64
-import world.respect.datalayer.db.RespectRealmDatabase
-import world.respect.datalayer.db.realm.entities.PersonPasswordEntity
+import world.respect.datalayer.db.RespectSchoolDatabase
+import world.respect.datalayer.db.school.entities.PersonPasswordEntity
 import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
 import world.respect.shared.domain.AuthenticatedUserPrincipalId
@@ -12,7 +12,7 @@ import javax.crypto.spec.PBEKeySpec
 import kotlin.text.toCharArray
 
 class SetPasswordUseDbImpl(
-    private val realmDb: RespectRealmDatabase,
+    private val schoolDb: RespectSchoolDatabase,
     private val xxHash: XXStringHasher,
 ): SetPasswordUseCase {
 
@@ -27,7 +27,7 @@ class SetPasswordUseDbImpl(
 
             val keyFactory = SecretKeyFactory.getInstance(KEY_ALGO)
 
-            realmDb.getPersonPasswordEntityDao().upsert(
+            schoolDb.getPersonPasswordEntityDao().upsert(
                 PersonPasswordEntity(
                     pppGuid = xxHash.hash(request.userGuid),
                     authAlgorithm = KEY_ALGO,

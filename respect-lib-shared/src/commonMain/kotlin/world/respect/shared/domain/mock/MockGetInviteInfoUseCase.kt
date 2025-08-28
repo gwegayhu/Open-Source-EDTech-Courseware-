@@ -1,7 +1,7 @@
 package world.respect.shared.domain.mock
 
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClassGUIDRef
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import com.eygraber.uri.Uri
@@ -12,7 +12,7 @@ class MockGetInviteInfoUseCase : GetInviteInfoUseCase {
     override suspend fun invoke(code: String): RespectInviteInfo {
         return RespectInviteInfo(
             code = code,
-            realm = RespectRealm(
+            school = SchoolDirectoryEntry(
                 name = LangMapStringValue("School"),
                 self = Url("https://example.org/respect-realm.json"),
                 xapi = Url("https://example.org/xapi"),

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "38e80447aafcd1b4a4bfb3d007aba188",
+    "identityHash": "d9acdceb7d9bff2f8bec9b683badc48d",
     "entities": [
       {
         "tableName": "LangMapEntity",
@@ -617,7 +617,7 @@
         }
       },
       {
-        "tableName": "RealmDirectoryEntity",
+        "tableName": "SchoolDirectoryEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rdUid` INTEGER NOT NULL, `rdUrl` TEXT NOT NULL, `rdInvitePrefix` TEXT NOT NULL, PRIMARY KEY(`rdUid`))",
         "fields": [
           {
@@ -647,7 +647,7 @@
         }
       },
       {
-        "tableName": "RealmEntity",
+        "tableName": "SchoolDirectoryEntryEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reUid` INTEGER NOT NULL, `reLastMod` INTEGER NOT NULL, `reEtag` TEXT, `reSelf` TEXT NOT NULL, `reXapi` TEXT NOT NULL, `reOneRoster` TEXT NOT NULL, `reRespectExt` TEXT, PRIMARY KEY(`reUid`))",
         "fields": [
           {
@@ -699,7 +699,7 @@
         }
       },
       {
-        "tableName": "RealmConfigEntity",
+        "tableName": "SchoolConfigEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rcUid` INTEGER NOT NULL, `dbUrl` TEXT NOT NULL, PRIMARY KEY(`rcUid`))",
         "fields": [
           {
@@ -725,7 +725,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38e80447aafcd1b4a4bfb3d007aba188')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd9acdceb7d9bff2f8bec9b683badc48d')"
     ]
   }
 }

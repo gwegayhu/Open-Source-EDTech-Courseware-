@@ -19,7 +19,7 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.opds.model.LangMapStringValue
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.NavResult
@@ -48,7 +48,7 @@ abstract class RespectViewModel(
     //Placeholder: will be provided via an AccountManager that will use multiplatform settings.
     protected val activeAccount = RespectAccount(
         userSourcedId = "testacct",
-        realm = RespectRealm(
+        school = SchoolDirectoryEntry(
             name = LangMapStringValue("School"),
             self = Url("https://example.org/respect-realm.json"),
             xapi = Url("https://example.org/xapi"),

@@ -19,8 +19,8 @@ import world.respect.Greeting
 import world.respect.libutil.ext.randomString
 import world.respect.server.routes.AUTH_CONFIG_DIRECTORY_ADMIN_BASIC
 import world.respect.server.routes.AuthRoute
-import world.respect.server.routes.RespectRealmDirectoryRoute
-import world.respect.server.routes.getRespectRealmJson
+import world.respect.server.routes.RespectSchoolDirectoryRoute
+import world.respect.server.routes.getRespectSchoolJson
 import java.io.File
 import java.util.Properties
 import io.ktor.server.plugins.swagger.*
@@ -85,7 +85,7 @@ fun Application.module() {
         }
 
         route(".well-known") {
-            getRespectRealmJson("respect-realm.json")
+            getRespectSchoolJson("respect-realm.json")
         }
 
         swaggerUI(
@@ -95,7 +95,7 @@ fun Application.module() {
 
         route("api") {
             route("directory") {
-                RespectRealmDirectoryRoute()
+                RespectSchoolDirectoryRoute()
             }
 
             route("realm") {

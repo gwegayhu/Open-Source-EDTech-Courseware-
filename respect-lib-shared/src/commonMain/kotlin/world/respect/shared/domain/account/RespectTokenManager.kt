@@ -4,7 +4,7 @@ import com.russhwolf.settings.Settings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.serialization.json.Json
-import world.respect.datalayer.realm.model.AuthToken
+import world.respect.datalayer.school.model.AuthToken
 import world.respect.datalayer.AuthTokenProvider
 
 /**

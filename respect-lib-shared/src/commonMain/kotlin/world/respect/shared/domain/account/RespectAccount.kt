@@ -1,7 +1,7 @@
 package world.respect.shared.domain.account
 
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 
 /**
  * Placeholder representing a user account (likely linked to an upstream xAPI and OneRoster server)
@@ -11,13 +11,13 @@ import world.respect.datalayer.respect.model.RespectRealm
 @Serializable
 data class RespectAccount(
     val userSourcedId: String,
-    val realm: RespectRealm,
+    val school: SchoolDirectoryEntry,
 ) {
 
     /**
      * The ScopeId to use for dependency injection - always the userSourcedId@realmUrl
      */
     val scopeId: String
-        get() = "$userSourcedId@${realm.self}"
+        get() = "$userSourcedId@${school.self}"
 
 }

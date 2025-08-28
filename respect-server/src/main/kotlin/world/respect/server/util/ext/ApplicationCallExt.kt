@@ -14,7 +14,7 @@ import io.ktor.util.date.GMTDate
 import org.koin.core.scope.Scope
 import org.koin.ktor.ext.getKoin
 import world.respect.datalayer.DataReadyState
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 
 /**
  * The virtual host being used. Used on the server to scope dependencies.
@@ -26,8 +26,8 @@ val ApplicationCall.virtualHost: Url
  * Respect Realms are handled using virtual hosting e.g. by subdomains. - see
  * AppKoinModule.
  */
-fun ApplicationCall.getRealmKoinScope(): Scope {
-    return getKoin().getOrCreateScope<RespectRealm>(virtualHost.toString())
+fun ApplicationCall.getSchoolKoinScope(): Scope {
+    return getKoin().getOrCreateScope<SchoolDirectoryEntry>(virtualHost.toString())
 }
 
 /**

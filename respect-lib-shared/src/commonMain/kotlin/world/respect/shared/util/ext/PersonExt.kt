@@ -1,6 +1,6 @@
 package world.respect.shared.util.ext
 
-import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.school.model.Person
 
 fun Person.fullName(): String = buildString {
     append(givenName)

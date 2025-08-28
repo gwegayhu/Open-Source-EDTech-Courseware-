@@ -22,12 +22,12 @@ import world.respect.datalayer.db.opds.entities.OpdsGroupEntity
 import world.respect.datalayer.db.opds.entities.OpdsPublicationEntity
 import world.respect.datalayer.db.opds.entities.ReadiumLinkEntity
 import world.respect.datalayer.db.opds.entities.ReadiumSubjectEntity
-import world.respect.datalayer.db.realmdirectory.daos.RealmConfigEntityDao
-import world.respect.datalayer.db.realmdirectory.daos.RealmDirectoryEntityDao
-import world.respect.datalayer.db.realmdirectory.daos.RealmEntityDao
-import world.respect.datalayer.db.realmdirectory.entities.RealmConfigEntity
-import world.respect.datalayer.db.realmdirectory.entities.RealmDirectoryEntity
-import world.respect.datalayer.db.realmdirectory.entities.RealmEntity
+import world.respect.datalayer.db.schooldirectory.daos.SchoolConfigEntityDao
+import world.respect.datalayer.db.schooldirectory.daos.SchoolDirectoryEntityDao
+import world.respect.datalayer.db.schooldirectory.daos.SchoolDirectoryEntryEntityDao
+import world.respect.datalayer.db.schooldirectory.entities.SchoolConfigEntity
+import world.respect.datalayer.db.schooldirectory.entities.SchoolDirectoryEntity
+import world.respect.datalayer.db.schooldirectory.entities.SchoolDirectoryEntryEntity
 import world.respect.datalayer.db.shared.SharedConverters
 import world.respect.datalayer.db.shared.daos.LangMapEntityDao
 import world.respect.datalayer.db.shared.entities.LangMapEntity
@@ -50,10 +50,10 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         CompatibleAppEntity::class,
         CompatibleAppAddJoin::class,
 
-        //realmdirectory
-        RealmDirectoryEntity::class,
-        RealmEntity::class,
-        RealmConfigEntity::class,
+        //schooldirectory
+        SchoolDirectoryEntity::class,
+        SchoolDirectoryEntryEntity::class,
+        SchoolConfigEntity::class,
     ],
     version = 1,
 )
@@ -77,11 +77,11 @@ abstract class RespectAppDatabase: RoomDatabase() {
 
     abstract fun getOpdsGroupEntityDao(): OpdsGroupEntityDao
 
-    abstract fun getRealmEntityDao(): RealmEntityDao
+    abstract fun getSchoolEntityDao(): SchoolDirectoryEntryEntityDao
 
-    abstract fun getRealmConfigEntityDao(): RealmConfigEntityDao
+    abstract fun getSchoolConfigEntityDao(): SchoolConfigEntityDao
 
-    abstract fun getRealmDirectoryEntityDao(): RealmDirectoryEntityDao
+    abstract fun getSchoolDirectoryEntityDao(): SchoolDirectoryEntityDao
 
     companion object {
 

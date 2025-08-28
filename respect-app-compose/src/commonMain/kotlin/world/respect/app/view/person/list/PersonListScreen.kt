@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import world.respect.app.components.RespectPersonAvatar
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.realm.model.composites.PersonListDetails
+import world.respect.datalayer.school.model.composites.PersonListDetails
 import world.respect.shared.util.ext.fullName
 import world.respect.shared.viewmodel.person.list.PersonListUiState
 import world.respect.shared.viewmodel.person.list.PersonListViewModel
