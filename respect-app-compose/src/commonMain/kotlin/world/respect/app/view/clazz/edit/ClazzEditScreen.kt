@@ -22,8 +22,6 @@ import world.respect.shared.viewmodel.clazz.edit.ClazzEditUiState
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.shared.generated.resources.required
-import kotlin.time.ExperimentalTime
-
 
 @Composable
 fun ClazzEditScreen(

@@ -13,7 +13,6 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.RespectRealmDataSource
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
