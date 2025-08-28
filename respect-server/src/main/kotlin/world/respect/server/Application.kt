@@ -1,12 +1,14 @@
 package world.respect.server
 
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.basic
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
@@ -21,6 +23,7 @@ import world.respect.server.routes.RespectRealmDirectoryRoute
 import world.respect.server.routes.getRespectRealmJson
 import java.io.File
 import java.util.Properties
+import io.ktor.server.plugins.swagger.*
 
 @Suppress("unused") // Used via application.conf
 fun Application.module() {
@@ -70,6 +73,12 @@ fun Application.module() {
     }
 
 
+    //As per https://ktor.io/docs/server-swagger-ui.html#configure-cors
+    install(CORS) {
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+    }
+
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
@@ -78,6 +87,11 @@ fun Application.module() {
         route(".well-known") {
             getRespectRealmJson("respect-realm.json")
         }
+
+        swaggerUI(
+            path = "swagger",
+            swaggerFile = "openapi/openapi.yaml",
+        )
 
         route("api") {
             route("directory") {
