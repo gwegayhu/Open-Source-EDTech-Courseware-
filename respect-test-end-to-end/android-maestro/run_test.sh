@@ -3,7 +3,7 @@
 # Set environment variables
 DIRECTORY_URL="http://your-directory-url"
 SCHOOL_URL="http://your-school-url"
-SCHOOL_NAME="your-realm-name"
+SCHOOL_NAME="your-school-name"
 SCHOOL_ADMIN_USER="your-admin-user"
 SCHOOL_ADMIN_PASS="your-admin-pass"
 TESTCONTROLLER_URL="http://your-school-url"
@@ -22,8 +22,8 @@ fi
 # Run Maestro with environment variables
 maestro test "$TEST_TARGET" \
   -e DIRECTORY_URL="$DIRECTORY_URL" \
-  -e REALM_URL="$REALM_URL" \
-  -e REALM_NAME="$REALM_NAME" \
-  -e REALM_ADMIN_USER="$REALM_ADMIN_USER" \
-  -e REALM_ADMIN_PASS="$REALM_ADMIN_PASS" \
+  -e SCHOOL_URL="$SCHOOL_URL" \
+  -e SCHOOL_NAME="$SCHOOL_NAME" \
+  -e SCHOOL_ADMIN_USER="$SCHOOL_ADMIN_USER" \
+  -e SCHOOL_ADMIN_PASS="$SCHOOL_ADMIN_PASS" \
   -e TESTCONTROLLER_URL="$TESTCONTROLLER_URL"
