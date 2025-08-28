@@ -34,7 +34,7 @@ cd respect-test-end-to-end/android-maestro
 
 1.3 [Parent user joins class using invite code](test-description/001_003_Parent_user_join_class_using_invitecode_test_description.md)
 
-1.4 [Child user joins class using invite code](test-description/001_004_child_user_join_class_using_invitecode_test_description.md)]
+1.4 [Child user joins class using invite code](test-description/001_004_child_user_join_class_using_invitecode_test_description.md)
 
 ### 2 : Apps
 

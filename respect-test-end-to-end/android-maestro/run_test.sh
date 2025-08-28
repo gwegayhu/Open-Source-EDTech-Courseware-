@@ -6,7 +6,7 @@ SCHOOL_URL="http://your-school-url"
 SCHOOL_NAME="your-realm-name"
 SCHOOL_ADMIN_USER="your-admin-user"
 SCHOOL_ADMIN_PASS="your-admin-pass"
-TESTCONTROLLER_URL="http://192.168.0.168:8075/"
+TESTCONTROLLER_URL="http://your-school-url"
 
 # Set the test folder path
 TEST_FOLDER="e2e-tests"
