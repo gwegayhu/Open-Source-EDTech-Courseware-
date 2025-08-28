@@ -3,7 +3,7 @@ package world.respect.datalayer.repository.oneroaster
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
-import world.respect.datalayer.oneroster.rostering.OneRoasterDataSourceLocal
+import world.respect.datalayer.oneroster.rostering.OneRosterDataSourceLocal
 import world.respect.datalayer.oneroster.rostering.OneRosterDataSource
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
@@ -11,7 +11,7 @@ import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
 
 class OneRoasterSourceRepository(
-    private val local: OneRoasterDataSourceLocal,
+    private val local: OneRosterDataSourceLocal,
     private val remote: OneRosterDataSource,
 ) :OneRosterDataSource{
     override suspend fun getAllUsers(): List<OneRosterUser> {

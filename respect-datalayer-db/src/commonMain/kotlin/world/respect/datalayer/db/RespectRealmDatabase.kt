@@ -5,7 +5,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
-import world.respect.datalayer.db.oneroaster.dao.OneRoasterClassEntityDao
+import world.respect.datalayer.db.oneroaster.dao.OneRoasterEntityDao
+import world.respect.datalayer.db.oneroaster.entities.OneRosterUserEntity
 import world.respect.datalayer.db.oneroster.entities.OneRosterClassEntity
 import world.respect.datalayer.db.realm.RealmTypeConverters
 import world.respect.datalayer.db.realm.daos.AuthTokenEntityDao
@@ -28,6 +29,7 @@ import world.respect.datalayer.db.shared.SharedConverters
         PersonPasswordEntity::class,
         AuthTokenEntity::class,
         OneRosterClassEntity::class,
+        OneRosterUserEntity::class,
     ],
     version = 1,
 
@@ -44,7 +46,7 @@ abstract class RespectRealmDatabase : RoomDatabase() {
 
     abstract fun getPersonRoleEntityDao(): PersonRoleEntityDao
 
-    abstract fun getOneRoasterClassEntityDao(): OneRoasterClassEntityDao
+    abstract fun getOneRoasterEntityDao(): OneRoasterEntityDao
 
 }
 

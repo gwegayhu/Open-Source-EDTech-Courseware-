@@ -9,7 +9,8 @@ import world.respect.datalayer.db.compatibleapps.daos.CompatibleAppAddJoinDao
 import world.respect.datalayer.db.compatibleapps.daos.CompatibleAppEntityDao
 import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppAddJoin
 import world.respect.datalayer.db.compatibleapps.entities.CompatibleAppEntity
-import world.respect.datalayer.db.oneroaster.dao.OneRoasterClassEntityDao
+import world.respect.datalayer.db.oneroaster.dao.OneRoasterEntityDao
+import world.respect.datalayer.db.oneroaster.entities.OneRosterUserEntity
 import world.respect.datalayer.db.oneroster.entities.OneRosterClassEntity
 import world.respect.datalayer.db.opds.OpdsTypeConverters
 import world.respect.datalayer.db.opds.daos.OpdsFeedEntityDao
@@ -58,12 +59,13 @@ import world.respect.datalayer.db.shared.entities.LangMapEntity
         RealmConfigEntity::class,
 
         OneRosterClassEntity::class,
+        OneRosterUserEntity::class
     ],
     version = 1,
 )
 @TypeConverters(SharedConverters::class, OpdsTypeConverters::class)
 @ConstructedBy(RespectAppDatabaseConstructor::class)
-abstract class RespectAppDatabase: RoomDatabase() {
+abstract class RespectAppDatabase : RoomDatabase() {
 
     abstract fun getCompatibleAppEntityDao(): CompatibleAppEntityDao
 
@@ -87,7 +89,7 @@ abstract class RespectAppDatabase: RoomDatabase() {
 
     abstract fun getRealmDirectoryEntityDao(): RealmDirectoryEntityDao
 
-    abstract fun getOneRoasterClassEntityDao(): OneRoasterClassEntityDao
+    abstract fun getOneRoasterClassEntityDao(): OneRoasterEntityDao
 
 
     companion object {
@@ -104,7 +106,8 @@ abstract class RespectAppDatabase: RoomDatabase() {
 }
 
 // The Room compiler generates the `actual` implementations.
-@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING",
+@Suppress(
+    "NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING",
     "KotlinNoActualForExpect"
 )
 expect object RespectAppDatabaseConstructor : RoomDatabaseConstructor<RespectAppDatabase> {

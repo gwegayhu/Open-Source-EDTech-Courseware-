@@ -7,32 +7,39 @@ import kotlinx.coroutines.flow.map
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.RespectRealmDatabase
 import world.respect.datalayer.db.oneroaster.adapter.OneRoasterClassEntities
+import world.respect.datalayer.db.oneroaster.adapter.OneRoasterUserEntities
 import world.respect.datalayer.db.oneroaster.adapter.toEntities
 import world.respect.datalayer.db.oneroaster.adapter.toModel
-import world.respect.datalayer.oneroster.rostering.OneRoasterDataSourceLocal
+import world.respect.datalayer.oneroster.rostering.OneRosterDataSourceLocal
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
 import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
 import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
 import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
 import world.respect.libxxhash.XXStringHasher
 
-class OneRoasterDataSourceDb(
+class OneRosterDataSourceDb(
     private val realmDb: RespectRealmDatabase,
     private val xxHash: XXStringHasher,
-) : OneRoasterDataSourceLocal {
+) : OneRosterDataSourceLocal {
 
     override suspend fun getAllUsers(): List<OneRosterUser> {
-        TODO("Not yet implemented")
+        return realmDb.getOneRoasterEntityDao().getAllUsers().map {
+            OneRoasterUserEntities(it).toModel()
+        }
     }
+
 
     override suspend fun putUser(user: OneRosterUser) {
         TODO("Not yet implemented")
     }
 
     override suspend fun getAllClasses(): List<OneRosterClass> {
-        TODO("Not yet implemented")
+        return realmDb.getOneRoasterEntityDao()
+            .getAllClasses()
+            .map { OneRoasterClassEntities(it).toModel() }
     }
 
     override suspend fun getClassBySourcedId(sourcedId: String): OneRosterClass {
@@ -43,13 +50,20 @@ class OneRoasterDataSourceDb(
         loadParams: DataLoadParams,
         sourcedId: String
     ): DataLoadState<OneRosterClass> {
-        return realmDb.getOneRoasterClassEntityDao().findClassBySourcedId(sourcedId).let {
+        return realmDb.getOneRoasterEntityDao().findClassBySourcedId(sourcedId).let {
             OneRoasterClassEntities(it)
         }.toModel().let { DataReadyState(it) }
     }
 
-    override suspend fun findClassBySourcedIdAsFlow(guid: String): Flow<DataLoadState<OneRosterClass>> {
-        TODO("Not yet implemented")
+    override suspend fun findClassBySourcedIdAsFlow(sourcedId: String): Flow<DataLoadState<OneRosterClass>> {
+        return realmDb.getOneRoasterEntityDao().findClassBySourcedIdAsFlow(sourcedId = sourcedId)
+            .map { oneRosterClassEntity ->
+                if (oneRosterClassEntity != null) {
+                    DataReadyState(OneRoasterClassEntities(oneRosterClassEntity).toModel())
+                } else {
+                    NoDataLoadedState(NoDataLoadedState.Reason.NOT_FOUND)
+                }
+            }
     }
 
     override suspend fun putClass(clazz: OneRosterClass) {
@@ -57,7 +71,7 @@ class OneRoasterDataSourceDb(
 
         realmDb.useWriterConnection { con ->
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                realmDb.getOneRoasterClassEntityDao().insert(entities.oneRoasterClassEntity)
+                realmDb.getOneRoasterEntityDao().insert(entities.oneRoasterClassEntity)
             }
         }
     }
@@ -74,7 +88,7 @@ class OneRoasterDataSourceDb(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): Flow<DataLoadState<List<ClazzListDetails>>> {
-        return realmDb.getOneRoasterClassEntityDao().findAllListDetailsAsFlow().map {
+        return realmDb.getOneRoasterEntityDao().findAllListDetailsAsFlow().map {
             DataReadyState(it)
         }
     }
