@@ -1,6 +1,6 @@
 package world.respect.datalayer
 
-import world.respect.datalayer.oneroster.rostering.OneRosterDataSource
+import world.respect.datalayer.oneroster.OneRosterDataSource
 import world.respect.datalayer.realm.PersonDataSource
 
 /**

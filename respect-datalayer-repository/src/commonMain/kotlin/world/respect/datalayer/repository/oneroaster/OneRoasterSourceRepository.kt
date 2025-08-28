@@ -3,12 +3,12 @@ package world.respect.datalayer.repository.oneroaster
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
-import world.respect.datalayer.oneroster.rostering.OneRosterDataSourceLocal
-import world.respect.datalayer.oneroster.rostering.OneRosterDataSource
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
-import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
-import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
+import world.respect.datalayer.oneroster.OneRosterDataSourceLocal
+import world.respect.datalayer.oneroster.OneRosterDataSource
+import world.respect.datalayer.oneroster.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterEnrollment
+import world.respect.datalayer.oneroster.model.OneRosterUser
+import world.respect.datalayer.oneroster.composites.ClazzListDetails
 
 class OneRoasterSourceRepository(
     private val local: OneRosterDataSourceLocal,

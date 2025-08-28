@@ -14,7 +14,7 @@ import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.RespectRealmDataSource
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.ext.dataOrNull

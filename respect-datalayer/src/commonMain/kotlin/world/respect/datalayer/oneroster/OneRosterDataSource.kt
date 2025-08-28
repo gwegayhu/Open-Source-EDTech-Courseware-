@@ -1,12 +1,12 @@
-package world.respect.datalayer.oneroster.rostering
+package world.respect.datalayer.oneroster
 
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
-import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
-import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
+import world.respect.datalayer.oneroster.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterEnrollment
+import world.respect.datalayer.oneroster.model.OneRosterUser
+import world.respect.datalayer.oneroster.composites.ClazzListDetails
 
 interface OneRosterDataSource {
 

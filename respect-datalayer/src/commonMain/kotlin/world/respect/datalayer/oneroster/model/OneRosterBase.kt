@@ -1,4 +1,4 @@
-package world.respect.datalayer.oneroster.rostering.model
+package world.respect.datalayer.oneroster.model
 
 import kotlinx.serialization.json.JsonObject
 import kotlin.time.ExperimentalTime

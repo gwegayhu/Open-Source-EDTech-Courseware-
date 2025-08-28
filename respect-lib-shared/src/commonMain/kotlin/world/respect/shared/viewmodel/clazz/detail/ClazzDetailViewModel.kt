@@ -15,9 +15,9 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
-import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
+import world.respect.datalayer.oneroster.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
+import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.first_name

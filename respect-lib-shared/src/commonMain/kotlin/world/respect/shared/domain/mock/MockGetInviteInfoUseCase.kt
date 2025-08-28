@@ -1,6 +1,6 @@
 package world.respect.shared.domain.mock
 
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClassGUIDRef
+import world.respect.datalayer.oneroster.model.OneRosterClassGUIDRef
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.domain.account.invite.GetInviteInfoUseCase

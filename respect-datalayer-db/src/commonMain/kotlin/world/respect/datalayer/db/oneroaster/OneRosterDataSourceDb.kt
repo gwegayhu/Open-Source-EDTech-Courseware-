@@ -13,11 +13,11 @@ import world.respect.datalayer.db.oneroaster.adapter.OneRoasterClassEntities
 import world.respect.datalayer.db.oneroaster.adapter.OneRoasterUserEntities
 import world.respect.datalayer.db.oneroaster.adapter.toEntities
 import world.respect.datalayer.db.oneroaster.adapter.toModel
-import world.respect.datalayer.oneroster.rostering.OneRosterDataSourceLocal
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
-import world.respect.datalayer.oneroster.rostering.model.OneRosterEnrollment
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
-import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
+import world.respect.datalayer.oneroster.OneRosterDataSourceLocal
+import world.respect.datalayer.oneroster.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterEnrollment
+import world.respect.datalayer.oneroster.model.OneRosterUser
+import world.respect.datalayer.oneroster.composites.ClazzListDetails
 import world.respect.libxxhash.XXStringHasher
 
 class OneRosterDataSourceDb(

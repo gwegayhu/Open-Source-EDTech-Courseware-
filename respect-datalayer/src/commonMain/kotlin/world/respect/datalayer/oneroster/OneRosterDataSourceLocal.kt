@@ -1,4 +1,4 @@
-package world.respect.datalayer.oneroster.rostering
+package world.respect.datalayer.oneroster
 
 interface OneRosterDataSourceLocal : OneRosterDataSource{
 }

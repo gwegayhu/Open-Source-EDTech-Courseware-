@@ -26,8 +26,8 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectFilterChipsHeader
 import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
-import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
+import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
+import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student

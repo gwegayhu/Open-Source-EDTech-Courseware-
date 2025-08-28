@@ -1,9 +1,10 @@
 package world.respect.datalayer.db.oneroaster.adapter
 
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import world.respect.datalayer.db.oneroster.entities.OneRosterClassEntity
-import world.respect.datalayer.oneroster.rostering.model.OneRosterBaseStatusEnum
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterBaseStatusEnum
+import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.libxxhash.XXStringHasher
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -22,7 +23,7 @@ fun OneRoasterClassEntities.toModel(): OneRosterClass {
         title=oneRoasterClassEntity.classTitle,
         location = oneRoasterClassEntity.classLocation,
         metadata = oneRoasterClassEntity.classMetadata?.let {
-            kotlinx.serialization.json.Json.parseToJsonElement(it).jsonObject
+            Json.parseToJsonElement(it).jsonObject
         }
     )
 }

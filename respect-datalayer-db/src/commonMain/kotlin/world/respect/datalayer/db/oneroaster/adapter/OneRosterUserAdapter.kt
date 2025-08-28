@@ -2,15 +2,15 @@ package world.respect.datalayer.db.oneroaster.adapter
 
 import kotlinx.serialization.json.jsonObject
 import world.respect.datalayer.db.oneroaster.entities.OneRosterUserEntity
-import world.respect.datalayer.oneroster.rostering.model.OneRosterBaseStatusEnum
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUser
+import world.respect.datalayer.oneroster.model.OneRosterBaseStatusEnum
+import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.libxxhash.XXStringHasher
 import kotlin.time.Instant
 import kotlinx.serialization.json.Json
-import world.respect.datalayer.oneroster.rostering.model.OneRosterResourceGUIDRef
-import world.respect.datalayer.oneroster.rostering.model.OneRosterRole
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUserId
-import world.respect.datalayer.oneroster.rostering.model.OneRosterUserProfile
+import world.respect.datalayer.oneroster.model.OneRosterResourceGUIDRef
+import world.respect.datalayer.oneroster.model.OneRosterRole
+import world.respect.datalayer.oneroster.model.OneRosterUserId
+import world.respect.datalayer.oneroster.model.OneRosterUserProfile
 
 
 data class OneRoasterUserEntities(

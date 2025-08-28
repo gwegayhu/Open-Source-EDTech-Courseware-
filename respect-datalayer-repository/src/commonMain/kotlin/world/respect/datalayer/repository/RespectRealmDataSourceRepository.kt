@@ -2,7 +2,7 @@ package world.respect.datalayer.repository
 
 import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.RespectRealmDataSourceLocal
-import world.respect.datalayer.oneroster.rostering.OneRosterDataSource
+import world.respect.datalayer.oneroster.OneRosterDataSource
 import world.respect.datalayer.realm.PersonDataSource
 
 class RespectRealmDataSourceRepository(

@@ -20,7 +20,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.class_name_label
 import world.respect.shared.viewmodel.clazz.edit.ClazzEditUiState
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.shared.generated.resources.required
 
 @Composable

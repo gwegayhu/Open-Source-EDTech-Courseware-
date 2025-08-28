@@ -1,4 +1,4 @@
-package world.respect.datalayer.oneroster.rostering.model
+package world.respect.datalayer.oneroster.model
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName

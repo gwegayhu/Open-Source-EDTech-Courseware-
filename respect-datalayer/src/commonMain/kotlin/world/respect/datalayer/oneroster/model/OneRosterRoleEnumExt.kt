@@ -1,4 +1,4 @@
-package world.respect.datalayer.oneroster.rostering.model
+package world.respect.datalayer.oneroster.model
 
 /**
  * See OneRoster spec 6.4.5

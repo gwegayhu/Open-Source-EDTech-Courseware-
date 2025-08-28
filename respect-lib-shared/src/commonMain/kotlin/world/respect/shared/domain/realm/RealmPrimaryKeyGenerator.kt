@@ -1,6 +1,6 @@
 package world.respect.shared.domain.realm
 
-import world.respect.datalayer.oneroster.rostering.model.OneRosterClass
+import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.realm.model.Person
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 

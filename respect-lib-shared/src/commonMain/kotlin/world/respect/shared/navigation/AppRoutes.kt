@@ -7,7 +7,7 @@ import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
-import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
+import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 

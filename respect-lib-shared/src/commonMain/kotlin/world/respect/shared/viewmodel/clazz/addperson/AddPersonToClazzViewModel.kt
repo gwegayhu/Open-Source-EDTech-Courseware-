@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.datalayer.oneroster.rostering.model.OneRosterRoleEnum
+import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.generated.resources.add_student

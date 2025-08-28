@@ -1,4 +1,4 @@
-package world.respect.datalayer.oneroster.rostering.model.composites
+package world.respect.datalayer.oneroster.composites
 
 data class ClazzListDetails(
     val sourcedId: String,

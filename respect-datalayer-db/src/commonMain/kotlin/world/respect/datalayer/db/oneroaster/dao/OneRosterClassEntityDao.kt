@@ -7,7 +7,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.db.oneroaster.entities.OneRosterUserEntity
 import world.respect.datalayer.db.oneroster.entities.OneRosterClassEntity
-import world.respect.datalayer.oneroster.rostering.model.composites.ClazzListDetails
+import world.respect.datalayer.oneroster.composites.ClazzListDetails
 
 @Dao
 interface OneRoasterEntityDao {
