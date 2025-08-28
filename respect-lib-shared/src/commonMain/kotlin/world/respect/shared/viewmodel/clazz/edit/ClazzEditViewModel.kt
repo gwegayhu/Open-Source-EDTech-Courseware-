@@ -25,6 +25,7 @@ import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
 import world.respect.shared.generated.resources.add_clazz
+import world.respect.shared.generated.resources.required
 import world.respect.shared.navigation.ClazzDetail
 import world.respect.shared.navigation.ClazzEdit
 import world.respect.shared.navigation.NavCommand
@@ -37,12 +38,9 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 data class ClazzEditUiState(
-    val entity: OneRosterClass? = null,
     val clazzNameError: String? = null,
-
     val clazz: DataLoadState<OneRosterClass> = DataLoadingState(),
-
-    ) {
+) {
     val fieldsEnabled: Boolean
         get() = clazz.isReadyAndSettled()
 }
@@ -130,6 +128,15 @@ class ClazzEditViewModel(
     @OptIn(ExperimentalTime::class)
     fun onClickSave() {
         val clazz = _uiState.value.clazz.dataOrNull() ?: return
+        if (clazz.title.isBlank()) {
+            _uiState.update { prev ->
+                prev.copy(clazzNameError = Res.string.required.asUiText().toString()) // or a hardcoded "Required"
+            }
+            return
+        } else {
+            _uiState.update { prev -> prev.copy(clazzNameError = null) }
+        }
+
         viewModelScope.launch {
             try {
                 realmDataSource.onRoasterDataSource.putClass(clazz)
@@ -148,4 +155,8 @@ class ClazzEditViewModel(
             }
         }
     }
+    fun onClearError() {
+        _uiState.update { prev -> prev.copy(clazzNameError = null) }
+    }
+
 }

@@ -31,6 +31,7 @@ fun ClazzEditScreen(
     ClazzEditScreen(
         uiState = uiState,
         onEntityChanged = viewModel::onEntityChanged,
+        onClearError = { viewModel.onClearError() }
     )
 }
 
@@ -38,6 +39,7 @@ fun ClazzEditScreen(
 fun ClazzEditScreen(
     uiState: ClazzEditUiState,
     onEntityChanged: (OneRosterClass) -> Unit = {},
+    onClearError: () -> Unit = {},
 ) {
 
     val clazz = uiState.clazz.dataOrNull()
@@ -60,12 +62,16 @@ fun ClazzEditScreen(
                 clazz?.also {
                     onEntityChanged(it.copy(title = value))
                 }
+                if (uiState.clazzNameError != null && value.isNotBlank()) {
+                    onClearError()
+                }
             },
             singleLine = true,
             supportingText = {
                 Text(stringResource(Res.string.required))
             },
-            enabled=fieldsEnabled
+            enabled=fieldsEnabled,
+            isError = uiState.clazzNameError != null
         )
         /**Description field needed**/
 
