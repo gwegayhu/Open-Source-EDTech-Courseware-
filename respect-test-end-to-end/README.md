@@ -28,9 +28,9 @@ cd respect-test-end-to-end/android-maestro
 
 ### 1 : Login to Respect
 
-1.1 [User Can Login to Respect App with school name](test-description/001_001_user_login_to _app_with_school_name_test_description.md)
+1.1 [User Can Login to Respect App with school name](test-description/001_001_user_login_to_app_with_school_name_test_description.md)
 
-1.2 [User Can Login to Respect App with school link provided by admin](test-description/001_002_user_login_to _app_with_school_link_provided_by_admin_test_description.md)
+1.2 [User Can Login to Respect App with school link provided by admin](test-description/001_002_user_login_to_app_with_school_link_provided_by_admin_test_description.md)
 
 1.3 [Parent user joins class using invite code](test-description/001_003_Parent_user_join_class_using_invitecode_test_description.md)
 
