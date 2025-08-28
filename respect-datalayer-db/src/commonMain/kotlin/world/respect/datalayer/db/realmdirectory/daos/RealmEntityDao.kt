@@ -19,4 +19,6 @@ interface RealmEntityDao {
     """)
     suspend fun findByUid(uid: Long): RealmEntity?
 
+    @Query("SELECT * FROM RealmEntity WHERE reUid IN (:uids)")
+    suspend fun findByUids(uids: List<Long>): List<RealmEntity>
 }

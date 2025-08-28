@@ -1,11 +1,15 @@
 package world.respect.shared.viewmodel.manageuser.getstarted
 
 import androidx.lifecycle.SavedStateHandle
-import io.ktor.http.Url
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import world.respect.datalayer.opds.model.LangMapStringValue
+import world.respect.datalayer.DataErrorResult
+import world.respect.datalayer.DataLoadingState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.lets_get_started
@@ -15,22 +19,19 @@ import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.OtherOption
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.util.LaunchDebouncer
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
 
 class GetStartedViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    val respectAppDataSource: RespectAppDataSource
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(GetStartedUiState())
     val uiState = _uiState.asStateFlow()
-    private val schoolList = listOf(
-        buildSchool("respect school", "ustadtesting.ustadmobile.com"),
-        buildSchool("respect 2 school", "respect2.com"),
-        buildSchool("spix school", "spix.com"),
-        buildSchool("ustad school", "ustad.com")
-    )
+    private val debouncer = LaunchDebouncer(viewModelScope)
 
     init {
         _appUiState.update { prev ->
@@ -44,20 +45,44 @@ class GetStartedViewModel(
     }
 
     fun onSchoolNameChanged(name: String) {
-        val suggestions = if (name.isBlank()) {
-            emptyList()
-        } else {
-            schoolList.filter { it.name.contains(name, ignoreCase = true) }
+        _uiState.update { it.copy(schoolName = name) }
+
+        if (name.isBlank()) {
+            _uiState.update { it.copy(suggestions = emptyList(), errorMessage = null, showButtons = true) }
+            return
         }
 
-        _uiState.update {
-            it.copy(
-                schoolName = name,
-                errorMessage = if (suggestions.isEmpty())
-                    StringResourceUiText(Res.string.school_not_exist_error) else null,
-                suggestions = suggestions,
-                showButtons = suggestions.isEmpty()
-            )
+        debouncer.launch(RESPECT_REALMS) {
+            respectAppDataSource.realmDirectoryDataSource
+                .searchRealms(name)
+                .collect { state ->
+                    when (state) {
+                        is DataLoadingState -> {
+                            _uiState.update { it.copy(errorMessage = null, suggestions = emptyList()) }
+                        }
+                        is DataReadyState -> {
+                            _uiState.update {
+                                it.copy(
+                                    suggestions = state.data,
+                                    errorMessage = if (state.data.isEmpty()) {
+                                        StringResourceUiText(Res.string.school_not_exist_error)
+                                    } else null,
+                                    showButtons = state.data.isEmpty()
+                                )
+                            }
+                        }
+                        is DataErrorResult,
+                        is NoDataLoadedState -> {
+                            _uiState.update {
+                                it.copy(
+                                    suggestions = emptyList(),
+                                    errorMessage = StringResourceUiText(Res.string.school_not_exist_error),
+                                    showButtons = true
+                                )
+                            }
+                        }
+                    }
+                }
         }
     }
 
@@ -67,10 +92,10 @@ class GetStartedViewModel(
         )
     }
 
-    fun onSchoolSelected(school: School) {
+    fun onSchoolSelected(school: RespectRealm) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LoginScreen.create(school.realm.self,school.realm.rpId)
+                LoginScreen.create(school.self,school.rpId)
             )
         )
     }
@@ -79,29 +104,17 @@ class GetStartedViewModel(
         _navCommandFlow.tryEmit(NavCommand.Navigate(OtherOption))
     }
 
+    companion object {
+
+        const val RESPECT_REALMS = "respectRealms"
+
+    }
 }
-private fun buildSchool(name: String, domain: String): School {
-    return School(
-        name = name,
-        realm = RespectRealm(
-            name = LangMapStringValue("Respect Demo School"),
-            self = Url("https://$domain"),
-            xapi = Url("https://$domain/xapi"),
-            oneRoster = Url("https://$domain/oneroster"),
-            respectExt = Url("https://$domain/respect"),
-            rpId = domain
-        )
-    )
-}
-data class School(
-    val name: String,
-    val realm: RespectRealm
-)
 data class GetStartedUiState(
     val schoolName: String = "",
     val errorText: String? = null,
     val showButtons: Boolean = true,
     val errorMessage: StringResourceUiText? = null,
-    val suggestions: List<School> = emptyList()
+    val suggestions: List<RespectRealm> = emptyList()
 
 )

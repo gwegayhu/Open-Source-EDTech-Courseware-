@@ -7,6 +7,7 @@ import world.respect.datalayer.opds.OpdsDataSource
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSource
 import world.respect.datalayer.repository.compatibleapps.CompatibleAppDataSourceRepository
 import world.respect.datalayer.repository.opds.OpdsDataSourceRepository
+import world.respect.datalayer.repository.realm.RealmDirectoryDataSourceRepository
 
 class RespectAppDataSourceRepository(
     private val local: RespectAppDataSourceLocal,
@@ -22,6 +23,9 @@ class RespectAppDataSourceRepository(
         OpdsDataSourceRepository(local.opdsDataSource, remote.opdsDataSource)
     }
 
-    override val realmDirectoryDataSource: RealmDirectoryDataSource
-        get() = TODO("Not yet implemented")
+    override val realmDirectoryDataSource: RealmDirectoryDataSource by lazy {
+        RealmDirectoryDataSourceRepository(
+            local.realmDirectoryDataSource,remote.realmDirectoryDataSource
+        )
+    }
 }

@@ -74,6 +74,7 @@ fun managerServerMain(ns: Namespace) {
                                 xapi = realmBaseUrl.resolve("api/xapi"),
                                 oneRoster = realmBaseUrl.resolve("api/oneroster"),
                                 respectExt = realmBaseUrl.resolve("api/respect-ext"),
+                                rpId = ns.getString("rpId"),
                             ),
                             dbUrl = ns.getString("dburl") ?: realmBaseUrl.sanitizedForFilename(),
                             adminUsername = ns.getString("adminusername") ?: DEFAULT_ADMIN_USERNAME,

@@ -20,6 +20,7 @@ import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
+import world.respect.server.domain.realm.add.AddRealmDirectoryCallback
 import world.respect.server.domain.realm.add.AddRealmUseCase
 import world.respect.server.domain.realm.add.AddServerManagedDirectoryCallback
 import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPasswordDbImpl
@@ -41,6 +42,7 @@ fun serverKoinModule(
         val dbFile = File(dataDir, APP_DB_FILENAME)
         Room.databaseBuilder<RespectAppDatabase>(dbFile.absolutePath)
             .setDriver(BundledSQLiteDriver())
+            .addCallback( AddRealmDirectoryCallback(xxStringHasher = get()))
             .addCallback(AddServerManagedDirectoryCallback(xxStringHasher = get()))
             .build()
     }

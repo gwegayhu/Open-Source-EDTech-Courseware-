@@ -1,12 +1,16 @@
 package world.respect.datalayer.db.realmdirectory
 
 import androidx.room.Transactor
+import androidx.room.useReaderConnection
 import androidx.room.useWriterConnection
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
+import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.db.RespectAppDatabase
 import world.respect.datalayer.db.realmdirectory.adapters.RespectRealmEntities
@@ -107,8 +111,37 @@ class RealmDirectoryDataSourceDb(
         TODO("Not yet implemented")
     }
 
-    override suspend fun searchRealms(text: String): Flow<DataLoadState<List<RespectRealm>>> {
-        TODO("Add a query to the DAO @Nikunj")
+    override suspend fun searchRealms(text: String): Flow<DataLoadState<List<RespectRealm>>> = flow {
+        emit(DataLoadingState())
+
+        try {
+            val result = respectAppDb.useReaderConnection { con ->
+                con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                    val langMapList = respectAppDb.getLangMapEntityDao().searchByLmeValue(
+                        value = text,
+                        topParentType = LangMapEntity.TopParentType.RESPECT_REALM.id,
+                        propType = LangMapEntity.PropType.RESPECT_REALM_NAME.id
+
+                    )
+                    langMapList.mapNotNull { langMapEntity ->
+                        val realmEntity = respectAppDb.getRealmEntityDao().findByUid(
+                            langMapEntity.lmeTopParentUid1
+                        )
+                        if (realmEntity != null) {
+                            RespectRealmEntities(
+                                realm = realmEntity,
+                                langMapEntities = langMapList
+                            ).toModel().data
+                        } else {
+                            null
+                        }
+                    }
+                }
+            }
+            emit(DataReadyState(result))
+        } catch (e: Throwable) {
+            emit(DataErrorResult<List<RespectRealm>>(e))
+        }
     }
 
     override suspend fun getInviteInfo(inviteCode: String): RespectInviteInfo {
