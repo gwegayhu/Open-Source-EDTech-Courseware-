@@ -7,29 +7,36 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.datalayer.respect.RespectReportDataSource
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
+import org.koin.core.scope.Scope
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataLoadingState
+import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.respect.model.Indicator
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.edit
 import world.respect.shared.generated.resources.indicator_detail
 import world.respect.shared.navigation.IndicatorDetail
-import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.IndictorEdit
+import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 data class IndicatorDetailUiState(
-    val indicator: Indicator? = null,
-    val isLoading: Boolean = false,
+    val indicator: DataLoadState<Indicator> = DataLoadingState(),
     val errorMessage: String? = null
 )
 
 class IndicatorDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    private val respectReportDataSource: RespectReportDataSource,
-) : RespectViewModel(savedStateHandle) {
+    accountManager: RespectAccountManager
+) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
+    override val scope: Scope = accountManager.requireSelectedAccountScope()
+    private val realmDataSource: RespectRealmDataSource by inject()
     private val _uiState = MutableStateFlow(IndicatorDetailUiState())
     val uiState = _uiState.asStateFlow()
     private val route: IndicatorDetail = savedStateHandle.toRoute()
@@ -46,7 +53,7 @@ class IndicatorDetailViewModel(
                         onClick = {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
-                                    IndictorEdit(uiState.value.indicator?.indicatorId ?: "0")
+                                    IndictorEdit(route.indicatorUid)
                                 )
                             )
                         },
@@ -55,28 +62,24 @@ class IndicatorDetailViewModel(
                 )
             }
 
-            loadIndicator()
-        }
-    }
-
-    private fun loadIndicator() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                val indicator = respectReportDataSource.getIndicatorById(route.indicatorUid)
-                _uiState.update {
-                    it.copy(
-                        indicator = indicator,
-                        isLoading = false,
-                        errorMessage = if (indicator == null) "Indicator not found" else null
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Failed to load indicator"
-                    )
+            viewModelScope.launch {
+                try {
+                    realmDataSource.indicatorDataSource.getIndicatorAsFlow(
+                        route.indicatorUid
+                    ).collect { indicator ->
+                        _uiState.update {
+                            it.copy(
+                                indicator = indicator,
+                                errorMessage = null
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = e.message ?: "Failed to load indicator"
+                        )
+                    }
                 }
             }
         }

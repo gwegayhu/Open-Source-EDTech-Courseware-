@@ -5,17 +5,15 @@ import world.respect.datalayer.realm.model.report.ReportOptions
 
 @Serializable
 data class RespectReport(
-
     val reportId: String,
-
     val ownerGuid: String,
-
     val title: String,
-
     val reportOptions: ReportOptions,
-
     val reportIsTemplate: Boolean = false,
+    val active: Boolean = true
+) {
+    companion object {
+        const val TABLE_ID = 4
+    }
+}
 
-    val active: Boolean = true,
-
-)

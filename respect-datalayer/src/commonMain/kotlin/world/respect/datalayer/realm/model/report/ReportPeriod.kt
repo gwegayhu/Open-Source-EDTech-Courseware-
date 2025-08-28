@@ -5,62 +5,35 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.atTime
 import kotlinx.datetime.minus
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.resources.StringResource
-import world.respect.libutil.ext.UNSET_DISTANT_FUTURE
-import world.respect.libutil.ext.atEndOfDayIn
-import world.respect.shared.generated.resources.Res
+import world.respect.datalayer.ext.UNSET_DISTANT_FUTURE
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
-import world.respect.shared.generated.resources.*
-
-
-/**
- * TODO: @anugraha - remove StringResources from classes in datalayer; then in respect-lib-shared
- * create extension functions
- *
- * e.g.
- *
- * val ReportTimeRangeUnit.label: StringResource
- *     get() = when(this) ...
- */
 
 /**
  * Enum of the relative units that can be selected for a report e.g. last x days, last x months, etc.
  */
-enum class ReportTimeRangeUnit(
-    override val label: StringResource,
-    val unit: DateTimeUnit.DateBased
-): OptionWithLabelStringResource {
-    DAY(Res.string.day, DateTimeUnit.DAY),
-    WEEK(Res.string.weeks, DateTimeUnit.WEEK),
-    MONTH(Res.string.months, DateTimeUnit.MONTH),
-    YEAR(Res.string.year, DateTimeUnit.YEAR),
+enum class ReportTimeRangeUnit(val unit: DateTimeUnit.DateBased) {
+    DAY(DateTimeUnit.DAY),
+    WEEK(DateTimeUnit.WEEK),
+    MONTH(DateTimeUnit.MONTH),
+    YEAR(DateTimeUnit.YEAR),
 }
 
-/**
- *
- */
-enum class ReportPeriodOption(
-    val period: ReportPeriod,
-    override val label: StringResource
-): OptionWithLabelStringResource {
-
-    LAST_WEEK(RelativeRangeReportPeriod(ReportTimeRangeUnit.WEEK, 1), Res.string.last_week),
-
-    LAST_30_DAYS(RelativeRangeReportPeriod(ReportTimeRangeUnit.DAY, 30), Res.string.last_30_days),
-
-    LAST_3_MONTHS(RelativeRangeReportPeriod(ReportTimeRangeUnit.MONTH, 3), Res.string.last_3_months),
-
-    CUSTOM_PERIOD(RelativeRangeReportPeriod(ReportTimeRangeUnit.DAY, 1), Res.string.custom_period),
-
-    CUSTOM_DATE_RANGE(FixedReportTimeRange(0L, UNSET_DISTANT_FUTURE), Res.string.custom_date_range),
+enum class ReportPeriodOption(val period: ReportPeriod) {
+    LAST_WEEK(RelativeRangeReportPeriod(ReportTimeRangeUnit.WEEK, 1)),
+    LAST_30_DAYS(RelativeRangeReportPeriod(ReportTimeRangeUnit.DAY, 30)),
+    LAST_3_MONTHS(RelativeRangeReportPeriod(ReportTimeRangeUnit.MONTH, 3)),
+    CUSTOM_PERIOD(RelativeRangeReportPeriod(ReportTimeRangeUnit.DAY, 1)),
+    CUSTOM_DATE_RANGE(FixedReportTimeRange(0L, UNSET_DISTANT_FUTURE)),
 }
 
 /**
@@ -122,7 +95,6 @@ sealed class ReportPeriod {
     fun periodEndMillis(timeZone: TimeZone): Long {
         return periodEndInstant(timeZone).toEpochMilliseconds()
     }
-
 }
 
 /**
@@ -136,7 +108,7 @@ sealed class ReportPeriod {
 class RelativeRangeReportPeriod(
     val rangeUnit: ReportTimeRangeUnit,
     val rangeQuantity: Int,
-): ReportPeriod() {
+) : ReportPeriod() {
 
     @OptIn(ExperimentalTime::class)
     override fun periodEnd(timeZone: TimeZone): LocalDate {
@@ -153,13 +125,11 @@ class RelativeRangeReportPeriod(
                     LocalDate(it.year, 1, 1)
                 }
             }
-
             ReportTimeRangeUnit.MONTH -> {
                 nowDateTime.date.minus(rangeQuantity - 1, DateTimeUnit.MONTH).let {
                     LocalDate(it.year, it.month.number, 1)
                 }
             }
-
             ReportTimeRangeUnit.DAY, ReportTimeRangeUnit.WEEK -> {
                 /*
                  * Because reports are always run from 00:00.00 to 23:59.999 as per the request timezone,
@@ -189,7 +159,7 @@ class RelativeRangeReportPeriod(
 class FixedReportTimeRange(
     val fromDateMillis: Long,
     val toDateMillis: Long,
-): ReportPeriod() {
+) : ReportPeriod() {
 
     @OptIn(ExperimentalTime::class)
     override fun periodStart(timeZone: TimeZone): LocalDate {
@@ -202,5 +172,12 @@ class FixedReportTimeRange(
         return Instant.fromEpochMilliseconds(toDateMillis)
             .toLocalDateTime(TimeZone.UTC).date
     }
+}
 
+/**
+ * Like atStartOfDayIn(as per Kotlinx DateTime) but for end of day
+ */
+@OptIn(ExperimentalTime::class)
+fun LocalDate.atEndOfDayIn(timeZone: TimeZone) : Instant {
+    return atTime(23, 59, 59, 999_999_000).toInstant(timeZone)
 }

@@ -33,10 +33,6 @@ fun IndicatorListScreen(
             .padding(16.dp)
     ) {
         when {
-            uiState.isLoading -> {
-                Text("Loading indicators...")
-            }
-
             uiState.errorMessage != null -> {
                 Text("Error: ${uiState.errorMessage}", color = Color.Red)
             }

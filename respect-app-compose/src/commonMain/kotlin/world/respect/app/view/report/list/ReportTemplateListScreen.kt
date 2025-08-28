@@ -13,33 +13,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.paging.PagingSource
 import kotlinx.datetime.TimeZone
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.view.report.graph.CombinedGraph
-import world.respect.datalayer.respect.model.RespectReport
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.realm.model.report.ReportOptions
+import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.No_data_available
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.select_template
+import world.respect.shared.generated.resources.blank_template
 import world.respect.shared.viewmodel.report.list.ReportTemplateListUiState
 import world.respect.shared.viewmodel.report.list.ReportTemplateListViewModel
 
@@ -51,75 +46,26 @@ fun ReportTemplateListScreen(
     val uiState: ReportTemplateListUiState by viewModel.uiState.collectAsState(
         ReportTemplateListUiState()
     )
-
-    var reports by remember { mutableStateOf<List<RespectReport>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        try {
-            val result = uiState.templates().load(
-                PagingSource.LoadParams.Refresh(
-                    key = null,
-                    loadSize = 20,
-                    placeholdersEnabled = false
-                )
+    LazyColumn {
+        item {
+            ReportTemplateCard(
+                report = RespectReport(
+                    reportId = "0",
+                    title = stringResource(Res.string.blank_template),
+                    reportOptions = ReportOptions(),
+                    reportIsTemplate = true,
+                    ownerGuid = ""
+                ),
+                viewModel = viewModel,
+                activeUserPersonUid = uiState.activeUserPersonUid
             )
-            reports = when (result) {
-                is PagingSource.LoadResult.Page -> result.data
-                else -> emptyList()
-            }
-        } catch (e: Exception) {
-            error = e.message
-        } finally {
-            isLoading = false
         }
-    }
-
-    when {
-        isLoading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        error != null -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Error loading reports: $error")
-            }
-        }
-
-        else -> {
-            LazyColumn {
-                item {
-                    ReportTemplateCard(
-                        report = RespectReport(
-                            reportId = "0",
-                            title = stringResource(Res.string.select_template),
-                            reportOptions = Json.encodeToString(
-                                ReportOptions.serializer(),
-                                ReportOptions()
-                            ),
-                            reportIsTemplate = true,
-                        ),
-                        viewModel = viewModel,
-                        activeUserPersonUid = uiState.activeUserPersonUid
-                    )
-                }
-                items(reports) { report ->
-                    ReportTemplateCard(
-                        report = report,
-                        viewModel = viewModel,
-                        activeUserPersonUid = uiState.activeUserPersonUid
-                    )
-                }
-            }
+        items(uiState.templates.dataOrNull() ?: emptyList()) { report ->
+            ReportTemplateCard(
+                report = report,
+                viewModel = viewModel,
+                activeUserPersonUid = uiState.activeUserPersonUid
+            )
         }
     }
 }

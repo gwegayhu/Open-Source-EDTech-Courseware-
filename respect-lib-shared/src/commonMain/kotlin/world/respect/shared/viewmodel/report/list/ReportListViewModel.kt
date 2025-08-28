@@ -2,7 +2,6 @@ package world.respect.shared.viewmodel.report.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import app.cash.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,13 +9,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
-import kotlinx.serialization.json.Json
-import world.respect.datalayer.respect.EmptyPagingSource
-import world.respect.datalayer.respect.RespectReportDataSource
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
+import org.koin.core.scope.Scope
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataLoadingState
+import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.respect.model.RespectReport
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.formatter.GraphFormatter
-import world.respect.datalayer.realm.model.report.ReportOptions
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
@@ -31,7 +33,7 @@ import world.respect.shared.viewmodel.app.appstate.FabUiState
 import kotlin.time.ExperimentalTime
 
 data class ReportListUiState(
-    val reportList: () -> PagingSource<Int, RespectReport> = { EmptyPagingSource() },
+    val reportList: DataLoadState<List<RespectReport>> = DataLoadingState(),
     val activeUserPersonUid: Long = 0L,
     val xAxisFormatter: GraphFormatter<String>? = null,
     val yAxisFormatter: GraphFormatter<Double>? = null
@@ -41,17 +43,13 @@ class ReportListViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
     private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
-    private val respectReportDataSource: RespectReportDataSource,
-    private val json: Json
-) : RespectViewModel(savedStateHandle) {
+    accountManager: RespectAccountManager
+) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
+    override val scope: Scope = accountManager.requireSelectedAccountScope()
     private val _uiState = MutableStateFlow(ReportListUiState())
     val uiState: Flow<ReportListUiState> = _uiState.asStateFlow()
-
-    private val pagingSourceFactory: () -> PagingSource<Int, RespectReport> = {
-        respectReportDataSource.getReportsPagingSource()
-    }
-    private val activeUserPersonUid: Long = 0
+    private val realmDataSource: RespectRealmDataSource by inject()
 
     init {
         viewModelScope.launch {
@@ -68,25 +66,21 @@ class ReportListViewModel(
                 )
             }
 
-            // Initialize paging data
-            _uiState.update { prev ->
-                prev.copy(
-                    reportList = pagingSourceFactory,
-                    activeUserPersonUid = activeUserPersonUid
-                )
+            viewModelScope.launch {
+                realmDataSource.reportDataSource.allReportsAsFlow(template = false).collect {
+                    _uiState.update { state ->
+                        state.copy(reportList = it)
+                    }
+                }
             }
         }
     }
 
     @OptIn(ExperimentalTime::class)
     fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> {
-        val reportOptions = json.decodeFromString<ReportOptions>(
-            ReportOptions.serializer(),
-            report.reportOptions
-        )
         val request = RunReportUseCase.RunReportRequest(
             reportUid = report.reportId.toLong(),
-            reportOptions = reportOptions,
+            reportOptions = report.reportOptions,
             accountPersonUid = 0L, // TODO: Get actual user ID
             timeZone = TimeZone.currentSystemDefault()
         )
@@ -127,7 +121,7 @@ class ReportListViewModel(
     fun onClickEntry(entry: RespectReport) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                ReportDetail(entry.reportId.toLong())
+                ReportDetail(entry.reportId)
             )
         )
     }

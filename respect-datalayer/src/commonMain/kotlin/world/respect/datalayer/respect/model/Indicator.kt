@@ -9,4 +9,8 @@ data class Indicator(
     val description: String = "",
     val type: String = "",
     val sql: String = "",
-)
+){
+    companion object {
+        const val TABLE_ID = 5
+    }
+}

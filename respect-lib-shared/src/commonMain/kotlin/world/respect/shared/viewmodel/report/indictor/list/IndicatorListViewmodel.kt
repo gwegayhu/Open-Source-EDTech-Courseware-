@@ -2,43 +2,42 @@ package world.respect.shared.viewmodel.report.indictor.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.datalayer.respect.RespectReportDataSource
-import world.respect.datalayer.respect.model.Indicator
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
+import org.koin.core.scope.Scope
+import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.realm.model.report.DefaultIndicators
+import world.respect.datalayer.respect.model.Indicator
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.indicator
 import world.respect.shared.generated.resources.indicators
 import world.respect.shared.navigation.IndicatorDetail
-import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.IndictorEdit
+import world.respect.shared.navigation.NavCommand
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.FabUiState
 
 data class IndicatorListUiState(
     val indicators: List<Indicator> = emptyList(),
-    val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
 
 class IndicatorListViewModel(
     savedStateHandle: SavedStateHandle,
-    respectReportDataSource: RespectReportDataSource,
-) : RespectViewModel(savedStateHandle) {
+    accountManager: RespectAccountManager
+) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
     private val _uiState = MutableStateFlow(IndicatorListUiState())
     val uiState = _uiState.asStateFlow()
-
-    // Combine default indicators with custom ones from database
-    private val indicatorsFlow: Flow<List<Indicator>> =
-        respectReportDataSource.getAllIndicators()
-            .map { DefaultIndicators.list + it }
+    override val scope: Scope = accountManager.requireSelectedAccountScope()
+    private val realmDataSource: RespectRealmDataSource by inject()
 
     init {
         viewModelScope.launch {
@@ -54,30 +53,23 @@ class IndicatorListViewModel(
                     )
                 )
             }
+            viewModelScope.launch {
+                try {
+                    realmDataSource.indicatorDataSource.allIndicatorAsFlow()
+                        .collect { dataLoadState ->
+                            val userIndicators = dataLoadState.dataOrNull() ?: emptyList()
+                            val allIndicators = DefaultIndicators.list + userIndicators
 
-            loadIndicators()
-        }
-    }
-
-    private fun loadIndicators() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                indicatorsFlow.collect { indicators ->
+                            _uiState.update { state ->
+                                state.copy(indicators = allIndicators)
+                            }
+                        }
+                } catch (e: Exception) {
                     _uiState.update {
                         it.copy(
-                            indicators = indicators,
-                            isLoading = false,
-                            errorMessage = null
+                            errorMessage = e.message ?: "Failed to load indicators"
                         )
                     }
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Failed to load indicators"
-                    )
                 }
             }
         }
@@ -86,11 +78,10 @@ class IndicatorListViewModel(
     fun onClickAdd() {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                IndictorEdit("0")
+                IndictorEdit(null)
             )
         )
     }
-
 
     fun onIndicatorSelected(indicator: Indicator) {
         _navCommandFlow.tryEmit(

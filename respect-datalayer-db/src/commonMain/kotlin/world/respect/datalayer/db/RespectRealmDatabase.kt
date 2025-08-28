@@ -7,13 +7,17 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import world.respect.datalayer.db.realm.RealmTypeConverters
 import world.respect.datalayer.db.realm.daos.AuthTokenEntityDao
+import world.respect.datalayer.db.realm.daos.IndicatorEntityDao
 import world.respect.datalayer.db.realm.daos.PersonEntityDao
 import world.respect.datalayer.db.realm.daos.PersonPasswordEntityDao
 import world.respect.datalayer.db.realm.daos.PersonRoleEntityDao
+import world.respect.datalayer.db.realm.daos.ReportEntityDao
 import world.respect.datalayer.db.realm.entities.AuthTokenEntity
+import world.respect.datalayer.db.realm.entities.IndicatorEntity
 import world.respect.datalayer.db.realm.entities.PersonEntity
 import world.respect.datalayer.db.realm.entities.PersonPasswordEntity
 import world.respect.datalayer.db.realm.entities.PersonRoleEntity
+import world.respect.datalayer.db.realm.entities.ReportEntity
 import world.respect.datalayer.db.shared.SharedConverters
 
 /**
@@ -25,6 +29,8 @@ import world.respect.datalayer.db.shared.SharedConverters
         PersonRoleEntity::class,
         PersonPasswordEntity::class,
         AuthTokenEntity::class,
+        ReportEntity::class,
+        IndicatorEntity::class
     ],
     version = 1,
 
@@ -40,6 +46,10 @@ abstract class RespectRealmDatabase: RoomDatabase() {
     abstract fun getAuthTokenEntityDao(): AuthTokenEntityDao
 
     abstract fun getPersonRoleEntityDao(): PersonRoleEntityDao
+
+    abstract fun getReportEntityDao(): ReportEntityDao
+
+    abstract fun getIndicatorEntityDao(): IndicatorEntityDao
 
 }
 

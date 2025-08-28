@@ -56,15 +56,15 @@ object Clazz : RespectAppRoute
 object Report : RespectAppRoute
 
 @Serializable
-class ReportEdit(val reportUid: Long = 0) : RespectAppRoute
+class ReportEdit(val reportUid: String?) : RespectAppRoute
 
 @Serializable
-class ReportDetail(val reportUid: Long) : RespectAppRoute
+class ReportDetail(val reportUid: String) : RespectAppRoute
 
 @Serializable
-class ReportEditFilter(val reportUid: Long, val reportFilterJson: String) : RespectAppRoute {
+class ReportEditFilter(val reportUid: String, val reportFilterJson: String) : RespectAppRoute {
     companion object {
-        fun create(reportUid: Long, reportFilter: ReportFilter): ReportEditFilter {
+        fun create(reportUid: String, reportFilter: ReportFilter): ReportEditFilter {
             val json = Json { encodeDefaults = true }
             return ReportEditFilter(reportUid, json.encodeToString(ReportFilter.serializer(), reportFilter))
         }
@@ -86,7 +86,7 @@ object IndicatorList : RespectAppRoute
 class IndicatorDetail(val indicatorUid: String) : RespectAppRoute
 
 @Serializable
-class IndictorEdit(val indicatorId: String) : RespectAppRoute
+class IndictorEdit(val indicatorId: String?) : RespectAppRoute
 
 @Serializable
 object RespectAppList : RespectAppRoute

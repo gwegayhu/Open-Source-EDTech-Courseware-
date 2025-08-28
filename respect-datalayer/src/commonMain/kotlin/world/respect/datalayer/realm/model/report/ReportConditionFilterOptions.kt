@@ -1,21 +1,15 @@
 package world.respect.datalayer.realm.model.report
 
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.resources.StringResource
-import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.*
 
 /** Enum representing different comparison types */
-enum class Comparisons(
-    override val label: StringResource,
-    val symbol: String
-) : OptionWithLabelStringResource {
-    EQUALS(Res.string.equals, "="),
-    NOT_EQUALS(Res.string.not_equals, "!="),
-    GREATER(Res.string.greater, ">"),
-    LESSER(Res.string.lesser, "<"),
-    GREATER_OR_EQUAL(Res.string.greater_or_equal, ">="),
-    LESSER_OR_EQUAL(Res.string.lesser_or_equal, "<="),
+enum class Comparisons(val symbol: String) {
+    EQUALS("="),
+    NOT_EQUALS("!="),
+    GREATER(">"),
+    LESSER("<"),
+    GREATER_OR_EQUAL(">="),
+    LESSER_OR_EQUAL("<="),
 }
 
 /** Sealed class representing different types of report filters */
@@ -43,15 +37,9 @@ sealed class ReportConditionFilterOptions(
 
 @Serializable
 data class ReportFilter(
-
     var reportFilterUid: Int = 0,
-
     var reportFilterSeriesUid: Int = 0,
-
     var reportFilterField: FilterType? = null,
-
     var reportFilterCondition: Comparisons? = null,
-
     var reportFilterValue: String? = ""
 )
-

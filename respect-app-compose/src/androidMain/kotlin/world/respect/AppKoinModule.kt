@@ -102,8 +102,6 @@ import world.respect.shared.viewmodel.person.detail.PersonDetailViewModel
 import world.respect.shared.viewmodel.person.edit.PersonEditViewModel
 import world.respect.shared.viewmodel.person.list.PersonListViewModel
 import org.koin.core.qualifier.named
-import world.respect.datalayer.respect.MockRespectReportDataSource
-import world.respect.datalayer.respect.RespectReportDataSource
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.query.MockRunReportUseCaseClientImpl
 import world.respect.shared.domain.report.query.RunReportUseCase
@@ -437,14 +435,5 @@ val appKoinModule = module {
     }
     single<CreateGraphFormatterUseCase> {
         CreateGraphFormatterUseCase()
-    }
-    single<RespectReportDataSource> {
-        MockRespectReportDataSource()
-    }
-    single<Json> {
-        Json {
-            encodeDefaults = false
-            ignoreUnknownKeys = true
-        }
     }
 }

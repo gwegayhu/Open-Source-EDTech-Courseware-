@@ -2,7 +2,6 @@ package world.respect.shared.viewmodel.report.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import app.cash.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,12 +10,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
-import kotlinx.serialization.json.Json
-import world.respect.datalayer.respect.EmptyPagingSource
-import world.respect.datalayer.respect.RespectReportDataSource
-import world.respect.datalayer.respect.model.RespectReport
-import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
+import org.koin.core.scope.Scope
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataLoadingState
+import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.realm.model.report.ReportOptions
+import world.respect.datalayer.respect.model.RespectReport
+import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.generated.resources.Res
@@ -29,7 +32,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 data class ReportTemplateListUiState(
-    val templates: () -> PagingSource<Int, RespectReport> = { EmptyPagingSource() },
+    val templates: DataLoadState<List<RespectReport>> = DataLoadingState(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val activeUserPersonUid: Long = 0L,
@@ -39,36 +42,32 @@ class ReportTemplateListViewModel(
     savedStateHandle: SavedStateHandle,
     private val runReportUseCase: RunReportUseCase,
     private val createGraphFormatterUseCase: CreateGraphFormatterUseCase,
-    private val respectReportDataSource: RespectReportDataSource,
-    private val json: Json
-) : RespectViewModel(savedStateHandle) {
+    accountManager: RespectAccountManager
+) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
+    override val scope: Scope = accountManager.requireSelectedAccountScope()
     private val _uiState = MutableStateFlow(ReportTemplateListUiState())
     val uiState = _uiState.asStateFlow()
-
-    private val pagingSourceFactory: () -> PagingSource<Int, RespectReport> = {
-        respectReportDataSource.getTemplateReportsPagingSource()
-    }
     private val activeUserPersonUid: Long = 0
+    private val realmDataSource: RespectRealmDataSource by inject()
 
     init {
-        viewModelScope.launch {
-            // Setup UI
-            _appUiState.update { prev ->
-                prev.copy(
-                    navigationVisible = true,
-                    title = Res.string.select_template.asUiText(),
-                )
-            }
+        _appUiState.update { prev ->
+            prev.copy(
+                navigationVisible = true,
+                title = Res.string.select_template.asUiText(),
+            )
+        }
 
-            _uiState.update { prev ->
-                prev.copy(
-                    templates = pagingSourceFactory,
-                    activeUserPersonUid = activeUserPersonUid
-                )
+        viewModelScope.launch {
+            realmDataSource.reportDataSource.allReportsAsFlow(template = true).collect {
+                _uiState.update { state ->
+                    state.copy(templates = it)
+                }
             }
         }
     }
+
     @OptIn(ExperimentalTime::class)
     fun runReport(report: RespectReport): Flow<RunReportResultAndFormatters> {
         if (report.reportId == "0") {
@@ -91,14 +90,9 @@ class ReportTemplateListViewModel(
                 )
             }
         } else {
-            val reportOptions = json.decodeFromString<ReportOptions>(
-                ReportOptions.serializer(),
-                report.reportOptions
-            )
-
             val request = RunReportUseCase.RunReportRequest(
                 reportUid = report.reportId.toLong(),
-                reportOptions = reportOptions,
+                reportOptions = report.reportOptions,
                 accountPersonUid = activeUserPersonUid,
                 timeZone = TimeZone.currentSystemDefault()
             )
@@ -133,13 +127,13 @@ class ReportTemplateListViewModel(
         if (template.reportId == "0") { // blank template
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    ReportEdit(0L)
+                    ReportEdit(null)
                 )
             )
         } else {
             _navCommandFlow.tryEmit(
                 NavCommand.Navigate(
-                    ReportEdit(template.reportId.toLong())
+                    ReportEdit(template.reportId)
                 )
             )
         }

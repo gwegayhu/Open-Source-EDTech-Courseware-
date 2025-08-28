@@ -20,6 +20,8 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.util.ext.defaultItemPadding
+import world.respect.datalayer.ext.dataOrNull
+import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.description
 import world.respect.shared.generated.resources.field
@@ -36,6 +38,20 @@ fun IndictorEditScreen(
         initialValue = IndicatorEditUiState(),
         context = Dispatchers.Main.immediate
     )
+    IndictorEditScreen(
+        uiState = uiState,
+        onEntityChanged = viewModel::onEntityChanged
+    )
+
+}
+
+@Composable
+fun IndictorEditScreen(
+    uiState: IndicatorEditUiState,
+    onEntityChanged: (Indicator) -> Unit,
+) {
+    val indicator = uiState.indicatorData.dataOrNull()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -45,11 +61,13 @@ fun IndictorEditScreen(
         item {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = uiState.indicatorData.name,
+                value = indicator?.name ?: "",
                 label = { Text(stringResource(Res.string.field) + "*") },
                 singleLine = true,
                 onValueChange = { newName ->
-                    viewModel.updateIndicator { it.copy(name = newName) }
+                    indicator?.also {
+                        onEntityChanged(it.copy(name = newName))
+                    }
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
@@ -58,11 +76,13 @@ fun IndictorEditScreen(
         item {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = uiState.indicatorData.description,
+                value = indicator?.description ?: "",
                 label = { Text(stringResource(Res.string.description) + "*") },
                 singleLine = true,
                 onValueChange = { newDesc ->
-                    viewModel.updateIndicator { it.copy(description = newDesc) }
+                    indicator?.also {
+                        onEntityChanged(it.copy(description = newDesc))
+                    }
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
@@ -73,10 +93,12 @@ fun IndictorEditScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 200.dp, max = 400.dp),
-                value = uiState.indicatorData.sql,
+                value = indicator?.sql ?: "",
                 label = { Text(stringResource(Res.string.sql) + "*") },
                 onValueChange = { newSql ->
-                    viewModel.updateIndicator { it.copy(sql = newSql) }
+                    indicator?.also {
+                        onEntityChanged(it.copy(sql = newSql))
+                    }
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

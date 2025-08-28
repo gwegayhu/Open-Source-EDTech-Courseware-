@@ -8,19 +8,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,10 +39,9 @@ import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.RespectDateField
 import world.respect.app.components.uiTextStringResource
 import world.respect.app.util.ext.defaultItemPadding
-import world.respect.datalayer.respect.model.Indicator
-import world.respect.datalayer.realm.model.report.DefaultIndicators
+import world.respect.datalayer.realm.model.report.Comparisons
+import world.respect.datalayer.realm.model.report.FilterType
 import world.respect.datalayer.realm.model.report.FixedReportTimeRange
-import world.respect.datalayer.realm.model.report.OptionWithLabelStringResource
 import world.respect.datalayer.realm.model.report.RelativeRangeReportPeriod
 import world.respect.datalayer.realm.model.report.ReportFilter
 import world.respect.datalayer.realm.model.report.ReportOptions
@@ -51,12 +50,15 @@ import world.respect.datalayer.realm.model.report.ReportSeries
 import world.respect.datalayer.realm.model.report.ReportSeriesVisualType
 import world.respect.datalayer.realm.model.report.ReportTimeRangeUnit
 import world.respect.datalayer.realm.model.report.ReportXAxis
+import world.respect.datalayer.respect.model.Indicator
+import world.respect.shared.ext.label
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_filter
 import world.respect.shared.generated.resources.add_series
 import world.respect.shared.generated.resources.chart_type
 import world.respect.shared.generated.resources.filters
 import world.respect.shared.generated.resources.from
+import world.respect.shared.generated.resources.manage_indicators
 import world.respect.shared.generated.resources.quantity
 import world.respect.shared.generated.resources.remove
 import world.respect.shared.generated.resources.series_title
@@ -78,8 +80,11 @@ fun ReportEditScreen(
     val uiState: ReportEditUiState by viewModel.uiState.collectAsStateWithLifecycle(
         initialValue = ReportEditUiState(), context = Dispatchers.Main.immediate
     )
+    val availableIndicators by viewModel.availableIndicators.collectAsStateWithLifecycle()
+
     ReportEditScreen(
         uiState = uiState,
+        availableIndicators = availableIndicators,
         onReportChanged = viewModel::onEntityChanged,
         onSeriesChanged = viewModel::onSeriesChanged,
         onAddSeries = viewModel::onAddSeries,
@@ -94,6 +99,7 @@ fun ReportEditScreen(
 @Composable
 private fun ReportEditScreen(
     uiState: ReportEditUiState = ReportEditUiState(),
+    availableIndicators: List<Indicator> = emptyList(),
     onReportChanged: (ReportOptions) -> Unit = {},
     onAddSeries: () -> Unit = { },
     onAddFilter: (Int) -> Unit = { },
@@ -103,7 +109,6 @@ private fun ReportEditScreen(
     manageIndicator: () -> Unit = { },
     onEditFilter: (ReportFilter) -> Unit = { },
 ) {
-    val availableIndicators = remember { DefaultIndicators.list }
     val firstIndicatorType = uiState.reportOptions.series.firstOrNull()?.reportSeriesYAxis?.type
 
     // Calculate disabled indicators (those with different types than the first series)
@@ -148,20 +153,18 @@ private fun ReportEditScreen(
                         is RelativeRangeReportPeriod -> {
                             val optionPeriod = option.period as? RelativeRangeReportPeriod
                             optionPeriod?.rangeUnit == currentPeriod.rangeUnit &&
-                                    optionPeriod?.rangeQuantity == currentPeriod.rangeQuantity
+                                    optionPeriod.rangeQuantity == currentPeriod.rangeQuantity
                         }
 
                         is FixedReportTimeRange -> {
                             option == ReportPeriodOption.CUSTOM_DATE_RANGE
                         }
 
-                        else -> false
                     }
                 } ?: run {
                     when (uiState.reportOptions.period) {
                         is RelativeRangeReportPeriod -> ReportPeriodOption.CUSTOM_PERIOD
                         is FixedReportTimeRange -> ReportPeriodOption.CUSTOM_DATE_RANGE
-                        else -> null
                     }
                 }
             }
@@ -219,7 +222,6 @@ private fun ReportEditScreen(
         }
 
         // Dynamically iterate over the series
-        println("hjgejweh${ uiState.reportOptions.series}")
         uiState.reportOptions.series.forEach { seriesItem ->
             item {
                 HorizontalDivider(
@@ -284,14 +286,14 @@ private fun ReportEditScreen(
                     // Subgroup Dropdown
                     ExposedDropdownMenu(
                         label = { Text(stringResource(Res.string.subgroup_by)) },
-                        options = if (uiState.reportOptions.xAxis?.datePeriod != null) {
+                        options = if (uiState.reportOptions.xAxis.datePeriod != null) {
                             // X-axis is date - only show non-date options
                             ReportXAxis.entries.filter { it.datePeriod == null }
                         } else {
                             // X-axis is non-date - show date options plus other non-date options
                             ReportXAxis.entries.filter {
                                 it.datePeriod != null ||  // Include all date options
-                                        (it.datePeriod == null && it != uiState.reportOptions.xAxis)
+                                        (it != uiState.reportOptions.xAxis)
                             }
                         },
                         selectedValue = seriesItem.reportSeriesSubGroup,
@@ -365,11 +367,11 @@ private fun ReportEditScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : OptionWithLabelStringResource> ExposedDropdownMenu(
+fun <T> ExposedDropdownMenu(
+    modifier: Modifier = Modifier,
     options: List<T>,
     selectedValue: T?,
     disabledOptions: List<T> = emptyList(),
-    modifier: Modifier = Modifier.fillMaxWidth(),
     isError: Boolean = false,
     label: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
@@ -380,10 +382,20 @@ fun <T : OptionWithLabelStringResource> ExposedDropdownMenu(
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            value = selectedValue?.let { stringResource(it.label) } ?: "",
+            value = selectedValue?.let {
+                when (it) {
+                    is ReportTimeRangeUnit -> stringResource(it.label)
+                    is ReportPeriodOption -> stringResource(it.label)
+                    is ReportXAxis -> stringResource(it.label)
+                    is ReportSeriesVisualType -> stringResource(it.label)
+                    is FilterType -> stringResource(it.label)
+                    is Comparisons -> stringResource(it.label)
+                    else -> it.toString()
+                }
+            } ?: "",
             onValueChange = {},
             readOnly = true,
             modifier = modifier
@@ -411,8 +423,17 @@ fun <T : OptionWithLabelStringResource> ExposedDropdownMenu(
                         }
                     },
                     text = {
+                        val text = when (option) {
+                            is ReportTimeRangeUnit -> stringResource(option.label)
+                            is ReportPeriodOption -> stringResource(option.label)
+                            is ReportXAxis -> stringResource(option.label)
+                            is ReportSeriesVisualType -> stringResource(option.label)
+                            is FilterType -> stringResource(option.label)
+                            is Comparisons -> stringResource(option.label)
+                            else -> option.toString()
+                        }
                         Text(
-                            stringResource(option.label),
+                            text,
                             color = if (isDisabled) Color.Gray else LocalContentColor.current
                         )
                     },
@@ -534,10 +555,10 @@ fun DatePickerButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndicatorDropdownMenu(
+    modifier: Modifier = Modifier,
     options: List<Indicator>,
     selectedValue: Indicator?,
     disabledOptions: List<Indicator> = emptyList(),
-    modifier: Modifier = Modifier.fillMaxWidth(),
     isError: Boolean = false,
     label: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
@@ -549,7 +570,7 @@ fun IndicatorDropdownMenu(
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = selectedValue?.name ?: "",
@@ -595,7 +616,7 @@ fun IndicatorDropdownMenu(
                 },
                 text = {
                     Text(
-                        text = "manage_indicators",
+                        text = stringResource(Res.string.manage_indicators),
                         color = MaterialTheme.colorScheme.error
                     )
                 }

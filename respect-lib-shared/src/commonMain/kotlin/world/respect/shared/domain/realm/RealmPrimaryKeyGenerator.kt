@@ -1,6 +1,8 @@
 package world.respect.shared.domain.realm
 
 import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.respect.model.Indicator
+import world.respect.datalayer.respect.model.RespectReport
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 
 /**
@@ -11,7 +13,7 @@ data class RealmPrimaryKeyGenerator(
 ) {
     companion object {
 
-        val TABLE_IDS = listOf(Person.TABLE_ID)
+        val TABLE_IDS = listOf(Person.TABLE_ID, RespectReport.TABLE_ID, Indicator.TABLE_ID)
 
     }
 }

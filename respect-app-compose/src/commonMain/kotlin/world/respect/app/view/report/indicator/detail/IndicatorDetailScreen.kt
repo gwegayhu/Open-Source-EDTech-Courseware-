@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.shared.viewmodel.report.indictor.detail.IndicatorDetailUiState
 import world.respect.shared.viewmodel.report.indictor.detail.IndicatorDetailViewModel
 
@@ -27,21 +28,19 @@ fun IndicatorDetailScreen(
             .padding(16.dp)
     ) {
         when {
-            uiState.isLoading -> Text("Loading indicator details...")
             uiState.errorMessage != null -> Text(
                 "Error: ${uiState.errorMessage}",
                 color = Color.Red
             )
 
             else -> {
-                val indicator = uiState.indicator
                 Text(
-                    text = indicator?.name ?: "",
+                    text = uiState.indicator.dataOrNull()?.name ?: "",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = indicator?.description ?: "",
+                    text = uiState.indicator.dataOrNull()?.description ?: "",
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }

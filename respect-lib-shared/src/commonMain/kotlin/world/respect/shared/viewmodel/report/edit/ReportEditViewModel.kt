@@ -10,15 +10,21 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
-import world.respect.datalayer.DataReadyState
-import world.respect.datalayer.respect.RespectReportDataSource
-import world.respect.datalayer.respect.model.RespectReport
-import world.respect.libutil.ext.replaceOrAppend
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
+import org.koin.core.scope.Scope
+import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.realm.model.report.DefaultIndicators
 import world.respect.datalayer.realm.model.report.ReportFilter
 import world.respect.datalayer.realm.model.report.ReportOptions
 import world.respect.datalayer.realm.model.report.ReportSeries
 import world.respect.datalayer.realm.model.report.ReportSeriesVisualType
+import world.respect.datalayer.respect.model.Indicator
+import world.respect.datalayer.respect.model.RespectReport
+import world.respect.libutil.ext.replaceOrAppend
+import world.respect.shared.domain.account.RespectAccountManager
+import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
 import world.respect.shared.ext.replace
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_a_new_report
@@ -34,6 +40,7 @@ import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
 import world.respect.shared.resources.StringResourceUiText
 import world.respect.shared.resources.UiText
+import world.respect.shared.util.LaunchDebouncer
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
@@ -51,24 +58,31 @@ data class ReportEditUiState(
 
 class ReportEditViewModel(
     savedStateHandle: SavedStateHandle,
-    private val respectReportDataSource: RespectReportDataSource,
+    accountManager: RespectAccountManager,
     private val json: Json,
     private val navResultReturner: NavResultReturner
-) : RespectViewModel(savedStateHandle) {
+) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
+    override val scope: Scope = accountManager.requireSelectedAccountScope()
+    private val realmDataSource: RespectRealmDataSource by inject()
     private val route: ReportEdit = savedStateHandle.toRoute()
-    private val entityUid: Long = route.reportUid
-
+    private val realmPrimaryKeyGenerator: RealmPrimaryKeyGenerator by inject()
+    private val entityUid = route.reportUid ?: realmPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+        RespectReport.TABLE_ID
+    ).toString()
     private val _uiState: MutableStateFlow<ReportEditUiState> =
         MutableStateFlow(ReportEditUiState())
     val uiState: Flow<ReportEditUiState> = _uiState.asStateFlow()
+    private val _availableIndicators = MutableStateFlow<List<Indicator>>(emptyList())
+    val availableIndicators = _availableIndicators.asStateFlow()
     private var nextTempFilterUid = -1
+    private val debouncer = LaunchDebouncer(viewModelScope)
 
 
     init {
         viewModelScope.launch {
             loadingState = LoadingUiState.INDETERMINATE
-            val title = if (entityUid == 0L) {
+            val title = if (route.reportUid == null) {
                 getString(resource = Res.string.add_a_new_report)
             } else {
                 getString(resource = Res.string.edit_report)
@@ -92,11 +106,42 @@ class ReportEditViewModel(
                 )
             }
         }
+        viewModelScope.launch {
+            // Load user-created indicators from database
+            try {
+                realmDataSource.indicatorDataSource.allIndicatorAsFlow().collect { dataLoadState ->
+                    val userIndicators = dataLoadState.dataOrNull() ?: emptyList()
+                    // Combine default indicators with user-created ones
+                    val allIndicators = DefaultIndicators.list + userIndicators
+                    _availableIndicators.value = allIndicators
+                }
+            } catch (e: Exception) {
+                println("Error loading indicators: ${e.message}")
+            }
+        }
 
         viewModelScope.launch {
-            if (entityUid == 0L) {
+            if (route.reportUid != null) {
+                loadEntity(
+                    json = json,
+                    serializer = RespectReport.serializer(),
+                    loadFn = { params ->
+                        realmDataSource.reportDataSource.getReportAsync(
+                            loadParams = params,
+                            reportId = route.reportUid
+                        )
+                    },
+                    uiUpdateFn = { reportOptions ->
+                        _uiState.update { prev ->
+                            prev.copy(
+                                reportOptions = reportOptions.dataOrNull()?.reportOptions
+                                    ?: ReportOptions()
+                            )
+                        }
+                    }
+                )
+            } else {
                 val newReport = ReportOptions(
-                    title = "",
                     series = listOf(
                         ReportSeries()
                     )
@@ -105,33 +150,6 @@ class ReportEditViewModel(
                     prev.copy(
                         reportOptions = newReport
                     )
-                }
-            } else {
-                val reportFlow = respectReportDataSource.getReportAsFlow(entityUid.toString())
-                reportFlow.collect { reportState ->
-                    when (reportState) {
-                        is DataReadyState -> {
-                            val report = reportState.data
-                            val optionsJson = report.reportOptions
-
-                            val parsedOptions = try {
-                                json.decodeFromString(
-                                    ReportOptions.serializer(), optionsJson.trim()
-                                )
-                            } catch (e: Exception) {
-                                println("ERROR: JSON parsing failed: ${e.message}\n${e.stackTraceToString()}")
-                                throw IllegalArgumentException("Invalid report options format: ${e.message}")
-                            }
-
-                            _uiState.update { currentState ->
-                                currentState.copy(
-                                    reportOptions = parsedOptions,
-                                )
-                            }
-                        }
-
-                        else -> {}
-                    }
                 }
             }
         }
@@ -168,21 +186,25 @@ class ReportEditViewModel(
 
             try {
                 val report = RespectReport(
-                    reportId = entityUid.toString(),
+                    reportId = entityUid,
                     title = newState.reportOptions.title,
-                    reportOptions = json.encodeToString(newState.reportOptions),
+                    reportOptions = newState.reportOptions,
+                    ownerGuid = ""
                 )
-
-                if (entityUid == 0L) {
-                    respectReportDataSource.putReport(report)
+                if (route.reportUid == null) {
+                    realmDataSource.reportDataSource.putReport(report)
                 } else {
-//                    respectReportDataSource.updateReport(report)
-                    //TODO
+                    realmDataSource.reportDataSource.updateReport(report)
                 }
-
-                _navCommandFlow.tryEmit(
-                    NavCommand.Navigate(ReportDetail(entityUid))
-                )
+                if (route.reportUid == null) {
+                    _navCommandFlow.tryEmit(
+                        NavCommand.Navigate(
+                            ReportDetail(entityUid), popUpTo = route, popUpToInclusive = true
+                        )
+                    )
+                } else {
+                    _navCommandFlow.tryEmit(NavCommand.PopUp())
+                }
 
             } catch (e: Exception) {
                 println("Error updating report options: ${e.message}")
@@ -197,11 +219,17 @@ class ReportEditViewModel(
                     reportOptions = newOptions
                 )
 
-                if (!baseUpdate.submitted) baseUpdate
-                else validateCurrentState().copy(
-                    reportOptions = newOptions
-                )
+                if (!baseUpdate.submitted) {
+                    baseUpdate
+                } else {
+                    validateCurrentState().copy(
+                        reportOptions = newOptions
+                    )
+                }
             }
+        }
+        debouncer.launch(DEFAULT_SAVED_STATE_KEY) {
+            savedStateHandle[DEFAULT_SAVED_STATE_KEY] = json.encodeToString(newOptions)
         }
     }
 
