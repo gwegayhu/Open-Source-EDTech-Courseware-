@@ -13,7 +13,7 @@ import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
@@ -61,7 +61,7 @@ class ClazzDetailViewModel(
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
 
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
 
     private val _uiState = MutableStateFlow(ClazzDetailUiState())
 
@@ -82,7 +82,7 @@ class ClazzDetailViewModel(
                 )
             }
 
-            val users = realmDataSource.onRoasterDataSource.getAllUsers()
+            val users = schoolDataSource.onRoasterDataSource.getAllUsers()
 
             val teachers = users.filter { user ->
                 user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
@@ -96,7 +96,7 @@ class ClazzDetailViewModel(
             }
 
 
-            realmDataSource.onRoasterDataSource.findClassBySourcedIdAsFlow(
+            schoolDataSource.onRoasterDataSource.findClassBySourcedIdAsFlow(
                 route.sourcedId
             ).collect { clazz ->
                 val sortOptions = listOf(

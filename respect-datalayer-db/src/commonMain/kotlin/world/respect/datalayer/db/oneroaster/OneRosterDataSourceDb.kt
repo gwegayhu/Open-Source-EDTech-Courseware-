@@ -8,7 +8,7 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
-import world.respect.datalayer.db.RespectRealmDatabase
+import world.respect.datalayer.db.RespectSchoolDatabase
 import world.respect.datalayer.db.oneroaster.adapter.OneRoasterClassEntities
 import world.respect.datalayer.db.oneroaster.adapter.OneRoasterUserEntities
 import world.respect.datalayer.db.oneroaster.adapter.toEntities
@@ -21,23 +21,22 @@ import world.respect.datalayer.oneroster.composites.ClazzListDetails
 import world.respect.libxxhash.XXStringHasher
 
 class OneRosterDataSourceDb(
-    private val realmDb: RespectRealmDatabase,
+    private val schoolDb: RespectSchoolDatabase,
     private val xxHash: XXStringHasher,
 ) : OneRosterDataSourceLocal {
 
     override suspend fun getAllUsers(): List<OneRosterUser> {
-        return realmDb.getOneRoasterEntityDao().getAllUsers().map {
+        return schoolDb.getOneRoasterEntityDao().getAllUsers().map {
             OneRoasterUserEntities(it).toModel()
         }
     }
-
 
     override suspend fun putUser(user: OneRosterUser) {
         TODO("Not yet implemented")
     }
 
     override suspend fun getAllClasses(): List<OneRosterClass> {
-        return realmDb.getOneRoasterEntityDao()
+        return schoolDb.getOneRoasterEntityDao()
             .getAllClasses()
             .map { OneRoasterClassEntities(it).toModel() }
     }
@@ -50,13 +49,13 @@ class OneRosterDataSourceDb(
         loadParams: DataLoadParams,
         sourcedId: String
     ): DataLoadState<OneRosterClass> {
-        return realmDb.getOneRoasterEntityDao().findClassBySourcedId(sourcedId).let {
+        return schoolDb.getOneRoasterEntityDao().findClassBySourcedId(sourcedId).let {
             OneRoasterClassEntities(it)
         }.toModel().let { DataReadyState(it) }
     }
 
     override suspend fun findClassBySourcedIdAsFlow(sourcedId: String): Flow<DataLoadState<OneRosterClass>> {
-        return realmDb.getOneRoasterEntityDao().findClassBySourcedIdAsFlow(sourcedId = sourcedId)
+        return schoolDb.getOneRoasterEntityDao().findClassBySourcedIdAsFlow(sourcedId = sourcedId)
             .map { oneRosterClassEntity ->
                 if (oneRosterClassEntity != null) {
                     DataReadyState(OneRoasterClassEntities(oneRosterClassEntity).toModel())
@@ -69,9 +68,9 @@ class OneRosterDataSourceDb(
     override suspend fun putClass(clazz: OneRosterClass) {
         val entities = clazz.toEntities(xxHash)
 
-        realmDb.useWriterConnection { con ->
+        schoolDb.useWriterConnection { con ->
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                realmDb.getOneRoasterEntityDao().insert(entities.oneRoasterClassEntity)
+                schoolDb.getOneRoasterEntityDao().insert(entities.oneRoasterClassEntity)
             }
         }
     }
@@ -88,7 +87,7 @@ class OneRosterDataSourceDb(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): Flow<DataLoadState<List<ClazzListDetails>>> {
-        return realmDb.getOneRoasterEntityDao().findAllListDetailsAsFlow().map {
+        return schoolDb.getOneRoasterEntityDao().findAllListDetailsAsFlow().map {
             DataReadyState(it)
         }
     }

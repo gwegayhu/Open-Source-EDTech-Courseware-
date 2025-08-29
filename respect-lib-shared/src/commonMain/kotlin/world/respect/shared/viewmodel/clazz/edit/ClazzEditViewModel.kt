@@ -13,14 +13,14 @@ import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
-import world.respect.datalayer.RespectRealmDataSource
 import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.ext.isReadyAndSettled
 import world.respect.shared.domain.account.RespectAccountManager
-import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
+import world.respect.shared.domain.school.SchoolPrimaryKeyGenerator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.save
 import world.respect.shared.generated.resources.edit_clazz
@@ -54,12 +54,12 @@ class ClazzEditViewModel(
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
 
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
     private val route: ClazzEdit = savedStateHandle.toRoute()
 
-    private val realmPrimaryKeyGenerator: RealmPrimaryKeyGenerator by inject()
+    private val schoolPrimaryKeyGenerator: SchoolPrimaryKeyGenerator by inject()
 
-    private val sourcedId = route.sourcedId ?: realmPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+    private val sourcedId = route.sourcedId ?: schoolPrimaryKeyGenerator.primaryKeyGenerator.nextId(
         OneRosterClass.TABLE_ID
     ).toString()
 
@@ -93,7 +93,7 @@ class ClazzEditViewModel(
                     json = json,
                     serializer = OneRosterClass.serializer(),
                     loadFn = { params ->
-                        realmDataSource.onRoasterDataSource.findClassBySourcedId(params, sourcedId)
+                        schoolDataSource.onRoasterDataSource.findClassBySourcedId(params, sourcedId)
                     },
                     uiUpdateFn = { clazz ->
                         _uiState.update { prev -> prev.copy(clazz = clazz) }
@@ -139,7 +139,7 @@ class ClazzEditViewModel(
 
         viewModelScope.launch {
             try {
-                realmDataSource.onRoasterDataSource.putClass(clazz)
+                schoolDataSource.onRoasterDataSource.putClass(clazz)
                 if (route.sourcedId == null) {
                     _navCommandFlow.tryEmit(
                         NavCommand.Navigate(

@@ -2,7 +2,6 @@ package world.respect.shared.domain.school
 
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.oneroster.model.OneRosterClass
-import world.respect.datalayer.realm.model.Person
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 
 /**

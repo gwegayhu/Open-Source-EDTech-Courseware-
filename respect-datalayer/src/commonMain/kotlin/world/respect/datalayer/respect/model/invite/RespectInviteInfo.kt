@@ -2,7 +2,7 @@ package world.respect.datalayer.respect.model.invite
 
 import kotlinx.serialization.Serializable
 import world.respect.datalayer.oneroster.model.OneRosterClassGUIDRef
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 
 /**
  * @property code the invite code (as provided by the user). An invite code includes a

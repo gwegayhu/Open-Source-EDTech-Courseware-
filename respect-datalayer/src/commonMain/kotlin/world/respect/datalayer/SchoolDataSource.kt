@@ -1,7 +1,7 @@
 package world.respect.datalayer
 
 import world.respect.datalayer.oneroster.OneRosterDataSource
-import world.respect.datalayer.realm.PersonDataSource
+import world.respect.datalayer.school.PersonDataSource
 
 /**
  * DataSource for data which is specific to a given Realm (eg school - see ARCHITECTURE.md for
