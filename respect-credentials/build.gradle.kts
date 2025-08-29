@@ -27,7 +27,7 @@ kotlin {
             implementation(projects.respectDatalayerDb)
             implementation(compose.components.resources)
             implementation(compose.runtime)
-
+            implementation(libs.kotlinx.serialization.json)
         }
 
         jvmMain.dependencies {
