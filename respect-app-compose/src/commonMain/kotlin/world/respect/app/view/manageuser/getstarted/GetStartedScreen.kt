@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.app.components.uiTextStringResource
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.enter_school_name
 import world.respect.shared.generated.resources.i_have_an_invite_code
@@ -49,7 +49,7 @@ fun GetStartedScreen(
 fun GetStartedScreen(
     uiState: GetStartedUiState,
     onSchoolNameChanged: (String) -> Unit,
-    onSchoolSelected: (RespectRealm) -> Unit,
+    onSchoolSelected: (SchoolDirectoryEntry) -> Unit,
     onClickInviteCode: () -> Unit,
     onClickOtherOptions: () -> Unit
 ) {

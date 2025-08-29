@@ -46,7 +46,7 @@ fun SchoolDirectoryEntryEntities.toModel() : DataReadyState<SchoolDirectoryEntry
             oneRoster = school.reOneRoster,
             respectExt = school.reRespectExt,
             name = langMapEntities.toModel(),
-            rpId = realm.reRpId,
+            rpId = school.reRpId,
         ),
         metaInfo = DataLoadMetaInfo(
             lastModified = school.reLastMod,

@@ -64,7 +64,9 @@ class LoginViewModel(
                         }
 
                         is GetCredentialUseCase.PasswordCredentialResult -> {
-
+                            onUsernameChanged(credentialResult.credentialUsername)
+                            onPasswordChanged(credentialResult.password)
+                            onClickLogin()
                         }
 
                         is GetCredentialUseCase.Error -> {

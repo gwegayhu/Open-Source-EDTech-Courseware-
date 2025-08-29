@@ -315,20 +315,20 @@ val appKoinModule = module {
 
     single<RespectAppDataSource> {
         val appContext = androidContext().applicationContext
-
+        val respectAppDataSourceDb =  RespectAppDataSourceDb(
+            respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
+                appContext, appContext.getDatabasePath("respect.db").absolutePath
+            ).setDriver(BundledSQLiteDriver())
+                .build(),
+            json = get(),
+            xxStringHasher = get(),
+            primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS),
+        )
         RespectAppDataSourceRepository(
-            local = RespectAppDataSourceDb(
-                respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
-                    appContext, appContext.getDatabasePath("respect.db").absolutePath
-                ).setDriver(BundledSQLiteDriver())
-                    .build(),
-                json = get(),
-                xxStringHasher = get(),
-                primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS),
-            ),
+            local = respectAppDataSourceDb ,
             remote = RespectAppDataSourceHttp(
                 httpClient = get(),
-                local = get(),
+                local = respectAppDataSourceDb,
                 defaultCompatibleAppListUrl = DEFAULT_COMPATIBLE_APP_LIST_URL,
             )
         )

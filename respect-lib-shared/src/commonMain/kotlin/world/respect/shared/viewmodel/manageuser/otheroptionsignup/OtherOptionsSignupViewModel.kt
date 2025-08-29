@@ -66,7 +66,7 @@ class OtherOptionsSignupViewModel(
                 val redeemRequest = respectRedeemInviteRequestUseCase(route.inviteInfo,route.username)
 
                 val result = submitRedeemInviteRequestUseCase(redeemRequest)
-                val rpId = route.inviteInfo.realm.rpId
+                val rpId = route.inviteInfo.school.rpId
                 if (createPasskeyUseCase==null||rpId==null){
                     _uiState.update {
                         it.copy(

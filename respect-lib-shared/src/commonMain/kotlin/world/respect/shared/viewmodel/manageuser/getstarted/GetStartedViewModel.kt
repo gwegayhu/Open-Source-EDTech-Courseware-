@@ -10,7 +10,7 @@ import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.RespectAppDataSource
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.lets_get_started
 import world.respect.shared.generated.resources.school_not_exist_error
@@ -53,8 +53,8 @@ class GetStartedViewModel(
         }
 
         debouncer.launch(RESPECT_REALMS) {
-            respectAppDataSource.realmDirectoryDataSource
-                .searchRealms(name)
+            respectAppDataSource.schoolDirectoryDataSource
+                .searchSchools(name)
                 .collect { state ->
                     when (state) {
                         is DataLoadingState -> {
@@ -92,7 +92,7 @@ class GetStartedViewModel(
         )
     }
 
-    fun onSchoolSelected(school: RespectRealm) {
+    fun onSchoolSelected(school: SchoolDirectoryEntry) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
                 LoginScreen.create(school.self,school.rpId)
@@ -115,6 +115,6 @@ data class GetStartedUiState(
     val errorText: String? = null,
     val showButtons: Boolean = true,
     val errorMessage: StringResourceUiText? = null,
-    val suggestions: List<RespectRealm> = emptyList()
+    val suggestions: List<SchoolDirectoryEntry> = emptyList()
 
 )

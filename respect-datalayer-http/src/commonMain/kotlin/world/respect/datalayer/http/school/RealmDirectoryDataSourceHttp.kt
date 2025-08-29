@@ -1,4 +1,4 @@
-package world.respect.datalayer.http.realm
+package world.respect.datalayer.http.school
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -12,46 +12,44 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.RespectAppDataSourceLocal
-import world.respect.datalayer.realmdirectory.RealmDirectoryDataSource
-import world.respect.datalayer.respect.model.RespectRealm
-import world.respect.datalayer.respect.model.RespectRealmDirectory
+import world.respect.datalayer.respect.model.RespectSchoolDirectory
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
+import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
 import world.respect.libutil.ext.resolve
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-class RealmDirectoryDataSourceHttp(
+class SchoolDirectoryDataSourceHttp(
     private val httpClient: HttpClient,
-    private val local : RespectAppDataSourceLocal,
+    private val local : RespectAppDataSourceLocal
+    ) : SchoolDirectoryDataSource {
 
-    private val defaultCompatibleAppListUrl: String
-    ) : RealmDirectoryDataSource {
-
-    override suspend fun allDirectories(): List<RespectRealmDirectory> {
+    override suspend fun allDirectories(): List<RespectSchoolDirectory> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun allRealmsInDirectory(): List<RespectRealm> {
+    override suspend fun allSchoolsInDirectory(): List<SchoolDirectoryEntry> {
         TODO("Not yet implemented")
     }
 
     @OptIn(ExperimentalTime::class)
-    override suspend fun searchRealms(text: String): Flow<DataLoadState<List<RespectRealm>>> {
+    override suspend fun searchSchools(text: String): Flow<DataLoadState<List<SchoolDirectoryEntry>>> {
         return flow {
             emit(DataLoadingState())
             try {
-                val directories = local.realmDirectoryDataSource.allDirectories()
-                val respectRealms = mutableListOf<RespectRealm>()
+                val directories = local.schoolDirectoryDataSource.allDirectories()
+                val respectSchools = mutableListOf<SchoolDirectoryEntry>()
 
                 for (dir in directories) {
-                    val url = dir.baseUrl.resolve("api/directory/realms?q=$text")
+                    val url = dir.baseUrl.resolve("api/directory/school?q=$text")
 
-                    val realms: List<RespectRealm> = httpClient.get(url).body()
-                    respectRealms += realms
+                    val schools: List<SchoolDirectoryEntry> = httpClient.get(url).body()
+                    respectSchools += schools
                 }
                 emit(
                     DataReadyState(
-                        data = respectRealms,
+                        data = respectSchools,
                         metaInfo = DataLoadMetaInfo(
                             lastModified = Clock.System.now().toEpochMilliseconds()
                         )
@@ -66,7 +64,9 @@ class RealmDirectoryDataSourceHttp(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRealmByUrl(url: Url): DataReadyState<RespectRealm>? {
+    override suspend fun getSchoolDirectoryEntryByUrl(url: Url): DataReadyState<SchoolDirectoryEntry>? {
         TODO("Not yet implemented")
     }
+
+
 }

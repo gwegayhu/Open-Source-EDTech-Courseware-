@@ -1,4 +1,4 @@
-package world.respect.server.domain.realm.add
+package world.respect.server.domain.school.add
 
 import androidx.room.RoomDatabase
 import androidx.sqlite.SQLiteConnection
@@ -6,7 +6,7 @@ import androidx.sqlite.execSQL
 import world.respect.libxxhash.XXStringHasher
 import java.util.Properties
 
-class AddRealmDirectoryCallback(
+class AddSchoolDirectoryCallback(
     private val xxStringHasher: XXStringHasher,
 ) : RoomDatabase.Callback() {
 
@@ -28,7 +28,7 @@ class AddRealmDirectoryCallback(
             val prefix = key.toString()
 
             connection.execSQL("""
-            INSERT INTO RealmDirectoryEntity(rdUid, rdUrl, rdInvitePrefix) 
+            INSERT INTO SchoolDirectoryEntity(rdUid, rdUrl, rdInvitePrefix) 
             VALUES($uid,'$url','$prefix')    
             """.trimIndent())
         }

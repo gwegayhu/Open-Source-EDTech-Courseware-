@@ -47,7 +47,7 @@ class CreateAccountViewModel(
 
     private val _uiState = MutableStateFlow(CreateAccountViewModelUiState())
     val uiState = _uiState.asStateFlow()
-    val rpId = route.inviteInfo.realm.rpId
+    val rpId = route.inviteInfo.school.rpId
     init {
         viewModelScope.launch {
             _appUiState.update {
