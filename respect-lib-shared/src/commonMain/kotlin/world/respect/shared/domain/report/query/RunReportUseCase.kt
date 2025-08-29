@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
 import world.respect.datalayer.db.shared.entities.ReportQueryResult
 import world.respect.datalayer.http.headers.directives.directivesToMap
 import world.respect.shared.domain.report.ext.asStatementReportRow
-import world.respect.datalayer.realm.model.report.ReportOptions
-import world.respect.datalayer.realm.model.report.ReportSeries
-import world.respect.datalayer.realm.model.report.StatementReportRow
+import world.respect.datalayer.school.model.report.ReportOptions
+import world.respect.datalayer.school.model.report.ReportSeries
+import world.respect.datalayer.school.model.report.StatementReportRow
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

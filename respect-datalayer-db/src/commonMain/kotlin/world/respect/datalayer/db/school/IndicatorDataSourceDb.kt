@@ -7,8 +7,8 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.RespectSchoolDatabase
-import world.respect.datalayer.db.realm.adapters.toIndicator
-import world.respect.datalayer.db.realm.adapters.toIndicatorEntity
+import world.respect.datalayer.db.school.adapters.toIndicator
+import world.respect.datalayer.db.school.adapters.toIndicatorEntity
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.school.IndicatorDataSource
 

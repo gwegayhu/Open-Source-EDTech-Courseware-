@@ -1,4 +1,4 @@
-package world.respect.datalayer.db.realm.daos
+package world.respect.datalayer.db.school.daos
 
 import androidx.room.Dao
 import androidx.room.Insert

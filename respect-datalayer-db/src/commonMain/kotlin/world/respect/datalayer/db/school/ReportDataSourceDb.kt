@@ -9,9 +9,9 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.db.RespectSchoolDatabase
-import world.respect.datalayer.db.realm.adapters.toReportEntity
-import world.respect.datalayer.db.realm.adapters.toRespectReport
-import world.respect.datalayer.realm.ReportDataSource
+import world.respect.datalayer.db.school.adapters.toReportEntity
+import world.respect.datalayer.db.school.adapters.toRespectReport
+import world.respect.datalayer.school.ReportDataSource
 import world.respect.datalayer.respect.model.RespectReport
 
 class ReportDataSourceDb(

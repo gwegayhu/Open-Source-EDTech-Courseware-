@@ -1,4 +1,4 @@
-package world.respect.datalayer.realm.model.report
+package world.respect.datalayer.school.model.report
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.serialization.Serializable

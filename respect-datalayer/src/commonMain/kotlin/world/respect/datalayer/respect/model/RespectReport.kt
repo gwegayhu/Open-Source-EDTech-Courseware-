@@ -1,7 +1,7 @@
 package world.respect.datalayer.respect.model
 
 import kotlinx.serialization.Serializable
-import world.respect.datalayer.realm.model.report.ReportOptions
+import world.respect.datalayer.school.model.report.ReportOptions
 
 @Serializable
 data class RespectReport(

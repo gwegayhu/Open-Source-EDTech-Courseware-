@@ -33,7 +33,7 @@ import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.view.report.graph.CombinedGraph
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.realm.model.report.ReportOptions
+import world.respect.datalayer.school.model.report.ReportOptions
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.report.model.RunReportResultAndFormatters
 import world.respect.shared.domain.report.query.RunReportUseCase

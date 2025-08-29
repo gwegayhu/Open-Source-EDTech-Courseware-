@@ -1,4 +1,4 @@
-package world.respect.datalayer.realm
+package world.respect.datalayer.school
 
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadParams

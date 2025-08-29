@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
-import world.respect.datalayer.realm.model.report.ReportFilter
+import world.respect.datalayer.school.model.report.ReportFilter
 import world.respect.shared.viewmodel.manageuser.profile.ProfileType
 
 /**

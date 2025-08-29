@@ -1,7 +1,7 @@
 package world.respect.shared.domain.report.formatter
 
-import world.respect.datalayer.realm.model.report.ReportXAxis
-import world.respect.datalayer.realm.model.report.YAxisTypes
+import world.respect.datalayer.school.model.report.ReportXAxis
+import world.respect.datalayer.school.model.report.YAxisTypes
 import world.respect.shared.domain.report.query.RunReportUseCase
 import world.respect.shared.resources.StringUiText
 import world.respect.shared.resources.UiText

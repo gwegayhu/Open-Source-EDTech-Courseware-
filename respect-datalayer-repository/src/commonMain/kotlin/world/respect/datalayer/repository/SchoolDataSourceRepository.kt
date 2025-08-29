@@ -2,7 +2,7 @@ package world.respect.datalayer.repository
 
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.SchoolDataSourceLocal
-import world.respect.datalayer.realm.ReportDataSource
+import world.respect.datalayer.school.ReportDataSource
 import world.respect.datalayer.school.IndicatorDataSource
 import world.respect.datalayer.school.PersonDataSource
 

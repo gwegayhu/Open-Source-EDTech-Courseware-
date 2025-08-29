@@ -1,9 +1,9 @@
-package world.respect.datalayer.db.realm.adapters
+package world.respect.datalayer.db.school.adapters
 
 import kotlinx.serialization.json.Json
 import world.respect.datalayer.db.realm.entities.IndicatorEntity
 import world.respect.datalayer.db.realm.entities.ReportEntity
-import world.respect.datalayer.realm.model.report.ReportOptions
+import world.respect.datalayer.school.model.report.ReportOptions
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.respect.model.RespectReport
 
