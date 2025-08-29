@@ -42,6 +42,7 @@ interface OneRoasterEntityDao {
     """
     )
     fun findClassBySourcedIdAsFlow(sourcedId: String): Flow<OneRosterClassEntity?>
+
     @Query("""
         SELECT OneRosterClassEntity.classSourcedId AS sourcedId, 
                OneRosterClassEntity.classTitle AS title, 
