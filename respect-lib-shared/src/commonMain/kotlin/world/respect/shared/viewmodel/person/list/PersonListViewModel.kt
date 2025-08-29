@@ -12,8 +12,8 @@ import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
-import world.respect.datalayer.RespectRealmDataSource
-import world.respect.datalayer.realm.model.composites.PersonListDetails
+import world.respect.datalayer.SchoolDataSource
+import world.respect.datalayer.school.model.composites.PersonListDetails
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.people
@@ -36,7 +36,7 @@ class PersonListViewModel(
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
 
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
 
     private val _uiState = MutableStateFlow(PersonListUiState())
 
@@ -56,7 +56,7 @@ class PersonListViewModel(
         }
 
         viewModelScope.launch {
-            realmDataSource.personDataSource.findAll(DataLoadParams()).collect {
+            schoolDataSource.personDataSource.findAll(DataLoadParams()).collect {
                 _uiState.update { state ->
                     state.copy(persons = it)
                 }

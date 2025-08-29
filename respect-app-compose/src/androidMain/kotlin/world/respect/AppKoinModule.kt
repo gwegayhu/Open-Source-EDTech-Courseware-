@@ -83,20 +83,19 @@ import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForAp
 import world.respect.shared.viewmodel.report.ReportViewModel
 import java.io.File
 import org.koin.core.scope.Scope
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.datalayer.AuthTokenProvider
 import world.respect.datalayer.RespectAppDataSource
-import world.respect.datalayer.RespectRealmDataSource
-import world.respect.datalayer.RespectRealmDataSourceLocal
-import world.respect.datalayer.db.RespectRealmDataSourceDb
-import world.respect.datalayer.db.RespectRealmDatabase
+import world.respect.datalayer.SchoolDataSource
+import world.respect.datalayer.db.SchoolDataSourceDb
+import world.respect.datalayer.db.RespectSchoolDatabase
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
-import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
-import world.respect.shared.domain.realm.RespectRealmPath
+import world.respect.shared.domain.school.SchoolPrimaryKeyGenerator
+import world.respect.shared.domain.school.RespectSchoolPath
 import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.NavResultReturnerImpl
 import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
@@ -340,13 +339,13 @@ val appKoinModule = module {
     }
 
     /**
-     * The RespectRealm scope might be one instance per realm url or one instance per account per
-     * url.
+     * The SchoolDirectoryEntry scope might be one instance per school url or one instance per account
+     * per url.
      *
-     * If the upstream server provides a list of grants/permission rules then the realm database
+     * If the upstream server provides a list of grants/permission rules then the school database
      * can be shared; and scopeId
      */
-    scope<RespectRealm> {
+    scope<SchoolDirectoryEntry> {
 
         fun Scope.scopeUrl(): Url {
             val atIndex = id.lastIndexOf("@")
@@ -360,13 +359,13 @@ val appKoinModule = module {
 
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
             GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
-                realmUrl = scopeUrl(),
+                schoolUrl = scopeUrl(),
                 httpClient = get(),
             )
         }
 
-        scoped<RespectRealmPath> {
-            RespectRealmPath(
+        scoped<RespectSchoolPath> {
+            RespectSchoolPath(
                 path = Path(
                     File(
                         androidContext().filesDir, scopeUrl().sanitizedForFilename()
@@ -375,37 +374,37 @@ val appKoinModule = module {
             )
         }
 
-        scoped<RespectRealmDatabase> {
-            Room.databaseBuilder<RespectRealmDatabase>(
+        scoped<RespectSchoolDatabase> {
+            Room.databaseBuilder<RespectSchoolDatabase>(
                 androidContext(),
                 scopeUrl().sanitizedForFilename()
             ).build()
         }
 
-        scoped<RealmPrimaryKeyGenerator> {
-            RealmPrimaryKeyGenerator(
-                primaryKeyGenerator = PrimaryKeyGenerator(RealmPrimaryKeyGenerator.TABLE_IDS)
+        scoped<SchoolPrimaryKeyGenerator> {
+            SchoolPrimaryKeyGenerator(
+                primaryKeyGenerator = PrimaryKeyGenerator(SchoolPrimaryKeyGenerator.TABLE_IDS)
             )
         }
     }
 
     /**
      * RespectAccount scope id is always in the form of:
-     * userSourcedId@realm-url e.g. 4232@https://school.example.org/
+     * userSourcedId@school-url e.g. 4232@https://school.example.org/
      *
      * The URL will never contain an '@' sign (e.g. user@email.com@https://school.example.org/),
-     * the sourcedId may contain an @ sign. The realm url is after the LAST @ symbol.
+     * the sourcedId may contain an @ sign. The school url is after the LAST @ symbol.
      *
-     * The RespectAccount scope will be linked to RespectRealm (the parent) scope.
+     * The RespectAccount scope will be linked to SchoolDirectoryEntry (the parent) scope.
      */
     scope<RespectAccount> {
         scoped<AuthTokenProvider> {
             get<RespectTokenManager>().providerFor(id)
         }
 
-        scoped<RespectRealmDataSource> {
-            RespectRealmDataSourceDb(
-                realmDb = get(),
+        scoped<SchoolDataSource> {
+            SchoolDataSourceDb(
+                schoolDb = get(),
                 xxStringHasher = get(),
             )
         }

@@ -1,6 +1,6 @@
 # respect-server
 
-This is a KTOR server application module.
+This is a [KTOR](https://ktor.io/) server application module.
 
 Run from source:
 ```

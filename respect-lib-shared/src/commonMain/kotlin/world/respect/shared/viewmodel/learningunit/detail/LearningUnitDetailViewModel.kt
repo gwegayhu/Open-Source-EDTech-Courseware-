@@ -89,7 +89,6 @@ class LearningUnitDetailViewModel(
 
         launchAppUseCase(
             app = respectApp,
-            account = activeAccount,
             learningUnitId = launchUrl,
             navigateFn = {
                 _navCommandFlow.tryEmit(it)

@@ -15,12 +15,12 @@ import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.ext.isReadyAndSettled
-import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.school.model.Person
 import world.respect.shared.domain.account.RespectAccountManager
-import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
+import world.respect.shared.domain.school.SchoolPrimaryKeyGenerator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_person
 import world.respect.shared.generated.resources.edit_person
@@ -49,13 +49,13 @@ class PersonEditViewModel(
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
 
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
 
     val route: PersonEdit = savedStateHandle.toRoute()
 
-    private val realmPrimaryKeyGenerator: RealmPrimaryKeyGenerator by inject()
+    private val schoolPrimaryKeyGenerator: SchoolPrimaryKeyGenerator by inject()
 
-    private val guid = route.guid ?: realmPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+    private val guid = route.guid ?: schoolPrimaryKeyGenerator.primaryKeyGenerator.nextId(
         Person.TABLE_ID
     ).toString()
 
@@ -88,7 +88,7 @@ class PersonEditViewModel(
                     json = json,
                     serializer = Person.serializer(),
                     loadFn = { params ->
-                        realmDataSource.personDataSource.findByGuid(params, guid)
+                        schoolDataSource.personDataSource.findByGuid(params, guid)
                     },
                     uiUpdateFn = { person ->
                         _uiState.update { prev -> prev.copy(person = person) }
@@ -131,7 +131,7 @@ class PersonEditViewModel(
         val person = _uiState.value.person.dataOrNull() ?: return
         viewModelScope.launch {
             try {
-                realmDataSource.personDataSource.putPerson(person)
+                schoolDataSource.personDataSource.putPerson(person)
 
                 if(route.guid == null) {
                     _navCommandFlow.tryEmit(
