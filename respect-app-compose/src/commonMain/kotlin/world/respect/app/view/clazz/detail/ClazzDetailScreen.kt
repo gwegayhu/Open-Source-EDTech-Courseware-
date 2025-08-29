@@ -141,8 +141,7 @@ fun ClazzDetailScreen(
                         },
                         modifier = Modifier.size(24.dp)
                             .rotate(if (uiState.isPendingExpanded) 0f else -90f),
-
-                        )
+                    )
                 }
             )
         }
