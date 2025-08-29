@@ -85,7 +85,7 @@ class EnterPasswordSignupViewModel(
             when (route.type) {
                 ProfileType.CHILD , ProfileType.STUDENT->{
                         _navCommandFlow.tryEmit(
-                            NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,result.uid))
+                            NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,result.guid))
                         )
                 }
                 ProfileType.PARENT ->{

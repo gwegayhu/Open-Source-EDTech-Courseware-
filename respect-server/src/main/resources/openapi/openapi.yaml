@@ -6,16 +6,17 @@ info:
 
 tags:
   - name: directory
-    description: Provides a list of schools e.g. for a country/area
+    description: API for a directory of schools e.g. for a country/area
   - name: school
-    description: Provides API endpoints for a specific school
+    description: API for a specific school including users, classes, apps, xAPI, etc.
 
 paths:
   /api/directory/school:
     post:
       tags:
         - directory
-      description: Add a new school to the directory
+      summary: Add new schools to the directory
+      description: Add new schools to the directory
       security:
         - directory_auth:
             - write
@@ -34,6 +35,7 @@ paths:
     get:
       tags:
         - directory
+      summary: Lists / searches schools in the directory
       description: Get a list of schools in directory
       parameters:
         - name: name
@@ -56,6 +58,7 @@ paths:
     get:
       tags:
         - directory
+      summary: Get information about an invite
       description: |-
         Retrieves information about a specific invite. Users can be invited using a numerical invite 
         code. Each directory server has an invite code prefix, and each school also has an invite
@@ -78,6 +81,103 @@ paths:
                 $ref: "#/components/schemas/RespectInviteInfo"
         '404':
           description: Not found
+
+  /api/school/respect/auth/auth-with-password:
+    post:
+      tags:
+        - school
+      summary: Get an authentication token given a username and password
+      description: |-
+        Get a token and user information given a username and password.
+        
+
+  /api/school/respect/invite/redeem:
+    post:
+      tags:
+        - school
+      summary: Request to redeem an invite code to join a class/school.
+      description: |-
+        Redeem an invite code - can be used to join as a new user.
+      requestBody:
+        description: Invite redeem request ( RespectRedeemInviteRequest )
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RespectRedeemInviteRequest"
+
+      responses:
+        '200':
+          description: OK ( RespectRedeemInviteState )
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RespectPendingInviteState"
+
+        '404':
+          description: Not found (invite code not found/valid)
+
+  /api/school/respect/person:
+    get:
+      tags:
+        - school
+      summary:
+        Get a list of persons in the school.
+      description: |-
+        Get a list of persons in the school. The list will include only those that the authenticated
+        user has permission to view.
+      security:
+        - school_auth:
+            - read
+      parameters:
+        - name: guid
+          in: query
+          description: Specific person GUID to find
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Person"
+    post:
+      tags:
+        - school
+      summary: Add or update a list of persons in the school.
+      description: |-
+        Add or update a list of persons in the school.
+      security:
+        - school_auth:
+            - write
+      requestBody:
+        description: Persons to add or update
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Person"
+      responses:
+        '204':
+          description: No content - the request was accepted
+        '403':
+          description: |-
+            Forbidden - the values sent have been rejected. The server will send a list of the values
+            for each guid for which changes were rejected (provided that the authorized user has 
+            permission to see those values). The client should revert those changes accordingly and
+            then delete any other local changes. This can happen if the authorized user does not
+            have permission to add/update the given records.
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Person"
 
 components:
   schemas:
@@ -146,8 +246,82 @@ components:
             - TEACHER
             - STUDENT_OR_PARENT
 
+    RespectRedeemInviteRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "1234567890"
+        person:
+          $ref: '#/components/schemas/PersonInfo'
+        child:
+          $ref: '#/components/schemas/PersonInfo'
+        parentOrGuardianRole:
+          type: string
+          enum:
+            - MOTHER
+            - FATHER
+            - OTHER_GUARDIAN
+        account:
+          type: object
+          properties:
+            username:
+              type: string
+            credential:
+              anyOf:
+                - type: string
+                  description: password
+                - type: object
+                  description: AuthenticationResponseJSON for passkey
+
+    RespectPendingInviteState:
+      type: object
+      properties:
+        guid:
+          type: string
+        userPerson:
+          $ref: '#/components/schemas/Person'
+        childPerson:
+          $ref: '#/components/schemas/Person'
+        status:
+          type: string
+          enum:
+            - PENDING
+            - APPROVED
+            - DECLINED
+        lastModified:
+          type: integer
+          description: time last modified (millis since epoch)
+
+    PersonInfo:
+      type: object
+      description: |-
+        Basic info on a new person to be added. Created as its own class to avoid using all other
+        properties on Person.
+      properties:
+        name:
+          type: string
+        gender:
+          type: string
+          enum:
+            - FEMALE
+            - MALE
+            - UNSPECIFIED
+            - OTHER
+        dateOfBirth:
+          type: string
+          format: date
+
+
+    Person:
+      type: object
+
   securitySchemes:
     directory_auth:
       type: apiKey
       in: header
       name: Directory administrator auth
+    school_auth:
+      type: apiKey
+      in: header
+      name: Authentication token for a user in the school
