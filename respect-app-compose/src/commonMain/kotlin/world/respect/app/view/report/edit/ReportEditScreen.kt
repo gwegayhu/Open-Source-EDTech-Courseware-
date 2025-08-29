@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -121,7 +120,7 @@ private fun ReportEditScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .defaultItemPadding(bottom = 16.dp),
+            .defaultItemPadding(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
 
     ) {
@@ -270,18 +269,29 @@ private fun ReportEditScreen(
                     }
 
                     // Y Axis Dropdown
-                    IndicatorDropdownMenu(
+                    ExposedDropdownMenu(
+                        selectedValue = seriesItem.reportSeriesYAxis,
                         label = { Text(stringResource(Res.string.y_axis) + "*") },
                         options = availableIndicators,
-                        selectedValue = seriesItem.reportSeriesYAxis,
                         onOptionSelected = { selectedYAxis ->
                             val updatedSeries = seriesItem.copy(reportSeriesYAxis = selectedYAxis)
                             onSeriesChanged(updatedSeries)
                         },
                         disabledOptions = disabledIndicators,
-                        onManageIndicators = { manageIndicator() }
+                        additionalMenuItems = {
+                            DropdownMenuItem(
+                                onClick = {
+                                    manageIndicator()
+                                },
+                                text = {
+                                    Text(
+                                        text = stringResource(Res.string.manage_indicators),
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            )
+                        }
                     )
-
 
                     // Subgroup Dropdown
                     ExposedDropdownMenu(
@@ -375,7 +385,9 @@ fun <T> ExposedDropdownMenu(
     isError: Boolean = false,
     label: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
-    onOptionSelected: (T) -> Unit
+    onOptionSelected: (T) -> Unit,
+    additionalMenuItems: @Composable (() -> Unit)? = null
+
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -393,6 +405,7 @@ fun <T> ExposedDropdownMenu(
                     is ReportSeriesVisualType -> stringResource(it.label)
                     is FilterType -> stringResource(it.label)
                     is Comparisons -> stringResource(it.label)
+                    is Indicator -> (it.name)
                     else -> it.toString()
                 }
             } ?: "",
@@ -430,16 +443,18 @@ fun <T> ExposedDropdownMenu(
                             is ReportSeriesVisualType -> stringResource(option.label)
                             is FilterType -> stringResource(option.label)
                             is Comparisons -> stringResource(option.label)
+                            is Indicator -> (option.name)
                             else -> option.toString()
                         }
                         Text(
                             text,
-                            color = if (isDisabled) Color.Gray else LocalContentColor.current
+                            color = if (isDisabled) MaterialTheme.colorScheme.onPrimary else LocalContentColor.current
                         )
                     },
                     enabled = !isDisabled
                 )
             }
+            additionalMenuItems?.invoke()
         }
     }
 }
@@ -549,78 +564,5 @@ fun DatePickerButton(
             },
             supportingText = {}
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun IndicatorDropdownMenu(
-    modifier: Modifier = Modifier,
-    options: List<Indicator>,
-    selectedValue: Indicator?,
-    disabledOptions: List<Indicator> = emptyList(),
-    isError: Boolean = false,
-    label: @Composable (() -> Unit)? = null,
-    supportingText: @Composable (() -> Unit)? = null,
-    onOptionSelected: (Indicator) -> Unit,
-    onManageIndicators: () -> Unit
-) {
-    var isExpanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = !isExpanded },
-        modifier = modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = selectedValue?.name ?: "",
-            onValueChange = {},
-            readOnly = true,
-            modifier = modifier
-                .fillMaxWidth()
-                .menuAnchor(),
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            },
-            supportingText = supportingText,
-            isError = isError,
-            label = label,
-        )
-        ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
-            modifier = Modifier
-        ) {
-            options.forEach { option ->
-                val isDisabled = option in disabledOptions
-                DropdownMenuItem(
-                    onClick = {
-                        if (!isDisabled) {
-                            onOptionSelected(option)
-                            isExpanded = false
-                        }
-                    },
-                    text = {
-                        Text(
-                            option.name,
-                            color = if (isDisabled) Color.Gray else LocalContentColor.current
-                        )
-                    },
-                    enabled = !isDisabled
-                )
-            }
-            DropdownMenuItem(
-                onClick = {
-                    onManageIndicators()
-                    isExpanded = false
-                },
-                text = {
-                    Text(
-                        text = stringResource(Res.string.manage_indicators),
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            )
-        }
     }
 }

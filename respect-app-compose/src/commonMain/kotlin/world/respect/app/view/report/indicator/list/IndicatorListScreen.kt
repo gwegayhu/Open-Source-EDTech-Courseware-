@@ -7,15 +7,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import world.respect.app.util.ext.defaultItemPadding
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.viewmodel.report.indictor.list.IndicatorListUiState
 import world.respect.shared.viewmodel.report.indictor.list.IndicatorListViewModel
@@ -30,11 +31,14 @@ fun IndicatorListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .defaultItemPadding()
     ) {
         when {
             uiState.errorMessage != null -> {
-                Text("Error: ${uiState.errorMessage}", color = Color.Red)
+                Text(
+                    text = "Error: ${uiState.errorMessage}",
+                    color = MaterialTheme.colorScheme.error
+                )
             }
 
             else -> {
@@ -73,7 +77,7 @@ private fun IndicatorListContent(
                 )
                 Text(
                     text = indicator.description,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }

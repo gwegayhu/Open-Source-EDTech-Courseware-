@@ -20,7 +20,7 @@ interface ReportDataSource {
 
     suspend fun putReport(report: RespectReport)
 
-    suspend fun updateReport(report: RespectReport)
+    suspend fun deleteReport(reportId: String)
 
 
 }

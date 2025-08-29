@@ -28,7 +28,7 @@ class ReportDataSourceRepository(
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateReport(report: RespectReport) {
+    override suspend fun deleteReport(reportId: String) {
         TODO("Not yet implemented")
     }
 }

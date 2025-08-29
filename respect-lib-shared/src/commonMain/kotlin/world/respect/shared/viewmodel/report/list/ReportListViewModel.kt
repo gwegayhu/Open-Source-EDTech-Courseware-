@@ -126,7 +126,9 @@ class ReportListViewModel(
         )
     }
 
-    fun onRemoveReport(uid: Long) {
-        // TODO Implement remove functionality
+    fun onRemoveReport(uid: String) {
+        viewModelScope.launch {
+            realmDataSource.reportDataSource.deleteReport(uid)
+        }
     }
 }

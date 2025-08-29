@@ -48,9 +48,7 @@ class ReportDetailViewModel(
 ) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
-
     private val route: ReportDetail = savedStateHandle.toRoute()
-
     private val reportUid = route.reportUid
     private val realmDataSource: RespectRealmDataSource by inject()
     private val _uiState = MutableStateFlow(ReportDetailUiState())
@@ -65,7 +63,6 @@ class ReportDetailViewModel(
                         text = Res.string.edit.asUiText(),
                         icon = FabUiState.FabIcon.EDIT,
                         onClick = {
-                            println("sgchj${reportUid}")
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(
                                     ReportEdit(reportUid = reportUid)
@@ -78,7 +75,7 @@ class ReportDetailViewModel(
         }
         viewModelScope.launch {
             realmDataSource.reportDataSource.getReportAsFlow(
-                route.reportUid.toString()
+                route.reportUid
             ).collect { report ->
                 _appUiState.update { prev ->
                     prev.copy(

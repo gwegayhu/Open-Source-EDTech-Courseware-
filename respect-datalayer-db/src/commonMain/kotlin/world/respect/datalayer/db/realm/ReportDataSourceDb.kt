@@ -56,11 +56,10 @@ class ReportDataSourceDb(
         }
     }
 
-    override suspend fun updateReport(report: RespectReport) {
-        val reportEntity = report.toReportEntity()
+    override suspend fun deleteReport(reportId: String) {
         realmDb.useWriterConnection { con ->
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                realmDb.getReportEntityDao().updateReport(reportEntity)
+                realmDb.getReportEntityDao().deleteReportByUid(reportId)
             }
         }
     }

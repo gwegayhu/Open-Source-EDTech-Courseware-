@@ -150,7 +150,7 @@ private fun ReportGridCard(
                 modifier = Modifier
                     .size(32.dp)
                     .padding(8.dp)
-                    .clickable { viewModel.onRemoveReport(report.reportId.toLong()) }
+                    .clickable { viewModel.onRemoveReport(report.reportId) }
                     .align(Alignment.TopEnd)
             )
         }

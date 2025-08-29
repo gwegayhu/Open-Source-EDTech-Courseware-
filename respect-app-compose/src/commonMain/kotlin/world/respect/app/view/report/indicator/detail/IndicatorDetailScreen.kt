@@ -3,15 +3,16 @@ package world.respect.app.view.report.indicator.detail
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import world.respect.app.util.ext.defaultItemPadding
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.shared.viewmodel.report.indictor.detail.IndicatorDetailUiState
 import world.respect.shared.viewmodel.report.indictor.detail.IndicatorDetailViewModel
@@ -25,12 +26,12 @@ fun IndicatorDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .defaultItemPadding(),
     ) {
         when {
             uiState.errorMessage != null -> Text(
                 "Error: ${uiState.errorMessage}",
-                color = Color.Red
+                color = MaterialTheme.colorScheme.error
             )
 
             else -> {

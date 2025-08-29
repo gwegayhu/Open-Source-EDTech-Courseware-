@@ -98,7 +98,7 @@ fun ReportFilterEditScreen(
 
                     else -> {
                         OutlinedTextField(
-                            modifier = Modifier.weight(1f), // Takes remaining space
+                            modifier = Modifier.weight(1f),
                             label = { Text(stringResource(Res.string.value) + "*") },
                             value = uiState.filters?.reportFilterValue ?: "",
                             keyboardOptions = KeyboardOptions(

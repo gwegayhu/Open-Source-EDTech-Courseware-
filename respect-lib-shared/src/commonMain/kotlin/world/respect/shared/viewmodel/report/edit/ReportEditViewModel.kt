@@ -75,7 +75,7 @@ class ReportEditViewModel(
     val uiState: Flow<ReportEditUiState> = _uiState.asStateFlow()
     private val _availableIndicators = MutableStateFlow<List<Indicator>>(emptyList())
     val availableIndicators = _availableIndicators.asStateFlow()
-    private var nextTempFilterUid = -1
+    private var nextTempFilterUid = 0
     private val debouncer = LaunchDebouncer(viewModelScope)
 
 
@@ -191,11 +191,8 @@ class ReportEditViewModel(
                     reportOptions = newState.reportOptions,
                     ownerGuid = ""
                 )
-                if (route.reportUid == null) {
-                    realmDataSource.reportDataSource.putReport(report)
-                } else {
-                    realmDataSource.reportDataSource.updateReport(report)
-                }
+                realmDataSource.reportDataSource.putReport(report)
+
                 if (route.reportUid == null) {
                     _navCommandFlow.tryEmit(
                         NavCommand.Navigate(
@@ -207,6 +204,7 @@ class ReportEditViewModel(
                 }
 
             } catch (e: Exception) {
+                //needs to display snack bar here
                 println("Error updating report options: ${e.message}")
             }
         }
@@ -299,7 +297,7 @@ class ReportEditViewModel(
     }
 
     fun onAddFilter(seriesId: Int) {
-        val tempFilterUid = nextTempFilterUid--
+        val tempFilterUid = nextTempFilterUid++
         val newFilter = ReportFilter(
             reportFilterUid = tempFilterUid,
             reportFilterSeriesUid = seriesId

@@ -35,6 +35,6 @@ interface  ReportEntityDao {
     """)
     fun getReportAsFlow(reportId: String): Flow<ReportEntity?>
 
-    @Update
-    suspend fun updateReport(entity: ReportEntity)
+    @Query("DELETE FROM ReportEntity WHERE reportId = :reportUid")
+    suspend fun deleteReportByUid(reportUid: String)
 }

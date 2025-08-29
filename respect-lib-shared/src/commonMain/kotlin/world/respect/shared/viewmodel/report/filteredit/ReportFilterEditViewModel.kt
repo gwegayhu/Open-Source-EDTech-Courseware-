@@ -32,7 +32,6 @@ class ReportFilterEditViewModel(
 
     private val _uiState = MutableStateFlow(ReportFilterEditUiState())
     val uiState: StateFlow<ReportFilterEditUiState> = _uiState
-
     private val route: ReportEditFilter = savedStateHandle.toRoute()
     private val reportFilter: ReportFilter = route.getReportFilter()
 
@@ -58,6 +57,19 @@ class ReportFilterEditViewModel(
         )
     }
 
+    fun onEntityChanged(value: ReportFilter?) {
+        val updatedFilter = value?.copy(
+            reportFilterSeriesUid = _uiState.value.filters?.reportFilterSeriesUid ?: 0
+        )
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                filters = updatedFilter,
+                filterConditionOptions = getConditionOptionsForField(updatedFilter?.reportFilterField)
+            )
+        }
+    }
+
     fun onClickSave() {
         val currentFilter = uiState.value.filters
         if (currentFilter != null && isValidFilter(currentFilter)) {
@@ -73,19 +85,6 @@ class ReportFilterEditViewModel(
         return filter.reportFilterField != null &&
                 filter.reportFilterCondition != null &&
                 filter.reportFilterValue?.isNotBlank() == true
-    }
-
-    fun onEntityChanged(value: ReportFilter?) {
-        val updatedFilter = value?.copy(
-            reportFilterSeriesUid = _uiState.value.filters?.reportFilterSeriesUid ?: 0
-        )
-
-        _uiState.update { currentState ->
-            currentState.copy(
-                filters = updatedFilter,
-                filterConditionOptions = getConditionOptionsForField(updatedFilter?.reportFilterField)
-            )
-        }
     }
 
     private fun getConditionOptionsForField(field: FilterType?): ReportConditionFilterOptions? {

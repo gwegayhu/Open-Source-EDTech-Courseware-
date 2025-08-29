@@ -55,7 +55,7 @@ fun IndictorEditScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .defaultItemPadding(bottom = 16.dp),
+            .defaultItemPadding(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
