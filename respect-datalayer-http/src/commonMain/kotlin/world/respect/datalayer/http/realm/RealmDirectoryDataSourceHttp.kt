@@ -11,6 +11,7 @@ import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.RespectAppDataSourceLocal
 import world.respect.datalayer.realmdirectory.RealmDirectoryDataSource
 import world.respect.datalayer.respect.model.RespectRealm
 import world.respect.datalayer.respect.model.RespectRealmDirectory
@@ -21,10 +22,10 @@ import kotlin.time.ExperimentalTime
 
 class RealmDirectoryDataSourceHttp(
     private val httpClient: HttpClient,
-    private val defaultDirectoryUrl: String
-    ) : RealmDirectoryDataSource {
-    private val defaultDirectoryUrlObj = Url(defaultDirectoryUrl)
+    private val local : RespectAppDataSourceLocal,
 
+    private val defaultCompatibleAppListUrl: String
+    ) : RealmDirectoryDataSource {
 
     override suspend fun allDirectories(): List<RespectRealmDirectory> {
         TODO("Not yet implemented")
@@ -39,11 +40,18 @@ class RealmDirectoryDataSourceHttp(
         return flow {
             emit(DataLoadingState())
             try {
-                val url = defaultDirectoryUrlObj.resolve("/api/directory/realms?q=$text")
-                val realms: List<RespectRealm> = httpClient.get(url).body()
+                val directories = local.realmDirectoryDataSource.allDirectories()
+                val respectRealms = mutableListOf<RespectRealm>()
+
+                for (dir in directories) {
+                    val url = dir.baseUrl.resolve("api/directory/realms?q=$text")
+
+                    val realms: List<RespectRealm> = httpClient.get(url).body()
+                    respectRealms += realms
+                }
                 emit(
                     DataReadyState(
-                        data = realms,
+                        data = respectRealms,
                         metaInfo = DataLoadMetaInfo(
                             lastModified = Clock.System.now().toEpochMilliseconds()
                         )

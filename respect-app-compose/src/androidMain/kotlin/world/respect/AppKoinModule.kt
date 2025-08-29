@@ -329,6 +329,7 @@ val appKoinModule = module {
             ),
             remote = RespectAppDataSourceHttp(
                 httpClient = get(),
+                local = get(),
                 defaultCompatibleAppListUrl = DEFAULT_COMPATIBLE_APP_LIST_URL,
             )
         )
