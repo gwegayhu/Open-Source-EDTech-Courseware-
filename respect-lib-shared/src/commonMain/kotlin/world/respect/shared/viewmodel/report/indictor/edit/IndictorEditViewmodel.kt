@@ -15,11 +15,11 @@ import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.DataReadyState
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.domain.account.RespectAccountManager
-import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
+import world.respect.shared.domain.school.SchoolPrimaryKeyGenerator
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.indicator
@@ -46,13 +46,13 @@ class IndicatorEditViewModel(
 ) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
     private val _uiState = MutableStateFlow(IndicatorEditUiState())
     val uiState = _uiState.asStateFlow()
     private val debouncer = LaunchDebouncer(viewModelScope)
     private val route: IndictorEdit = savedStateHandle.toRoute()
-    private val realmPrimaryKeyGenerator: RealmPrimaryKeyGenerator by inject()
-    private val guid = route.indicatorId ?: realmPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+    private val schoolPrimaryKeyGenerator: SchoolPrimaryKeyGenerator by inject()
+    private val guid = route.indicatorId ?: schoolPrimaryKeyGenerator.primaryKeyGenerator.nextId(
         Indicator.TABLE_ID
     ).toString()
 
@@ -75,7 +75,7 @@ class IndicatorEditViewModel(
                     json = json,
                     serializer = Indicator.serializer(),
                     loadFn = { params ->
-                        realmDataSource.indicatorDataSource.getIndicatorAsync(
+                        schoolDataSource.indicatorDataSource.getIndicatorAsync(
                             params,
                             route.indicatorId
                         )
@@ -112,7 +112,7 @@ class IndicatorEditViewModel(
         val indicator = _uiState.value.indicatorData.dataOrNull() ?: return
         viewModelScope.launch {
             try {
-                realmDataSource.indicatorDataSource.putIndicator(indicator)
+                schoolDataSource.indicatorDataSource.putIndicator(indicator)
 
                 if (route.indicatorId == null) {
                     _navCommandFlow.tryEmit(

@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.inject
 import org.koin.core.scope.Scope
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.realm.model.report.DefaultIndicators
 import world.respect.datalayer.realm.model.report.ReportFilter
@@ -24,7 +24,7 @@ import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.libutil.ext.replaceOrAppend
 import world.respect.shared.domain.account.RespectAccountManager
-import world.respect.shared.domain.realm.RealmPrimaryKeyGenerator
+import world.respect.shared.domain.school.SchoolPrimaryKeyGenerator
 import world.respect.shared.ext.replace
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_a_new_report
@@ -64,10 +64,10 @@ class ReportEditViewModel(
 ) : RespectViewModel(savedStateHandle), KoinScopeComponent {
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
     private val route: ReportEdit = savedStateHandle.toRoute()
-    private val realmPrimaryKeyGenerator: RealmPrimaryKeyGenerator by inject()
-    private val entityUid = route.reportUid ?: realmPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+    private val schoolPrimaryKeyGenerator: SchoolPrimaryKeyGenerator by inject()
+    private val entityUid = route.reportUid ?: schoolPrimaryKeyGenerator.primaryKeyGenerator.nextId(
         RespectReport.TABLE_ID
     ).toString()
     private val _uiState: MutableStateFlow<ReportEditUiState> =
@@ -109,7 +109,7 @@ class ReportEditViewModel(
         viewModelScope.launch {
             // Load user-created indicators from database
             try {
-                realmDataSource.indicatorDataSource.allIndicatorAsFlow().collect { dataLoadState ->
+                schoolDataSource.indicatorDataSource.allIndicatorAsFlow().collect { dataLoadState ->
                     val userIndicators = dataLoadState.dataOrNull() ?: emptyList()
                     // Combine default indicators with user-created ones
                     val allIndicators = DefaultIndicators.list + userIndicators
@@ -126,7 +126,7 @@ class ReportEditViewModel(
                     json = json,
                     serializer = RespectReport.serializer(),
                     loadFn = { params ->
-                        realmDataSource.reportDataSource.getReportAsync(
+                        schoolDataSource.reportDataSource.getReportAsync(
                             loadParams = params,
                             reportId = route.reportUid
                         )
@@ -191,7 +191,7 @@ class ReportEditViewModel(
                     reportOptions = newState.reportOptions,
                     ownerGuid = ""
                 )
-                realmDataSource.reportDataSource.putReport(report)
+                schoolDataSource.reportDataSource.putReport(report)
 
                 if (route.reportUid == null) {
                     _navCommandFlow.tryEmit(

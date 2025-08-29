@@ -12,7 +12,7 @@ import kotlinx.datetime.TimeZone
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.inject
 import org.koin.core.scope.Scope
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.realm.model.report.ReportOptions
 import world.respect.datalayer.respect.model.RespectReport
@@ -50,7 +50,7 @@ class ReportDetailViewModel(
     override val scope: Scope = accountManager.requireSelectedAccountScope()
     private val route: ReportDetail = savedStateHandle.toRoute()
     private val reportUid = route.reportUid
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
     private val _uiState = MutableStateFlow(ReportDetailUiState())
     val uiState: Flow<ReportDetailUiState> = _uiState.asStateFlow()
 
@@ -74,7 +74,7 @@ class ReportDetailViewModel(
             }
         }
         viewModelScope.launch {
-            realmDataSource.reportDataSource.getReportAsFlow(
+            schoolDataSource.reportDataSource.getReportAsFlow(
                 route.reportUid
             ).collect { report ->
                 _appUiState.update { prev ->

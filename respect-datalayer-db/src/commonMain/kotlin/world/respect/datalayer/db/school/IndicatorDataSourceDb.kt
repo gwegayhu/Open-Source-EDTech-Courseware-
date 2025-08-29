@@ -1,4 +1,4 @@
-package world.respect.datalayer.db.realm
+package world.respect.datalayer.db.school
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -6,18 +6,18 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
-import world.respect.datalayer.db.RespectRealmDatabase
+import world.respect.datalayer.db.RespectSchoolDatabase
 import world.respect.datalayer.db.realm.adapters.toIndicator
 import world.respect.datalayer.db.realm.adapters.toIndicatorEntity
-import world.respect.datalayer.realm.IndicatorDataSource
 import world.respect.datalayer.respect.model.Indicator
+import world.respect.datalayer.school.IndicatorDataSource
 
 class IndicatorDataSourceDb(
-    private val realmDb: RespectRealmDatabase
+    private val schoolDb: RespectSchoolDatabase,
 ): IndicatorDataSource {
 
     override suspend fun allIndicatorAsFlow(): Flow<DataLoadState<List<Indicator>>> {
-        return realmDb.getIndicatorEntityDao().getAllIndicator().map { indicatorEntities ->
+        return schoolDb.getIndicatorEntityDao().getAllIndicator().map { indicatorEntities ->
             DataReadyState(indicatorEntities.map { it.toIndicator() })
         }
     }
@@ -26,7 +26,7 @@ class IndicatorDataSourceDb(
         loadParams: DataLoadParams,
         indicatorId: String
     ): DataLoadState<Indicator> {
-        val indicatorEntity = realmDb.getIndicatorEntityDao().getIndicatorAsync(indicatorId)
+        val indicatorEntity = schoolDb.getIndicatorEntityDao().getIndicatorAsync(indicatorId)
         return if (indicatorEntity != null) {
             DataReadyState(indicatorEntity.toIndicator())
         } else {
@@ -35,7 +35,7 @@ class IndicatorDataSourceDb(
     }
 
     override suspend fun getIndicatorAsFlow(indicatorId: String): Flow<DataLoadState<Indicator>> {
-        return realmDb.getIndicatorEntityDao().getIndicatorAsFlow(indicatorId).map { indicatorEntity ->
+        return schoolDb.getIndicatorEntityDao().getIndicatorAsFlow(indicatorId).map { indicatorEntity ->
             if (indicatorEntity != null) {
                 DataReadyState(indicatorEntity.toIndicator())
             } else {
@@ -46,11 +46,11 @@ class IndicatorDataSourceDb(
 
     override suspend fun putIndicator(indicator: Indicator) {
         val indicatorEntity = indicator.toIndicatorEntity()
-        realmDb.getIndicatorEntityDao().putIndicator(indicatorEntity)
+        schoolDb.getIndicatorEntityDao().putIndicator(indicatorEntity)
     }
 
     override suspend fun updateIndicator(indicator: Indicator) {
         val indicatorEntity = indicator.toIndicatorEntity()
-        realmDb.getIndicatorEntityDao().updateIndicator(indicatorEntity)
+        schoolDb.getIndicatorEntityDao().updateIndicator(indicatorEntity)
     }
 }

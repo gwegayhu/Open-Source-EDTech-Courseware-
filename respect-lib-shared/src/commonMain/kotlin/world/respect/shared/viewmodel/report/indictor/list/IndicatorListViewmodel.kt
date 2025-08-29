@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.inject
 import org.koin.core.scope.Scope
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.realm.model.report.DefaultIndicators
 import world.respect.datalayer.respect.model.Indicator
@@ -37,7 +37,7 @@ class IndicatorListViewModel(
     private val _uiState = MutableStateFlow(IndicatorListUiState())
     val uiState = _uiState.asStateFlow()
     override val scope: Scope = accountManager.requireSelectedAccountScope()
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
 
     init {
         viewModelScope.launch {
@@ -55,7 +55,7 @@ class IndicatorListViewModel(
             }
             viewModelScope.launch {
                 try {
-                    realmDataSource.indicatorDataSource.allIndicatorAsFlow()
+                    schoolDataSource.indicatorDataSource.allIndicatorAsFlow()
                         .collect { dataLoadState ->
                             val userIndicators = dataLoadState.dataOrNull() ?: emptyList()
                             val allIndicators = DefaultIndicators.list + userIndicators

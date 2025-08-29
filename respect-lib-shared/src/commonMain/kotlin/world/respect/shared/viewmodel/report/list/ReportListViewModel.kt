@@ -14,7 +14,7 @@ import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.respect.model.RespectReport
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.domain.report.formatter.CreateGraphFormatterUseCase
@@ -49,7 +49,7 @@ class ReportListViewModel(
     override val scope: Scope = accountManager.requireSelectedAccountScope()
     private val _uiState = MutableStateFlow(ReportListUiState())
     val uiState: Flow<ReportListUiState> = _uiState.asStateFlow()
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
 
     init {
         viewModelScope.launch {
@@ -67,7 +67,7 @@ class ReportListViewModel(
             }
 
             viewModelScope.launch {
-                realmDataSource.reportDataSource.allReportsAsFlow(template = false).collect {
+                schoolDataSource.reportDataSource.allReportsAsFlow(template = false).collect {
                     _uiState.update { state ->
                         state.copy(reportList = it)
                     }
@@ -128,7 +128,7 @@ class ReportListViewModel(
 
     fun onRemoveReport(uid: String) {
         viewModelScope.launch {
-            realmDataSource.reportDataSource.deleteReport(uid)
+            schoolDataSource.reportDataSource.deleteReport(uid)
         }
     }
 }

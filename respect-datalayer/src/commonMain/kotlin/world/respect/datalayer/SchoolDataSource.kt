@@ -1,8 +1,8 @@
 package world.respect.datalayer
 
-import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.realm.ReportDataSource
-import world.respect.datalayer.realm.IndicatorDataSource
+import world.respect.datalayer.school.IndicatorDataSource
+import world.respect.datalayer.school.PersonDataSource
 
 
 /**
