@@ -2,12 +2,12 @@ package world.respect.datalayer.respect.model.invite
 
 import kotlinx.serialization.Serializable
 import world.respect.datalayer.oneroster.rostering.model.OneRosterClassGUIDRef
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 
 /**
  * @property code the invite code (as provided by the user). An invite code includes a
  *           directory code, then a realm code, and then a code handled by the realm.
- * @property realm The realm that the user is invited to
+ * @property school The realm that the user is invited to
  * @property classGUIDRef The class to which the user is being invited
  * @property className The name of the class to which the user is being invited
  * @property schoolName The name of the school to which the user is being invited
@@ -16,7 +16,7 @@ import world.respect.datalayer.respect.model.RespectRealm
 @Serializable
 class RespectInviteInfo(
     val code: String,
-    val realm: RespectRealm,
+    val school: SchoolDirectoryEntry,
     val classGUIDRef: OneRosterClassGUIDRef?,
     val className: String?,
     val schoolName: String?,

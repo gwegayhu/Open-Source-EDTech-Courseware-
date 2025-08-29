@@ -8,25 +8,25 @@ import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import world.respect.datalayer.RespectAppDataSource
-import world.respect.datalayer.RespectRealmDataSource
-import world.respect.datalayer.RespectRealmDataSourceLocal
+import world.respect.datalayer.SchoolDataSource
+import world.respect.datalayer.SchoolDataSourceLocal
 import world.respect.datalayer.db.RespectAppDataSourceDb
 import world.respect.datalayer.db.RespectAppDatabase
-import world.respect.datalayer.db.RespectRealmDataSourceDb
-import world.respect.datalayer.db.RespectRealmDatabase
-import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.db.SchoolDataSourceDb
+import world.respect.datalayer.db.RespectSchoolDatabase
+import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSourceLocal
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.lib.primarykeygen.PrimaryKeyGenerator
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
-import world.respect.server.domain.realm.add.AddRealmUseCase
-import world.respect.server.domain.realm.add.AddServerManagedDirectoryCallback
+import world.respect.server.domain.school.add.AddSchoolUseCase
+import world.respect.server.domain.school.add.AddServerManagedDirectoryCallback
 import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPasswordDbImpl
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseDbImpl
-import world.respect.shared.domain.realm.RespectRealmPath
+import world.respect.shared.domain.school.RespectSchoolPath
 import java.io.File
 
 const val APP_DB_FILENAME = "respect-app.db"
@@ -68,65 +68,65 @@ fun serverKoinModule(
         )
     }
 
-    single<AddRealmUseCase> {
-        AddRealmUseCase(
-            directoryDataSource = get<RespectAppDataSource>().realmDirectoryDataSource as RealmDirectoryDataSourceLocal
+    single<AddSchoolUseCase> {
+        AddSchoolUseCase(
+            directoryDataSource = get<RespectAppDataSource>().schoolDirectoryDataSource as SchoolDirectoryDataSourceLocal
         )
     }
 
     /*
-     * Realm scope: realm id = the full realm url as per RespectRealm.self
+     * School scope: scope id = the full school url as per SchoolDirectoryEntry.self
      */
-    scope<RespectRealm> {
-        scoped<RespectRealmPath> {
-            val realmDirName = Url(id).sanitizedForFilename()
-            val realmDirFile = File(dataDir, realmDirName).also {
+    scope<SchoolDirectoryEntry> {
+        scoped<RespectSchoolPath> {
+            val schoolDirName = Url(id).sanitizedForFilename()
+            val schoolDirFile = File(dataDir, schoolDirName).also {
                 if(!it.exists())
                     it.mkdirs()
             }
 
-            RespectRealmPath(
-                path = Path(realmDirFile.absolutePath)
+            RespectSchoolPath(
+                path = Path(schoolDirFile.absolutePath)
             )
         }
 
-        scoped<RespectRealmDatabase> {
-            val realmPath: RespectRealmPath = get()
+        scoped<RespectSchoolDatabase> {
+            val schoolPath: RespectSchoolPath = get()
             val appDb: RespectAppDatabase = get()
             val xxHasher: XXStringHasher = get()
 
-            val realmConfig = runBlocking {
-                appDb.getRealmConfigEntityDao().findByUid(xxHasher.hash(id))
-            } ?: throw IllegalStateException("Realm config not found")
+            val schoolConfig = runBlocking {
+                appDb.getSchoolConfigEntityDao().findByUid(xxHasher.hash(id))
+            } ?: throw IllegalStateException("School config not found for $id")
 
-            val realmPathFile = File(realmPath.path.toString())
-            val dbFile = realmPathFile.resolve(realmConfig.dbUrl)
+            val schoolConfigFile = File(schoolPath.path.toString())
+            val dbFile = schoolConfigFile.resolve(schoolConfig.dbUrl)
 
-            Room.databaseBuilder<RespectRealmDatabase>(dbFile.absolutePath)
+            Room.databaseBuilder<RespectSchoolDatabase>(dbFile.absolutePath)
                 .setDriver(BundledSQLiteDriver())
                 .build()
         }
 
         scoped<SetPasswordUseCase> {
             SetPasswordUseDbImpl(
-                realmDb = get(),
+                schoolDb = get(),
                 xxHash = get()
             )
         }
 
-        scoped<RespectRealmDataSourceLocal> {
-            RespectRealmDataSourceDb(realmDb = get(), xxStringHasher = get())
+        scoped<SchoolDataSourceLocal> {
+            SchoolDataSourceDb(schoolDb = get(), xxStringHasher = get())
         }
 
-        scoped<RespectRealmDataSource> {
-            get<RespectRealmDataSourceLocal>()
+        scoped<SchoolDataSource> {
+            get<SchoolDataSourceLocal>()
         }
 
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
             GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
-                realmDb = get(),
+                schoolDb = get(),
                 xxHash = get(),
-                personDataSource = get<RespectRealmDataSource>().personDataSource,
+                personDataSource = get<SchoolDataSource>().personDataSource,
             )
 
         }

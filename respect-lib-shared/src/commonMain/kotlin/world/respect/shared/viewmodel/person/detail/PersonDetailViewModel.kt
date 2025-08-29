@@ -12,9 +12,9 @@ import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.school.model.Person
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.edit
@@ -38,7 +38,7 @@ class PersonDetailViewModel(
 
     override val scope: Scope = accountManager.requireSelectedAccountScope()
 
-    private val realmDataSource: RespectRealmDataSource by inject()
+    private val schoolDataSource: SchoolDataSource by inject()
 
     private val route: PersonDetail = savedStateHandle.toRoute()
 
@@ -59,7 +59,7 @@ class PersonDetailViewModel(
         }
 
         viewModelScope.launch {
-            realmDataSource.personDataSource.findByGuidAsFlow(
+            schoolDataSource.personDataSource.findByGuidAsFlow(
                 route.guid
             ).collect { person ->
                 _appUiState.update { prev ->

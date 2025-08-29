@@ -48,6 +48,11 @@ lz4 = "1.8.0"
 atomicfu = "0.29.0"
 material = "1.12.0"
 
+swagger-generator = "2.19.2"
+swagger-codegen = "3.0.71" # As per https://swagger.io/docs/open-source-tools/swagger-codegen/codegen-v3/about/
+swagger-ui = "5.27.1"
+
+
 [libraries]
 argparse4j = { module = "net.sourceforge.argparse4j:argparse4j", version.ref = "argparse4j" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
@@ -83,6 +88,9 @@ paging-multiplatform-common = { module = "app.cash.paging:paging-common", versio
 
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidx-webkit" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
+ktor-server-openapi = { module = "io.ktor:ktor-server-openapi", version.ref = "ktor" }
+ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 
 uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uri-kmp" }
 kotlinx-date-time = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-date-time" }
@@ -122,6 +130,9 @@ androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-commo
 credentials-androidx = { module = "androidx.credentials:credentials", version.ref = "androidx-credentials" }
 credentialsplay = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androidx-credentials" }
 
+swagger-codegen-cli = { module = "io.swagger.codegen.v3:swagger-codegen-cli", version.ref = "swagger-codegen" }
+swagger-ui = { module = "org.webjars:swagger-ui", version.ref = "swagger-ui" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -135,3 +146,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+swagger-generator = { id= "org.hidetake.swagger.generator", version.ref = "swagger-generator" }

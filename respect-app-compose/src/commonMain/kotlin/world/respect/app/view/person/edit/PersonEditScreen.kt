@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import world.respect.app.components.defaultItemPadding
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.school.model.Person
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.first_names
 import world.respect.shared.generated.resources.last_name
