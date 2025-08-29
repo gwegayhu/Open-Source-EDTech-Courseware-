@@ -12,7 +12,7 @@ class MockGetInviteInfoUseCase : GetInviteInfoUseCase {
     override suspend fun invoke(code: String): RespectInviteInfo {
         return RespectInviteInfo(
             code = code,
-            realm = RespectRealm(
+            school = SchoolDirectoryEntry(
                 name = LangMapStringValue("School"),
                 self = Url("https://example.org/respect-realm.json"),
                 xapi = Url("https://example.org/xapi"),

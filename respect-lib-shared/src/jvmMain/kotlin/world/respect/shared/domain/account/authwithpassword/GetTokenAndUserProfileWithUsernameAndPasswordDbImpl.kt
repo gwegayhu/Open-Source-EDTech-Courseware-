@@ -1,13 +1,13 @@
 package world.respect.shared.domain.account.authwithpassword
 
 import io.ktor.util.decodeBase64Bytes
-import world.respect.datalayer.db.RespectRealmDatabase
-import world.respect.datalayer.db.realm.adapters.toEntity
-import world.respect.datalayer.realm.PersonDataSource
+import world.respect.datalayer.db.RespectSchoolDatabase
+import world.respect.datalayer.db.school.adapters.toEntity
+import world.respect.datalayer.school.PersonDataSource
 import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
 import world.respect.shared.domain.account.AuthResponse
-import world.respect.datalayer.realm.model.AuthToken
+import world.respect.datalayer.school.model.AuthToken
 import world.respect.shared.domain.account.ForbiddenException
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import javax.crypto.SecretKeyFactory
@@ -15,7 +15,7 @@ import javax.crypto.spec.PBEKeySpec
 
 
 class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
-    private val realmDb: RespectRealmDatabase,
+    private val schoolDb: RespectSchoolDatabase,
     private val xxHash: XXStringHasher,
     private val personDataSource: PersonDataSource,
 ): GetTokenAndUserProfileWithUsernameAndPasswordUseCase {
@@ -26,7 +26,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
     ): AuthResponse {
         val person = personDataSource.findByUsername(username) ?: throw IllegalArgumentException()
         val personGuidHash = xxHash.hash(person.guid)
-        val personPassword = realmDb.getPersonPasswordEntityDao().findByUid(personGuidHash)
+        val personPassword = schoolDb.getPersonPasswordEntityDao().findByUid(personGuidHash)
             ?: throw ForbiddenException("Invalid username/password")
 
         val keySpec = PBEKeySpec(password.toCharArray(), personPassword.authSalt.toByteArray(),
@@ -42,7 +42,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
                 ttl = TOKEN_DEFAULT_TTL,
             )
 
-            realmDb.getAuthTokenEntityDao().insert(
+            schoolDb.getAuthTokenEntityDao().insert(
                 token.toEntity(person.guid, personGuidHash)
             )
 

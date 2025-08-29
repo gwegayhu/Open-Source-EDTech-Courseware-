@@ -132,13 +132,14 @@ class LoginViewModel(
             viewModelScope.launch {
                 try {
                     accountManager.login(
-                        username, password, route.realmUrl
+                        username, password, route.schoolUrl
                     )
 
                     _navCommandFlow.tryEmit(
                         NavCommand.Navigate(RespectAppLauncher)
                     )
                 }catch(e: Exception) {
+                    e.printStackTrace()
                     _uiState.update { prev ->
                         prev.copy(
                             errorText = e.getUiText() ?: StringResourceUiText(Res.string.something_went_wrong)

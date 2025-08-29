@@ -13,7 +13,7 @@ import io.ktor.http.takeFrom
 import world.respect.shared.domain.account.AuthResponse
 
 class GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
-    private val realmUrl: Url,
+    private val schoolUrl: Url,
     private val httpClient: HttpClient,
 ): GetTokenAndUserProfileWithUsernameAndPasswordUseCase {
 
@@ -23,8 +23,8 @@ class GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
     ): AuthResponse {
         return httpClient.post {
             url {
-                takeFrom(realmUrl)
-                appendPathSegments("api/realm/auth/auth-with-password")
+                takeFrom(schoolUrl)
+                appendPathSegments("api/school/auth/auth-with-password")
             }
 
             parameter(GetTokenAndUserProfileWithUsernameAndPasswordUseCase.PARAM_NAME_USERNAME, username)

@@ -2,7 +2,7 @@ package world.respect.datalayer
 
 import world.respect.datalayer.compatibleapps.CompatibleAppsDataSourceLocal
 import world.respect.datalayer.opds.OpdsDataSourceLocal
-import world.respect.datalayer.realmdirectory.RealmDirectoryDataSourceLocal
+import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSourceLocal
 
 /**
  *
@@ -13,6 +13,6 @@ interface RespectAppDataSourceLocal: RespectAppDataSource {
 
     override val opdsDataSource: OpdsDataSourceLocal
 
-    override val realmDirectoryDataSource: RealmDirectoryDataSourceLocal
+    override val schoolDirectoryDataSource: SchoolDirectoryDataSourceLocal
 
 }

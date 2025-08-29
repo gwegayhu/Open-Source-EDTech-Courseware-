@@ -1,12 +1,14 @@
 package world.respect.server
 
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.basic
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
@@ -17,10 +19,11 @@ import world.respect.Greeting
 import world.respect.libutil.ext.randomString
 import world.respect.server.routes.AUTH_CONFIG_DIRECTORY_ADMIN_BASIC
 import world.respect.server.routes.AuthRoute
-import world.respect.server.routes.RespectRealmDirectoryRoute
-import world.respect.server.routes.getRespectRealmJson
+import world.respect.server.routes.RespectSchoolDirectoryRoute
+import world.respect.server.routes.getRespectSchoolJson
 import java.io.File
 import java.util.Properties
+import io.ktor.server.plugins.swagger.*
 
 @Suppress("unused") // Used via application.conf
 fun Application.module() {
@@ -70,21 +73,32 @@ fun Application.module() {
     }
 
 
+    //As per https://ktor.io/docs/server-swagger-ui.html#configure-cors
+    install(CORS) {
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+    }
+
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
 
         route(".well-known") {
-            getRespectRealmJson("respect-realm.json")
+            getRespectSchoolJson("respect-school.json")
         }
+
+        swaggerUI(
+            path = "swagger",
+            swaggerFile = "openapi/openapi.yaml",
+        )
 
         route("api") {
             route("directory") {
-                RespectRealmDirectoryRoute()
+                RespectSchoolDirectoryRoute()
             }
 
-            route("realm") {
+            route("school") {
                 route("auth") {
                     AuthRoute()
                 }

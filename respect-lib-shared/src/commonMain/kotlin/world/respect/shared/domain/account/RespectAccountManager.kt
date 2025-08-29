@@ -17,13 +17,13 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadParams
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.respect.model.RESPECT_REALM_JSON_PATH
-import world.respect.datalayer.respect.model.RespectRealm
+import world.respect.datalayer.respect.model.RESPECT_SCHOOL_JSON_PATH
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
-import world.respect.shared.domain.realm.MakeRealmPathDirUseCase
+import world.respect.shared.domain.school.MakeSchoolPathDirUseCase
 import world.respect.shared.util.ext.isSameAccount
 
 /**
@@ -85,8 +85,8 @@ class RespectAccountManager(
         activeAccountFlow.collectLatest { account ->
             val person = if(account != null) {
                 val accountScope = getOrCreateAccountScope(account)
-                val realmDataSource: RespectRealmDataSource = accountScope.get()
-                realmDataSource.personDataSource.findByGuid(
+                val schoolDataSource: SchoolDataSource = accountScope.get()
+                schoolDataSource.personDataSource.findByGuid(
                     DataLoadParams(onlyIfCached = true), account.userSourcedId
                 ).dataOrNull()
             }else {
@@ -109,7 +109,7 @@ class RespectAccountManager(
         password: String,
         realmUrl: Url,
     ) {
-        val realmScope = getKoin().getOrCreateScope<RespectRealm>(realmUrl.toString())
+        val realmScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(realmUrl.toString())
         val authUseCase: GetTokenAndUserProfileWithUsernameAndPasswordUseCase = realmScope.get()
         val authResponse = authUseCase(
             username = username,
@@ -117,13 +117,13 @@ class RespectAccountManager(
         )
 
         //This could/should move to using the datasource instead of httpclient directly
-        val realm: RespectRealm = httpClient.get(
-            realmUrl.resolve(RESPECT_REALM_JSON_PATH)
+        val realm: SchoolDirectoryEntry = httpClient.get(
+            realmUrl.resolve(RESPECT_SCHOOL_JSON_PATH)
         ).body()
 
         val respectAccount = RespectAccount(
             userSourcedId = authResponse.person.guid,
-            realm = realm,
+            school = realm,
         )
 
         initSession(authResponse, respectAccount)
@@ -133,18 +133,18 @@ class RespectAccountManager(
         authResponse: AuthResponse,
         respectAccount: RespectAccount,
     ) {
-        val realmScope: Scope = getKoin().getOrCreateScope<RespectRealm>(
-            respectAccount.realm.self.toString()
+        val realmScope: Scope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(
+            respectAccount.school.self.toString()
         )
         tokenManager.storeToken(respectAccount.scopeId, authResponse.token)
 
         val accountScope = getOrCreateAccountScope(respectAccount)
 
-        val realmDataSource: RespectRealmDataSource = accountScope.get()
-        realmDataSource.personDataSource.putPerson(authResponse.person)
+        val schoolDataSource: SchoolDataSource = accountScope.get()
+        schoolDataSource.personDataSource.putPerson(authResponse.person)
 
         //now we can get the datalayer by creating a RespectAccount scope
-        val mkDirUseCase: MakeRealmPathDirUseCase? = realmScope.getOrNull()
+        val mkDirUseCase: MakeSchoolPathDirUseCase? = realmScope.getOrNull()
         mkDirUseCase?.invoke()
 
         selectedAccount = respectAccount
@@ -171,12 +171,12 @@ class RespectAccountManager(
         settings[SETTINGS_KEY_STORED_ACCOUNTS] = json.encodeToString(storedAccountsToCommit)
 
         val accountsOnRealmScope = accounts.value.count {
-            it.realm.self == account.realm.self
+            it.school.self == account.school.self
         }
 
         if(accountsOnRealmScope == 0) {
             //close it
-            val realmScope = getKoin().getScope(account.realm.self.toString())
+            val realmScope = getKoin().getScope(account.school.self.toString())
             realmScope.close()
         }
 
@@ -187,7 +187,7 @@ class RespectAccountManager(
      */
     fun getOrCreateAccountScope(account: RespectAccount): Scope {
         //need to ensure that the scope ids are never going to conflict ourself...
-        val realmScope = getKoin().getOrCreateScope<RespectRealm>(account.realm.self.toString())
+        val realmScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(account.school.self.toString())
         val accountScope = getKoin().getScopeOrNull(account.scopeId)
             ?: getKoin().createScope<RespectAccount>(account.scopeId).also {
                 it.linkTo(realmScope)

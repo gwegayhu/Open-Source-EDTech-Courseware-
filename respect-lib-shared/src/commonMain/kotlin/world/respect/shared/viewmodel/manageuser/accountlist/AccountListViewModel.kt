@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.datalayer.RespectRealmDataSource
+import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.realm.model.Person
+import world.respect.datalayer.school.model.Person
 import world.respect.libutil.ext.replaceOrAppend
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.domain.account.RespectAccountAndPerson
@@ -109,7 +109,7 @@ class AccountListViewModel(
                 storedAccountList.forEach { account ->
                     launch {
                         val accountScope = respectAccountManager.getOrCreateAccountScope(account)
-                        val dataSource: RespectRealmDataSource = accountScope.get()
+                        val dataSource: SchoolDataSource = accountScope.get()
                         dataSource.personDataSource.findByGuidAsFlow(
                             account.userSourcedId
                         ).collect { person ->
