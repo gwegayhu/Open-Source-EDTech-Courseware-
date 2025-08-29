@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.credentials.passkey.CreatePasskeyUseCase
+import world.respect.credentials.passkey.RespectRedeemInviteRequest
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.signup.SignupCredential
@@ -92,23 +93,21 @@ class CreateAccountViewModel(
 
             try {
 
-                val redeemRequest = respectRedeemInviteRequestUseCase(route.inviteInfo,username)
 
                 if (createPasskeyUseCase==null||rpId==null){
                     when (route.type) {
                         ProfileType.CHILD , ProfileType.STUDENT->{
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(EnterPasswordSignup.create(username,route.type,route.inviteInfo))
+                                NavCommand.Navigate(EnterPasswordSignup.create(username,route.type,route.inviteInfo,route.personInfo))
                             )
                         }
                         ProfileType.PARENT ->{
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(EnterPasswordSignup.create(username,ProfileType.CHILD,route.inviteInfo))
+                                NavCommand.Navigate(EnterPasswordSignup.create(username,ProfileType.CHILD,route.inviteInfo,route.personInfo))
                             )
                         }
                     }
                 }else{
-                    val result = submitRedeemInviteRequestUseCase(redeemRequest)
 
                     val createPasskeyResult = createPasskeyUseCase(
                         username = username,
@@ -116,10 +115,22 @@ class CreateAccountViewModel(
                     )
                     when (createPasskeyResult) {
                         is CreatePasskeyUseCase.PasskeyCreatedResult -> {
+                            //i forgot why i created this
                             val signupCredential = SignupCredential.Passkey(
                                 username = username,
                                 authenticationResponseJSON = createPasskeyResult.authenticationResponseJSON
                             )
+                            val redeemRequest = respectRedeemInviteRequestUseCase(
+                                inviteInfo = route.inviteInfo,
+                                username = username,
+                                type = route.type,
+                                personInfo = route.personInfo,
+                                credential = RespectRedeemInviteRequest.RedeemInvitePasskeyCredential(
+                                    createPasskeyResult.authenticationResponseJSON
+                                )
+                            )
+                            val result = submitRedeemInviteRequestUseCase(redeemRequest)
+
                             sendSignupCredential(signupCredential)
                             when (route.type) {
                                 ProfileType.CHILD , ProfileType.STUDENT->{
@@ -187,7 +198,8 @@ class CreateAccountViewModel(
                 OtherOptionsSignup.create(
                     username = uiState.value.username,
                     profileType = route.type,
-                    inviteInfo = route.inviteInfo
+                    inviteInfo = route.inviteInfo,
+                    personInfo = route.personInfo
                 )
             )
         )

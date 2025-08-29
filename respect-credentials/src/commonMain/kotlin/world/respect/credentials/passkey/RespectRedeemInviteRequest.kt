@@ -1,6 +1,7 @@
 package world.respect.credentials.passkey
 
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.Serializable
 import world.respect.credentials.passkey.model.AuthenticationResponseJSON
 import world.respect.datalayer.oneroster.rostering.model.OneRosterGenderEnum
 import world.respect.datalayer.respect.model.invite.RespectInviteInfo
@@ -30,12 +31,12 @@ class RespectRedeemInviteRequest(
     sealed class RedeemInviteCredential
 
     @Serializable
-    data class RedeemInvitePasswordCredential(val password: String)
+    data class RedeemInvitePasswordCredential(val password: String) : RedeemInviteCredential()
 
     @Serializable
     data class RedeemInvitePasskeyCredential(
         val authResponseJson: AuthenticationResponseJSON
-    )
+    ) : RedeemInviteCredential()
 
     @Serializable
     class Account(

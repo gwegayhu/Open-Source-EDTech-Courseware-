@@ -151,7 +151,7 @@ class SignupViewModel(
                 when (route.type) {
                     ProfileType.PARENT, ProfileType.STUDENT -> {
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(CreateAccount.create(route.type,route.inviteInfo))
+                                NavCommand.Navigate(CreateAccount.create(route.type,route.inviteInfo,personInfo))
                             )
                     }
                     ProfileType.CHILD ->{

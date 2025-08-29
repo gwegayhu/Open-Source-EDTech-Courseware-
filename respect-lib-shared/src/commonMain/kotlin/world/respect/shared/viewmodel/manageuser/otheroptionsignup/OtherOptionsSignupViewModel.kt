@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.credentials.passkey.CreatePasskeyUseCase
+import world.respect.credentials.passkey.RespectRedeemInviteRequest
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.generated.resources.Res
@@ -63,9 +64,6 @@ class OtherOptionsSignupViewModel(
 
             try {
 
-                val redeemRequest = respectRedeemInviteRequestUseCase(route.inviteInfo,route.username)
-
-                val result = submitRedeemInviteRequestUseCase(redeemRequest)
                 val rpId = route.inviteInfo.school.rpId
                 if (createPasskeyUseCase==null||rpId==null){
                     _uiState.update {
@@ -80,6 +78,18 @@ class OtherOptionsSignupViewModel(
                     )
                     when (createPasskeyResult) {
                         is CreatePasskeyUseCase.PasskeyCreatedResult -> {
+
+                            val redeemRequest = respectRedeemInviteRequestUseCase(
+                                inviteInfo = route.inviteInfo,
+                                username = route.username,
+                                type = route.type,
+                                personInfo = route.personInfo,
+                                credential = RespectRedeemInviteRequest.RedeemInvitePasskeyCredential(
+                                    createPasskeyResult.authenticationResponseJSON
+                                )
+                            )
+
+                            val result = submitRedeemInviteRequestUseCase(redeemRequest)
                             when (route.type) {
                                 ProfileType.CHILD, ProfileType.STUDENT -> {
                                     _navCommandFlow.tryEmit(
@@ -117,7 +127,7 @@ class OtherOptionsSignupViewModel(
 
     fun onClickSignupWithPassword() {
         _navCommandFlow.tryEmit(
-            NavCommand.Navigate(EnterPasswordSignup.create(route.username,route.type,route.inviteInfo))
+            NavCommand.Navigate(EnterPasswordSignup.create(route.username,route.type,route.inviteInfo,route.personInfo))
         )
     }
 
