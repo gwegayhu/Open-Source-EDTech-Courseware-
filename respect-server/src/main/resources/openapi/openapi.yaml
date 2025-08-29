@@ -6,9 +6,9 @@ info:
 
 tags:
   - name: directory
-    description: Provides a list of schools e.g. for a country/area
+    description: API for a directory of schools e.g. for a country/area
   - name: school
-    description: Provides API endpoints for a specific school
+    description: API for a specific school including users, classes, apps, xAPI, etc.
 
 paths:
   /api/directory/school:
@@ -79,6 +79,97 @@ paths:
         '404':
           description: Not found
 
+  /api/school/respect/auth/auth-with-password:
+    post:
+      tags:
+        - school
+      description: |-
+        Get a token and user information given a username and password.
+        
+
+  /api/school/respect/invite/redeem:
+    post:
+      tags:
+        - school
+      description: |-
+        Redeem an invite code - can be used to join as a new user.
+      requestBody:
+        description: Invite redeem request ( RespectRedeemInviteRequest )
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: OK ( RespectRedeemInviteState )
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found (invite code not found/valid)
+
+  /api/school/respect/person:
+    get:
+      tags:
+        - school
+      description: |-
+        Get a list of persons in the school. The list will include only those that the authenticated
+        user has permission to view.
+      security:
+        - school_auth:
+            - read
+      parameters:
+        - name: guid
+          in: query
+          description: Specific person GUID to find
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Person"
+    post:
+      tags:
+        - school
+      summary: Add or update a list of persons in the school.
+      description: |-
+        Add or update a list of persons in the school.
+      security:
+        - school_auth:
+            - write
+      requestBody:
+        description: Persons to add or update
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Person"
+      responses:
+        '204':
+          description: No content - the request was accepted
+        '403':
+          description: |-
+            Forbidden - the values sent have been rejected. The server will send a list of the values
+            for each guid for which changes were rejected (provided that the authorized user has 
+            permission to see those values). The client should revert those changes accordingly and
+            then delete any other local changes. This can happen if the authorized user does not
+            have permission to add/update the given records.
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Person"
+
 components:
   schemas:
     LangMap:
@@ -146,8 +237,15 @@ components:
             - TEACHER
             - STUDENT_OR_PARENT
 
+    Person:
+      type: object
+
   securitySchemes:
     directory_auth:
       type: apiKey
       in: header
       name: Directory administrator auth
+    school_auth:
+      type: apiKey
+      in: header
+      name: Authentication token for a user in the school
