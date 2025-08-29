@@ -28,46 +28,41 @@ class AddSchoolUseCase(
         val adminPassword: String,
     )
 
-    @Serializable
-    data class AddSchoolResponse(
-        val school: SchoolDirectoryEntry,
-    )
-
     suspend operator fun invoke(
-        request: AddSchoolRequest
-    ): AddSchoolResponse {
-        directoryDataSource.addServerManagedSchool(
-            request.school,  request.dbUrl
-        )
+        requests: List<AddSchoolRequest>
+    ) {
+        requests.forEach { request ->
+            directoryDataSource.addServerManagedSchool(
+                request.school,  request.dbUrl
+            )
 
-        val schoolScope = getKoin().createScope<SchoolDirectoryEntry>(request.school.virtualHostScopeId)
-        val schoolDataSource: SchoolDataSourceLocal = schoolScope.get()
-        val setPasswordUseCase: SetPasswordUseCase = schoolScope.get()
+            val schoolScope = getKoin().createScope<SchoolDirectoryEntry>(request.school.virtualHostScopeId)
+            val schoolDataSource: SchoolDataSourceLocal = schoolScope.get()
+            val setPasswordUseCase: SetPasswordUseCase = schoolScope.get()
 
-        val adminPerson = Person(
-            guid = "1",
-            username = request.adminUsername,
-            givenName = "Admin",
-            familyName = "Admin",
-            roles = listOf(
-                PersonRole(
-                    isPrimaryRole = true,
-                    roleType = PersonRole.RoleType.SYSTEM_ADMINISTRATOR,
+            val adminPerson = Person(
+                guid = "1",
+                username = request.adminUsername,
+                givenName = "Admin",
+                familyName = "Admin",
+                roles = listOf(
+                    PersonRole(
+                        isPrimaryRole = true,
+                        roleType = PersonRole.RoleType.SYSTEM_ADMINISTRATOR,
+                    )
                 )
             )
-        )
 
-        schoolDataSource.personDataSource.putPerson(adminPerson)
+            schoolDataSource.personDataSource.putPerson(adminPerson)
 
-        setPasswordUseCase(
-            SetPasswordUseCase.SetPasswordRequest(
-                authenticatedUserId = AuthenticatedUserPrincipalId.directoryAdmin,
-                userGuid = adminPerson.guid,
-                password = request.adminPassword,
+            setPasswordUseCase(
+                SetPasswordUseCase.SetPasswordRequest(
+                    authenticatedUserId = AuthenticatedUserPrincipalId.directoryAdmin,
+                    userGuid = adminPerson.guid,
+                    password = request.adminPassword,
+                )
             )
-        )
-
-        return AddSchoolResponse(request.school)
+        }
     }
 
     companion object {

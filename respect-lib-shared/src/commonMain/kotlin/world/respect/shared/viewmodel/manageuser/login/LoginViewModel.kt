@@ -139,6 +139,7 @@ class LoginViewModel(
                         NavCommand.Navigate(RespectAppLauncher)
                     )
                 }catch(e: Exception) {
+                    e.printStackTrace()
                     _uiState.update { prev ->
                         prev.copy(
                             errorText = e.getUiText() ?: StringResourceUiText(Res.string.something_went_wrong)

@@ -12,7 +12,7 @@ tags:
 
 paths:
   /api/directory/school:
-    put:
+    post:
       tags:
         - directory
       description: Add a new school to the directory
@@ -20,11 +20,13 @@ paths:
         - directory_auth:
             - write
       requestBody:
-        description: School config to add
+        description: School configs to add
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AddSchoolRequest"
+              type: array
+              items:
+                $ref: "#/components/schemas/AddSchoolRequest"
 
       responses:
         '204':

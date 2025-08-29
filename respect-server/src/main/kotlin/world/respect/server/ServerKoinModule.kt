@@ -75,32 +75,32 @@ fun serverKoinModule(
     }
 
     /*
-     * Realm scope: realm id = the full realm url as per RespectRealm.self
+     * School scope: scope id = the full school url as per SchoolDirectoryEntry.self
      */
     scope<SchoolDirectoryEntry> {
         scoped<RespectSchoolPath> {
-            val realmDirName = Url(id).sanitizedForFilename()
-            val realmDirFile = File(dataDir, realmDirName).also {
+            val schoolDirName = Url(id).sanitizedForFilename()
+            val schoolDirFile = File(dataDir, schoolDirName).also {
                 if(!it.exists())
                     it.mkdirs()
             }
 
             RespectSchoolPath(
-                path = Path(realmDirFile.absolutePath)
+                path = Path(schoolDirFile.absolutePath)
             )
         }
 
         scoped<RespectSchoolDatabase> {
-            val realmPath: RespectSchoolPath = get()
+            val schoolPath: RespectSchoolPath = get()
             val appDb: RespectAppDatabase = get()
             val xxHasher: XXStringHasher = get()
 
-            val realmConfig = runBlocking {
+            val schoolConfig = runBlocking {
                 appDb.getSchoolConfigEntityDao().findByUid(xxHasher.hash(id))
-            } ?: throw IllegalStateException("Realm config not found")
+            } ?: throw IllegalStateException("School config not found for $id")
 
-            val realmPathFile = File(realmPath.path.toString())
-            val dbFile = realmPathFile.resolve(realmConfig.dbUrl)
+            val schoolConfigFile = File(schoolPath.path.toString())
+            val dbFile = schoolConfigFile.resolve(schoolConfig.dbUrl)
 
             Room.databaseBuilder<RespectSchoolDatabase>(dbFile.absolutePath)
                 .setDriver(BundledSQLiteDriver())

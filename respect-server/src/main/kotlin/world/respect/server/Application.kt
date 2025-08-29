@@ -98,7 +98,7 @@ fun Application.module() {
                 RespectSchoolDirectoryRoute()
             }
 
-            route("realm") {
+            route("school") {
                 route("auth") {
                     AuthRoute()
                 }

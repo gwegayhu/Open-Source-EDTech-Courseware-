@@ -1,5 +1,6 @@
 package world.respect.server.routes
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -18,7 +19,7 @@ fun Route.RespectSchoolDirectoryRoute() {
     get("school") {
         //TODO: @Nikunj Check/implement this
         val directoryDataSource: SchoolDirectoryDataSourceLocal by inject()
-        val query = call.request.queryParameters["q"]
+        val query = call.request.queryParameters["name"]
         val schoolsFound = directoryDataSource.searchSchools(query ?: "").first()
         call.respond(schoolsFound)
     }
@@ -27,13 +28,13 @@ fun Route.RespectSchoolDirectoryRoute() {
         post("school") {
             val addSchoolUseCase: AddSchoolUseCase by inject()
 
-            val addSchoolRequest: AddSchoolUseCase.AddSchoolRequest = call.receive()
-            val response = addSchoolUseCase(addSchoolRequest)
-            call.respond(response)
+            val addSchoolRequests: List<AddSchoolUseCase.AddSchoolRequest> = call.receive()
+            addSchoolUseCase(addSchoolRequests)
+            call.respond(HttpStatusCode.NoContent)
         }
     }
 
-    post("getinviteinfo") {
+    post("invite") {
 
     }
 

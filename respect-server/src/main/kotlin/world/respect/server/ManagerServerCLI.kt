@@ -67,17 +67,19 @@ fun managerServerMain(ns: Namespace) {
                     header(HttpHeaders.Authorization, authHeader)
                     contentType(ContentType.Application.Json)
                     setBody(
-                        AddSchoolUseCase.AddSchoolRequest(
-                            school = SchoolDirectoryEntry(
-                                name = LangMapStringValue(ns.getString("name")),
-                                self = schoolBaseUrl,
-                                xapi = schoolBaseUrl.resolve("api/xapi"),
-                                oneRoster = schoolBaseUrl.resolve("api/oneroster"),
-                                respectExt = schoolBaseUrl.resolve("api/respect-ext"),
-                            ),
-                            dbUrl = ns.getString("dburl") ?: schoolBaseUrl.sanitizedForFilename(),
-                            adminUsername = ns.getString("adminusername") ?: DEFAULT_ADMIN_USERNAME,
-                            adminPassword = ns.getString("adminpassword"),
+                        listOf(
+                            AddSchoolUseCase.AddSchoolRequest(
+                                school = SchoolDirectoryEntry(
+                                    name = LangMapStringValue(ns.getString("name")),
+                                    self = schoolBaseUrl,
+                                    xapi = schoolBaseUrl.resolve("api/xapi"),
+                                    oneRoster = schoolBaseUrl.resolve("api/oneroster"),
+                                    respectExt = schoolBaseUrl.resolve("api/respect-ext"),
+                                ),
+                                dbUrl = ns.getString("dburl") ?: schoolBaseUrl.sanitizedForFilename(),
+                                adminUsername = ns.getString("adminusername") ?: DEFAULT_ADMIN_USERNAME,
+                                adminPassword = ns.getString("adminpassword"),
+                            )
                         )
                     )
                 }
