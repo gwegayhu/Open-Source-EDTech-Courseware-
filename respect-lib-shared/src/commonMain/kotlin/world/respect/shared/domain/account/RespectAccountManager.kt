@@ -21,6 +21,7 @@ import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.respect.model.RESPECT_SCHOOL_JSON_PATH
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
+import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.school.MakeSchoolPathDirUseCase
@@ -108,23 +109,27 @@ class RespectAccountManager(
     suspend fun login(
         username: String,
         password: String,
-        realmUrl: Url,
+        schoolUrl: Url,
     ) {
-        val realmScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(realmUrl.toString())
-        val authUseCase: GetTokenAndUserProfileWithUsernameAndPasswordUseCase = realmScope.get()
+        val schoolScopeId = SchoolDirectoryEntryScopeId(schoolUrl, null)
+        val schoolScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(
+            schoolScopeId.scopeId
+        )
+
+        val authUseCase: GetTokenAndUserProfileWithUsernameAndPasswordUseCase = schoolScope.get()
         val authResponse = authUseCase(
             username = username,
             password = password,
         )
 
         //This could/should move to using the datasource instead of httpclient directly
-        val realm: SchoolDirectoryEntry = httpClient.get(
-            realmUrl.resolve(RESPECT_SCHOOL_JSON_PATH)
+        val schoolDirectoryEntry: SchoolDirectoryEntry = httpClient.get(
+            schoolUrl.resolve(RESPECT_SCHOOL_JSON_PATH)
         ).body()
 
         val respectAccount = RespectAccount(
             userGuid = authResponse.person.guid,
-            school = realm,
+            school = schoolDirectoryEntry,
         )
 
         initSession(authResponse, respectAccount)
@@ -134,7 +139,7 @@ class RespectAccountManager(
         authResponse: AuthResponse,
         respectAccount: RespectAccount,
     ) {
-        val realmScope: Scope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(
+        val schoolScope: Scope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(
             respectAccount.school.self.toString()
         )
         tokenManager.storeToken(respectAccount.scopeId, authResponse.token)
@@ -142,10 +147,11 @@ class RespectAccountManager(
         val accountScope = getOrCreateAccountScope(respectAccount)
 
         val schoolDataSource: SchoolDataSource = accountScope.get()
-        schoolDataSource.personDataSource.putPerson(authResponse.person)
+        (schoolDataSource.personDataSource as? PersonDataSourceLocal)?.putPersonsLocal(
+            listOf(authResponse.person))
 
         //now we can get the datalayer by creating a RespectAccount scope
-        val mkDirUseCase: MakeSchoolPathDirUseCase? = realmScope.getOrNull()
+        val mkDirUseCase: MakeSchoolPathDirUseCase? = schoolScope.getOrNull()
         mkDirUseCase?.invoke()
 
         selectedAccount = respectAccount

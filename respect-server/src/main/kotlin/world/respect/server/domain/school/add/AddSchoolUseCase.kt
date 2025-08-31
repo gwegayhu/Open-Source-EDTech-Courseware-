@@ -57,7 +57,7 @@ class AddSchoolUseCase(
                 )
             )
 
-            schoolDataSource.personDataSource.putPerson(adminPerson)
+            schoolDataSource.personDataSource.putPersonsLocal(listOf(adminPerson))
 
             setPasswordUseCase(
                 SetPasswordUseCase.SetPasswordRequest(

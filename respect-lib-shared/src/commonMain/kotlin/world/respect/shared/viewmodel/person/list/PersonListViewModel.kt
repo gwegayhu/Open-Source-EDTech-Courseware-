@@ -56,7 +56,7 @@ class PersonListViewModel(
         }
 
         viewModelScope.launch {
-            schoolDataSource.personDataSource.findAll(DataLoadParams()).collect {
+            schoolDataSource.personDataSource.findAllListDetailsAsFlow(DataLoadParams()).collect {
                 _uiState.update { state ->
                     state.copy(persons = it)
                 }

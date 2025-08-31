@@ -1,5 +1,7 @@
 package world.respect.datalayer.ext
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataReadyState
@@ -17,6 +19,12 @@ fun <T: Any> DataLoadState<T>.combineWithRemote(
         localState = this,
         remoteState = remote
     )
+}
+
+fun <T: Any> Flow<DataLoadState<T>>.combineWithRemote(
+    remoteFlow: Flow<DataLoadState<*>>,
+): Flow<DataLoadState<T>> =combine(remoteFlow) { local, remote ->
+    local.combineWithRemote(remote)
 }
 
 fun <T: Any> DataLoadState<T>.copyLoadState(
@@ -63,3 +71,42 @@ fun <T: Any> DataLoadState<T>.dataOrNull(): T? {
 fun DataLoadState<*>.isReadyAndSettled(): Boolean {
     return this is DataReadyState && this.remoteState !is DataLoadingState
 }
+
+fun <T: Any, R: Any> DataLoadState<T>.map(
+    transform: (T) -> R
+): DataLoadState<R> {
+    return when(this) {
+        is DataReadyState -> {
+            DataReadyState(
+                data = transform(data),
+                metaInfo = metaInfo,
+                localState = localState?.map(transform),
+                remoteState = remoteState,
+            )
+        }
+        is DataLoadingState -> {
+            DataLoadingState(
+                metaInfo = metaInfo,
+                localState = localState?.map(transform),
+                remoteState = remoteState,
+            )
+        }
+        is DataErrorResult -> {
+            DataErrorResult(
+                error = error,
+                metaInfo = metaInfo,
+                localState = localState?.map(transform),
+                remoteState = remoteState,
+            )
+        }
+        is NoDataLoadedState -> {
+            NoDataLoadedState(
+                reason = reason,
+                metaInfo = metaInfo,
+                localState = localState?.map(transform),
+                remoteState = remoteState,
+            )
+        }
+    }
+}
+

@@ -14,7 +14,6 @@ interface PersonDataSource {
 
     suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>>
 
-    suspend fun putPerson(person: Person)
 
     /**
      * Get a list of all the persons in the realm that can be accessed by the DataSource's
@@ -23,9 +22,19 @@ interface PersonDataSource {
      * @param loadParams
      * @param searchQuery search text (if any)
      */
-    suspend fun findAll(
+    fun findAllListDetailsAsFlow(
         loadParams: DataLoadParams,
         searchQuery: String? = null,
     ): Flow<DataLoadState<List<PersonListDetails>>>
+
+    fun findAllAsFlow(
+        loadParams: DataLoadParams,
+        searchQuery: String? = null,
+    ): Flow<DataLoadState<List<Person>>>
+
+    suspend fun findAll(
+        loadParams: DataLoadParams,
+        searchQuery: String? = null,
+    ): DataLoadState<List<Person>>
 
 }

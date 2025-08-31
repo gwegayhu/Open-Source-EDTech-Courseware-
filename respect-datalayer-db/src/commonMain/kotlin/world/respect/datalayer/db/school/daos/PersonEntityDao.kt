@@ -44,5 +44,16 @@ interface PersonEntityDao {
     """)
     fun findAllListDetailsAsFlow(): Flow<List<PersonListDetails>>
 
+    @Query("""
+        SELECT * 
+         FROM PersonEntity
+    """)
+    fun findAllAsFlow(): Flow<List<PersonEntity>>
+
+    @Query("""
+        SELECT * 
+         FROM PersonEntity
+    """)
+    suspend fun findAll(): List<PersonEntity>
 
 }

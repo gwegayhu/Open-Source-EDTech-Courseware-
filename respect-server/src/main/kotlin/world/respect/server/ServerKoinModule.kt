@@ -8,7 +8,6 @@ import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
-import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.SchoolDataSourceLocal
@@ -24,11 +23,13 @@ import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
 import world.respect.server.domain.school.add.AddSchoolUseCase
 import world.respect.server.domain.school.add.AddServerManagedDirectoryCallback
+import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPasswordDbImpl
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseDbImpl
 import world.respect.shared.domain.school.RespectSchoolPath
+import world.respect.shared.util.di.RespectAccountScopeId
 import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 import java.io.File
 
@@ -78,7 +79,7 @@ fun serverKoinModule(
     }
 
     /*
-     * School scope: scope id = the full school url as per SchoolDirectoryEntry.self
+     * School scope: used as the basis for virtual hosting.
      */
     scope<SchoolDirectoryEntry> {
         fun Scope.schoolUrl(): Url = SchoolDirectoryEntryScopeId.parse(id).schoolUrl
@@ -119,18 +120,6 @@ fun serverKoinModule(
             )
         }
 
-        scoped<SchoolDataSourceLocal> {
-            SchoolDataSourceDb(
-                schoolDb = get(),
-                xxStringHasher = get(),
-                authenticatedUser = AuthenticatedUserPrincipalId("TODO - move to account scope")
-            )
-        }
-
-        scoped<SchoolDataSource> {
-            get<SchoolDataSourceLocal>()
-        }
-
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
             GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
                 schoolDb = get(),
@@ -139,5 +128,29 @@ fun serverKoinModule(
             )
         }
     }
+
+    /*
+     * AccountScope: as per the client, the Account Scope is linked to a parent School scope.
+     *
+     * All server-side dependencies in the account scope are cheap wrappers e.g. the
+     * SchoolDataSource wrapper (which is tied to a specific account guid) is kept in the AccountScope,
+     * but the RespectSchoolDatabase which has the actual DB connection is kept in the school scope.
+     *
+     * Dependencies in the account scope use factory so they are not retained in memory
+     */
+    scope<RespectAccount> {
+        factory<SchoolDataSourceLocal> {
+            SchoolDataSourceDb(
+                schoolDb = get(),
+                xxStringHasher = get(),
+                authenticatedUser = RespectAccountScopeId.parse(id).accountPrincipalId
+            )
+        }
+
+        factory<SchoolDataSource> {
+            get<SchoolDataSourceLocal>()
+        }
+    }
+
 
 }

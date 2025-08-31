@@ -8,7 +8,7 @@ import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
 import world.respect.shared.domain.account.AuthResponse
 import world.respect.datalayer.school.model.AuthToken
-import world.respect.shared.domain.account.ForbiddenException
+import world.respect.libutil.util.throwable.ForbiddenException
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec

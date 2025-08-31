@@ -9,6 +9,7 @@ interface ValidateAuthorizationUseCase {
 
     sealed class AuthorizationCredential
 
+    @Suppress("unused") //Reserved for future use
     data class BasicAuthCredential(
         val username: String,
         val password: String
@@ -22,6 +23,6 @@ interface ValidateAuthorizationUseCase {
     /**
      * Validate the authentication credential. If the credential is not valid, throw an exception
      */
-    suspend operator fun invoke(credential : AuthorizationCredential): AuthenticatedUserPrincipalId
+    suspend operator fun invoke(credential : AuthorizationCredential): AuthenticatedUserPrincipalId?
 
 }

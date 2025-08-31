@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.status.pages)
 
     testImplementation(libs.kotlin.test.junit)
 

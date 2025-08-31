@@ -4,6 +4,7 @@ import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
@@ -20,6 +21,8 @@ import world.respect.libxxhash.XXStringHasher
 class PersonDataSourceDb(
     private val schoolDb: RespectSchoolDatabase,
     private val xxHash: XXStringHasher,
+    @Suppress("unused")
+    private val authenticatedUser: AuthenticatedUserPrincipalId,
 ): PersonDataSourceLocal {
 
     override suspend fun findByUsername(username: String): Person? {
@@ -51,27 +54,52 @@ class PersonDataSourceDb(
         }
     }
 
-    override suspend fun putPerson(person: Person) {
-        val entities = person.toEntities(xxHash)
-
+    override suspend fun putPersonsLocal(persons: List<Person>) {
         schoolDb.useWriterConnection { con ->
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                schoolDb.getPersonEntityDao().insert(entities.personEntity)
-                schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
-                    entities.personEntity.pGuidHash
-                )
-                schoolDb.getPersonRoleEntityDao().upsertList(entities.personRoleEntities)
+                persons.forEach { person ->
+                    val entities = person.toEntities(xxHash)
+                    schoolDb.getPersonEntityDao().insert(entities.personEntity)
+                    schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
+                        entities.personEntity.pGuidHash
+                    )
+                    schoolDb.getPersonRoleEntityDao().upsertList(entities.personRoleEntities)
+                }
             }
         }
     }
 
-    override suspend fun findAll(
+    override fun findAllListDetailsAsFlow(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): Flow<DataLoadState<List<PersonListDetails>>> {
         return schoolDb.getPersonEntityDao().findAllListDetailsAsFlow().map {
             DataReadyState(it)
         }
+    }
+
+    override fun findAllAsFlow(
+        loadParams: DataLoadParams,
+        searchQuery: String?
+    ): Flow<DataLoadState<List<Person>>> {
+        return schoolDb.getPersonEntityDao().findAllAsFlow().map { list ->
+            DataReadyState(
+                data = list.map {
+                    PersonEntities(it).toModel()
+                }
+            )
+        }
+    }
+
+    override suspend fun findAll(
+        loadParams: DataLoadParams,
+        searchQuery: String?
+    ): DataLoadState<List<Person>> {
+        return DataReadyState(
+            data = schoolDb.getPersonEntityDao().findAll().map {
+                PersonEntities(it).toModel()
+            }
+        )
     }
 
 }

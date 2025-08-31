@@ -2,6 +2,7 @@ package world.respect.datalayer.ext
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -24,6 +25,7 @@ import kotlin.time.ExperimentalTime
 suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
     url: Url,
     validationHelper: NetworkDataSourceValidationHelper? = null,
+    block: HttpRequestBuilder.() -> Unit = { },
 ): DataLoadState<T> {
     return try {
         //see https://github.com/Kotlin/kotlinx-datetime/issues/564
@@ -36,6 +38,8 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
             validationInfo?.etag?.also { etag ->
                 headers[HttpHeaders.IfNoneMatch] = etag
             }
+
+            block()
         }
 
         return if(response.status == HttpStatusCode.NotModified) {
@@ -55,15 +59,37 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
     }
 }
 
-@Suppress("unused")//reserved for future use
 inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
     url: Url,
     dataLoadParams: DataLoadParams,
     validationHelper: NetworkDataSourceValidationHelper? = null,
+    crossinline block: HttpRequestBuilder.() -> Unit = { },
+): Flow<DataLoadState<T>> {
+    return getDataLoadResultAsFlow(
+        urlFn = { url },
+        dataLoadParams = dataLoadParams,
+        validationHelper = validationHelper,
+        block = block,
+    )
+}
+
+/**
+ * @param urlFn Data source functions often return a flow, however sometimes figuring out the url
+ *        itself requires a suspended function (eg potentially a database lookup). The function
+ *        that returns a flow itself is not  suspended. Accepting a parameter makes it easier to
+ *        shift the operation to get the url into the flow.
+ */
+inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
+    noinline urlFn: suspend () -> Url,
+    @Suppress("unused") dataLoadParams: DataLoadParams,
+    validationHelper: NetworkDataSourceValidationHelper? = null,
+    crossinline block: HttpRequestBuilder.() -> Unit = { },
 ): Flow<DataLoadState<T>> {
     return flow {
-        emit(DataLoadingState(metaInfo = DataLoadMetaInfo(url = url)))
+        val urlVal = urlFn()
+        emit(DataLoadingState(metaInfo = DataLoadMetaInfo(url = urlVal)))
 
-        emit(getAsDataLoadState(url, validationHelper))
+        emit(getAsDataLoadState(urlVal, validationHelper, block = block))
     }
 }
+
