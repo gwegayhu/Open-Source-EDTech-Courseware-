@@ -11,7 +11,7 @@ import world.respect.datalayer.db.school.adapters.toEntities
 import world.respect.datalayer.school.model.Person
 import world.respect.libxxhash.XXStringHasher
 import world.respect.libxxhash.jvmimpl.XXStringHasherCommonJvm
-import world.respect.shared.domain.AuthenticatedUserPrincipalId
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfileWithUsernameAndPasswordDbImpl
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase

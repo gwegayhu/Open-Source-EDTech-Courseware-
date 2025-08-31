@@ -84,6 +84,7 @@ import org.koin.core.scope.Scope
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.datalayer.AuthTokenProvider
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.db.SchoolDataSourceDb
@@ -96,6 +97,8 @@ import world.respect.shared.domain.school.SchoolPrimaryKeyGenerator
 import world.respect.shared.domain.school.RespectSchoolPath
 import world.respect.shared.navigation.NavResultReturner
 import world.respect.shared.navigation.NavResultReturnerImpl
+import world.respect.shared.util.di.RespectAccountScopeId
+import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 import world.respect.shared.viewmodel.manageuser.accountlist.AccountListViewModel
 import world.respect.shared.viewmodel.person.detail.PersonDetailViewModel
 import world.respect.shared.viewmodel.person.edit.PersonEditViewModel
@@ -340,24 +343,15 @@ val appKoinModule = module {
      * The SchoolDirectoryEntry scope might be one instance per school url or one instance per account
      * per url.
      *
+     * ScopeId is set as per SchoolDirectoryEntryScopeId
+     *
      * If the upstream server provides a list of grants/permission rules then the school database
      * can be shared; and scopeId
      */
     scope<SchoolDirectoryEntry> {
-
-        fun Scope.scopeUrl(): Url {
-            val atIndex = id.lastIndexOf("@")
-            return if(atIndex < 0) {
-                Url(id)
-            }else {
-                Url(id.substring(atIndex + 1))
-            }
-        }
-
-
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
             GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
-                schoolUrl = scopeUrl(),
+                schoolUrl = SchoolDirectoryEntryScopeId.parse(id).schoolUrl,
                 httpClient = get(),
             )
         }
@@ -366,7 +360,8 @@ val appKoinModule = module {
             RespectSchoolPath(
                 path = Path(
                     File(
-                        androidContext().filesDir, scopeUrl().sanitizedForFilename()
+                        androidContext().filesDir,
+                        SchoolDirectoryEntryScopeId.parse(id).schoolUrl.sanitizedForFilename()
                     ).absolutePath
                 )
             )
@@ -375,7 +370,7 @@ val appKoinModule = module {
         scoped<RespectSchoolDatabase> {
             Room.databaseBuilder<RespectSchoolDatabase>(
                 androidContext(),
-                scopeUrl().sanitizedForFilename()
+                SchoolDirectoryEntryScopeId.parse(id).schoolUrl.sanitizedForFilename()
             ).build()
         }
 
@@ -388,7 +383,7 @@ val appKoinModule = module {
 
     /**
      * RespectAccount scope id is always in the form of:
-     * userSourcedId@school-url e.g. 4232@https://school.example.org/
+     * ScopeId is set as per RespectAccountScopeId
      *
      * The URL will never contain an '@' sign (e.g. user@email.com@https://school.example.org/),
      * the sourcedId may contain an @ sign. The school url is after the LAST @ symbol.
@@ -404,6 +399,9 @@ val appKoinModule = module {
             SchoolDataSourceDb(
                 schoolDb = get(),
                 xxStringHasher = get(),
+                authenticatedUser = AuthenticatedUserPrincipalId(
+                    RespectAccountScopeId.parse(id).accountPrincipalId.guid
+                )
             )
         }
     }

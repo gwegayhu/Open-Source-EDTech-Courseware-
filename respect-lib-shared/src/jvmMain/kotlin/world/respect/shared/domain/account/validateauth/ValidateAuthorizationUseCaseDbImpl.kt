@@ -1,7 +1,7 @@
 package world.respect.shared.domain.account.validateauth
 
 import world.respect.datalayer.db.RespectSchoolDatabase
-import world.respect.shared.domain.AuthenticatedUserPrincipalId
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.shared.util.systemTimeInMillis
 
 class ValidateAuthorizationUseCaseDbImpl(

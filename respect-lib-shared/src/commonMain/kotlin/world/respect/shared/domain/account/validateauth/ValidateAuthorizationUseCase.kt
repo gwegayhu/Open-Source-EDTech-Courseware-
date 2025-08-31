@@ -1,6 +1,6 @@
 package world.respect.shared.domain.account.validateauth
 
-import world.respect.shared.domain.AuthenticatedUserPrincipalId
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 
 /**
  * Used on the server validate an authorization header

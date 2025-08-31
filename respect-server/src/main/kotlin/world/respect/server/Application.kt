@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.basic
+import io.ktor.server.auth.bearer
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.response.*
@@ -24,6 +25,11 @@ import world.respect.server.routes.getRespectSchoolJson
 import java.io.File
 import java.util.Properties
 import io.ktor.server.plugins.swagger.*
+import world.respect.server.routes.school.respect.PersonRoute
+import world.respect.server.util.ext.virtualHost
+import world.respect.shared.domain.account.validatetoken.ValidateTokenUseCase
+
+const val AUTH_CONFIG_SCHOOL = "auth-school-bearer"
 
 @Suppress("unused") // Used via application.conf
 fun Application.module() {
@@ -70,6 +76,22 @@ fun Application.module() {
                 }
             }
         }
+
+        bearer(AUTH_CONFIG_SCHOOL) {
+            realm = "Access school"
+            authenticate { tokenCredential ->
+                val virtualHost = request.virtualHost
+                val schoolScope = getKoin().getScope(virtualHost.toString())
+                val validateTokenUseCase: ValidateTokenUseCase = schoolScope.get()
+
+                val principalId = validateTokenUseCase(tokenCredential.token)
+                if(principalId != null) {
+                    UserIdPrincipal(principalId.guid)
+                }else {
+                    null
+                }
+            }
+        }
     }
 
 
@@ -103,6 +125,8 @@ fun Application.module() {
                     route("auth") {
                         AuthRoute()
                     }
+
+                    PersonRoute()
                 }
             }
         }

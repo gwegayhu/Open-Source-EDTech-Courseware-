@@ -24,6 +24,7 @@ import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.school.MakeSchoolPathDirUseCase
+import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 import world.respect.shared.util.ext.isSameAccount
 
 /**
@@ -49,36 +50,36 @@ class RespectAccountManager(
 
     val accounts = _storedAccounts.asStateFlow()
 
-    private val _activeAccountSourcedId = MutableStateFlow(
+    private val _selectedAccountGuid = MutableStateFlow(
         settings.getStringOrNull(SETTINGS_KEY_ACTIVE_ACCOUNT)
     )
 
     var selectedAccount: RespectAccount?
         get() = _storedAccounts.value.firstOrNull {
-            it.userSourcedId == _activeAccountSourcedId.value
+            it.userGuid == _selectedAccountGuid.value
         }
 
         set(value) {
             if(value == null) {
-                _activeAccountSourcedId.value = null
+                _selectedAccountGuid.value = null
                 settings.remove(SETTINGS_KEY_ACTIVE_ACCOUNT)
             }else {
-                if(!_storedAccounts.value.any { it.userSourcedId == value.userSourcedId }) {
+                if(!_storedAccounts.value.any { it.userGuid == value.userGuid }) {
                     val newValue = _storedAccounts.updateAndGet { prev ->
                         listOf(value) + prev
                     }
                     settings[SETTINGS_KEY_STORED_ACCOUNTS] = json.encodeToString(newValue)
                 }
 
-                _activeAccountSourcedId.value = value.userSourcedId
-                settings.set(SETTINGS_KEY_ACTIVE_ACCOUNT, value.userSourcedId)
+                _selectedAccountGuid.value = value.userGuid
+                settings.set(SETTINGS_KEY_ACTIVE_ACCOUNT, value.userGuid)
             }
         }
 
     val activeAccountFlow: Flow<RespectAccount?> = _storedAccounts.combine(
-        _activeAccountSourcedId
+        _selectedAccountGuid
     ) { accountList, activeAccountSourcedId ->
-        accountList.firstOrNull { it.userSourcedId == activeAccountSourcedId }
+        accountList.firstOrNull { it.userGuid == activeAccountSourcedId }
     }
 
     val activeAccountAndPersonFlow: Flow<RespectAccountAndPerson?> = channelFlow {
@@ -87,7 +88,7 @@ class RespectAccountManager(
                 val accountScope = getOrCreateAccountScope(account)
                 val schoolDataSource: SchoolDataSource = accountScope.get()
                 schoolDataSource.personDataSource.findByGuid(
-                    DataLoadParams(onlyIfCached = true), account.userSourcedId
+                    DataLoadParams(onlyIfCached = true), account.userGuid
                 ).dataOrNull()
             }else {
                 null
@@ -122,7 +123,7 @@ class RespectAccountManager(
         ).body()
 
         val respectAccount = RespectAccount(
-            userSourcedId = authResponse.person.guid,
+            userGuid = authResponse.person.guid,
             school = realm,
         )
 
@@ -186,11 +187,11 @@ class RespectAccountManager(
      * When the RespectAccount scope is created it MUST be linked to the parent Realm scope.
      */
     fun getOrCreateAccountScope(account: RespectAccount): Scope {
-        //need to ensure that the scope ids are never going to conflict ourself...
-        val realmScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(account.school.self.toString())
+        val schoolScopeId = SchoolDirectoryEntryScopeId(account.school.self, null)
+        val schoolScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(schoolScopeId.scopeId)
         val accountScope = getKoin().getScopeOrNull(account.scopeId)
             ?: getKoin().createScope<RespectAccount>(account.scopeId).also {
-                it.linkTo(realmScope)
+                it.linkTo(schoolScope)
             }
 
         return accountScope

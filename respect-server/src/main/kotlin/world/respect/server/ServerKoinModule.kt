@@ -6,7 +6,9 @@ import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.SchoolDataSourceLocal
@@ -27,6 +29,7 @@ import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfil
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseDbImpl
 import world.respect.shared.domain.school.RespectSchoolPath
+import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 import java.io.File
 
 const val APP_DB_FILENAME = "respect-app.db"
@@ -78,8 +81,10 @@ fun serverKoinModule(
      * School scope: scope id = the full school url as per SchoolDirectoryEntry.self
      */
     scope<SchoolDirectoryEntry> {
+        fun Scope.schoolUrl(): Url = SchoolDirectoryEntryScopeId.parse(id).schoolUrl
+
         scoped<RespectSchoolPath> {
-            val schoolDirName = Url(id).sanitizedForFilename()
+            val schoolDirName = schoolUrl().sanitizedForFilename()
             val schoolDirFile = File(dataDir, schoolDirName).also {
                 if(!it.exists())
                     it.mkdirs()
@@ -96,7 +101,7 @@ fun serverKoinModule(
             val xxHasher: XXStringHasher = get()
 
             val schoolConfig = runBlocking {
-                appDb.getSchoolConfigEntityDao().findByUid(xxHasher.hash(id))
+                appDb.getSchoolConfigEntityDao().findByUid(xxHasher.hash(schoolUrl().toString()))
             } ?: throw IllegalStateException("School config not found for $id")
 
             val schoolConfigFile = File(schoolPath.path.toString())
@@ -115,7 +120,11 @@ fun serverKoinModule(
         }
 
         scoped<SchoolDataSourceLocal> {
-            SchoolDataSourceDb(schoolDb = get(), xxStringHasher = get())
+            SchoolDataSourceDb(
+                schoolDb = get(),
+                xxStringHasher = get(),
+                authenticatedUser = AuthenticatedUserPrincipalId("TODO - move to account scope")
+            )
         }
 
         scoped<SchoolDataSource> {
@@ -128,7 +137,6 @@ fun serverKoinModule(
                 xxHash = get(),
                 personDataSource = get<SchoolDataSource>().personDataSource,
             )
-
         }
     }
 

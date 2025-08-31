@@ -3,13 +3,13 @@ package world.respect.server.domain.school.add
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import world.respect.datalayer.SchoolDataSourceLocal
-import world.respect.datalayer.db.schooldirectory.ext.virtualHostScopeId
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.PersonRole
 import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSourceLocal
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
-import world.respect.shared.domain.AuthenticatedUserPrincipalId
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
+import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 import kotlin.time.ExperimentalTime
 
 /**
@@ -36,7 +36,11 @@ class AddSchoolUseCase(
                 request.school,  request.dbUrl
             )
 
-            val schoolScope = getKoin().createScope<SchoolDirectoryEntry>(request.school.virtualHostScopeId)
+            val schoolScope = getKoin().createScope<SchoolDirectoryEntry>(
+                SchoolDirectoryEntryScopeId(
+                    request.school.self, null
+                ).scopeId
+            )
             val schoolDataSource: SchoolDataSourceLocal = schoolScope.get()
             val setPasswordUseCase: SetPasswordUseCase = schoolScope.get()
 

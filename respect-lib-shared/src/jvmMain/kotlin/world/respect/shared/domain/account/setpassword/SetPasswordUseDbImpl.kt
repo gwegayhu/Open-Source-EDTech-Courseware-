@@ -5,7 +5,7 @@ import world.respect.datalayer.db.RespectSchoolDatabase
 import world.respect.datalayer.db.school.entities.PersonPasswordEntity
 import world.respect.libutil.ext.randomString
 import world.respect.libxxhash.XXStringHasher
-import world.respect.shared.domain.AuthenticatedUserPrincipalId
+import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.shared.domain.account.ForbiddenException
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec

@@ -1,7 +1,5 @@
 package world.respect.server.util.ext
 
-import com.ustadmobile.ihttp.ext.clientProtocolAndHost
-import com.ustadmobile.ihttp.headers.asIHttpHeaders
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
@@ -15,19 +13,24 @@ import org.koin.core.scope.Scope
 import org.koin.ktor.ext.getKoin
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
+import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 
 /**
  * The virtual host being used. Used on the server to scope dependencies.
  */
 val ApplicationCall.virtualHost: Url
-    get() = Url(request.headers.asIHttpHeaders().clientProtocolAndHost())
+    get() = request.virtualHost
 
 /**
  * Respect Realms are handled using virtual hosting e.g. by subdomains. - see
- * AppKoinModule.
+ * SchoolDirectoryEntryScopeId and AppKoinModule.
  */
 fun ApplicationCall.getSchoolKoinScope(): Scope {
-    return getKoin().getOrCreateScope<SchoolDirectoryEntry>(virtualHost.toString())
+    return getKoin().getOrCreateScope<SchoolDirectoryEntry>(
+        SchoolDirectoryEntryScopeId(
+            request.virtualHost, null
+        ).scopeId
+    )
 }
 
 /**
