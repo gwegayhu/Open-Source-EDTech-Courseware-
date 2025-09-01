@@ -17,7 +17,6 @@ import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
-import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.PersonRole
 import world.respect.shared.domain.account.RespectAccountManager
@@ -84,7 +83,7 @@ class ClazzDetailViewModel(
                 )
             }
 
-            val users = schoolDataSource.onRoasterDataSource.getAllUsers()
+            val users = schoolDataSource.personDataSource.getAllUsers()
 
             val teachers = users.filter { user ->
                  user.roles.any { it.roleType == PersonRole.RoleType.TEACHER }
