@@ -28,6 +28,8 @@ import world.respect.shared.domain.account.authwithpassword.GetTokenAndUserProfi
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
 import world.respect.shared.domain.account.setpassword.SetPasswordUseDbImpl
+import world.respect.shared.domain.account.validateauth.ValidateAuthorizationUseCase
+import world.respect.shared.domain.account.validateauth.ValidateAuthorizationUseCaseDbImpl
 import world.respect.shared.domain.school.RespectSchoolPath
 import world.respect.shared.util.di.RespectAccountScopeId
 import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
@@ -118,6 +120,10 @@ fun serverKoinModule(
                 schoolDb = get(),
                 xxHash = get()
             )
+        }
+
+        scoped<ValidateAuthorizationUseCase> {
+            ValidateAuthorizationUseCaseDbImpl(schoolDb = get())
         }
 
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {

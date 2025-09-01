@@ -12,8 +12,7 @@ interface PersonDataSource {
 
     suspend fun findByGuid(loadParams: DataLoadParams, guid: String): DataLoadState<Person>
 
-    suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>>
-
+    fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>>
 
     /**
      * Get a list of all the persons in the realm that can be accessed by the DataSource's

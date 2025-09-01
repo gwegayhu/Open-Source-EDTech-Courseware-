@@ -24,11 +24,22 @@ class PersonDataSourceRepository(
         loadParams: DataLoadParams,
         guid: String
     ): DataLoadState<Person> {
+        val remote = remote.findByGuid(loadParams, guid)
+        if(remote is DataReadyState) {
+            local.putPersonsLocal(listOf(remote.data))
+        }
+
         return local.findByGuid(loadParams, guid)
     }
 
-    override suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
-        return local.findByGuidAsFlow(guid)
+    override fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
+        val remoteFlow = remote.findByGuidAsFlow(guid).onEach {
+            if(it is DataReadyState) {
+                local.putPersonsLocal(listOf(it.data))
+            }
+        }
+
+        return local.findByGuidAsFlow(guid).combineWithRemote(remoteFlow)
     }
 
     override fun findAllListDetailsAsFlow(
@@ -41,8 +52,8 @@ class PersonDataSourceRepository(
             }
         }
 
-        val localFeed = local.findAllListDetailsAsFlow(loadParams, searchQuery)
-        return localFeed.combineWithRemote(remoteFlow)
+        val localFlow = local.findAllListDetailsAsFlow(loadParams, searchQuery)
+        return localFlow.combineWithRemote(remoteFlow)
     }
 
     override fun findAllAsFlow(

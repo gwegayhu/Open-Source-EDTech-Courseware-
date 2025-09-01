@@ -40,7 +40,7 @@ class PersonDataSourceDb(
         }?.toModel()?.let { DataReadyState(it) } ?: NoDataLoadedState.notFound()
     }
 
-    override suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
+    override fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
         return schoolDb.getPersonEntityDao().findByGuidHashAsFlow(
             xxHash.hash(guid)
         ).map { personEntity ->

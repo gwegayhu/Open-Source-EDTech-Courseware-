@@ -72,9 +72,9 @@ fun managerServerMain(ns: Namespace) {
                                 school = SchoolDirectoryEntry(
                                     name = LangMapStringValue(ns.getString("name")),
                                     self = schoolBaseUrl,
-                                    xapi = schoolBaseUrl.resolve("api/xapi"),
-                                    oneRoster = schoolBaseUrl.resolve("api/oneroster"),
-                                    respectExt = schoolBaseUrl.resolve("api/respect-ext"),
+                                    xapi = schoolBaseUrl.resolve("api/school/xapi/"),
+                                    oneRoster = schoolBaseUrl.resolve("api/school/oneroster/"),
+                                    respectExt = schoolBaseUrl.resolve("api/school/respect-ext/"),
                                 ),
                                 dbUrl = ns.getString("dburl") ?: schoolBaseUrl.sanitizedForFilename(),
                                 adminUsername = ns.getString("adminusername") ?: DEFAULT_ADMIN_USERNAME,

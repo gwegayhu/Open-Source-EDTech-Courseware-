@@ -80,7 +80,6 @@ import world.respect.shared.viewmodel.manageuser.termsandcondition.TermsAndCondi
 import world.respect.shared.viewmodel.manageuser.waitingforapproval.WaitingForApprovalViewModel
 import world.respect.shared.viewmodel.report.ReportViewModel
 import java.io.File
-import org.koin.core.scope.Scope
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.datalayer.AuthTokenProvider
@@ -259,7 +258,6 @@ val appKoinModule = module {
             settings = get(),
             json = get(),
             tokenManager = get(),
-            httpClient = get(),
             appDataSource = get(),
         )
     }

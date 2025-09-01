@@ -27,10 +27,12 @@ import world.respect.server.routes.getRespectSchoolJson
 import java.io.File
 import java.util.Properties
 import io.ktor.server.plugins.swagger.*
+import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.libutil.util.throwable.ExceptionWithHttpStatusCode
 import world.respect.server.routes.school.respect.PersonRoute
 import world.respect.server.util.ext.virtualHost
 import world.respect.shared.domain.account.validateauth.ValidateAuthorizationUseCase
+import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 
 const val AUTH_CONFIG_SCHOOL = "auth-school-bearer"
 
@@ -83,8 +85,10 @@ fun Application.module() {
         bearer(AUTH_CONFIG_SCHOOL) {
             realm = "Access school"
             authenticate { tokenCredential ->
-                val virtualHost = request.virtualHost
-                val schoolScope = getKoin().getScope(virtualHost.toString())
+                val schoolScopeId = SchoolDirectoryEntryScopeId(request.virtualHost, null)
+                val schoolScope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(
+                    schoolScopeId.scopeId
+                )
                 val validateAuthorizationUseCase: ValidateAuthorizationUseCase = schoolScope.get()
 
                 validateAuthorizationUseCase(
@@ -98,6 +102,8 @@ fun Application.module() {
 
     install(StatusPages) {
         exception<Throwable> { call, cause ->
+            cause.printStackTrace()
+
             if(cause is ExceptionWithHttpStatusCode) {
                 val responseText = cause.message
                 val httpStatus = HttpStatusCode.fromValue(cause.statusCode)
@@ -138,7 +144,7 @@ fun Application.module() {
             }
 
             route("school") {
-                route("respect") {
+                route("respect-ext") {
                     route("auth") {
                         AuthRoute()
                     }

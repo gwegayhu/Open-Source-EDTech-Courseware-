@@ -9,10 +9,11 @@ import world.respect.datalayer.AuthTokenProvider
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.ext.dataOrNull
+import world.respect.datalayer.ext.firstOrNotLoaded
 import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.ext.getDataLoadResultAsFlow
 import world.respect.datalayer.ext.map
-import world.respect.datalayer.http.ext.resolveRespectExtUrlForSchool
+import world.respect.datalayer.http.ext.resolveRespectExtUrl
 import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.adapters.asListDetails
 import world.respect.datalayer.school.model.Person
@@ -21,11 +22,11 @@ import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
 import world.respect.libutil.ext.resolve
 
 class PersonDataSourceHttp(
-    private val schoolUrl: Url,
-    private val schoolDirectoryDataSource: SchoolDirectoryDataSource,
+    override val schoolUrl: Url,
+    override val schoolDirectoryDataSource: SchoolDirectoryDataSource,
     private val httpClient: HttpClient,
     private val tokenProvider: AuthTokenProvider,
-) : PersonDataSource {
+) : PersonDataSource, SchoolUrlBasedDataSource {
 
     override suspend fun findByUsername(username: String): Person? {
         TODO("Not yet implemented")
@@ -35,11 +36,22 @@ class PersonDataSourceHttp(
         loadParams: DataLoadParams,
         guid: String
     ): DataLoadState<Person> {
-        TODO("Not yet implemented")
+        return httpClient.getAsDataLoadState<List<Person>>(
+            resolveRespectExtUrl("person"),
+        ) {
+            headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
+        }.firstOrNotLoaded()
     }
 
-    override suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
-        TODO("Not yet implemented")
+    override fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
+        return httpClient.getDataLoadResultAsFlow<List<Person>>(
+            urlFn = { resolveRespectExtUrl("person") },
+            dataLoadParams = DataLoadParams()
+        ) {
+            headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
+        }.map {
+            it.firstOrNotLoaded()
+        }
     }
 
     override fun findAllAsFlow(
@@ -47,12 +59,10 @@ class PersonDataSourceHttp(
         searchQuery: String?
     ): Flow<DataLoadState<List<Person>>> {
         return httpClient.getDataLoadResultAsFlow<List<Person>>(
-            urlFn = {
-                schoolDirectoryDataSource.resolveRespectExtUrlForSchool(schoolUrl, "person")
-            },
+            urlFn = { resolveRespectExtUrl("person") },
             dataLoadParams = loadParams,
         ) {
-            headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken()}"
+            headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
         }
     }
 
@@ -77,7 +87,7 @@ class PersonDataSourceHttp(
         return httpClient.getAsDataLoadState<List<Person>>(respectUrl.resolve("person")) {
             val token = tokenProvider.provideToken()
             println("PersonDataSource: load person list using token $token")
-            headers[HttpHeaders.Authorization] = "Bearer $token"
+            headers[HttpHeaders.Authorization] = "Bearer ${token.accessToken}"
         }
     }
 }

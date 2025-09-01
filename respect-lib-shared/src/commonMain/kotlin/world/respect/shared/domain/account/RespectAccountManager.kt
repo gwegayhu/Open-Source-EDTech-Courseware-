@@ -2,7 +2,6 @@ package world.respect.shared.domain.account
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
-import io.ktor.client.HttpClient
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +18,6 @@ import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
-import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.school.MakeSchoolPathDirUseCase
 import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
@@ -37,7 +35,6 @@ class RespectAccountManager(
     private val settings: Settings,
     private val json: Json,
     private val tokenManager: RespectTokenManager,
-    private val httpClient: HttpClient,
     private val appDataSource: RespectAppDataSource,
 ): KoinComponent {
 
@@ -144,8 +141,11 @@ class RespectAccountManager(
         val accountScope = getOrCreateAccountScope(respectAccount)
 
         val schoolDataSource: SchoolDataSource = accountScope.get()
-        (schoolDataSource.personDataSource as? PersonDataSourceLocal)?.putPersonsLocal(
-            listOf(authResponse.person))
+
+        //Ensure the active user is loaded into the database
+        schoolDataSource.personDataSource.findByGuid(
+            DataLoadParams(), authResponse.person.guid
+        )
 
         //now we can get the datalayer by creating a RespectAccount scope
         val mkDirUseCase: MakeSchoolPathDirUseCase? = schoolScope.getOrNull()
