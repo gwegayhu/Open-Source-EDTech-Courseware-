@@ -27,7 +27,7 @@ import world.respect.app.components.RespectFilterChipsHeader
 import world.respect.app.components.RespectListSortHeader
 import world.respect.app.components.RespectPersonAvatar
 import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
-import world.respect.datalayer.oneroster.model.OneRosterUser
+import world.respect.datalayer.school.model.Person
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.add_teacher
 import world.respect.shared.generated.resources.add_student
@@ -73,8 +73,8 @@ fun ClazzDetailScreen(
     onClickAddPersonToClazz: (OneRosterRoleEnum) -> Unit,
     onSortOrderChanged: (SortOrderOption) -> Unit = { },
     onSelectChip: (String) -> Unit,
-    onClickAcceptInvite: (OneRosterUser) -> Unit,
-    onClickDismissInvite: (OneRosterUser) -> Unit,
+    onClickAcceptInvite: (Person) -> Unit,
+    onClickDismissInvite: (Person) -> Unit,
     onTogglePendingSection: () -> Unit,
     onToggleTeachersSection: () -> Unit,
     onToggleStudentsSection: () -> Unit
@@ -150,9 +150,9 @@ fun ClazzDetailScreen(
             itemsIndexed(
                 uiState.listOfPending,
                 key = { index, pendingUser ->
-                    pendingUser.sourcedId
+                    pendingUser.guid
                 }) { index, user ->
-                val roleName = user.roles.firstOrNull()?.role?.name
+                val roleName = user.roles.firstOrNull()?.roleType?.name
                     ?.lowercase()
                     ?.replaceFirstChar { it.uppercase() } ?: ""
 
@@ -242,7 +242,7 @@ fun ClazzDetailScreen(
             itemsIndexed(
                 uiState.listOfTeachers,
                 key = { index, teacher ->
-                    teacher.sourcedId
+                    teacher.guid
                 }) { index, teacher ->
                 ListItem(
                     modifier = Modifier
@@ -311,7 +311,7 @@ fun ClazzDetailScreen(
             itemsIndexed(
                 uiState.listOfStudents,
                 key = { index, student ->
-                    student.sourcedId
+                    student.guid
                 }) { index, student ->
                 ListItem(
                     modifier = Modifier

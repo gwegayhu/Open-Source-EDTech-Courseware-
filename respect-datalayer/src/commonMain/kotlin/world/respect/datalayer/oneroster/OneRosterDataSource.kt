@@ -7,10 +7,11 @@ import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.oneroster.model.OneRosterEnrollment
 import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.datalayer.oneroster.composites.ClazzListDetails
+import world.respect.datalayer.school.model.Person
 
 interface OneRosterDataSource {
 
-    suspend fun getAllUsers(): List<OneRosterUser>
+    suspend fun getAllUsers(): List<Person>
 
     suspend fun putUser(user: OneRosterUser)
 

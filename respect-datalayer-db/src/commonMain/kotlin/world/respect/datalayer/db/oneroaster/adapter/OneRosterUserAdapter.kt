@@ -15,6 +15,7 @@ import world.respect.datalayer.oneroster.model.OneRosterUserProfile
 
 data class OneRoasterUserEntities(
     val oneRosterUserEntity: OneRosterUserEntity,
+
 )
 
 fun OneRoasterUserEntities.toModel(): OneRosterUser {

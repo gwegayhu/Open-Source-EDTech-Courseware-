@@ -18,6 +18,8 @@ import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.oneroster.model.OneRosterRoleEnum
 import world.respect.datalayer.oneroster.model.OneRosterUser
+import world.respect.datalayer.school.model.Person
+import world.respect.datalayer.school.model.PersonRole
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.first_name
@@ -38,9 +40,9 @@ import world.respect.shared.viewmodel.clazz.detail.ClazzDetailViewModel.Companio
 import kotlin.getValue
 
 data class ClazzDetailUiState(
-    val listOfTeachers: List<OneRosterUser> = emptyList(),
-    val listOfStudents: List<OneRosterUser> = emptyList(),
-    val listOfPending: List<OneRosterUser> = emptyList(),
+    val listOfTeachers: List<Person> = emptyList(),
+    val listOfStudents: List<Person> = emptyList(),
+    val listOfPending: List<Person> = emptyList(),
     val chipOptions: List<FilterChipsOption> = emptyList(),
     val selectedChip: String = ALL,
     val sortOptions: List<SortOrderOption> = emptyList(),
@@ -85,14 +87,14 @@ class ClazzDetailViewModel(
             val users = schoolDataSource.onRoasterDataSource.getAllUsers()
 
             val teachers = users.filter { user ->
-                user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.TEACHER }
+                 user.roles.any { it.roleType == PersonRole.RoleType.TEACHER }
             }
 
             val students = users.filter { user ->
-                user.enabledUser && user.roles.any { it.role == OneRosterRoleEnum.STUDENT }
+                user.roles.any { it.roleType == PersonRole.RoleType.STUDENT }
             }
             val pendingInvites = users.filter { user ->
-                !user.enabledUser
+                user.roles.any { it.roleType == PersonRole.RoleType.PARENT }
             }
 
 
@@ -147,9 +149,9 @@ class ClazzDetailViewModel(
         _uiState.update { it.copy(selectedChip = chip) }
     }
 
-    fun onClickAcceptInvite(user: OneRosterUser) {}
+    fun onClickAcceptInvite(user: Person) {}
 
-    fun onClickDismissInvite(user: OneRosterUser) {}
+    fun onClickDismissInvite(user: Person) {}
 
 
     fun onTogglePendingSection() {

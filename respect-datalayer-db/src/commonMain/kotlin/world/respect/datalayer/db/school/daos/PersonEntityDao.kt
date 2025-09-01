@@ -44,5 +44,7 @@ interface PersonEntityDao {
     """)
     fun findAllListDetailsAsFlow(): Flow<List<PersonListDetails>>
 
+    @Query("SELECT * FROM PersonEntity")
+    suspend fun getAllUsers(): List<PersonEntity>
 
 }
