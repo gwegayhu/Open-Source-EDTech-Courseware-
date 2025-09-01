@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.credentials.passkey.RespectRedeemInviteRequest
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
+import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.signup.SignupCredential
 import world.respect.shared.domain.account.signup.SignupUseCase
@@ -34,7 +35,8 @@ class EnterPasswordSignupViewModel(
     savedStateHandle: SavedStateHandle,
     private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
     private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase,
-    private val signupUseCase: SignupUseCase
+    private val signupUseCase: SignupUseCase,
+    private val inviteInfoUseCase: GetInviteInfoUseCase
 ) : RespectViewModel(savedStateHandle) {
     private val route: EnterPasswordSignup = savedStateHandle.toRoute()
 
@@ -80,8 +82,9 @@ class EnterPasswordSignupViewModel(
                 password = password
             )
             signupUseCase(signupCredential)
+            val inviteInfo = inviteInfoUseCase(route.code)
             val redeemRequest = respectRedeemInviteRequestUseCase(
-                inviteInfo = route.inviteInfo,
+                inviteInfo = inviteInfo,
                 username = route.username,
                 type = route.type,
                 personInfo = route.personInfo,
@@ -94,12 +97,12 @@ class EnterPasswordSignupViewModel(
             when (route.type) {
                 ProfileType.CHILD , ProfileType.STUDENT->{
                         _navCommandFlow.tryEmit(
-                            NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,result.guid))
+                            NavCommand.Navigate(WaitingForApproval.create(route.type,route.code,result.guid))
                         )
                 }
                 ProfileType.PARENT ->{
                         _navCommandFlow.tryEmit(
-                            NavCommand.Navigate(SignupScreen.create(ProfileType.CHILD,route.inviteInfo))
+                            NavCommand.Navigate(SignupScreen.create(ProfileType.CHILD,route.code))
                         )
                 }
             }

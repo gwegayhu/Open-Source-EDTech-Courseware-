@@ -3,6 +3,7 @@ package world.respect.datalayer.http.school
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -64,8 +65,24 @@ class SchoolDirectoryDataSourceHttp(
         TODO("Not yet implemented")
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun getSchoolDirectoryEntryByUrl(url: Url): DataReadyState<SchoolDirectoryEntry>? {
-        TODO("Not yet implemented")
+        return try {
+            val apiUrl = url.resolve("api/directory/school/Url")
+            val schoolDirectoryEntry: SchoolDirectoryEntry = httpClient.get(apiUrl) {
+                parameter("url", url.toString())
+            }.body()
+
+            DataReadyState(
+                data = schoolDirectoryEntry,
+                metaInfo = DataLoadMetaInfo(
+                    lastModified = Clock.System.now().toEpochMilliseconds()
+                )
+            )
+        } catch (e: Throwable) {
+            println(e.message.toString())
+            null
+        }
     }
 
 

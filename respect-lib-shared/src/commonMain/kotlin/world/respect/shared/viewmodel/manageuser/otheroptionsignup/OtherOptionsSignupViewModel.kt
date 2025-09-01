@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.credentials.passkey.RespectRedeemInviteRequest
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
+import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.other_options
@@ -34,7 +35,8 @@ class OtherOptionsSignupViewModel(
     savedStateHandle: SavedStateHandle,
     private val createPasskeyUseCase: CreatePasskeyUseCase?,
     private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
-    private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase
+    private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase,
+    private val inviteInfoUseCase: GetInviteInfoUseCase
 ) : RespectViewModel(savedStateHandle) {
     private val route: OtherOptionsSignup = savedStateHandle.toRoute()
 
@@ -61,10 +63,10 @@ class OtherOptionsSignupViewModel(
 
     fun onClickSignupWithPasskey() {
         viewModelScope.launch {
-
+            val inviteInfo = inviteInfoUseCase(route.code)
             try {
 
-                val rpId = route.inviteInfo.school.rpId
+                val rpId = inviteInfo.school.rpId
                 if (createPasskeyUseCase==null||rpId==null){
                     _uiState.update {
                         it.copy(
@@ -80,7 +82,7 @@ class OtherOptionsSignupViewModel(
                         is CreatePasskeyUseCase.PasskeyCreatedResult -> {
 
                             val redeemRequest = respectRedeemInviteRequestUseCase(
-                                inviteInfo = route.inviteInfo,
+                                inviteInfo = inviteInfo,
                                 username = route.username,
                                 type = route.type,
                                 personInfo = route.personInfo,
@@ -93,13 +95,13 @@ class OtherOptionsSignupViewModel(
                             when (route.type) {
                                 ProfileType.CHILD, ProfileType.STUDENT -> {
                                     _navCommandFlow.tryEmit(
-                                        NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,result.guid))
+                                        NavCommand.Navigate(WaitingForApproval.create(route.type,route.code,result.guid))
                                     )
                                 }
 
                                 ProfileType.PARENT -> {
                                     _navCommandFlow.tryEmit(
-                                        NavCommand.Navigate(SignupScreen.create(ProfileType.CHILD,route.inviteInfo))
+                                        NavCommand.Navigate(SignupScreen.create(ProfileType.CHILD,route.code))
                                     )
                                 }
                             }
@@ -127,7 +129,7 @@ class OtherOptionsSignupViewModel(
 
     fun onClickSignupWithPassword() {
         _navCommandFlow.tryEmit(
-            NavCommand.Navigate(EnterPasswordSignup.create(route.username,route.type,route.inviteInfo,route.personInfo))
+            NavCommand.Navigate(EnterPasswordSignup.create(route.username,route.type,route.code,route.personInfo))
         )
     }
 

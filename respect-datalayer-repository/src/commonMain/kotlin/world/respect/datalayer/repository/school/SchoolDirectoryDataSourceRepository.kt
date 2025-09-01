@@ -57,7 +57,17 @@ class SchoolDirectoryDataSourceRepository(
     }
 
     override suspend fun getSchoolDirectoryEntryByUrl(url: Url): DataReadyState<SchoolDirectoryEntry>? {
-        TODO("Not yet implemented")
+        val localSchoolDirectoryEntry = local.getSchoolDirectoryEntryByUrl(url)
+        if (localSchoolDirectoryEntry != null) {
+            return localSchoolDirectoryEntry
+        }
+
+        val remoteSchoolDirectoryEntry = remote.getSchoolDirectoryEntryByUrl(url)
+        if (remoteSchoolDirectoryEntry != null) {
+            local.upsertSchoolDirectoryEntry(remoteSchoolDirectoryEntry, directory = null)
+        }
+
+        return remoteSchoolDirectoryEntry
     }
 
 
