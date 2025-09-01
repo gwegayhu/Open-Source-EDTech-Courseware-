@@ -22,6 +22,13 @@ class PersonDataSourceDb(
     private val xxHash: XXStringHasher,
 ): PersonDataSourceLocal {
 
+    override suspend fun getAllUsers(): List<Person> {
+
+        return schoolDb.getPersonEntityDao().getAllUsers().map {
+            PersonEntities(it).toModel()
+        }
+    }
+
     override suspend fun findByUsername(username: String): Person? {
         return schoolDb.getPersonEntityDao().findByUsername(username)?.let {
             PersonEntities(it)

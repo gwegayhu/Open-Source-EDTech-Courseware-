@@ -12,6 +12,9 @@ class PersonDataSourceRepository(
     private val local: PersonDataSourceLocal,
     private val remote: PersonDataSource,
 ) : PersonDataSource {
+    override suspend fun getAllUsers(): List<Person> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun findByUsername(username: String): Person? {
         TODO("Not yet implemented")

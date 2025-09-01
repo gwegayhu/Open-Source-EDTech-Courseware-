@@ -9,16 +9,11 @@ import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.oneroster.model.OneRosterEnrollment
 import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.datalayer.oneroster.composites.ClazzListDetails
-import world.respect.datalayer.school.model.Person
 
 class OneRosterDataSourceRepository(
     private val local: OneRosterDataSourceLocal,
     private val remote: OneRosterDataSource,
 ) :OneRosterDataSource{
-
-    override suspend fun getAllUsers(): List<Person> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun putUser(user: OneRosterUser) {
         TODO("Not yet implemented")

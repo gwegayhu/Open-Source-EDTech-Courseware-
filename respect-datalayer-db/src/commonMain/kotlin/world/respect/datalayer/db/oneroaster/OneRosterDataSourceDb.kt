@@ -12,27 +12,17 @@ import world.respect.datalayer.db.RespectSchoolDatabase
 import world.respect.datalayer.db.oneroaster.adapter.OneRoasterClassEntities
 import world.respect.datalayer.db.oneroaster.adapter.toEntities
 import world.respect.datalayer.db.oneroaster.adapter.toModel
-import world.respect.datalayer.db.school.adapters.PersonEntities
-import world.respect.datalayer.db.school.adapters.toModel
 import world.respect.datalayer.oneroster.OneRosterDataSourceLocal
 import world.respect.datalayer.oneroster.model.OneRosterClass
 import world.respect.datalayer.oneroster.model.OneRosterEnrollment
 import world.respect.datalayer.oneroster.model.OneRosterUser
 import world.respect.datalayer.oneroster.composites.ClazzListDetails
-import world.respect.datalayer.school.model.Person
 import world.respect.libxxhash.XXStringHasher
 
 class OneRosterDataSourceDb(
     private val schoolDb: RespectSchoolDatabase,
     private val xxHash: XXStringHasher,
 ) : OneRosterDataSourceLocal {
-
-    override suspend fun getAllUsers(): List<Person> {
-
-        return schoolDb.getPersonEntityDao().getAllUsers().map {
-            PersonEntities(it).toModel()
-        }
-    }
 
     override suspend fun putUser(user: OneRosterUser) {
         TODO("Not yet implemented")

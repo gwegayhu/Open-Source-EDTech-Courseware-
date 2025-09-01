@@ -8,6 +8,8 @@ import world.respect.datalayer.school.model.composites.PersonListDetails
 
 interface PersonDataSource {
 
+    suspend fun getAllUsers(): List<Person>
+
     suspend fun findByUsername(username: String): Person?
 
     suspend fun findByGuid(loadParams: DataLoadParams, guid: String): DataLoadState<Person>
