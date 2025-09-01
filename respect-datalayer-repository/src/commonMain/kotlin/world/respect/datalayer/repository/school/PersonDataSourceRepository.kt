@@ -17,18 +17,18 @@ class PersonDataSourceRepository(
 ) : PersonDataSource {
 
     override suspend fun findByUsername(username: String): Person? {
-        TODO("Not yet implemented")
+        return local.findByUsername(username)
     }
 
     override suspend fun findByGuid(
         loadParams: DataLoadParams,
         guid: String
     ): DataLoadState<Person> {
-        TODO("Not yet implemented")
+        return local.findByGuid(loadParams, guid)
     }
 
     override suspend fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
-        TODO("Not yet implemented")
+        return local.findByGuidAsFlow(guid)
     }
 
     override fun findAllListDetailsAsFlow(
@@ -49,13 +49,13 @@ class PersonDataSourceRepository(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): Flow<DataLoadState<List<Person>>> {
-        TODO("Not yet implemented")
+        return local.findAllAsFlow(loadParams, searchQuery)
     }
 
     override suspend fun findAll(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): DataLoadState<List<Person>> {
-        TODO("Not yet implemented")
+        return local.findAll(loadParams, searchQuery)
     }
 }

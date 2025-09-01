@@ -38,8 +38,8 @@ data class SchoolDirectoryEntryScopeId(
                     SchoolDirectoryEntryScopeId(schoolUrl = Url(it), null)
                 else
                     SchoolDirectoryEntryScopeId(
-                        schoolUrl = Url(it.substring(0, atIndex)),
-                        accountPrincipalId = AuthenticatedUserPrincipalId(it.substring(atIndex + 1))
+                        schoolUrl = Url(it.substring(atIndex + 1)),
+                        accountPrincipalId = AuthenticatedUserPrincipalId(it.substring(0, atIndex))
                     )
             }
         }

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.map
 import world.respect.datalayer.AuthTokenProvider
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.ext.getDataLoadResultAsFlow
 import world.respect.datalayer.ext.map
@@ -70,11 +71,13 @@ class PersonDataSourceHttp(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): DataLoadState<List<Person>> {
-        val respectUrl = schoolDirectoryDataSource.getSchoolDirectoryEntryByUrl(schoolUrl)?.data
+        val respectUrl = schoolDirectoryDataSource.getSchoolDirectoryEntryByUrl(schoolUrl).dataOrNull()
             ?.respectExt ?: throw IllegalStateException("No Respect Ext url")
 
         return httpClient.getAsDataLoadState<List<Person>>(respectUrl.resolve("person")) {
-            headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken()}"
+            val token = tokenProvider.provideToken()
+            println("PersonDataSource: load person list using token $token")
+            headers[HttpHeaders.Authorization] = "Bearer $token"
         }
     }
 }

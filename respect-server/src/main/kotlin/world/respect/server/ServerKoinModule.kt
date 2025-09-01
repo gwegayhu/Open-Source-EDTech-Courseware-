@@ -124,7 +124,6 @@ fun serverKoinModule(
             GetTokenAndUserProfileWithUsernameAndPasswordDbImpl(
                 schoolDb = get(),
                 xxHash = get(),
-                personDataSource = get<SchoolDataSource>().personDataSource,
             )
         }
     }

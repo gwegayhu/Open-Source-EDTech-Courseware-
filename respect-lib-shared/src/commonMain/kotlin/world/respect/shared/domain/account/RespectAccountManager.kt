@@ -3,8 +3,6 @@ package world.respect.shared.domain.account
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +15,11 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.scope.Scope
 import world.respect.datalayer.DataLoadParams
+import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.respect.model.RESPECT_SCHOOL_JSON_PATH
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.datalayer.school.PersonDataSourceLocal
-import world.respect.libutil.ext.resolve
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.school.MakeSchoolPathDirUseCase
 import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
@@ -41,6 +38,7 @@ class RespectAccountManager(
     private val json: Json,
     private val tokenManager: RespectTokenManager,
     private val httpClient: HttpClient,
+    private val appDataSource: RespectAppDataSource,
 ): KoinComponent {
 
     private val _storedAccounts = MutableStateFlow<List<RespectAccount>>(
@@ -122,10 +120,9 @@ class RespectAccountManager(
             password = password,
         )
 
-        //This could/should move to using the datasource instead of httpclient directly
-        val schoolDirectoryEntry: SchoolDirectoryEntry = httpClient.get(
-            schoolUrl.resolve(RESPECT_SCHOOL_JSON_PATH)
-        ).body()
+        val schoolDirectoryEntry = appDataSource.schoolDirectoryDataSource.getSchoolDirectoryEntryByUrl(
+            schoolUrl
+        ).dataOrNull() ?: throw IllegalStateException()
 
         val respectAccount = RespectAccount(
             userGuid = authResponse.person.guid,
@@ -140,7 +137,7 @@ class RespectAccountManager(
         respectAccount: RespectAccount,
     ) {
         val schoolScope: Scope = getKoin().getOrCreateScope<SchoolDirectoryEntry>(
-            respectAccount.school.self.toString()
+            SchoolDirectoryEntryScopeId(respectAccount.school.self, null).scopeId
         )
         tokenManager.storeToken(respectAccount.scopeId, authResponse.token)
 

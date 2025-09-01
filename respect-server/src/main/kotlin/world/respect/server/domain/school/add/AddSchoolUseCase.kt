@@ -8,7 +8,9 @@ import world.respect.datalayer.school.model.PersonRole
 import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSourceLocal
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.datalayer.AuthenticatedUserPrincipalId
+import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.domain.account.setpassword.SetPasswordUseCase
+import world.respect.shared.util.di.RespectAccountScopeId
 import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
 import kotlin.time.ExperimentalTime
 
@@ -36,13 +38,23 @@ class AddSchoolUseCase(
                 request.school,  request.dbUrl
             )
 
+            val adminGuid = "1"
             val schoolScope = getKoin().createScope<SchoolDirectoryEntry>(
                 SchoolDirectoryEntryScopeId(
                     request.school.self, null
                 ).scopeId
             )
-            val schoolDataSource: SchoolDataSourceLocal = schoolScope.get()
-            val setPasswordUseCase: SetPasswordUseCase = schoolScope.get()
+
+            val accountScope = getKoin().createScope<RespectAccount>(
+                RespectAccountScopeId(
+                    request.school.self, AuthenticatedUserPrincipalId(adminGuid)
+                ).scopeId
+            )
+
+            accountScope.linkTo(schoolScope)
+
+            val schoolDataSource: SchoolDataSourceLocal = accountScope.get()
+            val setPasswordUseCase: SetPasswordUseCase = accountScope.get()
 
             val adminPerson = Person(
                 guid = "1",

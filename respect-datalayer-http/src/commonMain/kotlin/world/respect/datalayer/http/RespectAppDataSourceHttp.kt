@@ -5,6 +5,7 @@ import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.compatibleapps.CompatibleAppsDataSource
 import world.respect.datalayer.http.compatibleapps.CompatibleAppDataSourceHttp
 import world.respect.datalayer.http.opds.OpdsDataSourceHttp
+import world.respect.datalayer.http.schooldirectory.SchoolDirectoryDataSourceHttp
 import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
 import world.respect.datalayer.opds.OpdsDataSource
 import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
@@ -29,6 +30,9 @@ class RespectAppDataSourceHttp(
         )
     }
 
-    override val schoolDirectoryDataSource: SchoolDirectoryDataSource
-        get() = TODO("Not yet implemented")
+    override val schoolDirectoryDataSource: SchoolDirectoryDataSource by lazy {
+        SchoolDirectoryDataSourceHttp(
+            httpClient = httpClient
+        )
+    }
 }

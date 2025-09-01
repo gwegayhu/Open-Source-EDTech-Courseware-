@@ -14,7 +14,7 @@ data class RespectAccountScopeId(
     val accountPrincipalId: AuthenticatedUserPrincipalId,
 ) {
 
-    val scopeId = "a:${accountPrincipalId}@${schoolUrl}"
+    val scopeId = "a:${accountPrincipalId.guid}@${schoolUrl}"
 
     companion object {
 
@@ -22,8 +22,8 @@ data class RespectAccountScopeId(
             return scopeId.substringAfter(":").let {
                 val atIndex = it.lastIndexOf('@')
                 RespectAccountScopeId(
-                    schoolUrl = Url(it.substring(0, atIndex)),
-                    accountPrincipalId = AuthenticatedUserPrincipalId(it.substring(atIndex + 1))
+                    accountPrincipalId = AuthenticatedUserPrincipalId(it.substring(0, atIndex)),
+                    schoolUrl = Url(it.substring(atIndex + 1)),
                 )
             }
         }

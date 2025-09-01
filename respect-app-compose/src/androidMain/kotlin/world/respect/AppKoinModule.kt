@@ -89,6 +89,8 @@ import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.db.SchoolDataSourceDb
 import world.respect.datalayer.db.RespectSchoolDatabase
+import world.respect.datalayer.http.SchoolDataSourceHttp
+import world.respect.datalayer.repository.SchoolDataSourceRepository
 import world.respect.libutil.ext.sanitizedForFilename
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
@@ -258,6 +260,7 @@ val appKoinModule = module {
             json = get(),
             tokenManager = get(),
             httpClient = get(),
+            appDataSource = get(),
         )
     }
 
@@ -321,7 +324,7 @@ val appKoinModule = module {
         RespectAppDataSourceRepository(
             local = RespectAppDataSourceDb(
                 respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
-                    appContext, appContext.getDatabasePath("respect.db").absolutePath
+                    appContext, appContext.getDatabasePath("respectapp.db").absolutePath
                 ).setDriver(BundledSQLiteDriver())
                     .build(),
                 json = get(),
@@ -346,7 +349,7 @@ val appKoinModule = module {
      * ScopeId is set as per SchoolDirectoryEntryScopeId
      *
      * If the upstream server provides a list of grants/permission rules then the school database
-     * can be shared; and scopeId
+     * can be shared
      */
     scope<SchoolDirectoryEntry> {
         scoped<GetTokenAndUserProfileWithUsernameAndPasswordUseCase> {
@@ -382,11 +385,7 @@ val appKoinModule = module {
     }
 
     /**
-     * RespectAccount scope id is always in the form of:
      * ScopeId is set as per RespectAccountScopeId
-     *
-     * The URL will never contain an '@' sign (e.g. user@email.com@https://school.example.org/),
-     * the sourcedId may contain an @ sign. The school url is after the LAST @ symbol.
      *
      * The RespectAccount scope will be linked to SchoolDirectoryEntry (the parent) scope.
      */
@@ -396,11 +395,21 @@ val appKoinModule = module {
         }
 
         scoped<SchoolDataSource> {
-            SchoolDataSourceDb(
-                schoolDb = get(),
-                xxStringHasher = get(),
-                authenticatedUser = AuthenticatedUserPrincipalId(
-                    RespectAccountScopeId.parse(id).accountPrincipalId.guid
+            val accountScopeId = RespectAccountScopeId.parse(id)
+
+            SchoolDataSourceRepository(
+                local = SchoolDataSourceDb(
+                    schoolDb = get(),
+                    xxStringHasher = get(),
+                    authenticatedUser = AuthenticatedUserPrincipalId(
+                        accountScopeId.accountPrincipalId.guid
+                    )
+                ),
+                remote = SchoolDataSourceHttp(
+                    schoolUrl = accountScopeId.schoolUrl,
+                    schoolDirectoryDataSource = get<RespectAppDataSource>().schoolDirectoryDataSource,
+                    httpClient = get(),
+                    tokenProvider = get(),
                 )
             )
         }
