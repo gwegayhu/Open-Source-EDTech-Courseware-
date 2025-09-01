@@ -99,11 +99,12 @@ fun Application.module() {
             }
 
             route("school") {
-                route("auth") {
-                    AuthRoute()
+                route("respect") {
+                    route("auth") {
+                        AuthRoute()
+                    }
                 }
             }
         }
-
     }
 }

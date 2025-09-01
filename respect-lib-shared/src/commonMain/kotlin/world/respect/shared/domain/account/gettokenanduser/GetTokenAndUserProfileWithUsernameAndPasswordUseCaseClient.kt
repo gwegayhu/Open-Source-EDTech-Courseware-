@@ -24,7 +24,7 @@ class GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient(
         return httpClient.post {
             url {
                 takeFrom(schoolUrl)
-                appendPathSegments("api/school/auth/auth-with-password")
+                appendPathSegments("api/school/respect/auth/auth-with-password")
             }
 
             parameter(GetTokenAndUserProfileWithUsernameAndPasswordUseCase.PARAM_NAME_USERNAME, username)

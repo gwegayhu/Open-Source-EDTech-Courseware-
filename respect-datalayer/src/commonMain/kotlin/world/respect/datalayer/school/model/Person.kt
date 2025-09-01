@@ -9,7 +9,9 @@ import kotlin.time.Instant
 /**
  * @property guid unique system identifier. As per various specs it MUST NOT contain personal
  *           information (e.g. username, name, etc). It could be a sequential key, etc.
- * @property userMasterIdentifier generally an ID assigned by the organization.
+ * @property userMasterIdentifier generally an ID assigned by the organization (e.g. government
+ *           issued student/teacher id number)
+ * @property active (should be changed to status enum - which may be pending)
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
