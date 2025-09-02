@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.credentials.passkey.GetCredentialUseCase
+import world.respect.datalayer.RespectAppDataSource
+import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.*
 import world.respect.shared.navigation.LoginScreen
@@ -32,7 +34,8 @@ data class LoginUiState(
 class LoginViewModel(
     savedStateHandle: SavedStateHandle,
     private val accountManager: RespectAccountManager,
-    getCredentialUseCase: GetCredentialUseCase
+    getCredentialUseCase: GetCredentialUseCase,
+    respectAppDataSource: RespectAppDataSource
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -54,7 +57,8 @@ class LoginViewModel(
         viewModelScope.launch {
 
             try {
-                val rpId =route.rpId
+                val school = respectAppDataSource.schoolDirectoryDataSource.getSchoolDirectoryEntryByUrl(route.schoolUrl)
+                val rpId = school?.data?.rpId
                 if (rpId!=null){
                     when (val credentialResult = getCredentialUseCase(rpId)) {
                         is GetCredentialUseCase.PasskeyCredentialResult -> {

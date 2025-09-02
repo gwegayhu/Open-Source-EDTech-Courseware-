@@ -20,7 +20,6 @@ import world.respect.shared.viewmodel.RespectViewModel
 
 class OtherOptionsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getInviteInfoUseCase: GetInviteInfoUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(OtherOptionsUiState())
@@ -59,7 +58,7 @@ class OtherOptionsViewModel(
          try {
              _navCommandFlow.tryEmit(
                  NavCommand.Navigate(
-                     LoginScreen.create(Url(link),null)
+                     LoginScreen.create(Url(link))
                  )
              )
          }catch(e: Throwable){

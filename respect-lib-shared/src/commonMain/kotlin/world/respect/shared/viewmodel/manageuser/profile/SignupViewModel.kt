@@ -151,12 +151,12 @@ class SignupViewModel(
                 when (route.type) {
                     ProfileType.PARENT, ProfileType.STUDENT -> {
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(CreateAccount.create(route.type,route.inviteInfo,personInfo))
+                                NavCommand.Navigate(CreateAccount.create(route.type,route.code,personInfo))
                             )
                     }
                     ProfileType.CHILD ->{
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,route.uid?:""))
+                                NavCommand.Navigate(WaitingForApproval.create(route.type,route.code,route.uid?:""))
                             )
                     }
                 }

@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.credentials.passkey.RespectRedeemInviteRequest
+import world.respect.datalayer.respect.model.invite.RespectInviteInfo
 import world.respect.shared.domain.account.createinviteredeemrequest.RespectRedeemInviteRequestUseCase
+import world.respect.shared.domain.account.invite.GetInviteInfoUseCase
 import world.respect.shared.domain.account.invite.SubmitRedeemInviteRequestUseCase
 import world.respect.shared.domain.account.signup.SignupCredential
 import world.respect.shared.domain.account.signup.SignupUseCase
@@ -34,6 +36,7 @@ data class CreateAccountViewModelUiState(
     val usernameError: StringResourceUiText? = null,
     val generalError: StringResourceUiText? = null,
     val signupError: String? = null,
+    val inviteInfo: RespectInviteInfo? = null,
     val passkeySupported : Boolean =true
 )
 
@@ -42,15 +45,17 @@ class CreateAccountViewModel(
     private val submitRedeemInviteRequestUseCase: SubmitRedeemInviteRequestUseCase,
     private val createPasskeyUseCase: CreatePasskeyUseCase?,
     private val respectRedeemInviteRequestUseCase: RespectRedeemInviteRequestUseCase,
-    private val signupUseCase: SignupUseCase
+    private val signupUseCase: SignupUseCase,
+    private val inviteInfoUseCase: GetInviteInfoUseCase
 ) : RespectViewModel(savedStateHandle) {
     private val route: CreateAccount = savedStateHandle.toRoute()
 
     private val _uiState = MutableStateFlow(CreateAccountViewModelUiState())
     val uiState = _uiState.asStateFlow()
-    val rpId = route.inviteInfo.school.rpId
     init {
         viewModelScope.launch {
+            val inviteInfo = inviteInfoUseCase(route.code)
+
             _appUiState.update {
                 it.copy(
                     title = Res.string.create_account.asUiText(),
@@ -60,8 +65,9 @@ class CreateAccountViewModel(
             }
             _uiState.update { prev ->
                 prev.copy(
-                    passkeySupported = createPasskeyUseCase != null && rpId != null,
-                    generalError = if (!(createPasskeyUseCase != null && rpId != null))
+                    inviteInfo=inviteInfo,
+                    passkeySupported = createPasskeyUseCase != null && inviteInfo.school.rpId != null,
+                    generalError = if (!(createPasskeyUseCase != null && inviteInfo.school.rpId != null))
                         StringResourceUiText(Res.string.passkey_not_supported)
                     else null
                 )
@@ -80,7 +86,10 @@ class CreateAccountViewModel(
     }
 
     fun onClickSignupWithPasskey() {
+
         viewModelScope.launch {
+            val inviteInfo = uiState.value.inviteInfo
+            if (inviteInfo==null) throw IllegalStateException("inviteInfo is null")
             val username = _uiState.value.username
 
             _uiState.update {
@@ -94,16 +103,16 @@ class CreateAccountViewModel(
             try {
 
 
-                if (createPasskeyUseCase==null||rpId==null){
+                if (createPasskeyUseCase==null||inviteInfo.school.rpId==null){
                     when (route.type) {
                         ProfileType.CHILD , ProfileType.STUDENT->{
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(EnterPasswordSignup.create(username,route.type,route.inviteInfo,route.personInfo))
+                                NavCommand.Navigate(EnterPasswordSignup.create(username,route.type,route.code,route.personInfo))
                             )
                         }
                         ProfileType.PARENT ->{
                             _navCommandFlow.tryEmit(
-                                NavCommand.Navigate(EnterPasswordSignup.create(username,ProfileType.CHILD,route.inviteInfo,route.personInfo))
+                                NavCommand.Navigate(EnterPasswordSignup.create(username,ProfileType.CHILD,route.code,route.personInfo))
                             )
                         }
                     }
@@ -111,7 +120,7 @@ class CreateAccountViewModel(
 
                     val createPasskeyResult = createPasskeyUseCase(
                         username = username,
-                        rpId = rpId
+                        rpId = inviteInfo.school.rpId?:""
                     )
                     when (createPasskeyResult) {
                         is CreatePasskeyUseCase.PasskeyCreatedResult -> {
@@ -121,7 +130,7 @@ class CreateAccountViewModel(
                                 authenticationResponseJSON = createPasskeyResult.authenticationResponseJSON
                             )
                             val redeemRequest = respectRedeemInviteRequestUseCase(
-                                inviteInfo = route.inviteInfo,
+                                inviteInfo = inviteInfo,
                                 username = username,
                                 type = route.type,
                                 personInfo = route.personInfo,
@@ -135,12 +144,12 @@ class CreateAccountViewModel(
                             when (route.type) {
                                 ProfileType.CHILD , ProfileType.STUDENT->{
                                     _navCommandFlow.tryEmit(
-                                        NavCommand.Navigate(WaitingForApproval.create(route.type,route.inviteInfo,result.guid))
+                                        NavCommand.Navigate(WaitingForApproval.create(route.type,route.code,result.guid))
                                     )
                                 }
                                 ProfileType.PARENT ->{
                                     _navCommandFlow.tryEmit(
-                                        NavCommand.Navigate(SignupScreen.create(ProfileType.CHILD,route.inviteInfo))
+                                        NavCommand.Navigate(SignupScreen.create(ProfileType.CHILD,route.code))
                                     )
                                 }
                             }
@@ -198,7 +207,7 @@ class CreateAccountViewModel(
                 OtherOptionsSignup.create(
                     username = uiState.value.username,
                     profileType = route.type,
-                    inviteInfo = route.inviteInfo,
+                    inviteCode = route.code,
                     personInfo = route.personInfo
                 )
             )

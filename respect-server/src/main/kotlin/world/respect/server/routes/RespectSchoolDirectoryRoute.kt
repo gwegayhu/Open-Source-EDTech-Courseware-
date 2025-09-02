@@ -1,6 +1,7 @@
 package world.respect.server.routes
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -36,6 +37,22 @@ fun Route.RespectSchoolDirectoryRoute() {
 
     post("invite") {
 
+    }
+    get("url") {
+        val directoryDataSource: SchoolDirectoryDataSourceLocal by inject()
+        val url = call.request.queryParameters["url"]
+
+        if (url.isNullOrBlank()) {
+            call.respond(HttpStatusCode.BadRequest, "Missing 'url' parameter")
+            return@get
+        }
+        val school = directoryDataSource.getSchoolDirectoryEntryByUrl(Url(url))
+
+        if (school != null) {
+            call.respond(school)
+        } else {
+            call.respond(HttpStatusCode.NotFound, "School not found")
+        }
     }
 
 }

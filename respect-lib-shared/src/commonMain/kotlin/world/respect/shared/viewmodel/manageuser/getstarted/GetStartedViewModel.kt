@@ -95,7 +95,7 @@ class GetStartedViewModel(
     fun onSchoolSelected(school: SchoolDirectoryEntry) {
         _navCommandFlow.tryEmit(
             NavCommand.Navigate(
-                LoginScreen.create(school.self,school.rpId)
+                LoginScreen.create(school.self)
             )
         )
     }
