@@ -1,24 +1,6 @@
 appId: world.respect.app
 ---
-- clearState:  world.respect.app
-- launchApp
-- tapOn: "Other options"
-- tapOn: "Paste the link here"
-- inputText: "http://192.168.0.168:8087/"
-- tapOn: "Next"
-- assertVisible:
-    id: "app_title"
-    text: "Login"
-- tapOn: "UserId"
-- inputText: "admin"
-- tapOn: "Password"
-- inputText: "secret"
-- tapOn:
-    text: "Login"
-    index: 1
-- assertVisible:
-    id: "app_title"
-    text: "Apps"
+- runFlow: "common/school_admin_login_flow.yaml"
 - tapOn:
     id: "floating_action_button"
 - tapOn: "Add from Link"

@@ -1,15 +1,47 @@
 appId: world.respect.app
 ---
+- runFlow: "common/school_admin_login_flow.yaml"
+- assertVisible:
+      id: "app_title"
+      text: "Apps"
+- tapOn: "Classes"
+- assertVisible:
+      id: "app_title"
+      text: "Classes"
+- tapOn:
+      id: "floating_action_button"   #  +Class button
+- assertVisible:
+      id: "app_title"
+      text: "Add class"
+- tapOn: "Class name"
+- inputText: "New Class"
+- tapOn: "Description"
+- inputText: "New Course Description"
+- tapOn: "Start date"
+- inputText: "date"
+- tapOn: "Save"
+- assertVisible:
+      id: "app_title"
+      text: "Classes"
+- assertVisible: "New Class"
+- tapOn: "New Class"
+- assertVisible:
+      id: "app_title"
+      text: "New Class"
+- tapOn: "+ Student"
+- tapOn: "Copy invite code"
+
 - clearState: world.respect.app
 - launchApp
 - tapOn: "I have an invite code"
 - tapOn: "Invite code"
-- inputText: "respect"
+- longPressOn: "Invite code"
+- tapOn: "Copy"
 - tapOn: "Next"
 - assertVisible:
     id: "app_title"
     text: "Invitation"
-- assertVisible: "Spix Foundation School"
+- assertVisible: ${school_name}
 - tapOn: "I’m a parent"
 - assertVisible:
     id: "app_title"
@@ -19,30 +51,30 @@ appId: world.respect.app
     id: "app_title"
     text: "Your profile"
 - tapOn: "Your name*"
-- inputText: "Parent user"
+- inputText: ${Parent_user_name}
 - tapOn: "Gender"
 - tapOn: "Female"
 - tapOn: "Your date of birth"
-- inputText: "12/10/2000"
+- inputText: "date"
 - tapOn: "Next"
 - assertVisible:
     id: "app_title"
     text: "Create account"
-- assertVisible: "parentuser"  #username
+- assertVisible: ${Parent_userId}  #username
 - tapOn: "Other ways to sign in"
 - tapOn: "Sign in with a password"
 - tapOn: "Password"
-- inputText: "testparent"
+- inputText: ${Parent_user_pass}
 - tapOn: "Sign-up"
 - assertVisible:
     id: "app_title"
     text: "Child Profile"
 - tapOn: "Child name"
-- inputText: "Child user"
+- inputText: ${child_user_name}
 - tapOn: "Gender"
 - tapOn: "Male"
 - tapOn: "Child date of birth"
-- inputText: "08/10/2020"
+- inputText: "date"
 - tapOn: "Done"
 - assertVisible:
     id: "app_title"
