@@ -13,7 +13,7 @@ import world.respect.datalayer.ext.firstOrNotLoaded
 import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.ext.getDataLoadResultAsFlow
 import world.respect.datalayer.ext.map
-import world.respect.datalayer.http.ext.resolveRespectExtUrl
+import world.respect.datalayer.http.ext.respectEndpointUrl
 import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.adapters.asListDetails
 import world.respect.datalayer.school.model.Person
@@ -37,7 +37,7 @@ class PersonDataSourceHttp(
         guid: String
     ): DataLoadState<Person> {
         return httpClient.getAsDataLoadState<List<Person>>(
-            resolveRespectExtUrl("person"),
+            respectEndpointUrl("person"),
         ) {
             headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
         }.firstOrNotLoaded()
@@ -45,7 +45,7 @@ class PersonDataSourceHttp(
 
     override fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
         return httpClient.getDataLoadResultAsFlow<List<Person>>(
-            urlFn = { resolveRespectExtUrl("person") },
+            urlFn = { respectEndpointUrl("person") },
             dataLoadParams = DataLoadParams()
         ) {
             headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
@@ -59,7 +59,7 @@ class PersonDataSourceHttp(
         searchQuery: String?
     ): Flow<DataLoadState<List<Person>>> {
         return httpClient.getDataLoadResultAsFlow<List<Person>>(
-            urlFn = { resolveRespectExtUrl("person") },
+            urlFn = { respectEndpointUrl("person") },
             dataLoadParams = loadParams,
         ) {
             headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"

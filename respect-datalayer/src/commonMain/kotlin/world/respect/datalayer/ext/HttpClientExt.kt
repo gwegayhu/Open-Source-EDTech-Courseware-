@@ -75,9 +75,9 @@ inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
 
 /**
  * @param urlFn Data source functions often return a flow, however sometimes figuring out the url
- *        itself requires a suspended function (eg potentially a database lookup). The function
- *        that returns a flow itself is not  suspended. Accepting a parameter makes it easier to
- *        shift the operation to get the url into the flow.
+ *        itself requires a suspended function (such as a database query). The function
+ *        that returns the flow is not suspended. Accepting a function parameter makes it easier to
+ *        shift the suspended operation to get the url into the flow.
  */
 inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
     noinline urlFn: suspend () -> Url,
