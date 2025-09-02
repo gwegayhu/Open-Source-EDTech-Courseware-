@@ -1,17 +1,16 @@
 appId: world.respect.app
-tags:
-    - respect
 ---
 - clearState:  world.respect.app
 - launchApp
 - tapOn: "Other options"
-- tapOn: "Enter link"
-- inputText: "http://192.168.0.168:8087/"
+- assertVisible: "Enter the link provided by your teacher or school admin"
+- tapOn: "paste the link here"
+- inputText: ${SCHOOL_URL}
 - tapOn: "Next"
 - tapOn: "UserId"
-- inputText: "admin"
+- inputText: ${SCHOOL_ADMIN_USER}
 - tapOn: "Password"
-- inputText: "testpass"
+- inputText: ${SCHOOL_ADMIN_PASS}
 - tapOn:
     text: "Login"
     index: 1
@@ -54,7 +53,7 @@ tags:
 - tapOn: "Time range"
 - tapOn: "Custom date range"
 - tapOn: "From"
-- inputText: "2025-01-01"
+- inputText: "Yesterday"
 - tapOn: "To"
 - inputText: "Today"
 - tapOn: "X-axis"
@@ -87,6 +86,3 @@ tags:
 - tapOn: "Y axis"
 - tapOn: "Assignment completion %"
 - tapOn: "Done"
-
-
-
