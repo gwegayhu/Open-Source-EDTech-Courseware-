@@ -41,9 +41,7 @@ class CreateGraphFormatterUseCase() {
             options.axis == FormatterOptions.Axis.Y_AXIS_VALUES && options.paramType == Double::class -> {
                 when (reportResult.request.reportOptions.series.first().reportSeriesYAxis.type) {
                     YAxisTypes.DURATION.name -> DurationGraphFormatter(reportResult)
-                    YAxisTypes.COUNT.name -> CountGraphFormatter()
-                    YAxisTypes.PERCENTAGE.name -> CountGraphFormatter()
-                    else -> throw IllegalArgumentException("Unsupported Y-axis type")
+                    else -> CountGraphFormatter()
                 }
             }
 

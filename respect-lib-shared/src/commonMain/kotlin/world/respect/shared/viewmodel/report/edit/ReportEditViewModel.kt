@@ -50,7 +50,8 @@ import world.respect.shared.viewmodel.app.appstate.LoadingUiState
 data class ReportEditUiState(
     val reportOptions: ReportOptions = ReportOptions(),
     val reportTitleError: UiText? = null,
-    val submitted: Boolean = false
+    val submitted: Boolean = false,
+    val availableIndicators: List<Indicator> = emptyList()
 ) {
     val hasSingleSeries: Boolean
         get() = reportOptions.series.size == 1
@@ -73,14 +74,22 @@ class ReportEditViewModel(
     private val _uiState: MutableStateFlow<ReportEditUiState> =
         MutableStateFlow(ReportEditUiState())
     val uiState: Flow<ReportEditUiState> = _uiState.asStateFlow()
-    private val _availableIndicators = MutableStateFlow<List<Indicator>>(emptyList())
-    val availableIndicators = _availableIndicators.asStateFlow()
     private var nextTempFilterUid = 0
     private val debouncer = LaunchDebouncer(viewModelScope)
 
 
     init {
         viewModelScope.launch {
+            try {
+                schoolDataSource.indicatorDataSource.initializeDefaultIndicators {
+                    schoolPrimaryKeyGenerator.primaryKeyGenerator.nextId(
+                        Indicator.TABLE_ID
+                    ).toString()
+                }
+            } catch (e: Exception) {
+                println("Error initializing default indicators: ${e.message}")
+            }
+
             loadingState = LoadingUiState.INDETERMINATE
             val title = if (route.reportUid == null) {
                 getString(resource = Res.string.add_a_new_report)
@@ -90,7 +99,8 @@ class ReportEditViewModel(
 
             _appUiState.update {
                 AppUiState(
-                    title = title.asUiText(), hideBottomNavigation = false
+                    title = title.asUiText(),
+                    hideBottomNavigation = true
                 )
             }
 
@@ -104,19 +114,6 @@ class ReportEditViewModel(
                     userAccountIconVisible = false,
                     navigationVisible = true,
                 )
-            }
-        }
-        viewModelScope.launch {
-            // Load user-created indicators from database
-            try {
-                schoolDataSource.indicatorDataSource.allIndicatorAsFlow().collect { dataLoadState ->
-                    val userIndicators = dataLoadState.dataOrNull() ?: emptyList()
-                    // Combine default indicators with user-created ones
-                    val allIndicators = DefaultIndicators.list + userIndicators
-                    _availableIndicators.value = allIndicators
-                }
-            } catch (e: Exception) {
-                println("Error loading indicators: ${e.message}")
             }
         }
 
@@ -153,15 +150,23 @@ class ReportEditViewModel(
                 }
             }
         }
-
+        viewModelScope.launch {
+            schoolDataSource.indicatorDataSource.allIndicatorAsFlow()
+                .collect { dataLoadState ->
+                    _uiState.update { state ->
+                        state.copy(availableIndicators = dataLoadState.dataOrNull() ?: emptyList())
+                    }
+                }
+        }
 
         viewModelScope.launch {
-            navResultReturner.filteredResultFlowForKey(REPORT_FILTER_RESULT).collect { result ->
-                val filter = result.result as? ReportFilter
-                filter?.let {
-                    onFilterChanged(filter, filter.reportFilterSeriesUid.toInt())
+            navResultReturner.filteredResultFlowForKey(REPORT_EDIT_FILTER_RESULT)
+                .collect { result ->
+                    val filter = result.result as? ReportFilter
+                    filter?.let {
+                        onFilterChanged(filter)
+                    }
                 }
-            }
         }
     }
 
@@ -304,24 +309,24 @@ class ReportEditViewModel(
         )
 
         _navCommandFlow.tryEmit(
-            NavCommand.Navigate(ReportEditFilter.create(entityUid, newFilter))
+            NavCommand.Navigate(ReportEditFilter.create(newFilter))
         )
     }
 
     fun onEditFilter(reportFilter: ReportFilter) {
         _navCommandFlow.tryEmit(
-            NavCommand.Navigate(ReportEditFilter.create(entityUid, reportFilter))
+            NavCommand.Navigate(ReportEditFilter.create(reportFilter))
         )
     }
 
-    private fun onFilterChanged(newFilter: ReportFilter?, seriesId: Int) {
+    private fun onFilterChanged(newFilter: ReportFilter?) {
         _uiState.update { prevState ->
             val updatedSeries = prevState.reportOptions.series.map { series ->
-                if (series.reportSeriesUid == seriesId) {
+                if (series.reportSeriesUid == newFilter?.reportFilterSeriesUid) {
                     val currentFilters = series.reportSeriesFilters.orEmpty()
                     val updatedFilters = currentFilters.replaceOrAppend(
-                        element = newFilter ?: ReportFilter(),
-                        replacePredicate = { it.reportFilterUid == newFilter?.reportFilterUid }
+                        element = newFilter,
+                        replacePredicate = { it.reportFilterUid == newFilter.reportFilterUid }
                     )
                     series.copy(reportSeriesFilters = updatedFilters)
                 } else {
@@ -363,6 +368,6 @@ class ReportEditViewModel(
     }
 
     companion object {
-        const val REPORT_FILTER_RESULT = "report_filter_result"
+        const val REPORT_EDIT_FILTER_RESULT = "report_filter_result"
     }
 }

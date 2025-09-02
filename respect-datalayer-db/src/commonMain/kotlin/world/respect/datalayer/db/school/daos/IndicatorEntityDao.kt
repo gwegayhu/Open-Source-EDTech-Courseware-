@@ -36,4 +36,7 @@ interface IndicatorEntityDao {
 
     @Update
     suspend fun updateIndicator(entity: IndicatorEntity)
+
+    @Query("SELECT COUNT(*) FROM IndicatorEntity")
+    suspend fun getIndicatorCount(): Int
 }

@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 import org.koin.core.scope.Scope
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.ext.dataOrNull
-import world.respect.datalayer.school.model.report.DefaultIndicators
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
@@ -57,11 +56,8 @@ class IndicatorListViewModel(
                 try {
                     schoolDataSource.indicatorDataSource.allIndicatorAsFlow()
                         .collect { dataLoadState ->
-                            val userIndicators = dataLoadState.dataOrNull() ?: emptyList()
-                            val allIndicators = DefaultIndicators.list + userIndicators
-
                             _uiState.update { state ->
-                                state.copy(indicators = allIndicators)
+                                state.copy(indicators = dataLoadState.dataOrNull() ?: emptyList())
                             }
                         }
                 } catch (e: Exception) {

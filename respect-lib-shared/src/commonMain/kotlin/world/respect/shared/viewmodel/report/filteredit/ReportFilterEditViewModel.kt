@@ -13,13 +13,13 @@ import world.respect.datalayer.school.model.report.ReportFilter
 import world.respect.shared.generated.resources.Res
 import world.respect.shared.generated.resources.done
 import world.respect.shared.generated.resources.edit_filters
-import world.respect.shared.navigation.ReportEdit
 import world.respect.shared.navigation.ReportEditFilter
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 import world.respect.shared.viewmodel.app.appstate.ActionBarButtonUiState
 import world.respect.shared.viewmodel.app.appstate.AppUiState
 import world.respect.shared.viewmodel.app.appstate.LoadingUiState
+import world.respect.shared.viewmodel.report.edit.ReportEditViewModel.Companion.REPORT_EDIT_FILTER_RESULT
 
 data class ReportFilterEditUiState(
     val filters: ReportFilter? = ReportFilter(),
@@ -33,7 +33,6 @@ class ReportFilterEditViewModel(
     private val _uiState = MutableStateFlow(ReportFilterEditUiState())
     val uiState: StateFlow<ReportFilterEditUiState> = _uiState
     private val route: ReportEditFilter = savedStateHandle.toRoute()
-    private val reportFilter: ReportFilter = route.getReportFilter()
 
     init {
         loadingState = LoadingUiState.INDETERMINATE
@@ -52,8 +51,8 @@ class ReportFilterEditViewModel(
             }
         }
         _uiState.value = ReportFilterEditUiState(
-            filters = reportFilter,
-            filterConditionOptions = getConditionOptionsForField(reportFilter.reportFilterField)
+            filters = route.reportFilter,
+            filterConditionOptions = getConditionOptionsForField(route.reportFilter.reportFilterField)
         )
     }
 
@@ -74,8 +73,7 @@ class ReportFilterEditViewModel(
         val currentFilter = uiState.value.filters
         if (currentFilter != null && isValidFilter(currentFilter)) {
             sendResultAndPop(
-                destKey = REPORT_FILTER_RESULT,
-                destScreen = ReportEdit(route.reportUid),
+                destKey = REPORT_EDIT_FILTER_RESULT,
                 result = currentFilter
             )
         }
@@ -93,9 +91,5 @@ class ReportFilterEditViewModel(
             FilterType.PERSON_GENDER -> ReportConditionFilterOptions.GenderConditionFilter()
             else -> null
         }
-    }
-
-    companion object {
-        const val REPORT_FILTER_RESULT = "report_filter_result"
     }
 }

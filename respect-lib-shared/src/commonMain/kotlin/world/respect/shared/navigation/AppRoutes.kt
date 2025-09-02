@@ -62,17 +62,19 @@ class ReportEdit(val reportUid: String?) : RespectAppRoute
 class ReportDetail(val reportUid: String) : RespectAppRoute
 
 @Serializable
-class ReportEditFilter(val reportUid: String, val reportFilterJson: String) : RespectAppRoute {
-    companion object {
-        fun create(reportUid: String, reportFilter: ReportFilter): ReportEditFilter {
-            val json = Json { encodeDefaults = true }
-            return ReportEditFilter(reportUid, json.encodeToString(ReportFilter.serializer(), reportFilter))
-        }
-    }
+class ReportEditFilter(
+    private val reportFilterJson: String
+) : RespectAppRoute {
 
-    fun getReportFilter(): ReportFilter {
-        val json = Json { encodeDefaults = true }
-        return json.decodeFromString(ReportFilter.serializer(), reportFilterJson)
+    @Transient
+    val reportFilter: ReportFilter =
+        Json.decodeFromString(ReportFilter.serializer(), reportFilterJson)
+
+    companion object {
+        fun create(reportFilter: ReportFilter): ReportEditFilter {
+            val jsonStr = Json.encodeToString(ReportFilter.serializer(), reportFilter)
+            return ReportEditFilter(jsonStr)
+        }
     }
 }
 

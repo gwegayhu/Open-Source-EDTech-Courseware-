@@ -11,6 +11,7 @@ import world.respect.datalayer.db.school.adapters.toIndicator
 import world.respect.datalayer.db.school.adapters.toIndicatorEntity
 import world.respect.datalayer.respect.model.Indicator
 import world.respect.datalayer.school.IndicatorDataSource
+import world.respect.datalayer.school.model.report.DefaultIndicators
 
 class IndicatorDataSourceDb(
     private val schoolDb: RespectSchoolDatabase,
@@ -52,5 +53,17 @@ class IndicatorDataSourceDb(
     override suspend fun updateIndicator(indicator: Indicator) {
         val indicatorEntity = indicator.toIndicatorEntity()
         schoolDb.getIndicatorEntityDao().updateIndicator(indicatorEntity)
+    }
+
+    override suspend fun initializeDefaultIndicators(idGenerator: () -> String) {
+        val existingCount = schoolDb.getIndicatorEntityDao().getIndicatorCount()
+        if (existingCount == 0) {
+            DefaultIndicators.list.forEach { indicator ->
+                val indicatorWithId = indicator.copy(
+                    indicatorId = idGenerator()
+                )
+                putIndicator(indicatorWithId)
+            }
+        }
     }
 }

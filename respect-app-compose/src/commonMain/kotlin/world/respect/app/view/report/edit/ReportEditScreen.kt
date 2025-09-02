@@ -79,11 +79,8 @@ fun ReportEditScreen(
     val uiState: ReportEditUiState by viewModel.uiState.collectAsStateWithLifecycle(
         initialValue = ReportEditUiState(), context = Dispatchers.Main.immediate
     )
-    val availableIndicators by viewModel.availableIndicators.collectAsStateWithLifecycle()
-
     ReportEditScreen(
         uiState = uiState,
-        availableIndicators = availableIndicators,
         onReportChanged = viewModel::onEntityChanged,
         onSeriesChanged = viewModel::onSeriesChanged,
         onAddSeries = viewModel::onAddSeries,
@@ -98,7 +95,6 @@ fun ReportEditScreen(
 @Composable
 private fun ReportEditScreen(
     uiState: ReportEditUiState = ReportEditUiState(),
-    availableIndicators: List<Indicator> = emptyList(),
     onReportChanged: (ReportOptions) -> Unit = {},
     onAddSeries: () -> Unit = { },
     onAddFilter: (Int) -> Unit = { },
@@ -113,7 +109,7 @@ private fun ReportEditScreen(
     // Calculate disabled indicators (those with different types than the first series)
     val disabledIndicators =
         if (uiState.reportOptions.series.size > 1 && firstIndicatorType != null) {
-            availableIndicators.filter { it.type != firstIndicatorType }
+            uiState.availableIndicators.filter { it.type != firstIndicatorType }
         } else {
             emptyList()
         }
@@ -272,7 +268,7 @@ private fun ReportEditScreen(
                     ExposedDropdownMenu(
                         selectedValue = seriesItem.reportSeriesYAxis,
                         label = { Text(stringResource(Res.string.y_axis) + "*") },
-                        options = availableIndicators,
+                        options = uiState.availableIndicators,
                         onOptionSelected = { selectedYAxis ->
                             val updatedSeries = seriesItem.copy(reportSeriesYAxis = selectedYAxis)
                             onSeriesChanged(updatedSeries)
