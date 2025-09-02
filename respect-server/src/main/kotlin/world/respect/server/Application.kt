@@ -144,7 +144,7 @@ fun Application.module() {
             }
 
             route("school") {
-                route("respect-ext") {
+                route("respect") {
                     route("auth") {
                         AuthRoute()
                     }
