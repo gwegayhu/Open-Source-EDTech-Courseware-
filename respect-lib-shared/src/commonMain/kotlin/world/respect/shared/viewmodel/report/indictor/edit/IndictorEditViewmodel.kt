@@ -36,7 +36,8 @@ data class IndicatorEditUiState(
     val indicatorData: DataLoadState<Indicator> = DataLoadingState(),
     val nameError: UiText? = null,
     val descriptionError: UiText? = null,
-    val sqlError: UiText? = null
+    val sqlError: UiText? = null,
+    val errorMessage: String? = null
 )
 
 class IndicatorEditViewModel(
@@ -124,7 +125,11 @@ class IndicatorEditViewModel(
                     _navCommandFlow.tryEmit(NavCommand.PopUp())
                 }
             } catch (e: Throwable) {
-                //needs to display snack bar here
+                _uiState.update {
+                    it.copy(
+                        errorMessage = e.message ?: "Error updating indicator"
+                    )
+                }
             }
         }
     }

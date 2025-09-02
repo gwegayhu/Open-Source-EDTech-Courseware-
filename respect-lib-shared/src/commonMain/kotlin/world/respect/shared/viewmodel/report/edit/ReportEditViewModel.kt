@@ -51,7 +51,8 @@ data class ReportEditUiState(
     val reportOptions: ReportOptions = ReportOptions(),
     val reportTitleError: UiText? = null,
     val submitted: Boolean = false,
-    val availableIndicators: List<Indicator> = emptyList()
+    val availableIndicators: List<Indicator> = emptyList(),
+    val errorMessage: String? = null
 ) {
     val hasSingleSeries: Boolean
         get() = reportOptions.series.size == 1
@@ -87,7 +88,11 @@ class ReportEditViewModel(
                     ).toString()
                 }
             } catch (e: Exception) {
-                println("Error initializing default indicators: ${e.message}")
+                _uiState.update {
+                    it.copy(
+                        errorMessage = e.message ?: "Error initializing default indicators"
+                    )
+                }
             }
 
             loadingState = LoadingUiState.INDETERMINATE
@@ -209,8 +214,11 @@ class ReportEditViewModel(
                 }
 
             } catch (e: Exception) {
-                //needs to display snack bar here
-                println("Error updating report options: ${e.message}")
+                _uiState.update {
+                    it.copy(
+                        errorMessage = e.message ?: "Error updating report options"
+                    )
+                }
             }
         }
     }
