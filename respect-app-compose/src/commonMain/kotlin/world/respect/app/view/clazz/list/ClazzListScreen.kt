@@ -28,7 +28,7 @@ fun ClazzListScreen(
 
     ClazzListScreen(
         uiState = uiState,
-        onClickClazz = { viewModel.onClickClazz(it) },
+        onClickClazz = viewModel::onClickClazz,
         onSortOrderChanged = viewModel::onSortOrderChanged,
     )
 }

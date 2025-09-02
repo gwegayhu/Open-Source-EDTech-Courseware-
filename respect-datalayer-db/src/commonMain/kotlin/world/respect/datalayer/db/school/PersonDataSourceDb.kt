@@ -22,9 +22,9 @@ class PersonDataSourceDb(
     private val xxHash: XXStringHasher,
 ): PersonDataSourceLocal {
 
-    override suspend fun getAllUsers(): List<Person> {
+    override suspend fun getAllUsers(sourcedId: String): List<Person> {
 
-        return schoolDb.getPersonEntityDao().getAllUsers().map {
+        return schoolDb.getPersonEntityDao().getAllUsers(sourcedId).map {
             PersonEntities(it).toModel()
         }
     }

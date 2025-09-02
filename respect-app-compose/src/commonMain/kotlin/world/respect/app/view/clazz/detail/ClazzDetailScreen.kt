@@ -55,11 +55,11 @@ fun ClazzDetailScreen(
 
     ClazzDetailScreen(
         uiState = uiState,
-        onClickAddPersonToClazz = { viewModel.onClickAddPersonToClazz(it) },
+        onClickAddPersonToClazz = viewModel::onClickAddPersonToClazz,
         onSortOrderChanged = viewModel::onSortOrderChanged,
-        onSelectChip = { viewModel.onSelectChip(it) },
-        onClickAcceptInvite = { viewModel.onClickAcceptInvite(it) },
-        onClickDismissInvite = { viewModel.onClickDismissInvite(it) },
+        onSelectChip = viewModel::onSelectChip,
+        onClickAcceptInvite = viewModel::onClickAcceptInvite,
+        onClickDismissInvite = viewModel::onClickDismissInvite,
         onTogglePendingSection = viewModel::onTogglePendingSection,
         onToggleTeachersSection = viewModel::onToggleTeachersSection,
         onToggleStudentsSection = viewModel::onToggleStudentsSection

@@ -83,7 +83,7 @@ class ClazzDetailViewModel(
                 )
             }
 
-            val users = schoolDataSource.personDataSource.getAllUsers()
+            val users = schoolDataSource.personDataSource.getAllUsers(route.sourcedId)
 
             val teachers = users.filter { user ->
                  user.roles.any { it.roleType == PersonRole.RoleType.TEACHER }

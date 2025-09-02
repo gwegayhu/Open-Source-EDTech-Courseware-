@@ -31,7 +31,7 @@ fun ClazzEditScreen(
     ClazzEditScreen(
         uiState = uiState,
         onEntityChanged = viewModel::onEntityChanged,
-        onClearError = { viewModel.onClearError() }
+        onClearError =  viewModel::onClearError
     )
 }
 
