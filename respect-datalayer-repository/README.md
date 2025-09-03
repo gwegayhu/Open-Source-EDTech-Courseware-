@@ -10,14 +10,14 @@ by:
   wait. Changes are queued to be sent to the server.
 
 There are generally three patterns used by the repository:
-* Read as flow: the repository returns a flow from the local datalayer. The remote flow checks for
+* **Read as flow**: the repository returns a flow from the local datalayer. The remote flow checks for
   updates in the background as needed concurrently. If new data is received, it is inserted into the
   local datalayer. Inserting the data into the local database invalidates the flow and Room 
   automatically emits an update.
-* Read as single value (suspended function): the repository tries to make an http request if a 
+* **Read as single value** (suspended function): the repository tries to make an http request if a 
   connection is available. If data is received from the server, it is inserted into the local 
   database. The repository then returns the local value.
-* Write: the data is saved in the local datalayer and enqueues a job to save it in the remote 
+* **Write**: the data is saved in the local datalayer and enqueues a job to save it in the remote 
   datalayer as soon as connectivity is available.
 
 #### Offline-first conceptual notes:
