@@ -2,7 +2,7 @@ package world.respect.shared.domain.account.validateauth
 
 import world.respect.datalayer.db.RespectSchoolDatabase
 import world.respect.datalayer.AuthenticatedUserPrincipalId
-import world.respect.shared.util.systemTimeInMillis
+import world.respect.libutil.util.time.systemTimeInMillis
 
 class ValidateAuthorizationUseCaseDbImpl(
     private val schoolDb: RespectSchoolDatabase,

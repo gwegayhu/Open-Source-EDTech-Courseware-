@@ -88,9 +88,13 @@ import world.respect.datalayer.RespectAppDataSource
 import world.respect.datalayer.SchoolDataSource
 import world.respect.datalayer.db.SchoolDataSourceDb
 import world.respect.datalayer.db.RespectSchoolDatabase
+import world.respect.datalayer.db.networkvalidation.ExtendedDataSourceValidationHelperImpl
 import world.respect.datalayer.http.SchoolDataSourceHttp
+import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
 import world.respect.datalayer.repository.SchoolDataSourceRepository
 import world.respect.libutil.ext.sanitizedForFilename
+import world.respect.libxxhash.XXHasher64Factory
+import world.respect.libxxhash.jvmimpl.XXHasher64FactoryCommonJvm
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCase
 import world.respect.shared.domain.account.gettokenanduser.GetTokenAndUserProfileWithUsernameAndPasswordUseCaseClient
 import world.respect.shared.domain.account.RespectTokenManager
@@ -340,6 +344,19 @@ val appKoinModule = module {
         NavResultReturnerImpl()
     }
 
+    single<XXHasher64Factory> {
+        XXHasher64FactoryCommonJvm()
+    }
+
+    single<ExtendedDataSourceValidationHelper> {
+        ExtendedDataSourceValidationHelperImpl(
+            respectAppDb = get(),
+            xxStringHasher = get(),
+            xxHasher64Factory = get(),
+        )
+    }
+
+
     /**
      * The SchoolDirectoryEntry scope might be one instance per school url or one instance per account
      * per url.
@@ -408,6 +425,7 @@ val appKoinModule = module {
                     schoolDirectoryDataSource = get<RespectAppDataSource>().schoolDirectoryDataSource,
                     httpClient = get(),
                     tokenProvider = get(),
+                    validationHelper = get(),
                 )
             )
         }

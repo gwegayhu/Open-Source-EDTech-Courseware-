@@ -17,6 +17,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.respectLibIhttpCore)
+            api(projects.respectLibXxhash)
             implementation(libs.kotlinx.serialization.json)
             api(libs.uri.kmp)
             api(libs.kotlinx.date.time)

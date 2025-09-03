@@ -8,24 +8,24 @@ import kotlinx.coroutines.flow.map
 import world.respect.datalayer.AuthTokenProvider
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
-import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.ext.firstOrNotLoaded
 import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.ext.getDataLoadResultAsFlow
 import world.respect.datalayer.ext.map
 import world.respect.datalayer.http.ext.respectEndpointUrl
+import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
 import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.adapters.asListDetails
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
 import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
-import world.respect.libutil.ext.resolve
 
 class PersonDataSourceHttp(
     override val schoolUrl: Url,
     override val schoolDirectoryDataSource: SchoolDirectoryDataSource,
     private val httpClient: HttpClient,
     private val tokenProvider: AuthTokenProvider,
+    private val validationHelper: ExtendedDataSourceValidationHelper,
 ) : PersonDataSource, SchoolUrlBasedDataSource {
 
     override suspend fun findByUsername(username: String): Person? {
@@ -61,6 +61,7 @@ class PersonDataSourceHttp(
         return httpClient.getDataLoadResultAsFlow<List<Person>>(
             urlFn = { respectEndpointUrl("person") },
             dataLoadParams = loadParams,
+            validationHelper = validationHelper,
         ) {
             headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
         }
@@ -81,10 +82,7 @@ class PersonDataSourceHttp(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): DataLoadState<List<Person>> {
-        val respectUrl = schoolDirectoryDataSource.getSchoolDirectoryEntryByUrl(schoolUrl).dataOrNull()
-            ?.respectExt ?: throw IllegalStateException("No Respect Ext url")
-
-        return httpClient.getAsDataLoadState<List<Person>>(respectUrl.resolve("person")) {
+        return httpClient.getAsDataLoadState<List<Person>>(respectEndpointUrl("person")) {
             val token = tokenProvider.provideToken()
             println("PersonDataSource: load person list using token $token")
             headers[HttpHeaders.Authorization] = "Bearer ${token.accessToken}"

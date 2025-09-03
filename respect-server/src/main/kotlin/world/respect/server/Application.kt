@@ -82,6 +82,9 @@ fun Application.module() {
             }
         }
 
+        /*
+         * School authentication
+         */
         bearer(AUTH_CONFIG_SCHOOL) {
             realm = "Access school"
             authenticate { tokenCredential ->

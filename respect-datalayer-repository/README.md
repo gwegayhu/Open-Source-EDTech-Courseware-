@@ -60,3 +60,6 @@ last-modified time, a "quirks mode" approach can be used where the last-modified
 the stored time. This works acceptably provided that any downstream client is communicating with
 only one server API endpoint (e.g. a RESPECT Compatible app on the device that communicates only
 with the RESPECT app, not directly with the online API endpoint).
+
+If permissions change...
+

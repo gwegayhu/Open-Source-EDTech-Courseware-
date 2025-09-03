@@ -37,6 +37,9 @@ class PersonDataSourceRepository(
             if(it is DataReadyState) {
                 local.putPersonsLocal(listOf(it.data))
             }
+
+            //here: update consistent-through tracker
+
         }
 
         return local.findByGuidAsFlow(guid).combineWithRemote(remoteFlow)

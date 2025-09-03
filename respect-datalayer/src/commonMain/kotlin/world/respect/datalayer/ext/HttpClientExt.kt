@@ -1,9 +1,11 @@
 package world.respect.datalayer.ext
 
+import com.ustadmobile.ihttp.headers.asIHttpHeaders
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
+import io.ktor.client.statement.request
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
@@ -12,25 +14,33 @@ import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import world.respect.datalayer.DataErrorResult
+import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.NoDataLoadedState
-import world.respect.datalayer.networkvalidation.NetworkDataSourceValidationHelper
+import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
     url: Url,
-    validationHelper: NetworkDataSourceValidationHelper? = null,
+    validationHelper: BaseDataSourceValidationHelper? = null,
     block: HttpRequestBuilder.() -> Unit = { },
 ): DataLoadState<T> {
     return try {
-        //see https://github.com/Kotlin/kotlinx-datetime/issues/564
-        val validationInfo = validationHelper?.getValidationInfo(url)
         val response = this.get(url) {
+            block()
+            //note the block can change the URL (eg by adding parameters), so get validationInfo
+            //after running block
+
+            val validationInfo = validationHelper?.getValidationInfo(
+                url = this.url.build(),
+                requestHeaders = this.headers.build().asIHttpHeaders(),
+            )
+
             validationInfo?.lastModified?.takeIf { it > 0 }?.also { lastMod ->
                 headers[HttpHeaders.IfModifiedSince] = GMTDate(lastMod).toHttpDate()
             }
@@ -39,7 +49,9 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
                 headers[HttpHeaders.IfNoneMatch] = etag
             }
 
-            block()
+            validationInfo?.consistentThrough?.takeIf { it > 0 }?.also { consistentThrough ->
+                headers[DataLayerHeaders.XStoredSince] = GMTDate(consistentThrough).toHttpDate()
+            }
         }
 
         return if(response.status == HttpStatusCode.NotModified) {
@@ -48,7 +60,10 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
             val data = response.body<T>()
             DataReadyState(
                 data = data,
-                metaInfo = DataLoadMetaInfo.fromHttpMessage(url, response),
+                //TODO: get the full dataloadmetainfo and use validation helper if needed
+                metaInfo = DataLoadMetaInfo.fromHttpResponse(
+                    url = response.request.url, response
+                ),
             )
         }
     }catch(e: Throwable) {
@@ -62,7 +77,7 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
 inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
     url: Url,
     dataLoadParams: DataLoadParams,
-    validationHelper: NetworkDataSourceValidationHelper? = null,
+    validationHelper: BaseDataSourceValidationHelper? = null,
     crossinline block: HttpRequestBuilder.() -> Unit = { },
 ): Flow<DataLoadState<T>> {
     return getDataLoadResultAsFlow(
@@ -82,7 +97,7 @@ inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
 inline fun <reified T: Any> HttpClient.getDataLoadResultAsFlow(
     noinline urlFn: suspend () -> Url,
     @Suppress("unused") dataLoadParams: DataLoadParams,
-    validationHelper: NetworkDataSourceValidationHelper? = null,
+    validationHelper: BaseDataSourceValidationHelper? = null,
     crossinline block: HttpRequestBuilder.() -> Unit = { },
 ): Flow<DataLoadState<T>> {
     return flow {

@@ -1,6 +1,6 @@
 package world.respect.shared.navigation
 
-import world.respect.shared.util.systemTimeInMillis
+import world.respect.libutil.util.time.systemTimeInMillis
 import kotlin.reflect.KClass
 
 sealed class NavCommand(
