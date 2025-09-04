@@ -3,7 +3,6 @@ package world.respect.datalayer.school.model
 import kotlinx.serialization.Serializable
 import world.respect.datalayer.shared.serialization.InstantISO8601Serializer
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
@@ -13,7 +12,7 @@ import kotlin.time.Instant
  *           issued student/teacher id number)
  * @property active (should be changed to status enum - which may be pending)
  */
-@OptIn(ExperimentalTime::class)
+
 @Serializable
 data class Person(
     val guid: String,

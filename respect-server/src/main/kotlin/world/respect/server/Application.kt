@@ -7,6 +7,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.basic
 import io.ktor.server.auth.bearer
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -152,7 +153,9 @@ fun Application.module() {
                         AuthRoute()
                     }
 
-                    PersonRoute()
+                    authenticate(AUTH_CONFIG_SCHOOL) {
+                        PersonRoute()
+                    }
                 }
             }
         }

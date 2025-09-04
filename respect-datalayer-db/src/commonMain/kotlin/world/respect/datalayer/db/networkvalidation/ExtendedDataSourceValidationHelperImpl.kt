@@ -74,12 +74,11 @@ class ExtendedDataSourceValidationHelperImpl(
     }
 
     override suspend fun updateValidationInfo(
-        url: Url,
         metaInfo: DataLoadMetaInfo
     ) {
         respectAppDb.getNetworkValidationInfoEntityDao().upsert(
             NetworkValidationInfoEntity(
-                nviUrlHash = xxStringHasher.hash(url.toString()),
+                nviUrlHash = xxStringHasher.hash(metaInfo.requireUrl().toString()),
                 nviKey = metaInfo.validationInfoKey,
                 nviVaryHeader = metaInfo.varyHeader,
                 nviEtag = metaInfo.etag,

@@ -1,7 +1,6 @@
 package world.respect.datalayer.networkvalidation
 
 import com.ustadmobile.ihttp.headers.IHttpHeaders
-import io.ktor.http.Url
 import world.respect.datalayer.DataLoadMetaInfo
 
 interface ExtendedDataSourceValidationHelper: BaseDataSourceValidationHelper {
@@ -29,7 +28,6 @@ interface ExtendedDataSourceValidationHelper: BaseDataSourceValidationHelper {
      * Invoked by the repository when a response is received and processed
      */
     suspend fun updateValidationInfo(
-        url: Url,
         metaInfo: DataLoadMetaInfo,
     )
 

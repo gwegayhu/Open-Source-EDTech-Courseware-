@@ -9,12 +9,12 @@ import io.ktor.client.statement.request
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
+import io.ktor.http.etag
 import io.ktor.http.toHttpDate
 import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import world.respect.datalayer.DataErrorResult
-import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
@@ -22,6 +22,7 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataLoadingState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
+import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -48,22 +49,30 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
             validationInfo?.etag?.also { etag ->
                 headers[HttpHeaders.IfNoneMatch] = etag
             }
-
-            validationInfo?.consistentThrough?.takeIf { it > 0 }?.also { consistentThrough ->
-                headers[DataLayerHeaders.XStoredSince] = GMTDate(consistentThrough).toHttpDate()
-            }
         }
 
         return if(response.status == HttpStatusCode.NotModified) {
             NoDataLoadedState.notModified()
         }else {
             val data = response.body<T>()
+            val extendedValidationHelper = validationHelper as? ExtendedDataSourceValidationHelper
+            val varyHeader = response.headers.getAll(HttpHeaders.Vary)
+                ?.joinToString(separator = ",")
+            val validationInfoKey = extendedValidationHelper?.validationInfoKey(
+             response.request.headers.asIHttpHeaders(),
+                response.headers.getAll(HttpHeaders.Vary)?.joinToString(separator = ",")
+            )
+
             DataReadyState(
                 data = data,
-                //TODO: get the full dataloadmetainfo and use validation helper if needed
-                metaInfo = DataLoadMetaInfo.fromHttpResponse(
-                    url = response.request.url, response
-                ),
+                metaInfo = DataLoadMetaInfo(
+                    url = response.request.url,
+                    lastModified = response.lastModifiedAsLong(),
+                    etag = response.etag(),
+                    consistentThrough = response.consistentThroughAsLong(),
+                    validationInfoKey = validationInfoKey ?: 0,
+                    varyHeader = varyHeader,
+                )
             )
         }
     }catch(e: Throwable) {

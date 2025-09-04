@@ -39,9 +39,8 @@ const val APP_DB_FILENAME = "respect-app.db"
 
 fun serverKoinModule(
     config: ApplicationConfig,
+    dataDir: File = config.absoluteDataDir()
 ) = module {
-
-    val dataDir = config.absoluteDataDir()
 
     single<RespectAppDatabase> {
         val dbFile = File(dataDir, APP_DB_FILENAME)

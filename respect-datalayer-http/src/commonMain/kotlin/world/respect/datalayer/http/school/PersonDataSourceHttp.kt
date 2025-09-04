@@ -82,7 +82,10 @@ class PersonDataSourceHttp(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): DataLoadState<List<Person>> {
-        return httpClient.getAsDataLoadState<List<Person>>(respectEndpointUrl("person")) {
+        return httpClient.getAsDataLoadState<List<Person>>(
+            url = respectEndpointUrl("person"),
+            validationHelper = validationHelper,
+        ) {
             val token = tokenProvider.provideToken()
             println("PersonDataSource: load person list using token $token")
             headers[HttpHeaders.Authorization] = "Bearer ${token.accessToken}"

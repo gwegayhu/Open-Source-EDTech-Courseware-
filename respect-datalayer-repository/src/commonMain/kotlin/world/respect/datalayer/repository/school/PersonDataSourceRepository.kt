@@ -6,6 +6,7 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.ext.combineWithRemote
+import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
 import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.datalayer.school.model.Person
@@ -14,6 +15,7 @@ import world.respect.datalayer.school.model.composites.PersonListDetails
 class PersonDataSourceRepository(
     private val local: PersonDataSourceLocal,
     private val remote: PersonDataSource,
+    private val validationHelper: ExtendedDataSourceValidationHelper,
 ) : PersonDataSource {
 
     override suspend fun findByUsername(username: String): Person? {
@@ -70,6 +72,12 @@ class PersonDataSourceRepository(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): DataLoadState<List<Person>> {
-        return local.findAll(loadParams, searchQuery)
+        val remote = remote.findAll(loadParams, searchQuery)
+        if(remote is DataReadyState) {
+            local.putPersonsLocal(remote.data)
+            validationHelper.updateValidationInfo(remote.metaInfo)
+        }
+
+        return local.findAll(loadParams, searchQuery).combineWithRemote(remote)
     }
 }

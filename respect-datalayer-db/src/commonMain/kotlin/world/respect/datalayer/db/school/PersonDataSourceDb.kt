@@ -5,6 +5,7 @@ import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import world.respect.datalayer.AuthenticatedUserPrincipalId
+import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
@@ -16,6 +17,7 @@ import world.respect.datalayer.db.school.adapters.toModel
 import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
+import world.respect.libutil.util.time.systemTimeInMillis
 import world.respect.libxxhash.XXStringHasher
 
 class PersonDataSourceDb(
@@ -24,6 +26,22 @@ class PersonDataSourceDb(
     @Suppress("unused")
     private val authenticatedUser: AuthenticatedUserPrincipalId,
 ): PersonDataSourceLocal {
+
+    private suspend fun upsertPersons(persons: List<Person>) {
+        schoolDb.useWriterConnection { con ->
+            con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                persons.forEach { person ->
+                    val entities = person.toEntities(xxHash)
+                    schoolDb.getPersonEntityDao().insert(entities.personEntity)
+                    schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
+                        entities.personEntity.pGuidHash
+                    )
+                    schoolDb.getPersonRoleEntityDao().upsertList(entities.personRoleEntities)
+                }
+            }
+        }
+    }
+
 
     override suspend fun findByUsername(username: String): Person? {
         return schoolDb.getPersonEntityDao().findByUsername(username)?.let {
@@ -55,18 +73,7 @@ class PersonDataSourceDb(
     }
 
     override suspend fun putPersonsLocal(persons: List<Person>) {
-        schoolDb.useWriterConnection { con ->
-            con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                persons.forEach { person ->
-                    val entities = person.toEntities(xxHash)
-                    schoolDb.getPersonEntityDao().insert(entities.personEntity)
-                    schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
-                        entities.personEntity.pGuidHash
-                    )
-                    schoolDb.getPersonRoleEntityDao().upsertList(entities.personRoleEntities)
-                }
-            }
-        }
+        upsertPersons(persons)
     }
 
     override fun findAllListDetailsAsFlow(
@@ -95,10 +102,18 @@ class PersonDataSourceDb(
         loadParams: DataLoadParams,
         searchQuery: String?
     ): DataLoadState<List<Person>> {
+        val queryTime = systemTimeInMillis()
+        val data = schoolDb.getPersonEntityDao().findAll().map {
+            PersonEntities(it).toModel()
+        }
+
         return DataReadyState(
-            data = schoolDb.getPersonEntityDao().findAll().map {
-                PersonEntities(it).toModel()
-            }
+            data = data,
+            metaInfo = DataLoadMetaInfo(
+                lastModified = data.maxOfOrNull { person -> person.lastModified }?.toEpochMilliseconds()
+                    ?: -1,
+                consistentThrough = queryTime,
+            )
         )
     }
 

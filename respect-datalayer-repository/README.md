@@ -50,9 +50,8 @@ been modified does not mean that the change has reached the server at the same t
 
 The server (whether it is a top level server or peer) SHOULD add an X-Consistent-Through header
 (as used in [xAPI](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Communication.md#requirements-4)). If a client has received a response with X-Consistent-Through it can then
-use this as a parameter for the next response by either a) adding it to a query parameter where
-supported by an API (e.g. xAPI statements resource) or b) adding an X-Stored-Since header where
-supported by an API (e.g. RESPECT extensions).
+use this as a parameter for the next response adding it to a query parameter where
+supported by an API (e.g. xAPI statements resource).
 > with a value of the timestamp for which all Statements that have or will have a "stored" property before that time are known with reasonable certainty to be available for retrieval
 
 Where a server or API does not support or recognize the difference between a stored time and a
@@ -61,5 +60,15 @@ the stored time. This works acceptably provided that any downstream client is co
 only one server API endpoint (e.g. a RESPECT Compatible app on the device that communicates only
 with the RESPECT app, not directly with the online API endpoint).
 
-If permissions change...
+When permissions change this can lead to a situation where a client using stored since parameter would
+not receive new entities because they were stored before the stored-since, but the client
+only received permission to access them thereafter. Where permissions have changed after 
+stored since parameter the server MUST ignore the stored since parameter (by definition perimssion 
+changes invalidates any previous Consistent-Through header).
 
+The stored since parameter SHOULD be used for efficient periodic syncs (where a client checks
+for new relevant data periodically or in response to an event). It SHOULD NOT be used for data pull
+requests that typically originate from the UI (e.g. where the client pulls data because the user is
+visiting a particular screen). If-None-Match etags / If-Modified-Since should be used instead. 
+Consider a paged list: if the since parameter is used it becomes almost impossible to align local
+and remote data.

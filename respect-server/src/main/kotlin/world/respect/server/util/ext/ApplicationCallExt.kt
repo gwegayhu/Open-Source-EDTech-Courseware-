@@ -14,6 +14,7 @@ import io.ktor.util.date.GMTDate
 import org.koin.core.scope.Scope
 import org.koin.ktor.ext.getKoin
 import world.respect.datalayer.AuthenticatedUserPrincipalId
+import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
@@ -21,6 +22,7 @@ import world.respect.libutil.util.throwable.ForbiddenException
 import world.respect.shared.domain.account.RespectAccount
 import world.respect.shared.util.di.RespectAccountScopeId
 import world.respect.shared.util.di.SchoolDirectoryEntryScopeId
+import kotlin.time.Instant
 
 /**
  * The virtual host being used. Used on the server to scope dependencies.
@@ -69,6 +71,14 @@ suspend inline fun <reified T: Any> ApplicationCall.respondDataLoadState(
     }
     dataLoadState.metaInfo.lastModified.takeIf { it > 0 }?.also {
         response.header(HttpHeaders.LastModified, GMTDate(it).toHttpDate())
+    }
+
+    if(dataLoadState.metaInfo.consistentThrough > 0) {
+        response.header(
+            name = DataLayerHeaders.XConsistentThrough,
+            value = Instant.fromEpochMilliseconds(dataLoadState.metaInfo.consistentThrough)
+                .toString()
+        )
     }
 
     //If-Modified-Since headers are really only accurate to the nearest second, so we need to convert

@@ -1,9 +1,6 @@
 package world.respect.datalayer
 
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
-import io.ktor.http.etag
-import world.respect.datalayer.ext.lastModifiedAsLong
 
 /**
  * Combined metadata (e.g. data about data) on loaded data. This includes the loading status and
@@ -48,19 +45,6 @@ data class DataLoadMetaInfo(
 ) {
 
     fun requireUrl() = url ?: throw IllegalStateException("requireUrl: load meta info has no url")
-
-    companion object {
-
-        fun fromHttpResponse(
-            url: Url,
-            response: HttpResponse,
-        ) = DataLoadMetaInfo(
-            lastModified = response.lastModifiedAsLong(),
-            etag = response.etag(),
-            url = url,
-        )
-
-    }
 
 }
 
