@@ -5,6 +5,7 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
+import kotlin.time.Instant
 
 interface PersonDataSource {
 
@@ -34,6 +35,7 @@ interface PersonDataSource {
     suspend fun findAll(
         loadParams: DataLoadParams,
         searchQuery: String? = null,
+        since: Instant? = null,
     ): DataLoadState<List<Person>>
 
 }

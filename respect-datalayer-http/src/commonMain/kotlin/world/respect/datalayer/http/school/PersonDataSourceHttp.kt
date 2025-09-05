@@ -2,6 +2,7 @@ package world.respect.datalayer.http.school
 
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpHeaders
+import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,6 +20,7 @@ import world.respect.datalayer.school.adapters.asListDetails
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
 import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
+import kotlin.time.Instant
 
 class PersonDataSourceHttp(
     override val schoolUrl: Url,
@@ -80,10 +82,15 @@ class PersonDataSourceHttp(
 
     override suspend fun findAll(
         loadParams: DataLoadParams,
-        searchQuery: String?
+        searchQuery: String?,
+        since: Instant?,
     ): DataLoadState<List<Person>> {
         return httpClient.getAsDataLoadState<List<Person>>(
-            url = respectEndpointUrl("person"),
+            url = URLBuilder(respectEndpointUrl("person")).apply {
+                since?.also {
+                    parameters.append("since", it.toString())
+                }
+            }.build(),
             validationHelper = validationHelper,
         ) {
             val token = tokenProvider.provideToken()

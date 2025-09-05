@@ -9,6 +9,7 @@ import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.SchoolDataSource
 import world.respect.server.util.ext.requireAccountScope
 import world.respect.server.util.ext.respondDataLoadState
+import kotlin.time.Instant
 
 fun Route.PersonRoute(
     schoolDataSource: (ApplicationCall) -> SchoolDataSource = { call ->
@@ -18,9 +19,11 @@ fun Route.PersonRoute(
         get("person") {
             val schoolDataSource = schoolDataSource(call)
             call.response.header(HttpHeaders.Vary, HttpHeaders.Authorization)
-
+            val since = call.request.queryParameters["since"]?.let { Instant.parse(it) }
             call.respondDataLoadState(
-                schoolDataSource.personDataSource.findAll(DataLoadParams(), null)
+                schoolDataSource.personDataSource.findAll(
+                    DataLoadParams(), null, since
+                )
             )
         }
 

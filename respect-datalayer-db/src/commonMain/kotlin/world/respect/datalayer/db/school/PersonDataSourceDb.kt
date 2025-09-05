@@ -22,6 +22,7 @@ import world.respect.datalayer.shared.maxLastStoredOrNull
 import world.respect.libutil.util.time.systemTimeInMillis
 import world.respect.libxxhash.XXStringHasher
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 class PersonDataSourceDb(
     private val schoolDb: RespectSchoolDatabase,
@@ -31,6 +32,9 @@ class PersonDataSourceDb(
 ): PersonDataSourceLocal {
 
     private suspend fun upsertPersons(persons: List<Person>) {
+        if(persons.isEmpty())
+            return
+
         schoolDb.useWriterConnection { con ->
             val timeStored = Clock.System.now()
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
@@ -104,10 +108,13 @@ class PersonDataSourceDb(
 
     override suspend fun findAll(
         loadParams: DataLoadParams,
-        searchQuery: String?
+        searchQuery: String?,
+        since: Instant?,
     ): DataLoadState<List<Person>> {
         val queryTime = systemTimeInMillis()
-        val data = schoolDb.getPersonEntityDao().findAll().map {
+        val data = schoolDb.getPersonEntityDao().findAll(
+            since = since?.toEpochMilliseconds() ?: 0,
+        ).map {
             PersonEntities(it).toModel()
         }
 

@@ -53,7 +53,10 @@ interface PersonEntityDao {
     @Query("""
         SELECT * 
          FROM PersonEntity
+        WHERE PersonEntity.pStored > :since 
     """)
-    suspend fun findAll(): List<PersonEntity>
+    suspend fun findAll(
+        since: Long = 0,
+    ): List<PersonEntity>
 
 }

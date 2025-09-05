@@ -50,14 +50,16 @@ data class DataSourceTestClient(
 
 class ClientServerDataSourceTestBuilder internal constructor(
     private val baseDir: File,
-    private val serverRouting: Routing.(ClientServerDataSourceTestBuilder) -> Unit,
     val json: Json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = false
     },
-    val numClients: Int = 1,
+    numClients: Int = 1,
     val stringHasher: XXStringHasher = XXStringHasherCommonJvm(),
 ) {
+
+    private lateinit var serverRouting: Routing.() -> Unit
+
     fun newLocalSchoolDatabase(
         dir: File,
         stringHasher: XXStringHasher,
@@ -94,9 +96,9 @@ class ClientServerDataSourceTestBuilder internal constructor(
         }
 
         routing {
-            serverRouting(this@ClientServerDataSourceTestBuilder)
+            serverRouting()
         }
-    }.start()
+    }
 
     val okHttpClient = OkHttpClient.Builder().build()
 
@@ -172,17 +174,21 @@ class ClientServerDataSourceTestBuilder internal constructor(
         )
     }
 
+    fun serverRouting(
+        block: Routing.() -> Unit
+    ) {
+        serverRouting = block
+    }
+
 
 }
 
 suspend fun clientServerDatasourceTest(
     baseDir: File,
-    serverRouting: Routing.(ClientServerDataSourceTestBuilder) -> Unit,
     block: suspend ClientServerDataSourceTestBuilder.() -> Unit,
 ) {
     val testBuilder = ClientServerDataSourceTestBuilder(
         baseDir = baseDir,
-        serverRouting = serverRouting,
     )
 
     try {

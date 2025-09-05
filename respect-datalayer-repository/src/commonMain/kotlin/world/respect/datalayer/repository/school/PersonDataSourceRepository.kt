@@ -11,6 +11,7 @@ import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
+import kotlin.time.Instant
 
 class PersonDataSourceRepository(
     private val local: PersonDataSourceLocal,
@@ -70,14 +71,15 @@ class PersonDataSourceRepository(
 
     override suspend fun findAll(
         loadParams: DataLoadParams,
-        searchQuery: String?
+        searchQuery: String?,
+        since: Instant?,
     ): DataLoadState<List<Person>> {
-        val remote = remote.findAll(loadParams, searchQuery)
+        val remote = remote.findAll(loadParams, searchQuery, since)
         if(remote is DataReadyState) {
             local.putPersonsLocal(remote.data)
             validationHelper.updateValidationInfo(remote.metaInfo)
         }
 
-        return local.findAll(loadParams, searchQuery).combineWithRemote(remote)
+        return local.findAll(loadParams, searchQuery, since).combineWithRemote(remote)
     }
 }
