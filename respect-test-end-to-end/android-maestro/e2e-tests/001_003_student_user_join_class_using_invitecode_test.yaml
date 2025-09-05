@@ -1,34 +1,66 @@
 appId: world.respect.app
 ---
+- runFlow: "common/school_admin_login_flow.yaml"
+- assertVisible:
+      id: "app_title"
+      text: "Apps"
+- tapOn: "Classes"
+- assertVisible:
+      id: "app_title"
+      text: "Classes"
+- tapOn:
+      id: "floating_action_button"   #  +Class button
+- assertVisible:
+      id: "app_title"
+      text: "Add class"
+- tapOn: "Class name"
+- inputText: "New Class"
+- tapOn: "Description"
+- inputText: "New Course Description"
+- tapOn: "Start date"
+- inputText: "date"
+- tapOn: "Save"
+- assertVisible:
+      id: "app_title"
+      text: "Classes"
+- assertVisible: "New Class"
+- tapOn: "New Class"
+- assertVisible:
+      id: "app_title"
+      text: "New Class"
+- tapOn: "+ Student"
+- tapOn: "Copy invite code"
+
 - clearState: world.respect.app
 - launchApp
 - tapOn: "I have an invite code"
-- tapOn: "Enter the invite code here"
-- inputText: "respect"
+- tapOn: "Invite code"
+- longPressOn: "Invite code"
+- tapOn: "Copy"
 - tapOn: "Next"
 - assertVisible:
     id: "app_title"
     text: "Invitation"
-- assertVisible: "School Name"
+- assertVisible: ${school_name}
 - tapOn: "I'm a student"
 - assertVisible:
     id: "app_title"
     text: "Your profile"
 - tapOn: "Your name"
-- inputText: "Child user"
+- inputText: ${child_user_name}
 - tapOn: "Gender"
 - tapOn: "Female"
 - tapOn: "Your date of birth"
-- inputText: "12/10/2000"
+- inputText: "date"
 - tapOn: "Next"
 - assertVisible:
     id: "app_title"
     text: "Create account"
-- assertVisible: "childuser"  #username
+- assertVisible: {child_userId}  #username
 - tapOn: "Other ways to sign in"
 - tapOn: "Sign in with a password"
 - tapOn: "Password"
-- inputText: "testchild"
+- inputText: {child_user_pass}
 - tapOn: "Sign-up"
 - assertVisible:
     id: "app_title"
