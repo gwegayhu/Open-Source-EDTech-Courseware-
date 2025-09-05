@@ -40,7 +40,6 @@ class ExtendedValidationHelperIntegrationTest {
                     }
                 }
             ) {
-                val startTime = systemTimeInMillis()
                 serverSchoolDataSource.personDataSource.putPersonsLocal(
                     listOf(
                         Person(
@@ -53,6 +52,7 @@ class ExtendedValidationHelperIntegrationTest {
                     )
                 )
 
+                val startTime = systemTimeInMillis()
                 val answer1 = clients.first().schoolDataSource.personDataSource
                     .findAll(DataLoadParams(), null)
                 println(answer1)
@@ -62,6 +62,11 @@ class ExtendedValidationHelperIntegrationTest {
                     .findAll(DataLoadParams(), null)
                 assertEquals(NoDataLoadedState.Reason.NOT_MODIFIED,
                     (answer2.remoteState as? NoDataLoadedState)?.reason)
+
+                println("Run time: ${systemTimeInMillis() - startTime}")
+
+
+
 
 
 //            val answer1 = personDataSource.findAll(DataLoadParams(), null)

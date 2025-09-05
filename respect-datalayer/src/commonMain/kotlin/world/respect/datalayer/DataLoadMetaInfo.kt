@@ -33,6 +33,8 @@ data class DataLoadMetaInfo(
 
     val lastModified: Long = -1,
 
+    val lastStored: Long = -1,
+
     val etag: String? = null,
 
     val url: Url? = null,

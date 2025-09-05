@@ -173,3 +173,20 @@ fun <T: Any> DataLoadState<List<T>>.firstOrNotLoaded(): DataLoadState<T> {
     }
 }
 
+/**
+ * REST API HTTP server endpoints SHOULD use
+ */
+fun DataLoadState<*>.lastModifiedForHttpResponseHeader(): Long? {
+    return when {
+        metaInfo.lastStored > 0 -> {
+            metaInfo.lastStored
+        }
+
+        metaInfo.lastModified > 0 -> {
+            metaInfo.lastModified
+        }
+
+        else -> null
+    }
+}
+

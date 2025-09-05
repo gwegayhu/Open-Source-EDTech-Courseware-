@@ -54,16 +54,13 @@ use this as a parameter for the next response adding it to a query parameter whe
 supported by an API (e.g. xAPI statements resource).
 > with a value of the timestamp for which all Statements that have or will have a "stored" property before that time are known with reasonable certainty to be available for retrieval
 
-Where a server or API does not support or recognize the difference between a stored time and a
-last-modified time, a "quirks mode" approach can be used where the last-modified header is set using
-the stored time. This works acceptably provided that any downstream client is communicating with
-only one server API endpoint (e.g. a RESPECT Compatible app on the device that communicates only
-with the RESPECT app, not directly with the online API endpoint).
+Generally a Last-Modified HTTP header SHOULD actually be the most recent stored time of any data 
+included in the response: because this is the most recent time the response actually changed.
 
 When permissions change this can lead to a situation where a client using stored since parameter would
 not receive new entities because they were stored before the stored-since, but the client
 only received permission to access them thereafter. Where permissions have changed after 
-stored since parameter the server MUST ignore the stored since parameter (by definition perimssion 
+stored since parameter the server MUST ignore the stored since parameter (by definition permission 
 changes invalidates any previous Consistent-Through header).
 
 The stored since parameter SHOULD be used for efficient periodic syncs (where a client checks

@@ -37,6 +37,7 @@ fun Person.toEntities(
             pGuidHash = xxStringHasher.hash(guid),
             pActive = active,
             pLastModified = lastModified.toEpochMilliseconds(),
+            pStored = stored.toEpochMilliseconds(),
             pUsername = username,
             pGivenName = givenName,
             pFamilyName = familyName,

@@ -17,8 +17,11 @@ import world.respect.datalayer.db.school.adapters.toModel
 import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
+import world.respect.datalayer.shared.maxLastModifiedOrNull
+import world.respect.datalayer.shared.maxLastStoredOrNull
 import world.respect.libutil.util.time.systemTimeInMillis
 import world.respect.libxxhash.XXStringHasher
+import kotlin.time.Clock
 
 class PersonDataSourceDb(
     private val schoolDb: RespectSchoolDatabase,
@@ -29,8 +32,9 @@ class PersonDataSourceDb(
 
     private suspend fun upsertPersons(persons: List<Person>) {
         schoolDb.useWriterConnection { con ->
+            val timeStored = Clock.System.now()
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                persons.forEach { person ->
+                persons.map { it.copy(stored = timeStored) }.forEach { person ->
                     val entities = person.toEntities(xxHash)
                     schoolDb.getPersonEntityDao().insert(entities.personEntity)
                     schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
@@ -110,8 +114,8 @@ class PersonDataSourceDb(
         return DataReadyState(
             data = data,
             metaInfo = DataLoadMetaInfo(
-                lastModified = data.maxOfOrNull { person -> person.lastModified }?.toEpochMilliseconds()
-                    ?: -1,
+                lastModified = data.maxLastModifiedOrNull()?.toEpochMilliseconds() ?: -1,
+                lastStored = data.maxLastStoredOrNull()?.toEpochMilliseconds() ?: -1,
                 consistentThrough = queryTime,
             )
         )

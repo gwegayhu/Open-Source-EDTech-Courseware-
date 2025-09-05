@@ -17,6 +17,7 @@ import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.ext.lastModifiedForHttpResponseHeader
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.libutil.util.throwable.ForbiddenException
 import world.respect.shared.domain.account.RespectAccount
@@ -69,7 +70,10 @@ suspend inline fun <reified T: Any> ApplicationCall.respondDataLoadState(
     dataLoadState.metaInfo.etag?.also {
         response.header(HttpHeaders.ETag, it)
     }
-    dataLoadState.metaInfo.lastModified.takeIf { it > 0 }?.also {
+
+    val lastModTimeStamp = dataLoadState.lastModifiedForHttpResponseHeader()
+
+    lastModTimeStamp?.also {
         response.header(HttpHeaders.LastModified, GMTDate(it).toHttpDate())
     }
 
@@ -86,8 +90,8 @@ suspend inline fun <reified T: Any> ApplicationCall.respondDataLoadState(
     val ifModifiedSinceRequestTimestamp = request.headers[HttpHeaders.IfModifiedSince]
         ?.fromHttpToGmtDate()?.timestamp?.let { it / 1_000 }
 
-    if(ifModifiedSinceRequestTimestamp != null &&
-        ifModifiedSinceRequestTimestamp >= (dataLoadState.metaInfo.lastModified / 1_000)
+    if(ifModifiedSinceRequestTimestamp != null && lastModTimeStamp != null &&
+        ifModifiedSinceRequestTimestamp >= (lastModTimeStamp / 1_000)
     ) {
         respond(HttpStatusCode.NotModified)
         return
