@@ -19,7 +19,9 @@ import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.OtherOption
 import world.respect.shared.resources.StringResourceUiText
+import world.respect.shared.resources.UiText
 import world.respect.shared.util.LaunchDebouncer
+import world.respect.shared.util.exception.getUiText
 import world.respect.shared.util.ext.asUiText
 import world.respect.shared.viewmodel.RespectViewModel
 
@@ -71,7 +73,15 @@ class GetStartedViewModel(
                                 )
                             }
                         }
-                        is DataErrorResult,
+                        is DataErrorResult -> {
+                            _uiState.update {
+                                it.copy(
+                                    suggestions = emptyList(),
+                                    errorMessage = state.error.getUiText(),
+                                    showButtons = true
+                                )
+                            }
+                        }
                         is NoDataLoadedState -> {
                             _uiState.update {
                                 it.copy(
@@ -114,7 +124,7 @@ data class GetStartedUiState(
     val schoolName: String = "",
     val errorText: String? = null,
     val showButtons: Boolean = true,
-    val errorMessage: StringResourceUiText? = null,
+    val errorMessage: UiText? = null,
     val suggestions: List<SchoolDirectoryEntry> = emptyList()
 
 )

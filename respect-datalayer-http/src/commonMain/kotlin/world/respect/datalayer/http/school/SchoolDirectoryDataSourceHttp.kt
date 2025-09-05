@@ -43,7 +43,7 @@ class SchoolDirectoryDataSourceHttp(
                 val respectSchools = mutableListOf<SchoolDirectoryEntry>()
 
                 for (dir in directories) {
-                    val url = dir.baseUrl.resolve("api/directory/school?q=$text")
+                    val url = dir.baseUrl.resolve("api/directory/school?name=$text")
 
                     val schools: List<SchoolDirectoryEntry> = httpClient.get(url).body()
                     respectSchools += schools

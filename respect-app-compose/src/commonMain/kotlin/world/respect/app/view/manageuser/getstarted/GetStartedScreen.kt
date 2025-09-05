@@ -27,6 +27,7 @@ import world.respect.shared.generated.resources.enter_school_name
 import world.respect.shared.generated.resources.i_have_an_invite_code
 import world.respect.shared.generated.resources.other_options
 import world.respect.shared.generated.resources.school_name_placeholder
+import world.respect.shared.viewmodel.app.appstate.getTitle
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedUiState
 import world.respect.shared.viewmodel.manageuser.getstarted.GetStartedViewModel
 
@@ -85,13 +86,13 @@ fun GetStartedScreen(
         ) {
             items(
                 count = uiState.suggestions.size,
-                key = { index -> uiState.suggestions[index].name }
+                key = { index -> uiState.suggestions[index].self.toString() }
             ) { index ->
                 val school = uiState.suggestions[index]
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = school.name.toString()
+                            text = school.name.getTitle()
                         )
                     },
                     supportingContent = {
