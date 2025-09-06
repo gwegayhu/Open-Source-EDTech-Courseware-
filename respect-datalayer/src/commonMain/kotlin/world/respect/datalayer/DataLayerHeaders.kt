@@ -7,6 +7,6 @@ object DataLayerHeaders {
      */
     const val XConsistentThrough = "X-Consistent-Through"
 
-    const val XStoredSince = "X-Stored-Since"
+    const val XTotalCount = "X-Total-Count"
 
 }

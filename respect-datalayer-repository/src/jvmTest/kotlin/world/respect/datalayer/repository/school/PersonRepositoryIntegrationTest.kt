@@ -1,5 +1,6 @@
 package world.respect.datalayer.repository.school
 
+import androidx.paging.PagingSource
 import io.ktor.server.routing.route
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -208,5 +209,34 @@ class PersonRepositoryIntegrationTest {
             }
         }
     }
+
+    @Test
+    fun givenRemotePagingSourceWillLoad() {
+        runBlocking {
+            clientServerDatasourceTest(temporaryFolder.newFolder("test")) {
+                serverRouting {
+                    route("api/school/respect") {
+                        PersonRoute(schoolDataSource = { serverSchoolDataSource })
+                    }
+                }
+
+                server.start()
+
+                serverSchoolDataSource.personDataSource.putPersonsLocal(
+                    listOf(defaultTestPerson)
+                )
+
+                val pagingSource = clients.first().schoolDataSource.personDataSource.findAllAsPagingSource(
+                    loadParams = DataLoadParams(),
+                    limit = 5,
+                )
+                val data = pagingSource.load(
+                    PagingSource.LoadParams.Refresh(0, 50, false)
+                )
+                println(data)
+            }
+        }
+    }
+
 
 }

@@ -32,6 +32,8 @@ kotlin {
             api(libs.kotlinx.date.time)
             api(libs.ktor.client.core)
             implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.paging.common)
+            implementation(libs.androidx.room.paging)
         }
 
         androidMain.dependencies {

@@ -1,5 +1,6 @@
 package world.respect.datalayer.db.school.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -58,5 +59,15 @@ interface PersonEntityDao {
     suspend fun findAll(
         since: Long = 0,
     ): List<PersonEntity>
+
+    @Query("""
+        SELECT * 
+         FROM PersonEntity
+        WHERE PersonEntity.pStored > :since 
+    """)
+    fun findAllAsPagingSource(
+        since: Long = 0
+    ): PagingSource<Int, PersonEntity>
+
 
 }

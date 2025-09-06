@@ -1,5 +1,6 @@
 package world.respect.datalayer.school
 
+import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
@@ -37,5 +38,13 @@ interface PersonDataSource {
         searchQuery: String? = null,
         since: Instant? = null,
     ): DataLoadState<List<Person>>
+
+    fun findAllAsPagingSource(
+        loadParams: DataLoadParams,
+        searchQuery: String? = null,
+        since: Instant? = null,
+        limit: Int,
+    ): PagingSource<Int, Person>
+
 
 }

@@ -1,5 +1,6 @@
 package world.respect.datalayer.repository.school
 
+import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import world.respect.datalayer.DataLoadParams
@@ -82,4 +83,14 @@ class PersonDataSourceRepository(
 
         return local.findAll(loadParams, searchQuery, since).combineWithRemote(remote)
     }
+
+    override fun findAllAsPagingSource(
+        loadParams: DataLoadParams,
+        searchQuery: String?,
+        since: Instant?,
+        limit: Int
+    ): PagingSource<Int, Person> {
+        return remote.findAllAsPagingSource(loadParams, searchQuery, since, limit)
+    }
+
 }

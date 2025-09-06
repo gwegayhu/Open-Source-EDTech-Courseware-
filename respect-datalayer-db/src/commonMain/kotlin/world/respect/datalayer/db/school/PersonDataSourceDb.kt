@@ -1,5 +1,6 @@
 package world.respect.datalayer.db.school
 
+import androidx.paging.PagingSource
 import androidx.room.Transactor
 import androidx.room.useWriterConnection
 import kotlinx.coroutines.flow.Flow
@@ -104,6 +105,15 @@ class PersonDataSourceDb(
                 }
             )
         }
+    }
+
+    override fun findAllAsPagingSource(
+        loadParams: DataLoadParams,
+        searchQuery: String?,
+        since: Instant?,
+        limit: Int
+    ): PagingSource<Int, Person> {
+        TODO()
     }
 
     override suspend fun findAll(
