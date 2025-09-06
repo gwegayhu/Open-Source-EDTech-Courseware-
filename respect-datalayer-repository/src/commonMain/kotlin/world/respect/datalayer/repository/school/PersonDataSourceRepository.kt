@@ -88,9 +88,8 @@ class PersonDataSourceRepository(
         loadParams: DataLoadParams,
         searchQuery: String?,
         since: Instant?,
-        limit: Int
     ): PagingSource<Int, Person> {
-        return remote.findAllAsPagingSource(loadParams, searchQuery, since, limit)
+        return remote.findAllAsPagingSource(loadParams, searchQuery, since)
     }
 
 }

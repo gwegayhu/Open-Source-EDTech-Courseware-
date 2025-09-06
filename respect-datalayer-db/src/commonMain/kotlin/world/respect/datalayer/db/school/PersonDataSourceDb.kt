@@ -20,6 +20,7 @@ import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
 import world.respect.datalayer.shared.maxLastModifiedOrNull
 import world.respect.datalayer.shared.maxLastStoredOrNull
+import world.respect.datalayer.shared.paging.map
 import world.respect.libutil.util.time.systemTimeInMillis
 import world.respect.libxxhash.XXStringHasher
 import kotlin.time.Clock
@@ -111,9 +112,12 @@ class PersonDataSourceDb(
         loadParams: DataLoadParams,
         searchQuery: String?,
         since: Instant?,
-        limit: Int
     ): PagingSource<Int, Person> {
-        TODO()
+        return schoolDb.getPersonEntityDao().findAllAsPagingSource(
+            since = since?.toEpochMilliseconds() ?: 0
+        ).map {
+            PersonEntities(it).toModel()
+        }
     }
 
     override suspend fun findAll(

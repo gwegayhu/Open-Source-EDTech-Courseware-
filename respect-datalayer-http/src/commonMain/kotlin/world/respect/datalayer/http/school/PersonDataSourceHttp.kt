@@ -107,7 +107,6 @@ class PersonDataSourceHttp(
         loadParams: DataLoadParams,
         searchQuery: String?,
         since: Instant?,
-        limit: Int
     ): PagingSource<Int, Person> {
         return OffsetLimitHttpPagingSource(
             baseUrlProvider = { respectEndpointUrl("person") },

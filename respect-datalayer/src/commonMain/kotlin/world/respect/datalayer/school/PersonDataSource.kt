@@ -43,7 +43,6 @@ interface PersonDataSource {
         loadParams: DataLoadParams,
         searchQuery: String? = null,
         since: Instant? = null,
-        limit: Int,
     ): PagingSource<Int, Person>
 
 
