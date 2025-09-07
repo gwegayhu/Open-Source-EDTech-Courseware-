@@ -1,7 +1,9 @@
 package world.respect.datalayer.repository.school
 
 import androidx.paging.PagingSource
+import app.cash.turbine.test
 import io.ktor.server.routing.route
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -16,6 +18,7 @@ import world.respect.server.routes.school.respect.PersonRoute
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 /**
@@ -229,10 +232,21 @@ class PersonRepositoryIntegrationTest {
                 val pagingSource = clients.first().schoolDataSource.personDataSource.findAllAsPagingSource(
                     loadParams = DataLoadParams(),
                 )
+
                 val data = pagingSource.load(
                     PagingSource.LoadParams.Refresh(0, 50, false)
                 )
-                println(data)
+
+                clients.first().schoolDataSource.personDataSource.findAllAsFlow(
+                    DataLoadParams()
+                ).filter { it is DataReadyState && it.data.isNotEmpty() }.test(
+                    timeout = 10.seconds
+                ) {
+                    val localData = awaitItem()
+                    assertEquals(1, localData.dataOrNull()?.size)
+                    assertEquals(defaultTestPerson.givenName,
+                        localData.dataOrNull()?.first()?.givenName)
+                }
             }
         }
     }

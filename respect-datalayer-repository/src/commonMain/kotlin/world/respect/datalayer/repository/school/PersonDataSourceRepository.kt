@@ -8,6 +8,7 @@ import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.ext.combineWithRemote
 import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
+import world.respect.datalayer.repository.shared.paging.RepositoryOffsetLimitPagingSource
 import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.datalayer.school.model.Person
@@ -89,7 +90,11 @@ class PersonDataSourceRepository(
         searchQuery: String?,
         since: Instant?,
     ): PagingSource<Int, Person> {
-        return remote.findAllAsPagingSource(loadParams, searchQuery, since)
+        return RepositoryOffsetLimitPagingSource(
+            local = local.findAllAsPagingSource(loadParams, searchQuery, since),
+            remote = remote.findAllAsPagingSource(loadParams, searchQuery, since),
+            onUpdateLocalFromRemote = local::updateLocalFromRemote,
+        )
     }
 
 }

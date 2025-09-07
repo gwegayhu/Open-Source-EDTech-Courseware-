@@ -16,6 +16,16 @@ interface PersonEntityDao {
     suspend fun insert(personEntity: PersonEntity)
 
     @Query("""
+        SELECT PersonEntity.pLastModified
+          FROM PersonEntity
+         WHERE PersonEntity.pGuidHash = :guidHash
+         LIMIT 1
+    """)
+    suspend fun getLastModifiedByGuid(guidHash: Long): Long?
+
+
+
+    @Query("""
         SELECT * 
          FROM PersonEntity
         WHERE pUsername = :username

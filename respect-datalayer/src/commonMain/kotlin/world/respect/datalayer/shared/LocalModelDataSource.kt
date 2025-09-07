@@ -1,4 +1,4 @@
-package world.respect.datalayer.repository
+package world.respect.datalayer.shared
 
 /**
  * Represents a local datasource for a specific model e.g. Person, Class, etc.

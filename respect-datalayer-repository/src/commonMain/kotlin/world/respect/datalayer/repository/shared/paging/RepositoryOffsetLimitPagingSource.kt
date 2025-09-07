@@ -19,7 +19,7 @@ import world.respect.datalayer.shared.paging.CacheableHttpPagingSource
 class RepositoryOffsetLimitPagingSource<T: Any>(
     internal val local: PagingSource<Int, T>,
     internal val remote: PagingSource<Int, T>,
-    private val onUpdateLocalFromRemote: (List<T>) -> Unit,
+    private val onUpdateLocalFromRemote: suspend (List<T>) -> Unit,
 ) : FilterPagingSource<Int, T>(local){
 
     val scope = CoroutineScope(Dispatchers.Default + Job())

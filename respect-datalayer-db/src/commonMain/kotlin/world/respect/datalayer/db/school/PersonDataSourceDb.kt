@@ -33,7 +33,10 @@ class PersonDataSourceDb(
     private val authenticatedUser: AuthenticatedUserPrincipalId,
 ): PersonDataSourceLocal {
 
-    private suspend fun upsertPersons(persons: List<Person>) {
+    private suspend fun upsertPersons(
+        persons: List<Person>,
+        forceOverwrite: Boolean = false,
+    ) {
         if(persons.isEmpty())
             return
 
@@ -42,11 +45,19 @@ class PersonDataSourceDb(
             con.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
                 persons.map { it.copy(stored = timeStored) }.forEach { person ->
                     val entities = person.toEntities(xxHash)
-                    schoolDb.getPersonEntityDao().insert(entities.personEntity)
-                    schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
+                    val lastModified = schoolDb.getPersonEntityDao().getLastModifiedByGuid(
                         entities.personEntity.pGuidHash
-                    )
-                    schoolDb.getPersonRoleEntityDao().upsertList(entities.personRoleEntities)
+                    ) ?: -1
+
+                    if(forceOverwrite || entities.personEntity.pLastModified > lastModified) {
+                        schoolDb.getPersonEntityDao().insert(entities.personEntity)
+                        schoolDb.getPersonRoleEntityDao().deleteByPersonGuidHash(
+                            entities.personEntity.pGuidHash
+                        )
+                        schoolDb.getPersonRoleEntityDao().upsertList(
+                            entities.personRoleEntities
+                        )
+                    }
                 }
             }
         }
@@ -84,6 +95,13 @@ class PersonDataSourceDb(
 
     override suspend fun putPersonsLocal(persons: List<Person>) {
         upsertPersons(persons)
+    }
+
+    override suspend fun updateLocalFromRemote(
+        list: List<Person>,
+        forceOverwrite: Boolean
+    ) {
+        upsertPersons(list, forceOverwrite)
     }
 
     override fun findAllListDetailsAsFlow(

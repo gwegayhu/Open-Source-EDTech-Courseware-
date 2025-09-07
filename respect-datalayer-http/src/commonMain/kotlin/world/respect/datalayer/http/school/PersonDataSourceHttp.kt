@@ -115,9 +115,7 @@ class PersonDataSourceHttp(
             validationHelper = validationHelper,
             typeInfo = typeInfo<List<Person>>(),
             requestBuilder = {
-                since?.also {
-                    parameter(DataLayerParams.SINCE, it.toString())
-                }
+                since?.also { parameter(DataLayerParams.SINCE, it.toString()) }
                 headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
             }
         )
