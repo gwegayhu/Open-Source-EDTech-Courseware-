@@ -10,6 +10,8 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.util.reflect.TypeInfo
 import world.respect.datalayer.DataLayerHeaders
+import world.respect.datalayer.DataLayerParams
+import world.respect.datalayer.ext.addCacheValidationHeaders
 import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
 import world.respect.datalayer.shared.paging.getClippedRefreshKey
 import world.respect.datalayer.shared.paging.getLimit
@@ -68,12 +70,13 @@ class OffsetLimitHttpPagingSource<T: Any>(
         }
 
         val url = URLBuilder(baseUrlProvider()).apply {
-            parameters.append("offset", offset.toString())
-            parameters.append("limit", limit.toString())
+            parameters.append(DataLayerParams.OFFSET, offset.toString())
+            parameters.append(DataLayerParams.LIMIT, limit.toString())
         }.build()
 
         val httpResponse = httpClient.get(url) {
             requestBuilder()
+            validationHelper?.also { addCacheValidationHeaders(it) }
         }
 
         val itemCount = httpResponse.headers[DataLayerHeaders.XTotalCount]?.toInt()?.also {

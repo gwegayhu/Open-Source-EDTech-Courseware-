@@ -10,8 +10,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.etag
-import io.ktor.http.toHttpDate
-import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import world.respect.datalayer.DataErrorResult
@@ -36,19 +34,7 @@ suspend inline fun <reified T: Any> HttpClient.getAsDataLoadState(
             block()
             //note the block can change the URL (eg by adding parameters), so get validationInfo
             //after running block
-
-            val validationInfo = validationHelper?.getValidationInfo(
-                url = this.url.build(),
-                requestHeaders = this.headers.build().asIHttpHeaders(),
-            )
-
-            validationInfo?.lastModified?.takeIf { it > 0 }?.also { lastMod ->
-                headers[HttpHeaders.IfModifiedSince] = GMTDate(lastMod).toHttpDate()
-            }
-
-            validationInfo?.etag?.also { etag ->
-                headers[HttpHeaders.IfNoneMatch] = etag
-            }
+            validationHelper?.also { addCacheValidationHeaders(it) }
         }
 
         return if(response.status == HttpStatusCode.NotModified) {

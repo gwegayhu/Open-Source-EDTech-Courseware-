@@ -10,6 +10,7 @@ import io.ktor.util.reflect.typeInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import world.respect.datalayer.AuthTokenProvider
+import world.respect.datalayer.DataLayerParams
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.ext.firstOrNotLoaded
@@ -92,7 +93,7 @@ class PersonDataSourceHttp(
         return httpClient.getAsDataLoadState<List<Person>>(
             url = URLBuilder(respectEndpointUrl("person")).apply {
                 since?.also {
-                    parameters.append("since", it.toString())
+                    parameters.append(DataLayerParams.SINCE, it.toString())
                 }
             }.build(),
             validationHelper = validationHelper,
@@ -115,7 +116,7 @@ class PersonDataSourceHttp(
             typeInfo = typeInfo<List<Person>>(),
             requestBuilder = {
                 since?.also {
-                    parameter("since", it.toString())
+                    parameter(DataLayerParams.SINCE, it.toString())
                 }
                 headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
             }
