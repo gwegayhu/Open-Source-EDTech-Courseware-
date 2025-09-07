@@ -3,16 +3,18 @@ package world.respect.datalayer.http.shared.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.get
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.util.reflect.TypeInfo
 import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLayerParams
-import world.respect.datalayer.ext.addCacheValidationHeaders
+import world.respect.datalayer.DataLoadState
+import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
+import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
+import world.respect.datalayer.shared.paging.CacheableHttpPagingSource
 import world.respect.datalayer.shared.paging.getClippedRefreshKey
 import world.respect.datalayer.shared.paging.getLimit
 import world.respect.datalayer.shared.paging.getOffset
@@ -33,9 +35,11 @@ class OffsetLimitHttpPagingSource<T: Any>(
     private val validationHelper: BaseDataSourceValidationHelper? = null,
     private val typeInfo: TypeInfo,
     private val requestBuilder: HttpRequestBuilder.() -> Unit = { },
-) : PagingSource<Int, T>(){
+) : PagingSource<Int, T>(), CacheableHttpPagingSource<Int, T> {
 
     private var lastKnownTotalCount = -1
+
+    private val resultMap: MutableMap<LoadResult<Int, T>, DataLoadState<List<T>>> = mutableMapOf()
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.getClippedRefreshKey()
@@ -74,15 +78,21 @@ class OffsetLimitHttpPagingSource<T: Any>(
             parameters.append(DataLayerParams.LIMIT, limit.toString())
         }.build()
 
-        val httpResponse = httpClient.get(url) {
+        val dataLoadState: DataLoadState<List<T>> = httpClient.getAsDataLoadState(
+            url, typeInfo, validationHelper,
+        ) {
             requestBuilder()
-            validationHelper?.also { addCacheValidationHeaders(it) }
         }
 
-        val itemCount = httpResponse.headers[DataLayerHeaders.XTotalCount]?.toInt()?.also {
+        if(dataLoadState !is DataReadyState) {
+            return LoadResult.Invalid()
+        }
+
+        val itemCount = dataLoadState.metaInfo.headers?.get(DataLayerHeaders.XTotalCount)?.toInt()?.also {
             lastKnownTotalCount = it
         } ?: -1
-        val data: List<T> = httpResponse.body(typeInfo)
+
+        val data: List<T> = dataLoadState.data
 
         //This section is largely based on RoomUtil.queryDatabase function
         val nextPosToLoad = offset + data.size
@@ -100,6 +110,17 @@ class OffsetLimitHttpPagingSource<T: Any>(
             nextKey = nextKey,
             itemsBefore = offset,
             itemsAfter = maxOf(0, itemCount - nextPosToLoad)
-        )
+        ).also {
+            resultMap[it] = dataLoadState
+        }
     }
+
+    override suspend fun onLoadResultStored(loadResult: LoadResult.Page<Int, T>) {
+        resultMap[loadResult]?.also {
+            (validationHelper as? ExtendedDataSourceValidationHelper)?.updateValidationInfo(
+                it.metaInfo
+            )
+        }
+    }
+
 }

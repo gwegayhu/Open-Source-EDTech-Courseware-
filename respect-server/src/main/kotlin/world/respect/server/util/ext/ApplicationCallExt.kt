@@ -94,12 +94,7 @@ suspend inline fun <reified T: Any> ApplicationCall.respondOffsetLimitPaging(
             //As per README - the last-mod for validation purposes is actually the time stored,
             // not the time originally modified (possibly on other device).
             val maxLastStored = modelsWithTimes?.maxLastStoredOrNull()
-            maxLastStored?.also {
-                response.header(
-                    HttpHeaders.LastModified,
-                    GMTDate(it.toEpochMilliseconds()).toHttpDate()
-                )
-            }
+            maxLastStored?.also { response.lastModified(it) }
 
             if(maxLastStored != null &&
                 request.validateIfNotModifiedSince(maxLastStored)

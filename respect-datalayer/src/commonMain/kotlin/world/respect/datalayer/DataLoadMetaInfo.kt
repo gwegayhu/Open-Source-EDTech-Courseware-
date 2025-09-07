@@ -1,5 +1,6 @@
 package world.respect.datalayer
 
+import com.ustadmobile.ihttp.headers.IHttpHeaders
 import io.ktor.http.Url
 
 /**
@@ -44,6 +45,9 @@ data class DataLoadMetaInfo(
     val validationInfoKey: Long = 0,
 
     val varyHeader: String? = null,
+
+    val headers: IHttpHeaders? = null,
+
 ) {
 
     fun requireUrl() = url ?: throw IllegalStateException("requireUrl: load meta info has no url")
