@@ -1,6 +1,7 @@
 package world.respect.datalayer.ext
 
 import com.ustadmobile.ihttp.headers.asIHttpHeaders
+import io.github.aakira.napier.Napier
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.HttpHeaders
 import io.ktor.http.toHttpDate
@@ -15,13 +16,16 @@ import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
 suspend fun HttpRequestBuilder.addCacheValidationHeaders(
     validationHelper: BaseDataSourceValidationHelper
 ) {
+    val urlBuilt = this.url.build()
     val validationInfo = validationHelper.getValidationInfo(
-        url = this.url.build(),
+        url = urlBuilt,
         requestHeaders = this.headers.build().asIHttpHeaders(),
     )
 
     validationInfo?.lastModified?.takeIf { it > 0 }?.also { lastMod ->
-        headers[HttpHeaders.IfModifiedSince] = GMTDate(lastMod).toHttpDate()
+        val ifModSinceDate = GMTDate(lastMod).toHttpDate()
+        Napier.d("Cache Validation header: If-Modified-Since: $urlBuilt Set If-Modified-Since=$ifModSinceDate")
+        headers[HttpHeaders.IfModifiedSince] = ifModSinceDate
     }
 
     validationInfo?.etag?.also { etag ->

@@ -10,7 +10,8 @@ import androidx.paging.PagingState
 internal class MapPagingSource<T: Any, R: Any>(
     private val src: PagingSource<Int, T>,
     private val transform: (T) -> R,
-): DelegatedInvalidationPagingSource<Int, R>(src) {
+    tag: String? = null
+): DelegatedInvalidationPagingSource<Int, R>(src, tag) {
 
     override fun getRefreshKey(state: PagingState<Int, R>): Int? {
         return state.getClippedRefreshKey()
@@ -43,7 +44,8 @@ internal class MapPagingSource<T: Any, R: Any>(
 }
 
 fun <T: Any, R: Any> PagingSource<Int, T>.map(
+    tag: String? = null,
     transform: (T) -> R
 ): PagingSource<Int, R> {
-    return MapPagingSource(this, transform)
+    return MapPagingSource(this, transform, tag)
 }

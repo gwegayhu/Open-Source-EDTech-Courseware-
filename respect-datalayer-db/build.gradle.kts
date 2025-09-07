@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.paging.common)
             implementation(libs.androidx.room.paging)
+            implementation(libs.napier)
         }
 
         androidMain.dependencies {

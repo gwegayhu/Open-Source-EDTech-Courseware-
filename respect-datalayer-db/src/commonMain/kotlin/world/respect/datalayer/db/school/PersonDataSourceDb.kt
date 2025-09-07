@@ -133,7 +133,7 @@ class PersonDataSourceDb(
     ): PagingSource<Int, Person> {
         return schoolDb.getPersonEntityDao().findAllAsPagingSource(
             since = since?.toEpochMilliseconds() ?: 0
-        ).map {
+        ).map(tag = "persondb-mapped") {
             PersonEntities(it).toModel()
         }
     }

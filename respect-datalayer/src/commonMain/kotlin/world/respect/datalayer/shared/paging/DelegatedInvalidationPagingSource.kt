@@ -1,6 +1,7 @@
 package world.respect.datalayer.shared.paging
 
 import androidx.paging.PagingSource
+import io.github.aakira.napier.Napier
 import kotlinx.atomicfu.atomic
 
 /**
@@ -13,6 +14,7 @@ import kotlinx.atomicfu.atomic
  */
 abstract class DelegatedInvalidationPagingSource<Key: Any, Value: Any>(
     protected val invalidationDelegate: PagingSource<Key, *>,
+    protected val tag: String? = null,
 ): PagingSource<Key, Value>() {
 
     private val srcInvalidateCallbackRegistered = atomic(false)
@@ -32,6 +34,7 @@ abstract class DelegatedInvalidationPagingSource<Key: Any, Value: Any>(
     private fun onSrcInvalidated() {
         invalidationDelegate.unregisterInvalidatedCallback(srcInvalidatedCallback)
         if(!invalidated.getAndSet(true)) {
+            Napier.d("DPaging: $tag src invalidated")
             invalidate()
         }
     }

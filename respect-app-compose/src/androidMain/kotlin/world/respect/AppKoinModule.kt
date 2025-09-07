@@ -320,15 +320,18 @@ val appKoinModule = module {
         MockSubmitRedeemInviteRequestUseCase()
     }
 
-    single<RespectAppDataSource> {
+    single<RespectAppDatabase> {
         val appContext = androidContext().applicationContext
+        Room.databaseBuilder<RespectAppDatabase>(
+            appContext, appContext.getDatabasePath("respectapp.db").absolutePath
+        ).setDriver(BundledSQLiteDriver())
+            .build()
+    }
 
+    single<RespectAppDataSource> {
         RespectAppDataSourceRepository(
             local = RespectAppDataSourceDb(
-                respectAppDatabase = Room.databaseBuilder<RespectAppDatabase>(
-                    appContext, appContext.getDatabasePath("respectapp.db").absolutePath
-                ).setDriver(BundledSQLiteDriver())
-                    .build(),
+                respectAppDatabase = get(),
                 json = get(),
                 xxStringHasher = get(),
                 primaryKeyGenerator = PrimaryKeyGenerator(RespectAppDatabase.TABLE_IDS),
@@ -426,7 +429,8 @@ val appKoinModule = module {
                     httpClient = get(),
                     tokenProvider = get(),
                     validationHelper = get(),
-                )
+                ),
+                validationHelper = get(),
             )
         }
     }

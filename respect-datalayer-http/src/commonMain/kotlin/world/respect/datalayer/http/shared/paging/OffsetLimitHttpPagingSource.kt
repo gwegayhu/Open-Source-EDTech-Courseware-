@@ -2,6 +2,7 @@ package world.respect.datalayer.http.shared.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.URLBuilder
@@ -35,6 +36,7 @@ class OffsetLimitHttpPagingSource<T: Any>(
     private val validationHelper: BaseDataSourceValidationHelper? = null,
     private val typeInfo: TypeInfo,
     private val requestBuilder: HttpRequestBuilder.() -> Unit = { },
+    private val tag: String? = null,
 ) : PagingSource<Int, T>(), CacheableHttpPagingSource<Int, T> {
 
     private var lastKnownTotalCount = -1
@@ -78,6 +80,8 @@ class OffsetLimitHttpPagingSource<T: Any>(
             parameters.append(DataLayerParams.LIMIT, limit.toString())
         }.build()
 
+        Napier.d("DPaging: tag=$tag offsetlimit loading from $url")
+
         val dataLoadState: DataLoadState<List<T>> = httpClient.getAsDataLoadState(
             url, typeInfo, validationHelper,
         ) {
@@ -85,6 +89,7 @@ class OffsetLimitHttpPagingSource<T: Any>(
         }
 
         if(dataLoadState !is DataReadyState) {
+            Napier.d("DPaging: tag=$tag offsetlimit invalid")
             return LoadResult.Invalid()
         }
 
@@ -93,6 +98,8 @@ class OffsetLimitHttpPagingSource<T: Any>(
         } ?: -1
 
         val data: List<T> = dataLoadState.data
+
+        Napier.d("DPaging: tag=$tag offsetlimit loaded ${data.size} items")
 
         //This section is largely based on RoomUtil.queryDatabase function
         val nextPosToLoad = offset + data.size

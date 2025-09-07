@@ -1,7 +1,6 @@
 package world.respect.datalayer.repository.shared.paging
 
 import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,10 +27,6 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
         this.registerInvalidatedCallback { scope.cancel() }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
-        return local.getRefreshKey(state)
-    }
-
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         scope.launch {
             val remoteLoadResult = remote.load(params)
@@ -45,6 +40,6 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
             }
         }
 
-        return local.load(params)
+        return super.load(params)
     }
 }

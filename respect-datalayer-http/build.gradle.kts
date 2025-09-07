@@ -27,6 +27,7 @@ kotlin {
             api(libs.kotlinx.date.time)
             api(libs.ktor.client.core)
             api(projects.respectDatalayer)
+            implementation(libs.napier)
         }
 
         jvmMain.dependencies {

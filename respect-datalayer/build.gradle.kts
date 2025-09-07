@@ -30,6 +30,7 @@ kotlin {
             api(libs.ktor.client.core)
             api(libs.androidx.paging.common)
             implementation(libs.atomicfu)
+            implementation(libs.napier)
         }
 
         jvmMain.dependencies {
