@@ -7,12 +7,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.credentials.passkey.GetCredentialUseCase
+import world.respect.credentials.passkey.VerifyDomainUseCase
 import world.respect.datalayer.RespectAppDataSource
-import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
+import world.respect.shared.domain.account.RespectAccountManager
 import world.respect.shared.generated.resources.Res
-import world.respect.shared.generated.resources.*
+import world.respect.shared.generated.resources.login
+import world.respect.shared.generated.resources.required_field
+import world.respect.shared.generated.resources.something_went_wrong
 import world.respect.shared.navigation.LoginScreen
 import world.respect.shared.navigation.NavCommand
 import world.respect.shared.navigation.RespectAppLauncher
@@ -35,7 +37,8 @@ class LoginViewModel(
     savedStateHandle: SavedStateHandle,
     private val accountManager: RespectAccountManager,
     getCredentialUseCase: GetCredentialUseCase,
-    respectAppDataSource: RespectAppDataSource
+    respectAppDataSource: RespectAppDataSource,
+    private val verifyDomainUseCase: VerifyDomainUseCase
 ) : RespectViewModel(savedStateHandle) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -55,12 +58,12 @@ class LoginViewModel(
             }
         }
         viewModelScope.launch {
-
             try {
                 val school = respectAppDataSource.schoolDirectoryDataSource.getSchoolDirectoryEntryByUrl(route.schoolUrl)
                 val rpId = school?.data?.rpId
-                if (rpId!=null){
-                    when (val credentialResult = getCredentialUseCase(rpId)) {
+                val isRpIDVerified = verifyDomainUseCase(rpId?:"")
+                if (isRpIDVerified){
+                    when (val credentialResult = getCredentialUseCase(rpId?:"")) {
                         is GetCredentialUseCase.PasskeyCredentialResult -> {
                             _navCommandFlow.tryEmit(
                                 NavCommand.Navigate(RespectAppLauncher)

@@ -36,6 +36,8 @@ import world.respect.credentials.passkey.CreatePasskeyUseCase
 import world.respect.credentials.passkey.CreatePasskeyUseCaseImpl
 import world.respect.credentials.passkey.GetCredentialUseCase
 import world.respect.credentials.passkey.GetCredentialUseCaseImpl
+import world.respect.credentials.passkey.VerifyDomainUseCase
+import world.respect.credentials.passkey.VerifyDomainUseCaseImpl
 import world.respect.credentials.passkey.request.CreatePublicKeyCredentialCreationOptionsJsonUseCase
 import world.respect.credentials.passkey.request.CreatePublicKeyCredentialRequestOptionsJsonUseCase
 import world.respect.credentials.passkey.request.EncodeUserHandleUseCase
@@ -305,6 +307,11 @@ val appKoinModule = module {
             context = androidContext().applicationContext,
             json = get(),
             createPublicKeyCredentialRequestOptionsJsonUseCase = get()
+        )
+    }
+    single<VerifyDomainUseCase> {
+        VerifyDomainUseCaseImpl(
+            context = androidContext().applicationContext
         )
     }
 
