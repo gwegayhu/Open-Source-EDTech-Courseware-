@@ -7,8 +7,9 @@ import androidx.paging.PagingSource
  * caching: where there is a 1:1 relationship between the URL loaded and entities stored in the
  * database, and an extended one where this is not the case.
  *
- * In the extended case the validation ( ExtendedDataSourceValidationHelper ), the validation info
- * must be updated after the data from the request has been successfully stored.
+ * In the extended case the validation ( ExtendedDataSourceValidationHelper ), the response
+ * validation info is separate and must separately updated after the data from the underlying
+ * request data has been successfully stored.
  *
  */
 interface CacheableHttpPagingSource<Key: Any, Value: Any> {

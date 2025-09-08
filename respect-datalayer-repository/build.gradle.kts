@@ -63,6 +63,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.ktor)
             implementation(libs.napier)
+            implementation(libs.mockito.kotlin)
         }
     }
 }

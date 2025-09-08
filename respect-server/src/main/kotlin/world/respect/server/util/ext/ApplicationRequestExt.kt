@@ -34,8 +34,6 @@ fun ApplicationRequest.ifModifiedSinceSecs(): Long? {
 fun ApplicationRequest.validateIfNotModifiedSince(
     responseDataLastModified: Instant,
 ) : Boolean {
-    println("If-Modified-Since: ${call.request.headers[HttpHeaders.IfModifiedSince]}")
-
     return ifModifiedSinceSecs()?.let { ifModifiedSinceSecs ->
         responseDataLastModified.epochSeconds <= ifModifiedSinceSecs
     } ?: false

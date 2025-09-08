@@ -15,6 +15,7 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import org.mockito.kotlin.spy
 import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataReadyState
@@ -45,6 +46,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ContentNe
 
 data class DataSourceTestClient(
     val schoolDataSource: SchoolDataSource,
+    val schoolDataSourceLocal: SchoolDataSourceLocal,
+    val schoolDataSourceRemote: SchoolDataSource,
     val validationHelper: ExtendedDataSourceValidationHelper,
 )
 
@@ -127,7 +130,7 @@ class ClientServerDataSourceTestBuilder internal constructor(
 
 
 
-        val (_, clientSchoolDataSource) = newLocalSchoolDatabase(clientDir, stringHasher)
+        val (_, schoolDataSourceLocal) = newLocalSchoolDatabase(clientDir, stringHasher)
 
         val schoolBaseUrl = Url("http://localhost:$port/")
 
@@ -149,27 +152,33 @@ class ClientServerDataSourceTestBuilder internal constructor(
             )
         }
 
-        val clientValidationHelper = ExtendedDataSourceValidationHelperImpl(
-            respectAppDb = clientAppDb,
-            xxStringHasher = XXStringHasherCommonJvm(),
-            xxHasher64Factory = XXHasher64FactoryCommonJvm(),
+        val clientValidationHelper = spy(
+            ExtendedDataSourceValidationHelperImpl(
+                respectAppDb = clientAppDb,
+                xxStringHasher = XXStringHasherCommonJvm(),
+                xxHasher64Factory = XXHasher64FactoryCommonJvm(),
+            )
         )
 
         val token = "secret"
+        val schoolDataSourceRemote = SchoolDataSourceHttp(
+            schoolUrl = schoolBaseUrl,
+            schoolDirectoryDataSource = clientAppDataSource.schoolDirectoryDataSource,
+            httpClient = httpClient,
+            tokenProvider =  { AuthToken(token, systemTimeInMillis(), 3600) },
+            validationHelper = clientValidationHelper,
+        )
+
         val clientDataSource = SchoolDataSourceRepository(
-            local = clientSchoolDataSource,
-            remote = SchoolDataSourceHttp(
-                schoolUrl = schoolBaseUrl,
-                schoolDirectoryDataSource = clientAppDataSource.schoolDirectoryDataSource,
-                httpClient = httpClient,
-                tokenProvider =  { AuthToken(token, systemTimeInMillis(), 3600) },
-                validationHelper = clientValidationHelper,
-            ),
+            local = schoolDataSourceLocal,
+            remote =schoolDataSourceRemote ,
             validationHelper = clientValidationHelper,
         )
 
         DataSourceTestClient(
             schoolDataSource = clientDataSource,
+            schoolDataSourceLocal = schoolDataSourceLocal,
+            schoolDataSourceRemote = schoolDataSourceRemote,
             validationHelper = clientValidationHelper,
         )
     }

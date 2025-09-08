@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.status.pages)
 
+    implementation(libs.napier)
+
     testImplementation(libs.kotlin.test.junit)
 
     swaggerUI(libs.swagger.ui)

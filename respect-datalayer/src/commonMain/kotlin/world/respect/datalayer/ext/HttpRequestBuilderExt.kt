@@ -1,7 +1,6 @@
 package world.respect.datalayer.ext
 
 import com.ustadmobile.ihttp.headers.asIHttpHeaders
-import io.github.aakira.napier.Napier
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.HttpHeaders
 import io.ktor.http.toHttpDate
@@ -24,7 +23,6 @@ suspend fun HttpRequestBuilder.addCacheValidationHeaders(
 
     validationInfo?.lastModified?.takeIf { it > 0 }?.also { lastMod ->
         val ifModSinceDate = GMTDate(lastMod).toHttpDate()
-        Napier.d("Cache Validation header: If-Modified-Since: $urlBuilt Set If-Modified-Since=$ifModSinceDate")
         headers[HttpHeaders.IfModifiedSince] = ifModSinceDate
     }
 

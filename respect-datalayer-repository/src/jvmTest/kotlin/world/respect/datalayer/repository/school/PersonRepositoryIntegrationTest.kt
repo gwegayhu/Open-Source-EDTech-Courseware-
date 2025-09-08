@@ -2,16 +2,22 @@ package world.respect.datalayer.repository.school
 
 import androidx.paging.PagingSource
 import app.cash.turbine.test
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.mockito.kotlin.argWhere
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verifyBlocking
 import world.respect.datalayer.DataLoadParams
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
 import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.repository.clientservertest.clientServerDatasourceTest
+import world.respect.datalayer.repository.shared.paging.RepositoryOffsetLimitPagingSource
 import world.respect.datalayer.school.model.Person
 import world.respect.libutil.util.time.systemTimeInMillis
 import world.respect.server.routes.school.respect.PersonRoute
@@ -233,7 +239,7 @@ class PersonRepositoryIntegrationTest {
                     loadParams = DataLoadParams(),
                 )
 
-                val data = pagingSource.load(
+                pagingSource.load(
                     PagingSource.LoadParams.Refresh(0, 50, false)
                 )
 
@@ -251,5 +257,52 @@ class PersonRepositoryIntegrationTest {
         }
     }
 
+    @Test
+    fun givenRemotePagingSourceLoadedOnce_whenLoadedAgain_thenRemoteWillReturnNotModified() {
+        Napier.base(DebugAntilog())
+
+        runBlocking {
+            clientServerDatasourceTest(temporaryFolder.newFolder("test")) {
+                serverRouting {
+                    route("api/school/respect") {
+                        PersonRoute(schoolDataSource = { serverSchoolDataSource })
+                    }
+                }
+
+                server.start()
+
+                serverSchoolDataSource.personDataSource.putPersonsLocal(
+                    listOf(defaultTestPerson)
+                )
+
+                val local = clients.first().schoolDataSourceLocal.personDataSource
+                    .findAllAsPagingSource(DataLoadParams())
+                val remote = clients.first().schoolDataSourceRemote.personDataSource
+                    .findAllAsPagingSource(DataLoadParams())
+                val repository = RepositoryOffsetLimitPagingSource(
+                    local = local,
+                    remote = remote,
+                    onUpdateLocalFromRemote = clients.first().schoolDataSourceLocal
+                        .personDataSource::updateLocalFromRemote,
+                )
+
+                repository.load(
+                    PagingSource.LoadParams.Refresh(0, 50, false)
+                )
+
+                verifyBlocking(clients.first().validationHelper, timeout(5_000)) {
+                    updateValidationInfo(
+                        argWhere { it.url?.segments?.contains("person") == true }
+                    )
+                }
+
+                val remoteResult = remote.load(
+                    PagingSource.LoadParams.Refresh(0, 50, false)
+                )
+
+                assertTrue(remoteResult is PagingSource.LoadResult.Invalid)
+            }
+        }
+    }
 
 }
