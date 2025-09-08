@@ -13,8 +13,6 @@ import kotlin.time.Instant
  * nearest second.
  */
 fun ApplicationResponse.lastModified(instant: Instant) {
-    header(
-        HttpHeaders.LastModified,
-        GMTDate(instant.epochSeconds * 1_000).toHttpDate()
-    )
+    val httpDateStr = GMTDate(instant.epochSeconds * 1_000).toHttpDate()
+    header(HttpHeaders.LastModified,httpDateStr)
 }

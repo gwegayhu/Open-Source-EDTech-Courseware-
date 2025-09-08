@@ -126,6 +126,7 @@ class PersonDataSourceHttp(
             requestBuilder = {
                 since?.also { parameter(DataLayerParams.SINCE, it.toString()) }
                 headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
+                headers[HttpHeaders.CacheControl] = "no-store" //prevent 'normal' cache
             },
             tag = "Person-HTTP"
         )
