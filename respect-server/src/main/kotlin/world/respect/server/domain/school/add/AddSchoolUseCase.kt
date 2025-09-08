@@ -72,7 +72,7 @@ class AddSchoolUseCase(
             schoolDataSource.personDataSource.putPersonsLocal(listOf(adminPerson))
 
             schoolDataSource.personDataSource.putPersonsLocal(
-                (2..10).map {
+                (2..300).map {
                     Person(
                         guid = "$it",
                         username = "user$it",

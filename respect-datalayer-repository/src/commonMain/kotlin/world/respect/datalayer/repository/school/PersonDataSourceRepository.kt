@@ -89,6 +89,7 @@ class PersonDataSourceRepository(
         loadParams: DataLoadParams,
         searchQuery: String?,
         since: Instant?,
+        guid: String?,
     ): PagingSource<Int, Person> {
         return RepositoryOffsetLimitPagingSource(
             local = local.findAllAsPagingSource(loadParams, searchQuery, since),

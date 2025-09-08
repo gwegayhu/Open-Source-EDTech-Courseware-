@@ -130,9 +130,11 @@ class PersonDataSourceDb(
         loadParams: DataLoadParams,
         searchQuery: String?,
         since: Instant?,
+        guid: String?,
     ): PagingSource<Int, Person> {
         return schoolDb.getPersonEntityDao().findAllAsPagingSource(
-            since = since?.toEpochMilliseconds() ?: 0
+            since = since?.toEpochMilliseconds() ?: 0,
+            guidHash = guid?.let { xxHash.hash(it) } ?: 0,
         ).map(tag = "persondb-mapped") {
             PersonEntities(it).toModel()
         }

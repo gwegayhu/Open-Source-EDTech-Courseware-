@@ -44,7 +44,9 @@ class PersonDataSourceHttp(
         guid: String
     ): DataLoadState<Person> {
         return httpClient.getAsDataLoadState<List<Person>>(
-            respectEndpointUrl("person"),
+            URLBuilder(respectEndpointUrl("person")).apply {
+                parameters.append(DataLayerParams.GUID, guid)
+            }.build(),
         ) {
             headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
         }.firstOrNotLoaded()
@@ -52,7 +54,13 @@ class PersonDataSourceHttp(
 
     override fun findByGuidAsFlow(guid: String): Flow<DataLoadState<Person>> {
         return httpClient.getDataLoadResultAsFlow<List<Person>>(
-            urlFn = { respectEndpointUrl("person") },
+            urlFn = { 
+                URLBuilder(respectEndpointUrl("person"))
+                    .apply {
+                        parameters.append(DataLayerParams.GUID, guid)
+                    }
+                    .build()
+            },
             dataLoadParams = DataLoadParams()
         ) {
             headers[HttpHeaders.Authorization] = "Bearer ${tokenProvider.provideToken().accessToken}"
@@ -108,6 +116,7 @@ class PersonDataSourceHttp(
         loadParams: DataLoadParams,
         searchQuery: String?,
         since: Instant?,
+        guid: String?,
     ): PagingSource<Int, Person> {
         return OffsetLimitHttpPagingSource(
             baseUrlProvider = { respectEndpointUrl("person") },

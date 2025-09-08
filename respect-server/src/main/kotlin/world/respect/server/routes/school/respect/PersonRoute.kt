@@ -33,10 +33,12 @@ fun Route.PersonRoute(
         call.respondOffsetLimitPaging(
             params = loadParams,
             pagingSource = schoolDataSource.personDataSource.findAllAsPagingSource(
-                DataLoadParams(), null, since
+                loadParams = DataLoadParams(),
+                searchQuery = null,
+                since = since,
+                guid = call.request.queryParameters[DataLayerParams.GUID],
             )
         )
     }
-
 
 }

@@ -13,7 +13,8 @@ import androidx.paging.PagingState
  */
 abstract class FilterPagingSource<Key: Any, Value: Any>(
     protected val src: PagingSource<Key, Value>,
-) : DelegatedInvalidationPagingSource<Key, Value>(src){
+    tag: String? = null
+) : DelegatedInvalidationPagingSource<Key, Value>(src, tag){
 
 
     override fun getRefreshKey(state: PagingState<Key, Value>): Key? {

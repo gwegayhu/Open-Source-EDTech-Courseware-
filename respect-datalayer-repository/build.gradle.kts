@@ -26,6 +26,7 @@ kotlin {
             api(libs.uri.kmp)
             api(libs.kotlinx.date.time)
             api(libs.ktor.client.core)
+            implementation(libs.napier)
         }
 
         jvmMain.dependencies {
@@ -62,7 +63,6 @@ kotlin {
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
             implementation(libs.koin.ktor)
-            implementation(libs.napier)
             implementation(libs.mockito.kotlin)
         }
     }

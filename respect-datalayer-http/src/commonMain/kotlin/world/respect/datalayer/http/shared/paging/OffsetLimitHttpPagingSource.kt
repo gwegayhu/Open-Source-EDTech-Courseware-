@@ -52,6 +52,7 @@ class OffsetLimitHttpPagingSource<T: Any>(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         return try {
+            Napier.d("OffsetLimitHttpPagingSource: tag=$tag load key=${params.key}")
             val key = params.key ?: 0
             val limit: Int = getLimit(params, key)
 

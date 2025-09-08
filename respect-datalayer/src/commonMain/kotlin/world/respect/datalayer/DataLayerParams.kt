@@ -8,4 +8,6 @@ object DataLayerParams {
 
     const val SINCE = "since"
 
+    const val GUID = "guid"
+
 }

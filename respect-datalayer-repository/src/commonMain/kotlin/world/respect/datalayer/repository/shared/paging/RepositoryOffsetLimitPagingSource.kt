@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import world.respect.datalayer.shared.paging.FilterPagingSource
 import world.respect.datalayer.shared.paging.CacheableHttpPagingSource
+import io.github.aakira.napier.Napier
 
 /**
  * @param onUpdateLocalFromRemote function (e.g. provided by LocalModeDataSource) that will store
@@ -19,7 +20,11 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
     internal val local: PagingSource<Int, T>,
     internal val remote: PagingSource<Int, T>,
     private val onUpdateLocalFromRemote: suspend (List<T>) -> Unit,
-) : FilterPagingSource<Int, T>(local){
+    tag: String? = null,
+) : FilterPagingSource<Int, T>(
+    src = local,
+    tag = tag,
+){
 
     val scope = CoroutineScope(Dispatchers.Default + Job())
 
@@ -28,6 +33,8 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
+        Napier.d("RepositoryOffsetLimitPagingSource: tag=$tag load key=${params.key}")
+
         scope.launch {
             val remoteLoadResult = remote.load(params)
 
