@@ -13,6 +13,7 @@ import world.respect.datalayer.school.PersonDataSource
 import world.respect.datalayer.school.PersonDataSourceLocal
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
+import world.respect.datalayer.shared.paging.PagedItemHolder
 import kotlin.time.Instant
 
 class PersonDataSourceRepository(
@@ -90,7 +91,7 @@ class PersonDataSourceRepository(
         searchQuery: String?,
         since: Instant?,
         guid: String?,
-    ): PagingSource<Int, DataLoadState<Person>> {
+    ): PagingSource<Int, PagedItemHolder<Person>> {
         return RepositoryOffsetLimitPagingSource(
             local = local.findAllAsPagingSource(loadParams, searchQuery, since),
             remote = remote.findAllAsPagingSource(loadParams, searchQuery, since),

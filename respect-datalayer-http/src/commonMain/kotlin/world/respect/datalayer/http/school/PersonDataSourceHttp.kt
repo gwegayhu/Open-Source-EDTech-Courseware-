@@ -25,6 +25,7 @@ import world.respect.datalayer.school.adapters.asListDetails
 import world.respect.datalayer.school.model.Person
 import world.respect.datalayer.school.model.composites.PersonListDetails
 import world.respect.datalayer.schooldirectory.SchoolDirectoryDataSource
+import world.respect.datalayer.shared.paging.PagedItemHolder
 import kotlin.time.Instant
 
 class PersonDataSourceHttp(
@@ -117,7 +118,7 @@ class PersonDataSourceHttp(
         searchQuery: String?,
         since: Instant?,
         guid: String?,
-    ): PagingSource<Int, DataLoadState<Person>> {
+    ): PagingSource<Int, PagedItemHolder<Person>> {
         return OffsetLimitHttpPagingSource(
             baseUrlProvider = { respectEndpointUrl("person") },
             httpClient = httpClient,

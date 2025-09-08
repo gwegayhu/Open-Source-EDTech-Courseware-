@@ -11,19 +11,18 @@ import kotlinx.coroutines.withContext
 import world.respect.datalayer.shared.paging.FilterPagingSource
 import world.respect.datalayer.shared.paging.CacheableHttpPagingSource
 import io.github.aakira.napier.Napier
-import world.respect.datalayer.DataLoadState
-import world.respect.datalayer.ext.dataOrNull
+import world.respect.datalayer.shared.paging.PagedItemHolder
 
 /**
  * @param onUpdateLocalFromRemote function (e.g. provided by LocalModeDataSource) that will store
  *        newly received remote data in the local datasource.
  */
 class RepositoryOffsetLimitPagingSource<T: Any>(
-    internal val local: PagingSource<Int, DataLoadState<T>>,
-    internal val remote: PagingSource<Int, DataLoadState<T>>,
+    internal val local: PagingSource<Int, PagedItemHolder<T>>,
+    internal val remote: PagingSource<Int, PagedItemHolder<T>>,
     private val onUpdateLocalFromRemote: suspend (List<T>) -> Unit,
     tag: String? = null,
-) : FilterPagingSource<Int, DataLoadState<T>>(
+) : FilterPagingSource<Int, PagedItemHolder<T>>(
     src = local,
     tag = tag,
 ){
@@ -34,7 +33,7 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
         this.registerInvalidatedCallback { scope.cancel() }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataLoadState<T>> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PagedItemHolder<T>> {
         Napier.d("RepositoryOffsetLimitPagingSource: tag=$tag load key=${params.key}")
 
         scope.launch {
@@ -42,7 +41,7 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
 
             withContext(NonCancellable) {
                 if(remoteLoadResult is LoadResult.Page) {
-                    onUpdateLocalFromRemote(remoteLoadResult.data.mapNotNull { it.dataOrNull() })
+                    onUpdateLocalFromRemote(remoteLoadResult.mapNotNull { it.item })
                 }
 
                 val isNotModifiedResponse = (remoteLoadResult as? LoadResult.Error)?.throwable is
@@ -50,7 +49,7 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
 
                 if(remoteLoadResult is LoadResult.Page || isNotModifiedResponse) {
                     @Suppress("UNCHECKED_CAST")
-                    (remote as? CacheableHttpPagingSource<Int, DataLoadState<T>>)
+                    (remote as? CacheableHttpPagingSource<Int, PagedItemHolder<T>>)
                         ?.onLoadResultStored(remoteLoadResult)
                 }
             }

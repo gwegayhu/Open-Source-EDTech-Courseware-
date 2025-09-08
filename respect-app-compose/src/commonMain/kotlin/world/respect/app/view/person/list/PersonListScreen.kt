@@ -48,16 +48,17 @@ fun PersonListScreen(
         items(
             count = lazyPagingItems.itemCount,
         ) { index ->
-            val person = lazyPagingItems.get(index)
+            val person = lazyPagingItems[index]
+
             ListItem(
                 modifier = Modifier.clickable {
                     //onClickItem()
                 },
                 leadingContent = {
-                    RespectPersonAvatar(person?.fullName() ?: "")
+                    RespectPersonAvatar(person?.item?.fullName() ?: "")
                 },
                 headlineContent = {
-                    Text(person?.fullName() ?: "")
+                    Text(person?.item?.fullName() ?: "")
                 }
             )
         }

@@ -11,6 +11,7 @@ import io.ktor.util.reflect.TypeInfo
 import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLayerParams
+import world.respect.datalayer.DataLoadMetaInfo
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
 import world.respect.datalayer.NoDataLoadedState
@@ -19,6 +20,7 @@ import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
 import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
 import world.respect.datalayer.shared.paging.CacheableHttpPagingSource
+import world.respect.datalayer.shared.paging.PagedItemHolder
 import world.respect.datalayer.shared.paging.getClippedRefreshKey
 import world.respect.datalayer.shared.paging.getLimit
 import world.respect.datalayer.shared.paging.getOffset
@@ -40,15 +42,17 @@ class OffsetLimitHttpPagingSource<T: Any>(
     private val typeInfo: TypeInfo,
     private val requestBuilder: HttpRequestBuilder.() -> Unit = { },
     private val tag: String? = null,
-) : PagingSource<Int, DataLoadState<T>>(), CacheableHttpPagingSource<Int, DataLoadState<T>> {
+) : PagingSource<Int, PagedItemHolder<T>>(), CacheableHttpPagingSource<Int, PagedItemHolder<T>> {
 
     private var lastKnownTotalCount = -1
 
-    override fun getRefreshKey(state: PagingState<Int, DataLoadState<T>>): Int? {
+    private val metadataMap = mutableMapOf<LoadResult<Int, PagedItemHolder<T>>, DataLoadMetaInfo>()
+
+    override fun getRefreshKey(state: PagingState<Int, PagedItemHolder<T>>): Int? {
         return state.getClippedRefreshKey()
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataLoadState<T>> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PagedItemHolder<T>> {
         return try {
             Napier.d("OffsetLimitHttpPagingSource: tag=$tag load key=${params.key}")
             val key = params.key ?: 0
@@ -140,27 +144,26 @@ class OffsetLimitHttpPagingSource<T: Any>(
 
             return LoadResult.Page(
                 data = data.map {
-                    DataReadyState(
-                        data = it,
-                        metaInfo = listLoadState.metaInfo,
-                    )
+                    PagedItemHolder(it)
                 },
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = offset,
                 itemsAfter = maxOf(0, itemCount - nextPosToLoad)
-            )
+            ).also {
+                metadataMap[it] = listLoadState.metaInfo
+            }
         }catch(e: Throwable) {
             LoadResult.Error(e)
         }
     }
 
-    override suspend fun onLoadResultStored(loadResult: LoadResult<Int, DataLoadState<T>>) {
+    override suspend fun onLoadResultStored(loadResult: LoadResult<Int, PagedItemHolder<T>>) {
         if(loadResult is LoadResult.Page) {
             //If a list is empty, then we won't be able to get any validation info. In reality, this
             //doesn't matter because an empty list is only an extra 2 bytes to transfer compared
             //to a 304 response.
-            val metaData = loadResult.data.firstOrNull()?.metaInfo ?: return
+            val metaData = metadataMap[loadResult] ?: return
             (validationHelper as? ExtendedDataSourceValidationHelper)?.updateValidationInfo(
                 metaData
             )
