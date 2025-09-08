@@ -19,6 +19,7 @@ fun PersonEntities.toModel(): Person {
         guid = personEntity.pGuid,
         active = personEntity.pActive,
         lastModified = Instant.fromEpochMilliseconds(personEntity.pLastModified),
+        stored = Instant.fromEpochMilliseconds(personEntity.pStored),
         username = personEntity.pUsername,
         givenName = personEntity.pGivenName,
         familyName = personEntity.pFamilyName,
