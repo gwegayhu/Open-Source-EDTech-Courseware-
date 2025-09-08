@@ -34,6 +34,12 @@ class RepositoryOffsetLimitPagingSource<T: Any>(
             withContext(NonCancellable) {
                 if(remoteLoadResult is LoadResult.Page) {
                     onUpdateLocalFromRemote(remoteLoadResult.data)
+                }
+
+                val isNotModifiedResponse = (remoteLoadResult as? LoadResult.Error)?.throwable is
+                        CacheableHttpPagingSource.NotModifiedNonException
+
+                if(remoteLoadResult is LoadResult.Page || isNotModifiedResponse) {
                     @Suppress("UNCHECKED_CAST")
                     (remote as? CacheableHttpPagingSource<Int, T>)?.onLoadResultStored(remoteLoadResult)
                 }

@@ -8,10 +8,13 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.util.reflect.TypeInfo
+import world.respect.datalayer.DataErrorResult
 import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLayerParams
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.NoDataLoadedState
+import world.respect.datalayer.NoDataLoadedState.Reason
 import world.respect.datalayer.ext.getAsDataLoadState
 import world.respect.datalayer.networkvalidation.BaseDataSourceValidationHelper
 import world.respect.datalayer.networkvalidation.ExtendedDataSourceValidationHelper
@@ -48,81 +51,108 @@ class OffsetLimitHttpPagingSource<T: Any>(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
-        val key = params.key ?: 0
-        val limit: Int = getLimit(params, key)
+        return try {
+            val key = params.key ?: 0
+            val limit: Int = getLimit(params, key)
 
-        val offset = when {
-            /*
-             * The item count as per the getOffset function in Room is needed when handling
-             * LoadParams.Prepend. Most of the time, we would know this from a previous request. In
-             * the rare instances we don't, make a http head request to get it. If the server does
-             * not provide the X-Total-Count, then we need to return LoadResult.Invalid
-             */
-            params is LoadParams.Prepend<*> && lastKnownTotalCount < 0 -> {
-                TODO("Make an http request to get total item count or return invalid")
+            val offset = when {
+                /*
+                 * The item count as per the getOffset function in Room is needed when handling
+                 * LoadParams.Prepend. Most of the time, we would know this from a previous request. In
+                 * the rare instances we don't, make a http head request to get it. If the server does
+                 * not provide the X-Total-Count, then we need to return LoadResult.Invalid
+                 */
+                params is LoadParams.Prepend<*> && lastKnownTotalCount < 0 -> {
+                    TODO("Make an http request to get total item count or return invalid")
+                }
+
+                /*
+                 * Where we already know the total item count or we are looking to load the first page,
+                 * we can use the getOffset function
+                 */
+                (lastKnownTotalCount >= 0 || key == 0) -> {
+                    getOffset(params, key, lastKnownTotalCount)
+                }
+
+                else -> {
+                    key
+                }
             }
 
-            /*
-             * Where we already know the total item count or we are looking to load the first page,
-             * we can use the getOffset function
-             */
-            (lastKnownTotalCount >= 0 || key == 0) -> {
-                getOffset(params, key, lastKnownTotalCount)
+            val url = URLBuilder(baseUrlProvider()).apply {
+                parameters.append(DataLayerParams.OFFSET, offset.toString())
+                parameters.append(DataLayerParams.LIMIT, limit.toString())
+            }.build()
+
+            Napier.d("DPaging: tag=$tag offsetlimit loading from $url")
+
+            val dataLoadState: DataLoadState<List<T>> = httpClient.getAsDataLoadState(
+                url, typeInfo, validationHelper,
+            ) {
+                requestBuilder()
             }
 
-            else -> {
-                key
+            if(dataLoadState !is DataReadyState) {
+                return when {
+                    dataLoadState is NoDataLoadedState && dataLoadState.reason == Reason.NOT_MODIFIED -> {
+                        LoadResult.Error(CacheableHttpPagingSource.NotModifiedNonException())
+                    }
+
+                    dataLoadState is NoDataLoadedState && dataLoadState.reason == Reason.NOT_FOUND -> {
+                        LoadResult.Page(
+                            data = emptyList(),
+                            prevKey = null,
+                            nextKey = null,
+                            itemsAfter = 0,
+                            itemsBefore = 0,
+                        )
+                    }
+
+                    dataLoadState is DataErrorResult -> {
+                        LoadResult.Error(dataLoadState.error)
+                    }
+
+                    else -> {
+                        LoadResult.Error(
+                            IllegalStateException("OffsetLimitPagingSource: Invalid state: $dataLoadState")
+                        )
+                    }
+                }
             }
-        }
 
-        val url = URLBuilder(baseUrlProvider()).apply {
-            parameters.append(DataLayerParams.OFFSET, offset.toString())
-            parameters.append(DataLayerParams.LIMIT, limit.toString())
-        }.build()
+            val itemCount = dataLoadState.metaInfo.headers?.get(DataLayerHeaders.XTotalCount)?.toInt()?.also {
+                lastKnownTotalCount = it
+            } ?: -1
 
-        Napier.d("DPaging: tag=$tag offsetlimit loading from $url")
+            val data: List<T> = dataLoadState.data
 
-        val dataLoadState: DataLoadState<List<T>> = httpClient.getAsDataLoadState(
-            url, typeInfo, validationHelper,
-        ) {
-            requestBuilder()
-        }
+            Napier.d("DPaging: tag=$tag offsetlimit loaded ${data.size} items")
 
-        if(dataLoadState !is DataReadyState) {
-            Napier.d("DPaging: tag=$tag offsetlimit invalid")
-            return LoadResult.Invalid()
-        }
+            //This section is largely based on RoomUtil.queryDatabase function
+            val nextPosToLoad = offset + data.size
+            val nextKey =
+                if (data.isEmpty() || data.size < limit || nextPosToLoad >= itemCount) {
+                    null
+                } else {
+                    nextPosToLoad
+                }
+            val prevKey = if (offset <= 0 || data.isEmpty()) null else offset
 
-        val itemCount = dataLoadState.metaInfo.headers?.get(DataLayerHeaders.XTotalCount)?.toInt()?.also {
-            lastKnownTotalCount = it
-        } ?: -1
-
-        val data: List<T> = dataLoadState.data
-
-        Napier.d("DPaging: tag=$tag offsetlimit loaded ${data.size} items")
-
-        //This section is largely based on RoomUtil.queryDatabase function
-        val nextPosToLoad = offset + data.size
-        val nextKey =
-            if (data.isEmpty() || data.size < limit || nextPosToLoad >= itemCount) {
-                null
-            } else {
-                nextPosToLoad
+            LoadResult.Page(
+                data = data,
+                prevKey = prevKey,
+                nextKey = nextKey,
+                itemsBefore = offset,
+                itemsAfter = maxOf(0, itemCount - nextPosToLoad)
+            ).also {
+                resultMap[it] = dataLoadState
             }
-        val prevKey = if (offset <= 0 || data.isEmpty()) null else offset
-
-        return LoadResult.Page(
-            data = data,
-            prevKey = prevKey,
-            nextKey = nextKey,
-            itemsBefore = offset,
-            itemsAfter = maxOf(0, itemCount - nextPosToLoad)
-        ).also {
-            resultMap[it] = dataLoadState
+        }catch(e: Throwable) {
+            LoadResult.Error(e)
         }
     }
 
-    override suspend fun onLoadResultStored(loadResult: LoadResult.Page<Int, T>) {
+    override suspend fun onLoadResultStored(loadResult: LoadResult<Int, T>) {
         resultMap[loadResult]?.also {
             (validationHelper as? ExtendedDataSourceValidationHelper)?.updateValidationInfo(
                 it.metaInfo

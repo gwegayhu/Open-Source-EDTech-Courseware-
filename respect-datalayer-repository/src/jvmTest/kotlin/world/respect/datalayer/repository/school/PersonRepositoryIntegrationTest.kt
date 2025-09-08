@@ -19,6 +19,7 @@ import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.repository.clientservertest.clientServerDatasourceTest
 import world.respect.datalayer.repository.shared.paging.RepositoryOffsetLimitPagingSource
 import world.respect.datalayer.school.model.Person
+import world.respect.datalayer.shared.paging.CacheableHttpPagingSource
 import world.respect.libutil.util.time.systemTimeInMillis
 import world.respect.server.routes.school.respect.PersonRoute
 import kotlin.test.Test
@@ -300,7 +301,8 @@ class PersonRepositoryIntegrationTest {
                     PagingSource.LoadParams.Refresh(0, 50, false)
                 )
 
-                assertTrue(remoteResult is PagingSource.LoadResult.Invalid)
+                assertTrue(remoteResult is PagingSource.LoadResult.Error &&
+                    remoteResult.throwable is CacheableHttpPagingSource.NotModifiedNonException)
             }
         }
     }
