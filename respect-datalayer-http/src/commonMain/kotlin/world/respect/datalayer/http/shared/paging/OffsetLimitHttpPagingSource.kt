@@ -40,17 +40,15 @@ class OffsetLimitHttpPagingSource<T: Any>(
     private val typeInfo: TypeInfo,
     private val requestBuilder: HttpRequestBuilder.() -> Unit = { },
     private val tag: String? = null,
-) : PagingSource<Int, T>(), CacheableHttpPagingSource<Int, T> {
+) : PagingSource<Int, DataLoadState<T>>(), CacheableHttpPagingSource<Int, DataLoadState<T>> {
 
     private var lastKnownTotalCount = -1
 
-    private val resultMap: MutableMap<LoadResult<Int, T>, DataLoadState<List<T>>> = mutableMapOf()
-
-    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, DataLoadState<T>>): Int? {
         return state.getClippedRefreshKey()
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataLoadState<T>> {
         return try {
             Napier.d("OffsetLimitHttpPagingSource: tag=$tag load key=${params.key}")
             val key = params.key ?: 0
@@ -87,19 +85,19 @@ class OffsetLimitHttpPagingSource<T: Any>(
 
             Napier.d("DPaging: tag=$tag offsetlimit loading from $url")
 
-            val dataLoadState: DataLoadState<List<T>> = httpClient.getAsDataLoadState(
+            val listLoadState: DataLoadState<List<T>> = httpClient.getAsDataLoadState(
                 url, typeInfo, validationHelper,
             ) {
                 requestBuilder()
             }
 
-            if(dataLoadState !is DataReadyState) {
+            if(listLoadState !is DataReadyState) {
                 return when {
-                    dataLoadState is NoDataLoadedState && dataLoadState.reason == Reason.NOT_MODIFIED -> {
+                    listLoadState is NoDataLoadedState && listLoadState.reason == Reason.NOT_MODIFIED -> {
                         LoadResult.Error(CacheableHttpPagingSource.NotModifiedNonException())
                     }
 
-                    dataLoadState is NoDataLoadedState && dataLoadState.reason == Reason.NOT_FOUND -> {
+                    listLoadState is NoDataLoadedState && listLoadState.reason == Reason.NOT_FOUND -> {
                         LoadResult.Page(
                             data = emptyList(),
                             prevKey = null,
@@ -109,23 +107,23 @@ class OffsetLimitHttpPagingSource<T: Any>(
                         )
                     }
 
-                    dataLoadState is DataErrorResult -> {
-                        LoadResult.Error(dataLoadState.error)
+                    listLoadState is DataErrorResult -> {
+                        LoadResult.Error(listLoadState.error)
                     }
 
                     else -> {
                         LoadResult.Error(
-                            IllegalStateException("OffsetLimitPagingSource: Invalid state: $dataLoadState")
+                            IllegalStateException("OffsetLimitPagingSource: Invalid state: $listLoadState")
                         )
                     }
                 }
             }
 
-            val itemCount = dataLoadState.metaInfo.headers?.get(DataLayerHeaders.XTotalCount)?.toInt()?.also {
+            val itemCount = listLoadState.metaInfo.headers?.get(DataLayerHeaders.XTotalCount)?.toInt()?.also {
                 lastKnownTotalCount = it
             } ?: -1
 
-            val data: List<T> = dataLoadState.data
+            val data: List<T> = listLoadState.data
 
             Napier.d("DPaging: tag=$tag offsetlimit loaded ${data.size} items")
 
@@ -139,24 +137,32 @@ class OffsetLimitHttpPagingSource<T: Any>(
                 }
             val prevKey = if (offset <= 0 || data.isEmpty()) null else offset
 
-            LoadResult.Page(
-                data = data,
+
+            return LoadResult.Page(
+                data = data.map {
+                    DataReadyState(
+                        data = it,
+                        metaInfo = listLoadState.metaInfo,
+                    )
+                },
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = offset,
                 itemsAfter = maxOf(0, itemCount - nextPosToLoad)
-            ).also {
-                resultMap[it] = dataLoadState
-            }
+            )
         }catch(e: Throwable) {
             LoadResult.Error(e)
         }
     }
 
-    override suspend fun onLoadResultStored(loadResult: LoadResult<Int, T>) {
-        resultMap[loadResult]?.also {
+    override suspend fun onLoadResultStored(loadResult: LoadResult<Int, DataLoadState<T>>) {
+        if(loadResult is LoadResult.Page) {
+            //If a list is empty, then we won't be able to get any validation info. In reality, this
+            //doesn't matter because an empty list is only an extra 2 bytes to transfer compared
+            //to a 304 response.
+            val metaData = loadResult.data.firstOrNull()?.metaInfo ?: return
             (validationHelper as? ExtendedDataSourceValidationHelper)?.updateValidationInfo(
-                it.metaInfo
+                metaData
             )
         }
     }

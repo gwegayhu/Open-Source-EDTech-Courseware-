@@ -18,6 +18,7 @@ import world.respect.datalayer.AuthenticatedUserPrincipalId
 import world.respect.datalayer.DataLayerHeaders
 import world.respect.datalayer.DataLoadState
 import world.respect.datalayer.DataReadyState
+import world.respect.datalayer.ext.dataOrNull
 import world.respect.datalayer.ext.lastModifiedForHttpResponseHeader
 import world.respect.datalayer.respect.model.SchoolDirectoryEntry
 import world.respect.datalayer.shared.ModelWithTimes
@@ -64,17 +65,18 @@ fun ApplicationCall.requireAccountScope(): Scope {
 
 suspend inline fun <reified T: Any> ApplicationCall.respondOffsetLimitPaging(
     params: PagingSource.LoadParams<Int>,
-    pagingSource: PagingSource<Int, T>
+    pagingSource: PagingSource<Int, DataLoadState<T>>,
 ) {
     val consistentThrough = Clock.System.now()
     val pagingLoadResult = pagingSource.load(params)
 
     when(pagingLoadResult) {
         is PagingSource.LoadResult.Page -> {
-            val firstItem = pagingLoadResult.data.firstOrNull()
+            val unwrappedList = pagingLoadResult.data.mapNotNull { it.dataOrNull() }
+            val firstItem = unwrappedList.firstOrNull()
             val modelsWithTimes = if(firstItem is ModelWithTimes) {
                 @Suppress("UNCHECKED_CAST")
-                pagingLoadResult.data as List<ModelWithTimes>
+                unwrappedList as List<ModelWithTimes>
             }else {
                 null
             }
@@ -103,7 +105,7 @@ suspend inline fun <reified T: Any> ApplicationCall.respondOffsetLimitPaging(
                 return
             }
 
-            respond(pagingLoadResult.data)
+            respond(message = unwrappedList)
         }
 
         else -> {

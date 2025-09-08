@@ -44,7 +44,7 @@ interface PersonDataSource {
         searchQuery: String? = null,
         since: Instant? = null,
         guid: String? = null,
-    ): PagingSource<Int, Person>
+    ): PagingSource<Int, DataLoadState<Person>>
 
 
 }
