@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
         it.addArgument("-d", "--dburl").help("DB url: path to SQLite file (absolute or relative to school data directory)")
         it.addArgument("-a", "--adminusername").help("Admin username")
         it.addArgument("-p", "--adminpassword")
+        it.addArgument("-r", "--rpId").help("Passkey rpId")
             .required(true)
             .help("Admin password")
     }
