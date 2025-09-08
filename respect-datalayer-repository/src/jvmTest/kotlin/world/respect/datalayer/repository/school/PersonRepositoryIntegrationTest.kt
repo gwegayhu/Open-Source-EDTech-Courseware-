@@ -25,6 +25,7 @@ import world.respect.server.routes.school.respect.PersonRoute
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
@@ -110,7 +111,12 @@ class PersonRepositoryIntegrationTest {
                 Thread.sleep(2_000)
 
                 serverSchoolDataSource.personDataSource.putPersonsLocal(
-                    listOf(defaultTestPerson.copy(givenName = updatedName))
+                    listOf(
+                        defaultTestPerson.copy(
+                            givenName = updatedName,
+                            lastModified = Clock.System.now(),
+                        )
+                    )
                 )
 
                 val newData = clients.first().schoolDataSource.personDataSource
@@ -199,7 +205,12 @@ class PersonRepositoryIntegrationTest {
 
                 val updatedName = "updated"
                 serverSchoolDataSource.personDataSource.putPersonsLocal(
-                    listOf(defaultTestPerson.copy(givenName = "updated"))
+                    listOf(
+                        defaultTestPerson.copy(
+                            givenName = "updated",
+                            lastModified = Clock.System.now()
+                        )
+                    )
                 )
 
                 val dataSince = clients.first().schoolDataSource.personDataSource
